@@ -50,7 +50,6 @@
 4. **EnemyBase** - 敵の基底クラス
 
 ### Phase 2: 基本機能実装
-5. **EnemyHealthSystem** - HP管理、ダメージ処理
 6. **EnemyMovement** - 移動処理
 7. **EnemyAI** - 基本的な追従AI
 
