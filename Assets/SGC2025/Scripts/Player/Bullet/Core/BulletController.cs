@@ -17,6 +17,12 @@ namespace SGC2025.Player.Bullet
         [SerializeField] private LayerMask enemyLayer = 1 << 6; // Enemyレイヤー（通常6番）
         [SerializeField] private LayerMask obstacleLayer = 1 << 7; // 障害物レイヤー（通常7番）
         
+        [Header("画面境界設定")]
+        [SerializeField] private GameObject topBoundary;    // 上境界
+        [SerializeField] private GameObject bottomBoundary; // 下境界
+        [SerializeField] private GameObject leftBoundary;   // 左境界
+        [SerializeField] private GameObject rightBoundary;  // 右境界
+        
         // コンポーネント（自動取得）
         private Rigidbody rb;
         private Collider col;
@@ -62,6 +68,7 @@ namespace SGC2025.Player.Bullet
             if (currentLifeTime <= 0f)
             {
                 DeactivateBullet();
+                return;
             }
         }
         
@@ -238,6 +245,15 @@ namespace SGC2025.Player.Bullet
             {
                 Debug.Log($"[BulletController] 障害物レイヤーとの衝突: {other.name}");
                 DeactivateBullet();
+                return;
+            }
+            
+            // 境界オブジェクトとの衝突チェック
+            if (IsBoundaryObject(other.gameObject))
+            {
+                Debug.Log($"[BulletController] 境界オブジェクトとの衝突: {other.name}");
+                DeactivateBullet();
+                return;
             }
         }
         
@@ -258,6 +274,32 @@ namespace SGC2025.Player.Bullet
             // 回転と初期スケールをリセット
             transform.rotation = Quaternion.identity;
             transform.localScale = Vector3.one;
+        }
+        
+        /// <summary>
+        /// 指定されたオブジェクトが境界オブジェクトかどうかチェック
+        /// </summary>
+        private bool IsBoundaryObject(GameObject obj)
+        {
+            if (obj == null) return false;
+            
+            return obj == topBoundary || 
+                   obj == bottomBoundary || 
+                   obj == leftBoundary || 
+                   obj == rightBoundary;
+        }
+        
+        /// <summary>
+        /// 画面境界オブジェクトを設定
+        /// </summary>
+        public void SetBoundaries(GameObject top, GameObject bottom, GameObject left, GameObject right)
+        {
+            topBoundary = top;
+            bottomBoundary = bottom;
+            leftBoundary = left;
+            rightBoundary = right;
+            
+            Debug.Log($"[BulletController] 境界設定完了 - Top: {top?.name}, Bottom: {bottom?.name}, Left: {left?.name}, Right: {right?.name}");
         }
     }
 }

@@ -17,6 +17,12 @@ namespace SGC2025.Player.Bullet
         [SerializeField] private BulletDataSO defaultBulletData;
         [SerializeField] private string bulletPoolName = "PlayerBullet";
         
+        [Header("画面境界設定")]
+        [SerializeField] private GameObject topBoundary;    // 上境界
+        [SerializeField] private GameObject bottomBoundary; // 下境界
+        [SerializeField] private GameObject leftBoundary;   // 左境界
+        [SerializeField] private GameObject rightBoundary;  // 右境界
+        
         protected override bool UseDontDestroyOnLoad => false;
         
         protected override void Init()
@@ -70,6 +76,9 @@ namespace SGC2025.Player.Bullet
                 objectPool.ReturnObject(bulletObj);
                 return null;
             }
+            
+            // 境界設定
+            bulletController.SetBoundaries(topBoundary, bottomBoundary, leftBoundary, rightBoundary);
             
             // 弾を初期化
             bulletController.Initialize(dataToUse, direction);
