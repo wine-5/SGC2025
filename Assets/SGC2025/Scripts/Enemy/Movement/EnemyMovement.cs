@@ -57,9 +57,9 @@ namespace SGC2025.Enemy
                 MoveToFixedTarget(speed);
             }
             // 移動戦略がある場合（プレイヤー追従）
-            else if (movementStrategy != null && Player.I != null)
+            else if (movementStrategy != null && global::Player.I != null)
             {
-                movementStrategy.Move(transform, Player.PlayerTransform, speed, Time.deltaTime);
+                movementStrategy.Move(transform, global::Player.PlayerTransform, speed, Time.deltaTime);
             }
             // どちらもない場合はデフォルト移動（下向き、XY平面のみ）
             else
@@ -109,9 +109,9 @@ namespace SGC2025.Enemy
         /// </summary>
         private void ReturnToPool()
         {
-            if (EnemyFactory.I != null)
+            if (SGC2025.EnemyFactory.I != null)
             {
-                EnemyFactory.I.ReturnEnemy(gameObject);
+                SGC2025.EnemyFactory.I.ReturnEnemy(gameObject);
             }
             else
             {

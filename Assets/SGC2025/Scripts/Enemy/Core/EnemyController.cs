@@ -18,6 +18,9 @@ namespace SGC2025.Enemy
         // 現在のパラメーター（キャッシュ用）
         private EnemyParameters currentParameters;
         
+        // イベント
+        public static event System.Action OnEnemyDestroyed;
+        
         // プロパティ（現在状態のみ）
         public EnemyDataSO EnemyData => enemyData;
         public float CurrentHealth => currentHealth;
@@ -63,6 +66,9 @@ namespace SGC2025.Enemy
         /// </summary>
         private void OnDeath()
         {
+            // 敵撃破イベントを発火
+            OnEnemyDestroyed?.Invoke();
+            
             // 死亡処理はEnemyDeathHandlerに委譲する予定
             gameObject.SetActive(false);
         }

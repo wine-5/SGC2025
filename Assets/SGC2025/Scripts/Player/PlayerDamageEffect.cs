@@ -6,8 +6,7 @@ using System.Collections;
 /// </summary>
 public class PlayerDamageEffect : MonoBehaviour
 {
-    [Header("コンポーネント設定")]
-    [SerializeField] private SpriteRenderer spriteRenderer; // 手動設定可能（空の場合は自動検索）
+    private SpriteRenderer spriteRenderer; // 手動設定可能（空の場合は自動検索）
 
     [Header("点滅設定")]
     [SerializeField] private float blinkInterval = 0.1f; // 点滅間隔

@@ -96,11 +96,30 @@ public class Player : Singleton<Player>
         input.Enable();
         input.Player.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         input.Player.Movement.canceled += ctx => moveInput = Vector2.zero;
+        
+        // 射撃アクションの処理
+        input.Player.Shot.performed += OnShotPerformed;
     }
 
     private void OnDisable()
     {
         input.Disable();
+        input.Player.Movement.performed -= ctx => moveInput = ctx.ReadValue<Vector2>();
+        input.Player.Movement.canceled -= ctx => moveInput = Vector2.zero;
+        input.Player.Shot.performed -= OnShotPerformed;
+    }
+    
+    /// <summary>
+    /// 射撃ボタンが押された時の処理
+    /// </summary>
+    private void OnShotPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        // PlayerWeaponSystemから手動射撃を実行
+        var weaponSystem = GetComponent<SGC2025.Player.Bullet.PlayerWeaponSystem>();
+        if (weaponSystem != null)
+        {
+            weaponSystem.Fire();
+        }
     }
 
     /// <summary>
