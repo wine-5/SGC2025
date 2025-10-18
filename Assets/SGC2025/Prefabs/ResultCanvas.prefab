@@ -171,7 +171,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -82, y: 97}
+  m_AnchoredPosition: {x: -82, y: 37}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4827980889995351223
@@ -285,6 +285,7 @@ GameObject:
   - component: {fileID: 2453061304401611131}
   - component: {fileID: 6508477095270922507}
   - component: {fileID: 3900293008875151101}
+  - component: {fileID: 6131662348284580237}
   m_Layer: 5
   m_Name: ResultCanvas
   m_TagString: Untagged
@@ -305,8 +306,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2193869931077927569}
-  - {fileID: 3747603304779841899}
   - {fileID: 853737463736854266}
+  - {fileID: 3747603304779841899}
   - {fileID: 146862741511118923}
   - {fileID: 8006434046719398843}
   - {fileID: 3337758784291641268}
@@ -380,6 +381,21 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6131662348284580237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1441296892230779498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c3907381ff5dea43bd63fbbdab10e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.ResulltUI
+  enemyScoreText: {fileID: 8005794975883350321}
+  greeningScoreText: {fileID: 5212560879413048137}
+  totalScoreText: {fileID: 1506713967438336473}
 --- !u!1 &3173034496900340642
 GameObject:
   m_ObjectHideFlags: 0
@@ -689,7 +705,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -171}
+  m_AnchoredPosition: {x: -134, y: -170}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3132523756538172057
@@ -773,7 +789,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4669645416674615129}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6131662348284580237}
+        m_TargetAssemblyTypeName: SGC2025.ResulltUI, Assembly-CSharp
+        m_MethodName: OnClickBackTitle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4219162159700476721
 GameObject:
   m_ObjectHideFlags: 0
@@ -1082,7 +1110,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -118}
+  m_AnchoredPosition: {x: -134, y: -120}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4324737866783611055
@@ -1166,7 +1194,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2579606751024776485}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6131662348284580237}
+        m_TargetAssemblyTypeName: SGC2025.ResulltUI, Assembly-CSharp
+        m_MethodName: OnClickRestart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6688963982672663901
 GameObject:
   m_ObjectHideFlags: 0
@@ -1202,7 +1242,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -81.00999, y: 37.2}
+  m_AnchoredPosition: {x: -81.00999, y: 105}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8259856842828167165
