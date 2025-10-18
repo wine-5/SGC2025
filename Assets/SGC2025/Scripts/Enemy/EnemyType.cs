@@ -18,6 +18,15 @@ namespace SGC2025.Enemy
         /// <summary>
         /// 敵タイプ3（名前未定 - 後で変更予定）
         /// </summary>
-        Enemy3
+        Enemy3,
+        /// <summary>
+        /// 敵タイプ4（名前未定 - 後で変更予定）
+        /// </summary>
+        Enemy4,
+        /// <summary>
+        /// 敵タイプ5（名前未定 - 後で変更予定）
+        /// </summary>
+        Enemy5,
+
     }
 }
