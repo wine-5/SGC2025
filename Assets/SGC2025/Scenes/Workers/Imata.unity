@@ -506,6 +506,7 @@ GameObject:
   - component: {fileID: 2057454705}
   - component: {fileID: 2057454707}
   - component: {fileID: 2057454706}
+  - component: {fileID: 2057454708}
   m_Layer: 0
   m_Name: EnemyPool
   m_TagString: Untagged
@@ -558,12 +559,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TechC.ObjectPool
   poolItems:
-  - name: EnemyBoy
+  - name: Boy
     prefab: {fileID: 4656762607192535733, guid: 433dc9864f139bd4fa19e7b372140933, type: 3}
     parent: {fileID: 1837791596}
-    initialSize: 0
+    initialSize: 10
   autoExpand: 1
   expandSize: 5
+--- !u!114 &2057454708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057454704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 428ceb68123e5df41a60107222030131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.EnemySpawner
+  spawnInterval: 2
+  spawnHeight: 10
+  autoStart: 1
+  spawnRangeX: 10
+  spawnAreaCenter: {x: 0, y: 0}
+  currentWaveLevel: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

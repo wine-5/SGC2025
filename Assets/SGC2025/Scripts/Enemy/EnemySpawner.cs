@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using SGC2025.Enemy;
 
 namespace SGC2025
 {
@@ -89,7 +90,6 @@ namespace SGC2025
         {
             if (EnemyFactory.I == null)
             {
-                Debug.LogWarning("EnemyFactory instance not found!");
                 return;
             }
             
@@ -98,11 +98,20 @@ namespace SGC2025
             
             if (enemy != null)
             {
-                Debug.Log($"Enemy spawned at {spawnPosition}");
-            }
-            else
-            {
-                Debug.LogWarning("Failed to spawn enemy!");
+                // 敵に自動削除コンポーネントを追加
+                var autoReturn = enemy.GetComponent<EnemyAutoReturn>();
+                if (autoReturn == null)
+                {
+                    autoReturn = enemy.AddComponent<EnemyAutoReturn>();
+                }
+                autoReturn.Initialize();
+                
+                // 敵に移動コンポーネントを追加
+                var movement = enemy.GetComponent<EnemyMovement>();
+                if (movement == null)
+                {
+                    movement = enemy.AddComponent<EnemyMovement>();
+                }
             }
         }
         
