@@ -1,31 +1,24 @@
 using UnityEngine;
+using SGC2025;
 
-public class Player : MonoBehaviour
+public class Player : Singleton<Player>
 {
     // === 静的プレイヤー参照機能 ===
-    private static Player instance;
-    
-    /// <summary>
-    /// プレイヤーのインスタンス
-    /// </summary>
-    public static Player Instance => instance;
-    
     /// <summary>
     /// プレイヤーのTransform
     /// </summary>
-    public static Transform PlayerTransform => instance?.transform;
+    public static Transform PlayerTransform => I?.transform;
     
     /// <summary>
     /// プレイヤーの現在位置
     /// </summary>
-    public static Vector3 PlayerPosition => instance != null ? instance.transform.position : Vector3.zero;
+    public static Vector3 PlayerPosition => I != null ? I.transform.position : Vector3.zero;
     
     /// <summary>
-    /// プレイヤーが設定されているかチェック
+    /// DontDestroyOnLoadを使用しない（シーンごとに再生成）
     /// </summary>
-    public static bool IsPlayerSet() => instance != null;
+    protected override bool UseDontDestroyOnLoad => false;
 
-    // === 既存のプレイヤー機能 ===
     public Animator anim {  get; private set; }
     public Rigidbody rb { get; private set; }
 
@@ -63,21 +56,17 @@ public class Player : MonoBehaviour
 
 
 
-    private void Awake()
+    protected override void Awake()
     {
-        // Singletonの設定
-        if (instance == null)
-        {
-            instance = this;
-            Debug.Log("Player: プレイヤーインスタンスを設定しました");
-        }
-        else if (instance != this)
-        {
-            Debug.LogWarning("Player: 複数のプレイヤーが存在します。古いインスタンスを破棄します。");
-            Destroy(gameObject);
-            return;
-        }
-        
+        // Singletonの基本処理を実行
+        base.Awake();
+    }
+    
+    /// <summary>
+    /// Singletonの初期化処理をオーバーライド
+    /// </summary>
+    protected override void Init()
+    {
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
 
@@ -87,6 +76,8 @@ public class Player : MonoBehaviour
         //�X�e�[�g�� = new �N���X��(this, stateMachine, "animator�Őݒ肵��bool��")
         idleState = new PlayerIdleState(this, stateMachine, "fly");
         moveState = new PlayerMoveState(this, stateMachine, "fly");
+        
+        Debug.Log("Player: プレイヤーの初期化が完了しました");
     }
 
 
@@ -173,14 +164,6 @@ public class Player : MonoBehaviour
         gameObject.SetActive(false);
     }
     
-    private void OnDestroy()
-    {
-        // インスタンスをクリア
-        if (instance == this)
-        {
-            instance = null;
-            Debug.Log("Player: プレイヤーインスタンスをクリアしました");
-        }
-    }
+
 
 }
