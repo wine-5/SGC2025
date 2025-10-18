@@ -255,6 +255,8 @@ namespace SGC2025.Player.Bullet
                 rb.angularVelocity = Vector3.zero;
             }
             
+            // 回転と初期スケールをリセット
+            transform.rotation = Quaternion.identity;
             transform.localScale = Vector3.one;
         }
     }

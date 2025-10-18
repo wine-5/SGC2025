@@ -58,9 +58,9 @@ namespace SGC2025.Player.Bullet
                 return null;
             }
             
-            // 位置と回転を設定
+            // 位置のみを設定（回転は設定しない - 円形を保持）
             bulletObj.transform.position = position;
-            bulletObj.transform.rotation = Quaternion.LookRotation(direction);
+            bulletObj.transform.rotation = Quaternion.identity; // 回転をリセット
             
             // BulletControllerを取得
             BulletController bulletController = bulletObj.GetComponent<BulletController>();
