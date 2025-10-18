@@ -968,6 +968,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   moveSpeed: 8
   mutekiTime: 3
+  positionLimitHigh: {x: 10, y: 10}
+  positionLimitLow: {x: -10, y: -10}
 --- !u!4 &1713001272
 Transform:
   m_ObjectHideFlags: 0
