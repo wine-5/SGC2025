@@ -1,5 +1,6 @@
 using UnityEngine;
 using SGC2025;
+using System;
 
 /// <summary>
 /// プレイヤーキャラクターの制御クラス
@@ -34,6 +35,13 @@ public class Player : Singleton<Player>
     public float MaxHealth => maxHealth;
     public float CurrentHealth => currentHealth;
     public bool IsAlive => currentHealth > 0;
+    public float HealthPercentage => maxHealth > 0 ? (currentHealth / maxHealth) * 100f : 0f;
+    public bool IsInvincible => nowMutekiTime > 0f;
+    #endregion
+
+    #region イベント
+    /// <summary>ダメージを受けた時のイベント</summary>
+    public static event Action<float> OnPlayerDamaged;
     #endregion
 
     #region 移動システム
@@ -70,7 +78,6 @@ public class Player : Singleton<Player>
         moveState = new PlayerMoveState(this, stateMachine, "fly");
         // 体力初期化
         currentHealth = maxHealth;
-        Debug.Log("Player: 初期化完了");
     }
 
     private void Start()
@@ -96,13 +103,45 @@ public class Player : Singleton<Player>
         input.Disable();
     }
 
+    /// <summary>
+    /// 敵との接触判定（OnTriggerEnter）
+    /// 敵に当たったら体力を減らす
+    /// </summary>
     private void OnTriggerEnter(Collider other)
     {
+        // 無敵時間中はダメージを受けない
+        if (IsInvincible)
+        {
+            return;
+        }
+
+        // 敵レイヤーとの接触チェック
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            var enemyController = other.GetComponent<SGC2025.Enemy.EnemyController>();
-            float damage = enemyController?.AttackPower ?? 10f;
+            HandleEnemyContact(other.gameObject);
+        }
+    }
+
+    /// <summary>
+    /// 敵との接触処理
+    /// </summary>
+    /// <param name="enemy">接触した敵オブジェクト</param>
+    private void HandleEnemyContact(GameObject enemy)
+    {
+        // EnemyControllerからダメージ値を取得
+        var enemyController = enemy.GetComponent<SGC2025.Enemy.EnemyController>();
+        
+        if (enemyController != null)
+        {
+            float damage = enemyController.AttackPower;
+            Debug.Log($"敵 {enemy.name} と接触 - ダメージ: {damage}");
             TakeDamage(damage);
+        }
+        else
+        {
+            // EnemyControllerが見つからない場合のフォールバック
+            Debug.LogWarning($"敵 {enemy.name} にEnemyControllerが見つかりません - デフォルトダメージを適用");
+            TakeDamage(10f);
         }
     }
     #endregion
@@ -134,15 +173,31 @@ public class Player : Singleton<Player>
     /// <param name="damage">受けるダメージ量</param>
     public void TakeDamage(float damage)
     {
-        // 無敵時間中はダメージを受けない
-        if (nowMutekiTime > 0f) return;
+        // ダメージ値の検証
+        if (damage <= 0)
+        {
+            Debug.LogWarning($"無効なダメージ値: {damage}");
+            return;
+        }
+        
         // 体力を減らす
+        float previousHealth = currentHealth;
         currentHealth = Mathf.Max(0, currentHealth - damage);
-        Debug.Log($"Player damaged: -{damage} HP, Current HP: {currentHealth}/{maxHealth}");
+        float actualDamage = previousHealth - currentHealth;
+        
+        Debug.Log($"プレイヤーダメージ: -{actualDamage} HP (残り体力: {currentHealth}/{maxHealth})");
+        
         // 無敵時間を設定
         nowMutekiTime = mutekiTime;
+        
+        // ダメージイベントを発火
+        OnPlayerDamaged?.Invoke(actualDamage);
+        
         // 体力が0になったら死亡処理
-        if (!IsAlive) OnPlayerDeath();
+        if (!IsAlive)
+        {
+            OnPlayerDeath();
+        }
     }
     
     /// <summary>

@@ -12,20 +12,20 @@ namespace SGC2025.Enemy
     {
         [Header("敵生成設定")]
         [SerializeField] private List<EnemySpawnConfigSO> spawnConfigs = new List<EnemySpawnConfigSO>();
-        
+
         [Header("デバッグ設定")]
         [SerializeField] private bool enableDebugLog = false;
-        
+
         /// <summary>
         /// 登録されている設定の数を取得
         /// </summary>
         public int ConfigCount => spawnConfigs.Count(config => config != null);
-        
+
         /// <summary>
         /// すべての設定が有効かチェック
         /// </summary>
         public bool HasValidConfigs => ConfigCount > 0;
-        
+
         /// <summary>
         /// ランダムに敵データを選択
         /// </summary>
@@ -39,7 +39,7 @@ namespace SGC2025.Enemy
                 Debug.LogError("EnemySpawnConfigManager: 有効な敵生成設定がありません");
                 return null;
             }
-            
+
             // 全ての設定から利用可能な敵を収集
             var allAvailableEnemies = CollectAllAvailableEnemies(validConfigs, waveLevel);
             if (allAvailableEnemies.Count == 0)
@@ -47,18 +47,18 @@ namespace SGC2025.Enemy
                 Debug.LogWarning($"EnemySpawnConfigManager: ウェーブレベル {waveLevel} で出現可能な敵がいません");
                 return null;
             }
-            
+
             // 重み付きランダムで選択
             var selectedData = SelectByWeight(allAvailableEnemies);
-            
+
             if (enableDebugLog && selectedData != null)
             {
                 Debug.Log($"EnemySpawnConfigManager: {selectedData.EnemyType} を選択しました (ウェーブレベル: {waveLevel})");
             }
-            
+
             return selectedData;
         }
-        
+
         /// <summary>
         /// 特定の敵タイプのデータを取得
         /// </summary>
@@ -74,11 +74,11 @@ namespace SGC2025.Enemy
                     return enemyData;
                 }
             }
-            
+
             Debug.LogWarning($"EnemySpawnConfigManager: EnemyType {enemyType} のデータが見つかりません");
             return null;
         }
-        
+
         /// <summary>
         /// 有効な設定のリストを取得
         /// </summary>
@@ -86,7 +86,7 @@ namespace SGC2025.Enemy
         {
             return spawnConfigs.Where(config => config != null).ToList();
         }
-        
+
         /// <summary>
         /// すべての設定から利用可能な敵を収集
         /// </summary>
@@ -94,16 +94,16 @@ namespace SGC2025.Enemy
             List<EnemySpawnConfigSO> configs, int waveLevel)
         {
             var allEnemies = new List<EnemySpawnConfigSO.EnemySpawnData>();
-            
+
             foreach (var config in configs)
             {
                 var availableEnemies = config.GetAvailableEnemiesForWave(waveLevel);
                 allEnemies.AddRange(availableEnemies);
             }
-            
+
             return allEnemies;
         }
-        
+
         /// <summary>
         /// 重み付きランダムで選択
         /// </summary>
@@ -111,7 +111,7 @@ namespace SGC2025.Enemy
         {
             float totalWeight = enemies.Sum(enemy => enemy.spawnWeight);
             float randomValue = Random.Range(0f, totalWeight);
-            
+
             float currentWeight = 0f;
             foreach (var enemy in enemies)
             {
@@ -121,28 +121,23 @@ namespace SGC2025.Enemy
                     return enemy.enemyData;
                 }
             }
-            
+
             // フォールバック：最初の敵を返す
             return enemies[0].enemyData;
         }
-        
+
         /// <summary>
         /// 設定の状態をログ出力
         /// </summary>
         public void LogConfigStatus()
         {
-            Debug.Log($"EnemySpawnConfigManager: {ConfigCount} 個の有効な設定が登録されています");
-            
+
             for (int i = 0; i < spawnConfigs.Count; i++)
             {
                 var config = spawnConfigs[i];
                 if (config != null)
                 {
-                    Debug.Log($"  設定 {i + 1}: {config.name} ({config.GetEnemyDataCount()} 種類の敵)");
-                }
-                else
-                {
-                    Debug.LogWarning($"  設定 {i + 1}: null (設定が不足しています)");
+                    // Debug.Log($"  設定 {i + 1}: {config.name} ({config.GetEnemyDataCount()} 種類の敵)");
                 }
             }
         }
