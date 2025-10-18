@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 namespace SGC2025.Enemy
 {
@@ -9,9 +8,13 @@ namespace SGC2025.Enemy
     /// </summary>
     public class EnemyAutoReturn : MonoBehaviour
     {
+        private const float DEFAULT_LIFE_TIME = 30f;
+        private const float DEFAULT_RETURN_BOUNDARY = 15f;
+        
         [Header("自動削除設定")]
-        [SerializeField] private float lifeTime = 30f; // 生存時間（秒）
-        [SerializeField] private float returnBoundary = -15f; // Y座標がこの値以下になったら削除
+        [SerializeField] private float lifeTime = DEFAULT_LIFE_TIME;
+        [SerializeField] private float returnBoundaryX = DEFAULT_RETURN_BOUNDARY;
+        [SerializeField] private float returnBoundaryY = DEFAULT_RETURN_BOUNDARY;
         
         private float spawnTime;
         private bool isInitialized = false;
@@ -29,33 +32,53 @@ namespace SGC2025.Enemy
         {
             if (!isInitialized) return;
             
-            // 時間経過チェック
-            if (Time.time - spawnTime >= lifeTime)
+            if (ShouldReturnToPool())
             {
-                ReturnToPool("時間経過");
-                return;
+                ReturnToPool();
             }
+        }
+        
+        /// <summary>
+        /// プールに返却すべきかチェック
+        /// </summary>
+        private bool ShouldReturnToPool()
+        {
+            return HasLifeTimeExpired() || IsOutOfBounds();
+        }
+        
+        /// <summary>
+        /// 生存時間が経過したかチェック
+        /// </summary>
+        private bool HasLifeTimeExpired()
+        {
+            return Time.time - spawnTime >= lifeTime;
+        }
+        
+        /// <summary>
+        /// 境界外にいるかチェック（四方向対応）
+        /// </summary>
+        private bool IsOutOfBounds()
+        {
+            Vector3 pos = transform.position;
             
-            // 画面外チェック（画面下に落ちた場合）
-            if (transform.position.y <= returnBoundary)
-            {
-                ReturnToPool("画面外");
-                return;
-            }
+            // 画面の四方向の境界をチェック
+            return pos.y <= -returnBoundaryY ||    // 下
+                   pos.y >= returnBoundaryY ||     // 上  
+                   pos.x <= -returnBoundaryX ||    // 左
+                   pos.x >= returnBoundaryX;       // 右
         }
         
         /// <summary>
         /// プールに返却
         /// </summary>
-        private void ReturnToPool(string reason)
+        private void ReturnToPool()
         {
-            if (EnemyFactory.I != null)
+            if (SGC2025.EnemyFactory.I != null)
             {
-                EnemyFactory.I.ReturnEnemy(gameObject);
+                SGC2025.EnemyFactory.I.ReturnEnemy(gameObject);
             }
             else
             {
-                // FactoryがないときFallback
                 gameObject.SetActive(false);
             }
         }
@@ -65,24 +88,10 @@ namespace SGC2025.Enemy
         /// </summary>
         private void OnEnable()
         {
-            // プールから再取得された場合は自動で初期化
             if (isInitialized)
             {
                 Initialize();
             }
-        }
-        
-        /// <summary>
-        /// 設定値を変更
-        /// </summary>
-        public void SetLifeTime(float newLifeTime)
-        {
-            lifeTime = newLifeTime;
-        }
-        
-        public void SetReturnBoundary(float newBoundary)
-        {
-            returnBoundary = newBoundary;
         }
     }
 }

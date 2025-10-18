@@ -13,10 +13,14 @@ namespace SGC2025
     {
         [Header("プール設定")]
         [SerializeField] private ObjectPool objectPool;
-        [SerializeField] private List<EnemyDataSO> enemyDataList = new List<EnemyDataSO>();
+        
+        [Header("敵選択設定")]
+        [SerializeField] private EnemySpawnConfigSO spawnConfig;
+        
+        private const int DEFAULT_INITIAL_POOL_SIZE = 10;
         
         [Header("初期プール設定")]
-        [SerializeField] private int initialPoolSize = 10;
+        [SerializeField] private int initialPoolSize = DEFAULT_INITIAL_POOL_SIZE;
         
         protected override void Init()
         {
@@ -84,7 +88,13 @@ namespace SGC2025
         /// </summary>
         public GameObject CreateEnemy(EnemyType enemyType, Vector3 position, int waveLevel = 1)
         {
-            var enemyData = GetEnemyData(enemyType);
+            if (spawnConfig == null)
+            {
+                Debug.LogError("EnemyFactory: EnemySpawnConfigSOが設定されていません");
+                return null;
+            }
+            
+            var enemyData = spawnConfig.GetEnemyData(enemyType);
             if (enemyData == null)
             {
                 Debug.LogError($"EnemyFactory: EnemyType {enemyType} のデータが見つかりません");
@@ -99,14 +109,19 @@ namespace SGC2025
         /// </summary>
         public GameObject CreateRandomEnemy(Vector3 position, int waveLevel = 1)
         {
-            var availableEnemies = GetAvailableEnemiesForWave(waveLevel);
-            if (availableEnemies.Count == 0)
+            if (spawnConfig == null)
             {
-                Debug.LogWarning($"EnemyFactory: ウェーブレベル {waveLevel} で出現可能な敵がいません");
+                Debug.LogError("EnemyFactory: EnemySpawnConfigSOが設定されていません");
                 return null;
             }
             
-            var selectedEnemy = SelectRandomEnemyByWeight(availableEnemies);
+            var selectedEnemy = spawnConfig.SelectRandomEnemyByWeight(waveLevel);
+            if (selectedEnemy == null)
+            {
+                Debug.LogWarning($"EnemyFactory: ウェーブレベル {waveLevel} で選択可能な敵がいません");
+                return null;
+            }
+            
             return CreateEnemy(selectedEnemy, position, waveLevel);
         }
         
@@ -117,52 +132,9 @@ namespace SGC2025
         {
             if (enemy == null) return;
             
-            // 敵の状態をリセット
-            var controller = enemy.GetComponent<EnemyController>();
-            if (controller != null)
-            {
-                // 必要に応じて状態リセット処理を追加
-            }
-            
             objectPool.ReturnObject(enemy);
         }
         
-        /// <summary>
-        /// 指定されたウェーブレベルで出現可能な敵のリストを取得
-        /// </summary>
-        private List<EnemyDataSO> GetAvailableEnemiesForWave(int waveLevel)
-        {
-            return enemyDataList.Where(data => data != null && data.CanSpawnAtWave(waveLevel)).ToList();
-        }
-        
-        /// <summary>
-        /// 重み付きランダムで敵を選択
-        /// </summary>
-        private EnemyDataSO SelectRandomEnemyByWeight(List<EnemyDataSO> availableEnemies)
-        {
-            float totalWeight = availableEnemies.Sum(enemy => enemy.SpawnWeight);
-            float randomValue = Random.Range(0f, totalWeight);
-            
-            float currentWeight = 0f;
-            foreach (var enemy in availableEnemies)
-            {
-                currentWeight += enemy.SpawnWeight;
-                if (randomValue <= currentWeight)
-                {
-                    return enemy;
-                }
-            }
-            
-            // フォールバック：最初の敵を返す
-            return availableEnemies[0];
-        }
-        
-        /// <summary>
-        /// EnemyTypeからEnemyDataSOを取得
-        /// </summary>
-        private EnemyDataSO GetEnemyData(EnemyType enemyType)
-        {
-            return enemyDataList.FirstOrDefault(data => data != null && data.EnemyType == enemyType);
-        }
+
     }
 }

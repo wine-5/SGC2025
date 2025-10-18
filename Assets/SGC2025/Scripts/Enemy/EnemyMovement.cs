@@ -25,21 +25,6 @@ namespace SGC2025.Enemy
             transform.Translate(moveDirection * speed * Time.deltaTime);
         }
         
-        /// <summary>
-        /// 移動方向を設定
-        /// </summary>
-        public void SetMoveDirection(Vector3 direction)
-        {
-            moveDirection = direction.normalized;
-        }
-        
-        /// <summary>
-        /// プレイヤー追従移動（将来の拡張用）
-        /// </summary>
-        public void SetTargetPosition(Vector3 targetPosition)
-        {
-            Vector3 direction = (targetPosition - transform.position).normalized;
-            moveDirection = direction;
-        }
+
     }
 }

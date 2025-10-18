@@ -2,21 +2,29 @@ using UnityEngine;
 using System.Collections;
 using SGC2025.Enemy;
 
-namespace SGC2025
+namespace SGC2025.Enemy
 {
+    /// <summary>
+    /// 敵の生成を管理するコンポーネント
+    /// 指定した間隔で敵をFactoryから生成し、自動管理コンポーネントを追加する
+    /// </summary>
     public class EnemySpawner : MonoBehaviour
     {
-        [Header("生成設定")]
-        [SerializeField] private float spawnInterval = 2f; // 生成間隔（秒）
-        [SerializeField] private float spawnHeight = 10f; // 生成Y座標
-        [SerializeField] private bool autoStart = true; // 自動開始
+        private const float DEFAULT_SPAWN_INTERVAL = 2f;
+        private const int DEFAULT_WAVE_LEVEL = 1;
         
-        [Header("生成範囲")]
-        [SerializeField] private float spawnRangeX = 10f; // X軸の生成範囲
-        [SerializeField] private Vector2 spawnAreaCenter = Vector2.zero; // 生成エリアの中心
+        [Header("生成設定")]
+        [SerializeField] private float spawnInterval = DEFAULT_SPAWN_INTERVAL;
+        [SerializeField] private bool autoStart = true;
+        
+        [Header("敵生成設定")]
+        [SerializeField] private EnemySpawnConfigSO spawnConfig;
+        
+        [Header("生成位置管理")]
+        [SerializeField] private EnemySpawnPositionManager positionManager = new EnemySpawnPositionManager();
         
         [Header("ウェーブ設定")]
-        [SerializeField] private int currentWaveLevel = 1; // 現在のウェーブレベル
+        [SerializeField] private int currentWaveLevel = DEFAULT_WAVE_LEVEL;
         
         private bool isSpawning = false;
         private Coroutine spawnCoroutine;
@@ -55,21 +63,7 @@ namespace SGC2025
             }
         }
         
-        /// <summary>
-        /// 生成間隔を設定
-        /// </summary>
-        public void SetSpawnInterval(float interval)
-        {
-            spawnInterval = Mathf.Max(0.1f, interval);
-        }
-        
-        /// <summary>
-        /// ウェーブレベルを設定
-        /// </summary>
-        public void SetWaveLevel(int waveLevel)
-        {
-            currentWaveLevel = Mathf.Max(1, waveLevel);
-        }
+
         
         /// <summary>
         /// 敵生成のコルーチン
@@ -116,31 +110,13 @@ namespace SGC2025
         }
         
         /// <summary>
-        /// ランダムな生成位置を取得（上から下）
+        /// ランダムな生成位置を取得（四方向から）
         /// </summary>
         private Vector3 GetRandomSpawnPosition()
         {
-            float randomX = Random.Range(
-                spawnAreaCenter.x - spawnRangeX * 0.5f,
-                spawnAreaCenter.x + spawnRangeX * 0.5f
-            );
-            
-            return new Vector3(randomX, spawnAreaCenter.y + spawnHeight, 0);
+            return positionManager.GetRandomEdgeSpawnPosition();
         }
         
-        /// <summary>
-        /// デバッグ用：生成範囲を描画
-        /// </summary>
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.green;
-            
-            // 生成範囲を描画
-            Vector3 leftPoint = new Vector3(spawnAreaCenter.x - spawnRangeX * 0.5f, spawnAreaCenter.y + spawnHeight, 0);
-            Vector3 rightPoint = new Vector3(spawnAreaCenter.x + spawnRangeX * 0.5f, spawnAreaCenter.y + spawnHeight, 0);
-            
-            Gizmos.DrawLine(leftPoint, rightPoint);
-            Gizmos.DrawWireCube(new Vector3(spawnAreaCenter.x, spawnAreaCenter.y + spawnHeight, 0), new Vector3(spawnRangeX, 0.5f, 0.5f));
-        }
+
     }
 }

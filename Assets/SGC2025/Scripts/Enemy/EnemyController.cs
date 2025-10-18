@@ -27,8 +27,6 @@ namespace SGC2025.Enemy
         public float MaxHealth => currentParameters.health;
         public float MoveSpeed => currentParameters.moveSpeed;
         public float AttackPower => currentParameters.attackPower;
-        public float DetectionRange => currentParameters.detectionRange;
-        public float AttackRange => currentParameters.attackRange;
         public EnemyType EnemyType => currentParameters.enemyType;
         
         /// <summary>
@@ -57,15 +55,7 @@ namespace SGC2025.Enemy
             }
         }
         
-        /// <summary>
-        /// 体力を回復する
-        /// </summary>
-        public void Heal(float amount)
-        {
-            if (!IsAlive) return;
-            
-            currentHealth = Mathf.Min(MaxHealth, currentHealth + amount);
-        }
+
         
         /// <summary>
         /// 死亡時の処理
@@ -76,20 +66,6 @@ namespace SGC2025.Enemy
             gameObject.SetActive(false);
         }
         
-        /// <summary>
-        /// デバッグ用：ギズモ描画
-        /// </summary>
-        void OnDrawGizmosSelected()
-        {
-            if (enemyData == null) return;
-            
-            // 検知範囲
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, DetectionRange);
-            
-            // 攻撃範囲
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, AttackRange);
-        }
+
     }
 }

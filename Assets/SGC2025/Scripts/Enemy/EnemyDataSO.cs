@@ -11,27 +11,18 @@ namespace SGC2025.Enemy
         [Header("基本情報")]
         [SerializeField] private EnemyType enemyType;
         
+        private const float DEFAULT_HEALTH = 100f;
+        private const float DEFAULT_MOVE_SPEED = 3f;
+        private const float DEFAULT_ATTACK_POWER = 10f;
+        
         [Header("基本パラメーター")]
-        [SerializeField] private float health = 100f;
-        [SerializeField] private float moveSpeed = 3f;
-        [SerializeField] private float attackPower = 10f;
+        [SerializeField] private float health = DEFAULT_HEALTH;
+        [SerializeField] private float moveSpeed = DEFAULT_MOVE_SPEED;
+        [SerializeField] private float attackPower = DEFAULT_ATTACK_POWER;
         
-        [Header("AI設定")]
-        [SerializeField] private float detectionRange = 5f;
-        [SerializeField] private float attackRange = 1.5f;
         
-        [Header("出現設定")]
-        [SerializeField, Range(0f, 100f)] private float spawnWeight = 10f;
-        [SerializeField] private int minWaveLevel = 1;
-        
-        [Header("スケーリング設定")]
-        [SerializeField] private float healthScaling = 1.2f;
-        [SerializeField] private float speedScaling = 1.1f;
-        [SerializeField] private float attackScaling = 1.15f;
-        
-        // 必要最小限のプロパティ
+        // 基本プロパティ
         public EnemyType EnemyType => enemyType;
-        public float SpawnWeight => spawnWeight;
         
         /// <summary>
         /// ウェーブレベルに応じてスケーリングされたパラメーターを取得
@@ -41,20 +32,10 @@ namespace SGC2025.Enemy
             return new EnemyParameters
             {
                 enemyType = this.enemyType,
-                health = this.health * Mathf.Pow(healthScaling, waveLevel - 1),
-                moveSpeed = this.moveSpeed * Mathf.Pow(speedScaling, waveLevel - 1),
-                attackPower = this.attackPower * Mathf.Pow(attackScaling, waveLevel - 1),
-                detectionRange = this.detectionRange,
-                attackRange = this.attackRange
+                health = this.health,
+                moveSpeed = this.moveSpeed,
+                attackPower = this.attackPower
             };
-        }
-        
-        /// <summary>
-        /// 指定されたウェーブレベルで出現可能かチェック
-        /// </summary>
-        public bool CanSpawnAtWave(int waveLevel)
-        {
-            return waveLevel >= minWaveLevel;
         }
         
         /// <summary>
@@ -76,7 +57,5 @@ namespace SGC2025.Enemy
         public float health;
         public float moveSpeed;
         public float attackPower;
-        public float detectionRange;
-        public float attackRange;
     }
 }
