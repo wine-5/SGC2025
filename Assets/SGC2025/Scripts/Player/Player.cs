@@ -20,14 +20,17 @@ public class Player : MonoBehaviour
 
 
 
+    [Header("ステータス")]
+    //[SerializeField] private int health = 30;
 
-    [Header("移動速度")]
     public float moveSpeed;
+    [SerializeField] private float mutekiTime;
+    private float nowMutekiTime;
+
+    //[Header("移動速度")]
     public Vector2 moveInput {  get; private set; }
 
 
-    [Header("ステータス")]
-    [SerializeField] private int health = 30;
 
 
 
@@ -67,7 +70,17 @@ public class Player : MonoBehaviour
     {
         stateMachine.UpdateActiveState();
 
-        
+        DecreaseMutekiTime();
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //ダメージ判定
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            Damage();
+        }
     }
 
 
@@ -76,6 +89,24 @@ public class Player : MonoBehaviour
         Vector2 moveInputNormalized = new Vector2(moveInputX, moveInputY).normalized;
         rb.linearVelocity = new Vector2(moveInputNormalized.x * moveSpeed, moveInputNormalized.y * moveSpeed);
 
+    }
+
+
+    public void Damage()
+    {
+        //ダメージの処理
+
+        if (nowMutekiTime > 0f)
+            return;
+
+        Debug.Log("Player damaged");
+
+        nowMutekiTime = mutekiTime;
+    }
+
+    private void DecreaseMutekiTime()
+    {
+        nowMutekiTime -= Time.deltaTime;
     }
 
 }

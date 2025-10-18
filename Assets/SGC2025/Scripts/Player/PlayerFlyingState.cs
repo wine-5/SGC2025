@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-public class PlayerGroundedState : EntityState
+public class PlayerFlyingState : EntityState
 {
-    public PlayerGroundedState(Player player, StateMachine stateMachine, string animBoolName) : base(player, stateMachine, animBoolName)
+    public PlayerFlyingState(Player player, StateMachine stateMachine, string animBoolName) : base(player, stateMachine, animBoolName)
     {
     }
 

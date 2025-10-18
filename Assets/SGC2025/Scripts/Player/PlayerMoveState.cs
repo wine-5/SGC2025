@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMoveState : PlayerGroundedState
+public class PlayerMoveState : PlayerFlyingState
 {
     public PlayerMoveState(Player player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
     {
