@@ -93,16 +93,33 @@ namespace SGC2025.Enemy
 
             if (enemy != null)
             {
-                // 反対側の目標位置を計算
-                Vector3 targetPosition = GetOppositePosition(spawnPosition);
-
-                // 移動コンポーネントに目標位置をセット
+                // 移動コンポーネントを取得/追加
                 var movement = enemy.GetComponent<EnemyMovement>();
                 if (movement == null)
                 {
                     movement = enemy.AddComponent<EnemyMovement>();
                 }
-                movement.SetTargetPosition(targetPosition);
+
+                // 敵の種類を取得
+                var controller = enemy.GetComponent<EnemyController>();
+                if (controller != null && controller.EnemyData != null)
+                {
+                    EnemyType enemyType = controller.EnemyData.EnemyType;
+                    
+                    // 敵の種類に応じて移動戦略を設定
+                    var strategy = MovementStrategyFactory.CreateStrategy(enemyType);
+                    if (strategy != null)
+                    {
+                        // プレイヤー追従型
+                        movement.SetMovementStrategy(strategy);
+                    }
+                    else
+                    {
+                        // 従来の固定位置移動型
+                        Vector3 targetPosition = positionManager.GetOppositeEdgePosition(spawnPosition);
+                        movement.SetTargetPosition(targetPosition);
+                    }
+                }
 
                 // 敵に自動削除コンポーネントを追加
                 var autoReturn = enemy.GetComponent<EnemyAutoReturn>();

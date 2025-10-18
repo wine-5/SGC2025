@@ -11,22 +11,23 @@ namespace SGC2025.Enemy
         Boy,
 
         /// <summary>
-        /// 敵タイプ2（名前未定 - 後で変更予定）
+        /// 直線追従型 - プレイヤーに向かって直線で移動
         /// </summary>
-        Enemy2,
+        LinearChaser,
 
         /// <summary>
-        /// 敵タイプ3（名前未定 - 後で変更予定）
+        /// 慣性追従型 - プレイヤーの方向に徐々に向きを変える
         /// </summary>
-        Enemy3,
-        /// <summary>
-        /// 敵タイプ4（名前未定 - 後で変更予定）
-        /// </summary>
-        Enemy4,
-        /// <summary>
-        /// 敵タイプ5（名前未定 - 後で変更予定）
-        /// </summary>
-        Enemy5,
+        InertiaChaser,
 
+        /// <summary>
+        /// 予測追従型 - プレイヤーの移動先を予測して移動
+        /// </summary>
+        PredictiveChaser,
+
+        /// <summary>
+        /// 円弧追従型 - プレイヤーの周りを円弧状に移動
+        /// </summary>
+        ArcChaser
     }
 }

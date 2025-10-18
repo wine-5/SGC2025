@@ -9,32 +9,41 @@ namespace SGC2025
     public class PlayerManager : Singleton<PlayerManager>
     {
         [Header("プレイヤー設定")]
-        [SerializeField] private Transform playerTransform;
+        [SerializeField] private Player player;
         
         /// <summary>
         /// プレイヤーのTransform
         /// </summary>
-        public static Transform PlayerTransform => I?.playerTransform;
+        public static Transform PlayerTransform => I?.player?.transform;
         
         /// <summary>
         /// プレイヤーの現在位置
         /// </summary>
         public static Vector3 PlayerPosition => PlayerTransform != null ? PlayerTransform.position : Vector3.zero;
         
+        /// <summary>
+        /// プレイヤーの参照
+        /// </summary>
+        public static Player PlayerInstance => I?.player;
+        
         protected override void Init()
         {
             base.Init();
             
             // プレイヤーが設定されていない場合、"Player"タグで検索
-            if (playerTransform == null)
+            if (player == null)
             {
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
-                if (player != null)
+                GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+                if (playerObj != null)
                 {
-                    playerTransform = player.transform;
-                    Debug.Log("PlayerManager: Playerタグからプレイヤーを自動検出しました");
+                    player = playerObj.GetComponent<Player>();
+                    if (player != null)
+                    {
+                        Debug.Log("PlayerManager: Playerタグからプレイヤーを自動検出しました");
+                    }
                 }
-                else
+                
+                if (player == null)
                 {
                     Debug.LogWarning("PlayerManager: プレイヤーが見つかりません。Inspectorで設定するか、Playerタグをつけてください");
                 }
@@ -42,14 +51,14 @@ namespace SGC2025
         }
         
         /// <summary>
-        /// プレイヤーのTransformを手動で設定
+        /// プレイヤーを手動で設定
         /// </summary>
-        /// <param name="player">プレイヤーのTransform</param>
-        public static void SetPlayer(Transform player)
+        /// <param name="playerInstance">プレイヤーのインスタンス</param>
+        public static void SetPlayer(Player playerInstance)
         {
             if (I != null)
             {
-                I.playerTransform = player;
+                I.player = playerInstance;
             }
         }
         

@@ -12,17 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0fa0a95460862c43a77c37375e18e88, type: 3}
   m_Name: EnemyBoy
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemyDataSO
-  enemyType: 0
-  enemyName: Boy
-  enemyPrefab: {fileID: 0}
+  enemyType: 1
   health: 100
   moveSpeed: 3
   attackPower: 10
-  detectionRange: 5
-  attackRange: 1.5
-  spawnWeight: 10
-  minWaveLevel: 1
-  maxSpawnCount: 5
-  healthScaling: 1.2
-  speedScaling: 1.1
-  attackScaling: 1.15

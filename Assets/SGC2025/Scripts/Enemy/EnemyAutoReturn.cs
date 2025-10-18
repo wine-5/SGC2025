@@ -75,7 +75,7 @@ namespace SGC2025.Enemy
         {
             if (SGC2025.EnemyFactory.I != null)
             {
-                SGC2025.EnemyFactory.I.ReturnEnemy(gameObject);
+                EnemyFactory.I.ReturnEnemy(gameObject);
             }
             else
             {

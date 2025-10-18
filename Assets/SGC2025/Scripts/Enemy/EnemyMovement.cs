@@ -1,17 +1,20 @@
 using UnityEngine;
 using SGC2025.Enemy;
+using SGC2025.Enemy.Interface;
 
 namespace SGC2025.Enemy
 {
     /// <summary>
-    /// 敵の基本移動を管理するコンポーネント
+    /// 敵の移動を管理するコンポーネント
+    /// 移動戦略パターンを使用して異なる移動タイプを実現
     /// </summary>
     public class EnemyMovement : MonoBehaviour
     {
         private EnemyController controller;
+        private IMovementStrategy movementStrategy;
         private Vector3 moveDirection = Vector3.down; // デフォルトは下向き
         private Vector3? targetPosition = null;
-        private float arriveThreshold = 0.2f;
+        private float arriveThreshold = 0.05f;
 
         private void Awake()
         {
@@ -19,7 +22,16 @@ namespace SGC2025.Enemy
         }
         
         /// <summary>
-        /// 目標位置をセット
+        /// 移動戦略を設定
+        /// </summary>
+        /// <param name="strategy">移動戦略</param>
+        public void SetMovementStrategy(IMovementStrategy strategy)
+        {
+            movementStrategy = strategy;
+        }
+        
+        /// <summary>
+        /// 目標位置をセット（固定位置移動用）
         /// </summary>
         public void SetTargetPosition(Vector3 target)
         {
@@ -32,29 +44,43 @@ namespace SGC2025.Enemy
         {
             if (controller == null || !controller.IsAlive) return;
             
+            float speed = controller.MoveSpeed;
+            
+            // 固定目標位置がある場合（画面端への移動）
             if (targetPosition.HasValue)
             {
-                float speed = controller.MoveSpeed;
-                transform.position += moveDirection * speed * Time.deltaTime;
-
-                // 目標位置に到達したらPoolに返却
-                if (Vector3.Distance(transform.position, targetPosition.Value) < arriveThreshold)
-                {
-                    if (SGC2025.EnemyFactory.I != null)
-                    {
-                        SGC2025.EnemyFactory.I.ReturnEnemy(gameObject);
-                    }
-                    else
-                    {
-                        gameObject.SetActive(false);
-                    }
-                }
+                MoveToFixedTarget(speed);
             }
+            // 移動戦略がある場合（プレイヤー追従）
+            else if (movementStrategy != null && SGC2025.PlayerManager.IsPlayerSet())
+            {
+                movementStrategy.Move(transform, SGC2025.PlayerManager.PlayerTransform, speed, Time.deltaTime);
+            }
+            // どちらもない場合はデフォルト移動（下向き）
             else
             {
-                // 目標位置未設定時は従来通り下方向に移動
-                float speed = controller.MoveSpeed;
                 transform.Translate(moveDirection * speed * Time.deltaTime);
+            }
+        }
+        
+        /// <summary>
+        /// 固定目標位置への移動処理
+        /// </summary>
+        private void MoveToFixedTarget(float speed)
+        {
+            transform.position += moveDirection * speed * Time.deltaTime;
+
+            // 目標位置に到達したらPoolに返却
+            if (Vector3.Distance(transform.position, targetPosition.Value) < arriveThreshold)
+            {
+                if (SGC2025.EnemyFactory.I != null)
+                {
+                    SGC2025.EnemyFactory.I.ReturnEnemy(gameObject);
+                }
+                else
+                {
+                    gameObject.SetActive(false);
+                }
             }
         }
     }
