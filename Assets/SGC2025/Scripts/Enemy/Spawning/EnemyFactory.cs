@@ -17,11 +17,6 @@ namespace SGC2025
         [Header("敵選択設定")]
         [SerializeField] private EnemySpawnConfigManager spawnConfigManager = new EnemySpawnConfigManager();
         
-        private const int DEFAULT_INITIAL_POOL_SIZE = 10;
-        
-        [Header("初期プール設定")]
-        [SerializeField] private int initialPoolSize = DEFAULT_INITIAL_POOL_SIZE;
-        
         protected override void Init()
         {
             base.Init();

@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5caa489380e748b40b695c5faadb738c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemyController
-  enemyData: {fileID: 0}
+  enemyData: {fileID: 11400000, guid: d5df2104c4d39c84eb5570d9c99e9e5e, type: 2}
   currentHealth: 0
   currentWaveLevel: 1
 --- !u!114 &-4669731216849846409
@@ -154,6 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73815b9e06d6d744f8ffdda7edbe1460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemyAutoReturn
-  lifeTime: 30
-  returnBoundaryX: 15
-  returnBoundaryY: 15
+  fixedDirectionLifeTime: 30
+  playerChaserLifeTime: 20
+  useCustomLifeTime: 0
+  customLifeTime: 15
+  remainingTime: 0

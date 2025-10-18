@@ -147,28 +147,74 @@ namespace SGC2025.Enemy
             if (topSpawnPoint != null && Mathf.Abs(spawnPos.y - topSpawnPoint.position.y) < cachedRangeY * RANGE_DETECT_RATIO)
             {
                 // 上端→下端
-                return new Vector3(spawnPos.x, bottomSpawnPoint.position.y, spawnPos.z);
+                Vector3 target = new Vector3(spawnPos.x, bottomSpawnPoint.position.y, spawnPos.z);
+
+                return target;
             }
             // 下端判定
             if (bottomSpawnPoint != null && Mathf.Abs(spawnPos.y - bottomSpawnPoint.position.y) < cachedRangeY * RANGE_DETECT_RATIO)
             {
                 // 下端→上端
-                return new Vector3(spawnPos.x, topSpawnPoint.position.y, spawnPos.z);
+                Vector3 target = new Vector3(spawnPos.x, topSpawnPoint.position.y, spawnPos.z);
+
+                return target;
             }
             // 左端判定
             if (leftSpawnPoint != null && Mathf.Abs(spawnPos.x - leftSpawnPoint.position.x) < cachedRangeX * RANGE_DETECT_RATIO)
             {
                 // 左端→右端
-                return new Vector3(rightSpawnPoint.position.x, spawnPos.y, spawnPos.z);
+                Vector3 target = new Vector3(rightSpawnPoint.position.x, spawnPos.y, spawnPos.z);
+
+                return target;
             }
             // 右端判定
             if (rightSpawnPoint != null && Mathf.Abs(spawnPos.x - rightSpawnPoint.position.x) < cachedRangeX * RANGE_DETECT_RATIO)
             {
                 // 右端→左端
+                Vector3 target = new Vector3(leftSpawnPoint.position.x, spawnPos.y, spawnPos.z);
+
+                return target;
+            }
+            
+            // どれにも該当しない場合はフォールバック処理
+            // 最も近いエッジを探して、その反対側を返す
+            Vector3 fallbackTarget = GetFallbackOppositePosition(spawnPos);
+            return fallbackTarget;
+        }
+        
+        /// <summary>
+        /// フォールバック用の反対側位置計算
+        /// </summary>
+        private Vector3 GetFallbackOppositePosition(Vector3 spawnPos)
+        {
+            // 各端との距離を計算
+            float distToTop = topSpawnPoint != null ? Mathf.Abs(spawnPos.y - topSpawnPoint.position.y) : float.MaxValue;
+            float distToBottom = bottomSpawnPoint != null ? Mathf.Abs(spawnPos.y - bottomSpawnPoint.position.y) : float.MaxValue;
+            float distToLeft = leftSpawnPoint != null ? Mathf.Abs(spawnPos.x - leftSpawnPoint.position.x) : float.MaxValue;
+            float distToRight = rightSpawnPoint != null ? Mathf.Abs(spawnPos.x - rightSpawnPoint.position.x) : float.MaxValue;
+            
+            // 最も近い端を特定
+            float minDistance = Mathf.Min(distToTop, distToBottom, distToLeft, distToRight);
+            
+            if (minDistance == distToTop && topSpawnPoint != null && bottomSpawnPoint != null)
+            {
+                return new Vector3(spawnPos.x, bottomSpawnPoint.position.y, spawnPos.z);
+            }
+            else if (minDistance == distToBottom && bottomSpawnPoint != null && topSpawnPoint != null)
+            {
+                return new Vector3(spawnPos.x, topSpawnPoint.position.y, spawnPos.z);
+            }
+            else if (minDistance == distToLeft && leftSpawnPoint != null && rightSpawnPoint != null)
+            {
+                return new Vector3(rightSpawnPoint.position.x, spawnPos.y, spawnPos.z);
+            }
+            else if (minDistance == distToRight && rightSpawnPoint != null && leftSpawnPoint != null)
+            {
                 return new Vector3(leftSpawnPoint.position.x, spawnPos.y, spawnPos.z);
             }
-            // どれにも該当しない場合は中心に向かう
-            return Vector3.zero;
+            
+            // 最終フォールバック: 画面外の遠い位置
+            return new Vector3(spawnPos.x * -2f, spawnPos.y * -2f, spawnPos.z);
         }
     }
 }

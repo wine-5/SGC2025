@@ -28,6 +28,7 @@ namespace SGC2025.Enemy
         public float MoveSpeed => currentParameters.moveSpeed;
         public float AttackPower => currentParameters.attackPower;
         public EnemyType EnemyType => currentParameters.enemyType;
+        public float LifeTime => currentParameters.lifeTime;
         
         /// <summary>
         /// EnemyDataSOとウェーブレベルを設定して初期化

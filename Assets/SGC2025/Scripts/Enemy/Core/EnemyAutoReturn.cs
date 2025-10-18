@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025;
 
 namespace SGC2025.Enemy
 {
@@ -8,13 +9,17 @@ namespace SGC2025.Enemy
     /// </summary>
     public class EnemyAutoReturn : MonoBehaviour
     {
-        private const float DEFAULT_LIFE_TIME = 30f;
-        private const float CHASER_LIFE_TIME = 20f;  // プレイヤー追従型の生存時間
-        
         [Header("自動削除設定")]
-        [SerializeField] private float lifeTime = DEFAULT_LIFE_TIME;
+        [SerializeField] private float fixedDirectionLifeTime = 30f;    // 固定方向移動の生存時間
+        [SerializeField] private float playerChaserLifeTime = 20f;      // プレイヤー追従型の生存時間
+        [SerializeField] private bool useCustomLifeTime = false;        // カスタム時間を使用するか
+        [SerializeField] private float customLifeTime = 15f;            // カスタム生存時間
         
-        private float spawnTime;
+        [Header("デバッグ情報")]
+        [SerializeField] private float remainingTime = 0f;              // 残り時間（読み取り専用）
+        
+        private float currentLifeTime;
+        private float elapsedTime;
         private bool isInitialized = false;
         
         /// <summary>
@@ -22,11 +27,13 @@ namespace SGC2025.Enemy
         /// </summary>
         public void Initialize()
         {
-            spawnTime = Time.time;
+            elapsedTime = 0f;
             isInitialized = true;
             
-            // 敵の種類に応じて生存時間を調整
+            // 敵の種類に応じて生存時間を設定
             SetLifeTimeBasedOnEnemyType();
+            
+
         }
         
         /// <summary>
@@ -34,19 +41,39 @@ namespace SGC2025.Enemy
         /// </summary>
         private void SetLifeTimeBasedOnEnemyType()
         {
+            // カスタム時間を使用する場合
+            if (useCustomLifeTime)
+            {
+                currentLifeTime = customLifeTime;
+                return;
+            }
+            
             var controller = GetComponent<EnemyController>();
             if (controller != null && controller.EnemyData != null)
             {
-                MovementType movementType = controller.EnemyData.MovementType;
-                
-                // プレイヤー追従型の敵は短い生存時間
-                if (IsPlayerChaserType(movementType))
+                // 各敵タイプ固有の生存時間を使用（推奨）
+                currentLifeTime = controller.LifeTime;
+            }
+            else
+            {
+                // フォールバック：移動タイプベースの時間設定
+                if (controller != null && controller.EnemyData != null)
                 {
-                    lifeTime = CHASER_LIFE_TIME;
+                    MovementType movementType = controller.EnemyData.MovementType;
+                    
+                    if (IsPlayerChaserType(movementType))
+                    {
+                        currentLifeTime = playerChaserLifeTime;
+                    }
+                    else
+                    {
+                        currentLifeTime = fixedDirectionLifeTime;
+                    }
                 }
                 else
                 {
-                    lifeTime = DEFAULT_LIFE_TIME;
+                    // 最終フォールバック
+                    currentLifeTime = fixedDirectionLifeTime;
                 }
             }
         }
@@ -66,6 +93,14 @@ namespace SGC2025.Enemy
         {
             if (!isInitialized) return;
             
+            // DeltaTimeで経過時間を累積
+            elapsedTime += Time.deltaTime;
+            
+            // デバッグ用の残り時間を更新
+            remainingTime = Mathf.Max(0f, currentLifeTime - elapsedTime);
+            
+
+            
             if (ShouldReturnToPool())
             {
                 ReturnToPool();
@@ -77,7 +112,7 @@ namespace SGC2025.Enemy
         /// </summary>
         private bool ShouldReturnToPool()
         {
-            // 時間経過のみで判定（境界チェックは削除）
+            // 時間経過のみで判定
             return HasLifeTimeExpired();
         }
         
@@ -86,7 +121,7 @@ namespace SGC2025.Enemy
         /// </summary>
         private bool HasLifeTimeExpired()
         {
-            return Time.time - spawnTime >= lifeTime;
+            return elapsedTime >= currentLifeTime;
         }
 
         /// <summary>
@@ -94,7 +129,9 @@ namespace SGC2025.Enemy
         /// </summary>
         private void ReturnToPool()
         {
-            if (SGC2025.EnemyFactory.I != null)
+
+            
+            if (EnemyFactory.I != null)
             {
                 EnemyFactory.I.ReturnEnemy(gameObject);
             }
@@ -109,10 +146,32 @@ namespace SGC2025.Enemy
         /// </summary>
         private void OnEnable()
         {
+            // プールから再取得された場合は再初期化
             if (isInitialized)
             {
                 Initialize();
             }
+        }
+        
+        /// <summary>
+        /// 手動でライフタイムをリセット
+        /// </summary>
+        public void ResetLifeTime()
+        {
+            elapsedTime = 0f;
+            remainingTime = currentLifeTime;
+        }
+        
+        /// <summary>
+        /// カスタムライフタイムを設定
+        /// </summary>
+        public void SetCustomLifeTime(float customTime)
+        {
+            useCustomLifeTime = true;
+            customLifeTime = customTime;
+            currentLifeTime = customTime;
+            elapsedTime = 0f;
+            remainingTime = currentLifeTime;
         }
     }
 }

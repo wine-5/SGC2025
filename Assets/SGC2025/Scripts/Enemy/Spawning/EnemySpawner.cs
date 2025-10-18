@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 using SGC2025.Enemy;
 
 namespace SGC2025.Enemy
@@ -24,7 +23,7 @@ namespace SGC2025.Enemy
         [SerializeField] private int currentWaveLevel = DEFAULT_WAVE_LEVEL;
 
         private bool isSpawning = false;
-        private Coroutine spawnCoroutine;
+        private float nextSpawnTime = 0f;
 
         private void Start()
         {
@@ -51,7 +50,7 @@ namespace SGC2025.Enemy
             if (isSpawning) return;
 
             isSpawning = true;
-            spawnCoroutine = StartCoroutine(SpawnCoroutine());
+            nextSpawnTime = Time.time + spawnInterval;
         }
 
         /// <summary>
@@ -59,27 +58,18 @@ namespace SGC2025.Enemy
         /// </summary>
         public void StopSpawning()
         {
-            if (!isSpawning) return;
-
             isSpawning = false;
-            if (spawnCoroutine != null)
-            {
-                StopCoroutine(spawnCoroutine);
-                spawnCoroutine = null;
-            }
         }
 
-
-
-        /// <summary>
-        /// 敵生成のコルーチン
-        /// </summary>
-        private IEnumerator SpawnCoroutine()
+        private void Update()
         {
-            while (isSpawning)
+            if (!isSpawning) return;
+
+            // DeltaTimeベースのスポーン判定
+            if (Time.time >= nextSpawnTime)
             {
                 SpawnEnemy();
-                yield return new WaitForSeconds(spawnInterval);
+                nextSpawnTime = Time.time + spawnInterval;
             }
         }
 
@@ -105,17 +95,12 @@ namespace SGC2025.Enemy
 
             if (enemy != null)
             {
-                // 移動コンポーネントをチェック
+                // 移動コンポーネントを取得
                 var movement = enemy.GetComponent<EnemyMovement>();
-                if (movement == null)
-                {
-                    Debug.LogError($"EnemySpawner: {enemy.name} に EnemyMovement コンポーネントがアタッチされていません！");
-                    return;
-                }
 
-                // 敵の種類を取得
+                // 敵の種類を取得（手動アタッチ前提）
                 var controller = enemy.GetComponent<EnemyController>();
-                if (controller != null && controller.EnemyData != null)
+                if (controller != null && controller.EnemyData != null && movement != null)
                 {
                     MovementType movementType = controller.EnemyData.MovementType;
                     
@@ -131,33 +116,18 @@ namespace SGC2025.Enemy
                         // 固定方向移動型
                         Vector3 targetPosition = positionManager.GetOppositeEdgePosition(spawnPosition);
                         movement.SetTargetPosition(targetPosition);
+                        
+
                     }
                 }
-                else
-                {
-                    Debug.LogError($"EnemySpawner: {enemy.name} の EnemyController または EnemyData が設定されていません！");
-                }
 
-                // 自動削除コンポーネントをチェック
+                // 自動削除コンポーネントの初期化
                 var autoReturn = enemy.GetComponent<EnemyAutoReturn>();
-                if (autoReturn == null)
+                if (autoReturn != null)
                 {
-                    Debug.LogError($"EnemySpawner: {enemy.name} に EnemyAutoReturn コンポーネントがアタッチされていません！");
-                    return;
+                    autoReturn.Initialize();
                 }
-                autoReturn.Initialize();
             }
         }
-
-        /// <summary>
-        /// 生成位置の反対側の座標を計算（中心対称）
-        /// </summary>
-        private Vector3 GetOppositePosition(Vector3 spawnPos)
-        {
-            // 画面の中心を原点(0,0,0)と仮定
-            return -spawnPos;
-        }
-
-
     }
 }

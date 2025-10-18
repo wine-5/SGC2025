@@ -23,10 +23,14 @@ namespace SGC2025.Enemy
         [SerializeField] private float moveSpeed = DEFAULT_MOVE_SPEED;
         [SerializeField] private float attackPower = DEFAULT_ATTACK_POWER;
         
+        [Header("生存時間設定")]
+        [SerializeField] private float lifeTime = 30f;  // この敵タイプの生存時間
+        
         
         // 基本プロパティ
         public EnemyType EnemyType => enemyType;
         public MovementType MovementType => movementType;
+        public float LifeTime => lifeTime;
         
         /// <summary>
         /// ウェーブレベルに応じてスケーリングされたパラメーターを取得
@@ -38,7 +42,8 @@ namespace SGC2025.Enemy
                 enemyType = this.enemyType,
                 health = this.health,
                 moveSpeed = this.moveSpeed,
-                attackPower = this.attackPower
+                attackPower = this.attackPower,
+                lifeTime = this.lifeTime
             };
         }
         
@@ -61,5 +66,6 @@ namespace SGC2025.Enemy
         public float health;
         public float moveSpeed;
         public float attackPower;
+        public float lifeTime;
     }
 }
