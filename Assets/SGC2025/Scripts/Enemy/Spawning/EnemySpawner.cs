@@ -17,9 +17,6 @@ namespace SGC2025.Enemy
         [SerializeField] private float spawnInterval = DEFAULT_SPAWN_INTERVAL;
         [SerializeField] private bool autoStart = true;
 
-        [Header("敵生成設定")]
-        [SerializeField] private EnemySpawnConfigSO spawnConfig;
-
         [Header("生成位置管理")]
         [SerializeField] private EnemySpawnPositionManager positionManager = new EnemySpawnPositionManager();
 
@@ -108,11 +105,12 @@ namespace SGC2025.Enemy
 
             if (enemy != null)
             {
-                // 移動コンポーネントを取得/追加
+                // 移動コンポーネントをチェック
                 var movement = enemy.GetComponent<EnemyMovement>();
                 if (movement == null)
                 {
-                    movement = enemy.AddComponent<EnemyMovement>();
+                    Debug.LogError($"EnemySpawner: {enemy.name} に EnemyMovement コンポーネントがアタッチされていません！");
+                    return;
                 }
 
                 // 敵の種類を取得
@@ -135,12 +133,17 @@ namespace SGC2025.Enemy
                         movement.SetTargetPosition(targetPosition);
                     }
                 }
+                else
+                {
+                    Debug.LogError($"EnemySpawner: {enemy.name} の EnemyController または EnemyData が設定されていません！");
+                }
 
-                // 敵に自動削除コンポーネントを追加
+                // 自動削除コンポーネントをチェック
                 var autoReturn = enemy.GetComponent<EnemyAutoReturn>();
                 if (autoReturn == null)
                 {
-                    autoReturn = enemy.AddComponent<EnemyAutoReturn>();
+                    Debug.LogError($"EnemySpawner: {enemy.name} に EnemyAutoReturn コンポーネントがアタッチされていません！");
+                    return;
                 }
                 autoReturn.Initialize();
             }

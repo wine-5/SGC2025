@@ -10,12 +10,9 @@ namespace SGC2025.Enemy
     {
         private const float DEFAULT_LIFE_TIME = 30f;
         private const float CHASER_LIFE_TIME = 20f;  // プレイヤー追従型の生存時間
-        private const float DEFAULT_RETURN_BOUNDARY = 15f;
         
         [Header("自動削除設定")]
         [SerializeField] private float lifeTime = DEFAULT_LIFE_TIME;
-        [SerializeField] private float returnBoundaryX = DEFAULT_RETURN_BOUNDARY;
-        [SerializeField] private float returnBoundaryY = DEFAULT_RETURN_BOUNDARY;
         
         private float spawnTime;
         private bool isInitialized = false;
@@ -80,17 +77,8 @@ namespace SGC2025.Enemy
         /// </summary>
         private bool ShouldReturnToPool()
         {
-            bool timeExpired = HasLifeTimeExpired();
-            
-            // プレイヤー追従型の敵は境界チェックをスキップ
-            var controller = GetComponent<EnemyController>();
-            if (controller != null && controller.EnemyData != null &&
-                IsPlayerChaserType(controller.EnemyData.MovementType))
-            {
-                return timeExpired; // 時間経過のみで判定
-            }
-            
-            return timeExpired || IsOutOfBounds();
+            // 時間経過のみで判定（境界チェックは削除）
+            return HasLifeTimeExpired();
         }
         
         /// <summary>
@@ -100,21 +88,7 @@ namespace SGC2025.Enemy
         {
             return Time.time - spawnTime >= lifeTime;
         }
-        
-        /// <summary>
-        /// 境界外にいるかチェック（四方向対応）
-        /// </summary>
-        private bool IsOutOfBounds()
-        {
-            Vector3 pos = transform.position;
-            
-            // 画面の四方向の境界をチェック
-            return pos.y <= -returnBoundaryY ||    // 下
-                   pos.y >= returnBoundaryY ||     // 上  
-                   pos.x <= -returnBoundaryX ||    // 左
-                   pos.x >= returnBoundaryX;       // 右
-        }
-        
+
         /// <summary>
         /// プールに返却
         /// </summary>
