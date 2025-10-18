@@ -47,7 +47,7 @@ namespace SGC2025
 
         public void Start()
         {
-            LoadStage(　SceneManager.GetActiveScene().name　);
+            LoadStage( SceneManager.GetActiveScene().name );
             grassMaterial = Resources.Load<Material>("Materials/grass");
             if (!grassMaterial)
             {
