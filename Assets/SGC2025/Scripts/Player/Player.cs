@@ -31,6 +31,12 @@ public class Player : MonoBehaviour
     public Vector2 moveInput {  get; private set; }
 
 
+    [Space]
+    [Header("移動制限")]
+    [SerializeField] public Vector2 positionLimitHigh;
+    [SerializeField] public Vector2 positionLimitLow;
+
+
 
 
 
@@ -71,6 +77,8 @@ public class Player : MonoBehaviour
         stateMachine.UpdateActiveState();
 
         DecreaseMutekiTime();
+
+        
     }
 
 
@@ -92,6 +100,17 @@ public class Player : MonoBehaviour
     }
 
 
+    //private void PositionLimit()
+    //{
+
+    //}
+
+    private void DecreaseMutekiTime()
+    {
+        nowMutekiTime -= Time.deltaTime;
+    }
+
+
     public void Damage()
     {
         //ダメージの処理
@@ -99,14 +118,23 @@ public class Player : MonoBehaviour
         if (nowMutekiTime > 0f)
             return;
 
+        //ダメージ判定を追加
         Debug.Log("Player damaged");
+
+
 
         nowMutekiTime = mutekiTime;
     }
 
-    private void DecreaseMutekiTime()
+
+    private void PlayerActive()
     {
-        nowMutekiTime -= Time.deltaTime;
+        gameObject.SetActive(true);
+    }
+
+    private void PlayerInactive()
+    {
+        gameObject.SetActive(false);
     }
 
 }
