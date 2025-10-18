@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Player.Bullet.BulletDataSO
   bulletName: "\u57FA\u672C\u5F3E"
   moveSpeed: 10
-  damage: 1
+  damage: 100
   lifeTime: 5
   bulletSprite: {fileID: 0}
-  bulletColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  bulletSize: 0.1
+  bulletSize: 2

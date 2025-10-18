@@ -14,6 +14,9 @@ namespace SGC2025.Player.Bullet
         [SerializeField] private BulletDataSO bulletData;
         [SerializeField] private Transform firePoint; // 弾の発射位置
         
+        [Header("デバッグ設定")]
+        [SerializeField] private bool debugManualFiring = false; // デバッグ用：手動発射モード
+        
         [Header("デバッグ情報")]
         [SerializeField] private int currentLevel = 1;
         [SerializeField] private int enemiesKilled = 0;
@@ -47,7 +50,12 @@ namespace SGC2025.Player.Bullet
         private void Start()
         {
             InitializeWeapon();
-            StartAutoFire();
+            
+            // デバッグフラグをチェックして自動発射を決定
+            if (!debugManualFiring)
+            {
+                StartAutoFire();
+            }
         }
         
         private void OnEnable()
@@ -113,8 +121,8 @@ namespace SGC2025.Player.Bullet
             
             Debug.Log($"武器レベルアップ! レベル: {currentLevel}, 方向数: {currentBulletDirections}, 発射間隔: {currentFireInterval}秒");
             
-            // 自動発射の再開（間隔が変わった場合）
-            if (isAutoFiring)
+            // 自動発射の再開（間隔が変わった場合）- デバッグフラグもチェック
+            if (isAutoFiring && !debugManualFiring)
             {
                 StopAutoFire();
                 StartAutoFire();
@@ -159,15 +167,11 @@ namespace SGC2025.Player.Bullet
         
         public void Fire()
         {
-            Debug.Log("[PlayerWeaponSystem] Fire() 呼び出し");
-            
             if (BulletFactory.I == null)
             {
                 Debug.LogError("PlayerWeaponSystem: BulletFactoryが見つかりません");
                 return;
             }
-            
-            Debug.Log($"[PlayerWeaponSystem] BulletFactory見つかりました: {BulletFactory.I}");
             
             if (firePoint == null)
             {
@@ -175,16 +179,12 @@ namespace SGC2025.Player.Bullet
                 return;
             }
             
-            Debug.Log($"[PlayerWeaponSystem] 発射位置: {firePoint.position}, 方向数: {currentBulletDirections}");
-            
             // 円状に弾を発射
             BulletFactory.I.CreateCircularBullets(
                 firePoint.position,
                 currentBulletDirections,
                 bulletData
             );
-            
-            Debug.Log("[PlayerWeaponSystem] CreateCircularBullets 呼び出し完了");
         }
         
         /// <summary>
@@ -214,6 +214,36 @@ namespace SGC2025.Player.Bullet
         public void AddEnemyKill()
         {
             OnEnemyDestroyed();
+        }
+        
+        /// <summary>
+        /// デバッグ用：手動発射モードの切り替え
+        /// </summary>
+        [ContextMenu("Toggle Manual Firing")]
+        public void ToggleManualFiring()
+        {
+            SetManualFiring(!debugManualFiring);
+        }
+        
+        /// <summary>
+        /// デバッグ用：手動発射モードの設定
+        /// </summary>
+        public void SetManualFiring(bool manualMode)
+        {
+            debugManualFiring = manualMode;
+            
+            if (debugManualFiring)
+            {
+                // 手動モードに切り替え：自動発射を停止
+                StopAutoFire();
+                Debug.Log("デバッグ：手動発射モードに切り替えました（スペースキーで発射）");
+            }
+            else
+            {
+                // 自動モードに切り替え：自動発射を開始
+                StartAutoFire();
+                Debug.Log("デバッグ：自動発射モードに切り替えました");
+            }
         }
     }
 }

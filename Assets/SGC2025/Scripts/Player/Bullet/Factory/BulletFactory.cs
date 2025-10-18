@@ -36,8 +36,6 @@ namespace SGC2025.Player.Bullet
         
         public BulletController CreateBullet(Vector3 position, Vector3 direction, BulletDataSO bulletData = null)
         {
-            Debug.Log($"[BulletFactory] CreateBullet呼び出し - 位置: {position}, 方向: {direction}");
-            
             if (objectPool == null)
             {
                 Debug.LogError("BulletFactory: ObjectPoolが設定されていません");
@@ -52,8 +50,6 @@ namespace SGC2025.Player.Bullet
                 return null;
             }
             
-            Debug.Log($"[BulletFactory] 使用データ: {dataToUse.BulletName}");
-            
             // ObjectPoolから弾を取得
             GameObject bulletObj = objectPool.GetObjectByName(bulletPoolName);
             if (bulletObj == null)
@@ -61,8 +57,6 @@ namespace SGC2025.Player.Bullet
                 Debug.LogError($"BulletFactory: ObjectPoolから弾を取得できませんでした。PoolName: {bulletPoolName}");
                 return null;
             }
-            
-            Debug.Log($"[BulletFactory] プールから弾取得: {bulletObj.name}");
             
             // 位置と回転を設定
             bulletObj.transform.position = position;
@@ -77,25 +71,38 @@ namespace SGC2025.Player.Bullet
                 return null;
             }
             
-            Debug.Log($"[BulletFactory] BulletController取得: {bulletController}");
-            
             // 弾を初期化
             bulletController.Initialize(dataToUse, direction);
             
-            Debug.Log($"[BulletFactory] 弾初期化完了");
             return bulletController;
         }
         
+        /// <summary>
+        /// 弾をObjectPoolに返却
+        /// </summary>
         public void ReturnBullet(GameObject bullet)
         {
-            if (objectPool == null || bullet == null) return;
+            Debug.Log($"[BulletFactory] ReturnBullet開始: {bullet?.name}");
+            
+            if (objectPool == null || bullet == null) 
+            {
+                Debug.LogWarning($"[BulletFactory] 返却失敗: objectPool={objectPool}, bullet={bullet}");
+                return;
+            }
             
             // BulletControllerがあればリセット
             BulletController bulletController = bullet.GetComponent<BulletController>();
-            bulletController?.ResetBullet();
+            if (bulletController != null)
+            {
+                Debug.Log($"[BulletFactory] BulletControllerリセット");
+                bulletController.ResetBullet();
+            }
             
-            // ObjectPoolに返却
+            // オブジェクトを無効化してからObjectPoolに返却
+            bullet.SetActive(false);
+            Debug.Log($"[BulletFactory] ObjectPoolに返却: {bullet.name}");
             objectPool.ReturnObject(bullet);
+            Debug.Log($"[BulletFactory] 返却完了");
         }
         
         /// <summary>
@@ -103,8 +110,6 @@ namespace SGC2025.Player.Bullet
         /// </summary>
         public void CreateCircularBullets(Vector3 position, int directionCount, BulletDataSO bulletData = null)
         {
-            Debug.Log($"[BulletFactory] CreateCircularBullets呼び出し - 位置: {position}, 方向数: {directionCount}");
-            
             if (directionCount <= 0) 
             {
                 Debug.LogWarning($"[BulletFactory] 無効な方向数: {directionCount}");
@@ -112,25 +117,21 @@ namespace SGC2025.Player.Bullet
             }
             
             float angleStep = 360f / directionCount;
-            Debug.Log($"[BulletFactory] 角度ステップ: {angleStep}度");
             
             for (int i = 0; i < directionCount; i++)
             {
                 float angle = angleStep * i;
                 float radians = angle * Mathf.Deg2Rad;
                 
-                // XZ平面での方向ベクトルを計算
+                // XY平面での方向ベクトルを計算（2D用）
                 Vector3 direction = new Vector3(
                     Mathf.Cos(radians),
-                    0f,
-                    Mathf.Sin(radians)
+                    Mathf.Sin(radians),
+                    0f
                 );
                 
-                Debug.Log($"[BulletFactory] 弾{i}: 角度{angle}度, 方向{direction}");
                 CreateBullet(position, direction, bulletData);
             }
-            
-            Debug.Log($"[BulletFactory] {directionCount}個の弾作成完了");
         }
     }
 }
