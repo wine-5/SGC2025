@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 namespace SGC2025
 {
@@ -12,9 +13,10 @@ namespace SGC2025
         private TextMeshProUGUI enemyScoreText;
         [SerializeField]
         private TextMeshProUGUI greeningScoreText;
-
         [SerializeField]
         private TextMeshProUGUI totalScoreText;
+        [SerializeField]
+        private GameObject[] buttons;
 
         enum ResultPhase
         {
@@ -23,15 +25,18 @@ namespace SGC2025
             EnemyKillScore,
             GreeningScore,
             TotalScore,
+            HighScore,
             End
         }
 
         ResultPhase currentPhase = ResultPhase.Init;
 
-
         override public void Start()
         {
             base.Start();
+
+            CreateMenu("UI/RankingCanvas");
+
         }
 
         override public void Update()
@@ -53,6 +58,7 @@ namespace SGC2025
 
         private void OnPhaseChanged()
         {
+            Debug.Log(currentPhase);
             switch (currentPhase)
             {
                 case ResultPhase.Init:
@@ -85,9 +91,23 @@ namespace SGC2025
                         break;
                     }
 
+                case ResultPhase.HighScore:
+                    {
+                        // ハイスコア更新
+                        if (RankingManager.I.IsNewRecord(0))
+                        {
+                            CreateMenu("UI/InputFieldCanvas");
+                        }
+                        break;
+                    }
+
                 case ResultPhase.End:
                     {
                         // リザルト終了処理
+                        foreach (GameObject button in buttons)
+                        {
+                            button.SetActive(true);
+                        }
                         break;
                     }
 
@@ -130,6 +150,11 @@ namespace SGC2025
                         ScoreCountUp(waitTime, greeningScore, SCORE_COUNT_UP_TIME);
                         break;
                     }
+                case ResultPhase.HighScore:
+                    {
+                        waitTime = 0.0f;
+                        break;
+                    }
 
                 case ResultPhase.TotalScore:
                     {
@@ -153,6 +178,25 @@ namespace SGC2025
 
         }
 
+        override protected void DestoryChild(UIBase uIBase)
+        {
+            if (uIBase.gameObject.name.Equals("InputFieldCanvas"))
+            {
+                currentPhase = ResultPhase.End; // NextPhaseとかつくるべき
+                waitTime = 0.0f;
+
+                foreach (UIBase child in childrenMenu)
+                {
+                    RankingUI ranking = child as RankingUI;
+                    if (ranking != null)
+                    {
+                        ranking.UpdateScore();
+                        break;
+                    }
+
+                }
+            }
+        }
 
     }
 }

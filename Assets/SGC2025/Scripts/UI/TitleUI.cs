@@ -8,7 +8,7 @@ namespace SGC2025
         {
             base.Start();
 
-            //ランキングプレハブ作成
+            CreateMenu("UI/RankingCanvas");
         }
     }
 }
