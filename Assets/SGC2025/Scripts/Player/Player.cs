@@ -1,7 +1,23 @@
 using UnityEngine;
+using SGC2025;
 
-public class Player : MonoBehaviour
+public class Player : Singleton<Player>
 {
+    // === é™çš„ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å‚ç…§æ©Ÿèƒ½ ===
+    /// <summary>
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Transform
+    /// </summary>
+    public static Transform PlayerTransform => I?.transform;
+    
+    /// <summary>
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨ä½ç½®
+    /// </summary>
+    public static Vector3 PlayerPosition => I != null ? I.transform.position : Vector3.zero;
+    
+    /// <summary>
+    /// DontDestroyOnLoadã‚’ä½¿ç”¨ã—ãªã„ï¼ˆã‚·ãƒ¼ãƒ³ã”ã¨ã«å†ç”Ÿæˆï¼‰
+    /// </summary>
+    protected override bool UseDontDestroyOnLoad => false;
 
     public Animator anim {  get; private set; }
     public Rigidbody rb { get; private set; }
@@ -20,19 +36,19 @@ public class Player : MonoBehaviour
 
 
 
-    [Header("ƒXƒe[ƒ^ƒX")]
+    [Header("ï¿½Xï¿½eï¿½[ï¿½^ï¿½X")]
     //[SerializeField] private int health = 30;
 
     public float moveSpeed;
     [SerializeField] private float mutekiTime;
     private float nowMutekiTime;
 
-    //[Header("ˆÚ“®‘¬“x")]
+    //[Header("ï¿½Ú“ï¿½ï¿½ï¿½ï¿½x")]
     public Vector2 moveInput {  get; private set; }
 
 
     [Space]
-    [Header("ˆÚ“®§ŒÀ")]
+    [Header("ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] public Vector2 positionLimitHigh;
     [SerializeField] public Vector2 positionLimitLow;
 
@@ -40,7 +56,16 @@ public class Player : MonoBehaviour
 
 
 
-    private void Awake()
+    protected override void Awake()
+    {
+        // Singletonã®åŸºæœ¬å‡¦ç†ã‚’å®Ÿè¡Œ
+        base.Awake();
+    }
+    
+    /// <summary>
+    /// Singletonã®åˆæœŸåŒ–å‡¦ç†ã‚’ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
+    /// </summary>
+    protected override void Init()
     {
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
@@ -48,9 +73,11 @@ public class Player : MonoBehaviour
         stateMachine = new StateMachine();
         input = new PlayerInputSet();
 
-        //ƒXƒe[ƒg–¼ = new ƒNƒ‰ƒX–¼(this, stateMachine, "animator‚Åİ’è‚µ‚½bool–¼")
+        //ï¿½Xï¿½eï¿½[ï¿½gï¿½ï¿½ = new ï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½(this, stateMachine, "animatorï¿½Åİ’è‚µï¿½ï¿½boolï¿½ï¿½")
         idleState = new PlayerIdleState(this, stateMachine, "fly");
         moveState = new PlayerMoveState(this, stateMachine, "fly");
+        
+        Debug.Log("Player: ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åˆæœŸåŒ–ãŒå®Œäº†ã—ã¾ã—ãŸ");
     }
 
 
@@ -84,7 +111,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //ƒ_ƒ[ƒW”»’è
+        //ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             Damage();
@@ -113,12 +140,12 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        //ƒ_ƒ[ƒW‚Ìˆ—
+        //ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½Ìï¿½ï¿½ï¿½
 
         if (nowMutekiTime > 0f)
             return;
 
-        //ƒ_ƒ[ƒW”»’è‚ğ’Ç‰Á
+        //ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Ç‰ï¿½
         Debug.Log("Player damaged");
 
 
@@ -136,5 +163,7 @@ public class Player : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+    
+
 
 }
