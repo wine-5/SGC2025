@@ -946,12 +946,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.EnemySpawner
   spawnInterval: 2
   autoStart: 1
-  spawnConfig: {fileID: 0}
+  spawnConfig: {fileID: 11400000, guid: b5d1b2d3070819b43870c33615a82ebd, type: 2}
   positionManager:
-    topSpawnPoint: {fileID: 0}
-    bottomSpawnPoint: {fileID: 0}
-    leftSpawnPoint: {fileID: 0}
-    rightSpawnPoint: {fileID: 0}
+    topSpawnPoint: {fileID: 581252684}
+    bottomSpawnPoint: {fileID: 243744392}
+    leftSpawnPoint: {fileID: 1934311891}
+    rightSpawnPoint: {fileID: 2112003012}
     randomRangeX: 5
     randomRangeY: 5
   currentWaveLevel: 1

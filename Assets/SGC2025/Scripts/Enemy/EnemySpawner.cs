@@ -12,49 +12,50 @@ namespace SGC2025.Enemy
     {
         private const float DEFAULT_SPAWN_INTERVAL = 2f;
         private const int DEFAULT_WAVE_LEVEL = 1;
-        
+
         [Header("生成設定")]
         [SerializeField] private float spawnInterval = DEFAULT_SPAWN_INTERVAL;
         [SerializeField] private bool autoStart = true;
-        
+
         [Header("敵生成設定")]
         [SerializeField] private EnemySpawnConfigSO spawnConfig;
-        
+
         [Header("生成位置管理")]
         [SerializeField] private EnemySpawnPositionManager positionManager = new EnemySpawnPositionManager();
-        
+
         [Header("ウェーブ設定")]
         [SerializeField] private int currentWaveLevel = DEFAULT_WAVE_LEVEL;
-        
+
         private bool isSpawning = false;
         private Coroutine spawnCoroutine;
-        
+
         private void Start()
         {
+            positionManager.InitRangesFromTransforms(); // ← ここで呼び出し
             if (autoStart)
             {
                 StartSpawning();
             }
         }
-        
+
         /// <summary>
         /// 敵の生成を開始
         /// </summary>
         public void StartSpawning()
         {
             if (isSpawning) return;
-            
+
             isSpawning = true;
             spawnCoroutine = StartCoroutine(SpawnCoroutine());
         }
-        
+
         /// <summary>
         /// 敵の生成を停止
         /// </summary>
         public void StopSpawning()
         {
             if (!isSpawning) return;
-            
+
             isSpawning = false;
             if (spawnCoroutine != null)
             {
@@ -62,9 +63,9 @@ namespace SGC2025.Enemy
                 spawnCoroutine = null;
             }
         }
-        
 
-        
+
+
         /// <summary>
         /// 敵生成のコルーチン
         /// </summary>
@@ -76,7 +77,7 @@ namespace SGC2025.Enemy
                 yield return new WaitForSeconds(spawnInterval);
             }
         }
-        
+
         /// <summary>
         /// 敵を1体生成
         /// </summary>
@@ -86,12 +87,23 @@ namespace SGC2025.Enemy
             {
                 return;
             }
-            
-            Vector3 spawnPosition = GetRandomSpawnPosition();
+
+            Vector3 spawnPosition = positionManager.GetRandomEdgeSpawnPosition();
             GameObject enemy = EnemyFactory.I.CreateRandomEnemy(spawnPosition, currentWaveLevel);
-            
+
             if (enemy != null)
             {
+                // 反対側の目標位置を計算
+                Vector3 targetPosition = GetOppositePosition(spawnPosition);
+
+                // 移動コンポーネントに目標位置をセット
+                var movement = enemy.GetComponent<EnemyMovement>();
+                if (movement == null)
+                {
+                    movement = enemy.AddComponent<EnemyMovement>();
+                }
+                movement.SetTargetPosition(targetPosition);
+
                 // 敵に自動削除コンポーネントを追加
                 var autoReturn = enemy.GetComponent<EnemyAutoReturn>();
                 if (autoReturn == null)
@@ -99,24 +111,18 @@ namespace SGC2025.Enemy
                     autoReturn = enemy.AddComponent<EnemyAutoReturn>();
                 }
                 autoReturn.Initialize();
-                
-                // 敵に移動コンポーネントを追加
-                var movement = enemy.GetComponent<EnemyMovement>();
-                if (movement == null)
-                {
-                    movement = enemy.AddComponent<EnemyMovement>();
-                }
             }
         }
-        
+
         /// <summary>
-        /// ランダムな生成位置を取得（四方向から）
+        /// 生成位置の反対側の座標を計算（中心対称）
         /// </summary>
-        private Vector3 GetRandomSpawnPosition()
+        private Vector3 GetOppositePosition(Vector3 spawnPos)
         {
-            return positionManager.GetRandomEdgeSpawnPosition();
+            // 画面の中心を原点(0,0,0)と仮定
+            return -spawnPos;
         }
-        
+
 
     }
 }
