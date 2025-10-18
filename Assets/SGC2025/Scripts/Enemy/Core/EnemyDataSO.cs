@@ -11,6 +11,9 @@ namespace SGC2025.Enemy
         [Header("基本情報")]
         [SerializeField] private EnemyType enemyType;
         
+        [Header("移動設定")]
+        [SerializeField] private MovementType movementType = MovementType.FixedDirection;
+        
         private const float DEFAULT_HEALTH = 100f;
         private const float DEFAULT_MOVE_SPEED = 3f;
         private const float DEFAULT_ATTACK_POWER = 10f;
@@ -23,6 +26,7 @@ namespace SGC2025.Enemy
         
         // 基本プロパティ
         public EnemyType EnemyType => enemyType;
+        public MovementType MovementType => movementType;
         
         /// <summary>
         /// ウェーブレベルに応じてスケーリングされたパラメーターを取得

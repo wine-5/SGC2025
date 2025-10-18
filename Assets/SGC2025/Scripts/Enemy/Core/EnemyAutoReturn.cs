@@ -40,10 +40,10 @@ namespace SGC2025.Enemy
             var controller = GetComponent<EnemyController>();
             if (controller != null && controller.EnemyData != null)
             {
-                EnemyType enemyType = controller.EnemyData.EnemyType;
+                MovementType movementType = controller.EnemyData.MovementType;
                 
                 // プレイヤー追従型の敵は短い生存時間
-                if (IsPlayerChaserType(enemyType))
+                if (IsPlayerChaserType(movementType))
                 {
                     lifeTime = CHASER_LIFE_TIME;
                 }
@@ -57,12 +57,12 @@ namespace SGC2025.Enemy
         /// <summary>
         /// プレイヤー追従型の敵かどうかを判定
         /// </summary>
-        private bool IsPlayerChaserType(EnemyType enemyType)
+        private bool IsPlayerChaserType(MovementType movementType)
         {
-            return enemyType == EnemyType.LinearChaser ||
-                   enemyType == EnemyType.InertiaChaser ||
-                   enemyType == EnemyType.PredictiveChaser ||
-                   enemyType == EnemyType.ArcChaser;
+            return movementType == MovementType.LinearChaser ||
+                   movementType == MovementType.InertiaChaser ||
+                   movementType == MovementType.PredictiveChaser ||
+                   movementType == MovementType.ArcChaser;
         }
         
         private void Update()
@@ -85,7 +85,7 @@ namespace SGC2025.Enemy
             // プレイヤー追従型の敵は境界チェックをスキップ
             var controller = GetComponent<EnemyController>();
             if (controller != null && controller.EnemyData != null &&
-                IsPlayerChaserType(controller.EnemyData.EnemyType))
+                IsPlayerChaserType(controller.EnemyData.MovementType))
             {
                 return timeExpired; // 時間経過のみで判定
             }

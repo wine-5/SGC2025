@@ -119,10 +119,10 @@ namespace SGC2025.Enemy
                 var controller = enemy.GetComponent<EnemyController>();
                 if (controller != null && controller.EnemyData != null)
                 {
-                    EnemyType enemyType = controller.EnemyData.EnemyType;
+                    MovementType movementType = controller.EnemyData.MovementType;
                     
-                    // 敵の種類に応じて移動戦略を設定
-                    var strategy = MovementStrategyFactory.CreateStrategy(enemyType);
+                    // 移動タイプに応じて移動戦略を設定
+                    var strategy = MovementStrategyFactory.CreateStrategy(movementType);
                     if (strategy != null)
                     {
                         // プレイヤー追従型
@@ -130,7 +130,7 @@ namespace SGC2025.Enemy
                     }
                     else
                     {
-                        // 従来の固定位置移動型
+                        // 固定方向移動型
                         Vector3 targetPosition = positionManager.GetOppositeEdgePosition(spawnPosition);
                         movement.SetTargetPosition(targetPosition);
                     }
