@@ -52,9 +52,9 @@ namespace SGC2025.Enemy
                 MoveToFixedTarget(speed);
             }
             // 移動戦略がある場合（プレイヤー追従）
-            else if (movementStrategy != null && SGC2025.PlayerManager.IsPlayerSet())
+            else if (movementStrategy != null && Player.Instance != null)
             {
-                movementStrategy.Move(transform, SGC2025.PlayerManager.PlayerTransform, speed, Time.deltaTime);
+                movementStrategy.Move(transform, Player.PlayerTransform, speed, Time.deltaTime);
             }
             // どちらもない場合はデフォルト移動（下向き）
             else

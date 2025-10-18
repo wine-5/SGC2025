@@ -32,6 +32,14 @@ namespace SGC2025.Enemy
         private void Start()
         {
             positionManager.InitRangesFromTransforms(); // ← ここで呼び出し
+            
+            // スポーンポイントの設定を確認
+            if (!positionManager.AreAllSpawnPointsSet())
+            {
+                Debug.LogError("EnemySpawner: スポーンポイントが正しく設定されていません！");
+                positionManager.LogMissingSpawnPoints();
+            }
+            
             if (autoStart)
             {
                 StartSpawning();
@@ -89,6 +97,13 @@ namespace SGC2025.Enemy
             }
 
             Vector3 spawnPosition = positionManager.GetRandomEdgeSpawnPosition();
+            
+            // デバッグ: 生成位置を確認
+            if (spawnPosition == Vector3.zero)
+            {
+                Debug.LogWarning("EnemySpawner: スポーン位置が中心(0,0,0)になっています。スポーンポイントの設定を確認してください。");
+            }
+            
             GameObject enemy = EnemyFactory.I.CreateRandomEnemy(spawnPosition, currentWaveLevel);
 
             if (enemy != null)

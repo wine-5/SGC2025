@@ -9,6 +9,7 @@ namespace SGC2025.Enemy
     public class EnemyAutoReturn : MonoBehaviour
     {
         private const float DEFAULT_LIFE_TIME = 30f;
+        private const float CHASER_LIFE_TIME = 20f;  // プレイヤー追従型の生存時間
         private const float DEFAULT_RETURN_BOUNDARY = 15f;
         
         [Header("自動削除設定")]
@@ -26,6 +27,42 @@ namespace SGC2025.Enemy
         {
             spawnTime = Time.time;
             isInitialized = true;
+            
+            // 敵の種類に応じて生存時間を調整
+            SetLifeTimeBasedOnEnemyType();
+        }
+        
+        /// <summary>
+        /// 敵の種類に応じて生存時間を設定
+        /// </summary>
+        private void SetLifeTimeBasedOnEnemyType()
+        {
+            var controller = GetComponent<EnemyController>();
+            if (controller != null && controller.EnemyData != null)
+            {
+                EnemyType enemyType = controller.EnemyData.EnemyType;
+                
+                // プレイヤー追従型の敵は短い生存時間
+                if (IsPlayerChaserType(enemyType))
+                {
+                    lifeTime = CHASER_LIFE_TIME;
+                }
+                else
+                {
+                    lifeTime = DEFAULT_LIFE_TIME;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// プレイヤー追従型の敵かどうかを判定
+        /// </summary>
+        private bool IsPlayerChaserType(EnemyType enemyType)
+        {
+            return enemyType == EnemyType.LinearChaser ||
+                   enemyType == EnemyType.InertiaChaser ||
+                   enemyType == EnemyType.PredictiveChaser ||
+                   enemyType == EnemyType.ArcChaser;
         }
         
         private void Update()
@@ -43,7 +80,17 @@ namespace SGC2025.Enemy
         /// </summary>
         private bool ShouldReturnToPool()
         {
-            return HasLifeTimeExpired() || IsOutOfBounds();
+            bool timeExpired = HasLifeTimeExpired();
+            
+            // プレイヤー追従型の敵は境界チェックをスキップ
+            var controller = GetComponent<EnemyController>();
+            if (controller != null && controller.EnemyData != null &&
+                IsPlayerChaserType(controller.EnemyData.EnemyType))
+            {
+                return timeExpired; // 時間経過のみで判定
+            }
+            
+            return timeExpired || IsOutOfBounds();
         }
         
         /// <summary>

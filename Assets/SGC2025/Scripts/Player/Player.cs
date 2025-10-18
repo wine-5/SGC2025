@@ -2,7 +2,30 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // === 静的プレイヤー参照機能 ===
+    private static Player instance;
+    
+    /// <summary>
+    /// プレイヤーのインスタンス
+    /// </summary>
+    public static Player Instance => instance;
+    
+    /// <summary>
+    /// プレイヤーのTransform
+    /// </summary>
+    public static Transform PlayerTransform => instance?.transform;
+    
+    /// <summary>
+    /// プレイヤーの現在位置
+    /// </summary>
+    public static Vector3 PlayerPosition => instance != null ? instance.transform.position : Vector3.zero;
+    
+    /// <summary>
+    /// プレイヤーが設定されているかチェック
+    /// </summary>
+    public static bool IsPlayerSet() => instance != null;
 
+    // === 既存のプレイヤー機能 ===
     public Animator anim {  get; private set; }
     public Rigidbody rb { get; private set; }
 
@@ -20,19 +43,19 @@ public class Player : MonoBehaviour
 
 
 
-    [Header("�X�e�[�^�X")]
+    [Header("�X�e�[�^�X")]
     //[SerializeField] private int health = 30;
 
     public float moveSpeed;
     [SerializeField] private float mutekiTime;
     private float nowMutekiTime;
 
-    //[Header("�ړ����x")]
+    //[Header("�ړ����x")]
     public Vector2 moveInput {  get; private set; }
 
 
     [Space]
-    [Header("�ړ�����")]
+    [Header("�ړ�����")]
     [SerializeField] public Vector2 positionLimitHigh;
     [SerializeField] public Vector2 positionLimitLow;
 
@@ -42,13 +65,26 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        // Singletonの設定
+        if (instance == null)
+        {
+            instance = this;
+            Debug.Log("Player: プレイヤーインスタンスを設定しました");
+        }
+        else if (instance != this)
+        {
+            Debug.LogWarning("Player: 複数のプレイヤーが存在します。古いインスタンスを破棄します。");
+            Destroy(gameObject);
+            return;
+        }
+        
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
 
         stateMachine = new StateMachine();
         input = new PlayerInputSet();
 
-        //�X�e�[�g�� = new �N���X��(this, stateMachine, "animator�Őݒ肵��bool��")
+        //�X�e�[�g�� = new �N���X��(this, stateMachine, "animator�Őݒ肵��bool��")
         idleState = new PlayerIdleState(this, stateMachine, "fly");
         moveState = new PlayerMoveState(this, stateMachine, "fly");
     }
@@ -84,7 +120,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //�_���[�W����
+        //�_���[�W����
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             Damage();
@@ -113,12 +149,12 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        //�_���[�W�̏���
+        //�_���[�W�̏���
 
         if (nowMutekiTime > 0f)
             return;
 
-        //�_���[�W�����ǉ�
+        //�_���[�W�����ǉ�
         Debug.Log("Player damaged");
 
 
@@ -135,6 +171,16 @@ public class Player : MonoBehaviour
     private void PlayerInactive()
     {
         gameObject.SetActive(false);
+    }
+    
+    private void OnDestroy()
+    {
+        // インスタンスをクリア
+        if (instance == this)
+        {
+            instance = null;
+            Debug.Log("Player: プレイヤーインスタンスをクリアしました");
+        }
     }
 
 }
