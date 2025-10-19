@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class EntityState
 {
-    protected Player player;
+    protected SGC2025.PlayerCharacter player;
     protected StateMachine stateMachine;
     protected string animBoolName;
 
@@ -11,7 +11,7 @@ public abstract class EntityState
     protected Rigidbody rb;
     protected PlayerInputSet input;
 
-    public EntityState(Player player, StateMachine stateMachine, string animBoolName)
+    public EntityState(SGC2025.PlayerCharacter player, StateMachine stateMachine, string animBoolName)
     {
         this.player = player;
         this.stateMachine = stateMachine;
@@ -24,9 +24,9 @@ public abstract class EntityState
 
     public virtual void Enter()
     {
-        //ƒXƒe[ƒg‚ÉˆÚs‚µ‚½ÛA‰‚ß‚ÉÀs‚³‚ê‚éˆ—
+        //ï¿½Xï¿½eï¿½[ï¿½gï¿½ÉˆÚsï¿½ï¿½ï¿½ï¿½ï¿½ÛAï¿½ï¿½ï¿½ß‚Éï¿½ï¿½sï¿½ï¿½ï¿½ï¿½éˆï¿½ï¿½
 
-        //Animator‚Ìbool’l‚ğ•ÏX‚·‚é
+        //Animatorï¿½ï¿½boolï¿½lï¿½ï¿½ÏXï¿½ï¿½ï¿½ï¿½
         anim.SetBool(animBoolName, true);
 
 
@@ -36,7 +36,7 @@ public abstract class EntityState
 
     public virtual void Update()
     {
-        //ƒXƒe[ƒg‚ÉˆÚs‚µ‚½ÛAÀs‚³‚ê‘±‚¯‚é
+        //ï¿½Xï¿½eï¿½[ï¿½gï¿½ÉˆÚsï¿½ï¿½ï¿½ï¿½ï¿½ÛAï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ê‘±ï¿½ï¿½ï¿½ï¿½
 
 
         //Debug.Log("Update " + animBoolName);
@@ -44,7 +44,7 @@ public abstract class EntityState
 
     public virtual void Exit()
     {
-        //ƒXƒe[ƒg‚©‚ç—£‚ê‚éÛ‚ÉÀs‚³‚ê‚éˆ—
+        //ï¿½Xï¿½eï¿½[ï¿½gï¿½ï¿½ï¿½ç—£ï¿½ï¿½ï¿½Û‚Éï¿½ï¿½sï¿½ï¿½ï¿½ï¿½éˆï¿½ï¿½
 
         anim.SetBool(animBoolName, false);
 
