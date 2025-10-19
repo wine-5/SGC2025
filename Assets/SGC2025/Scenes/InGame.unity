@@ -944,6 +944,14 @@ PrefabInstance:
       propertyPath: m_hasFontAssetChanged
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6850984881511900183, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6850984881511900183, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
+      propertyPath: m_ScreenMatchMode
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7275205884372825584, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -133.3
@@ -1062,22 +1070,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: InGame
       objectReference: {fileID: 0}
-    - target: {fileID: 6783290750408320351, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: positionLimitLow.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783290750408320351, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: positionLimitLow.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783290750408320351, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: positionLimitHigh.x
-      value: 149
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783290750408320351, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: positionLimitHigh.y
-      value: 149
-      objectReference: {fileID: 0}
     - target: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1117,14 +1109,6 @@ PrefabInstance:
     - target: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8003218262421739174, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 75
-      objectReference: {fileID: 0}
-    - target: {fileID: 8003218262421739174, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1706,9 +1690,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6155ebf6a0cb1f148a7319a54f15afc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.WaveManager
-  waveConfig: {fileID: 0}
-  gameStartTime: 0
-  enableDebugLog: 0
 --- !u!114 &1945701718
 MonoBehaviour:
   m_ObjectHideFlags: 0

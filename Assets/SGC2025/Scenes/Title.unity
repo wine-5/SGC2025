@@ -474,6 +474,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: TitleCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 1330067203158790839, guid: 10a40ee6daf53c149ab4d1ff9fa6dfdc, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1330067203158790839, guid: 10a40ee6daf53c149ab4d1ff9fa6dfdc, type: 3}
+      propertyPath: m_ScreenMatchMode
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5171418772191875114, guid: 10a40ee6daf53c149ab4d1ff9fa6dfdc, type: 3}
       propertyPath: m_Pivot.x
       value: 0

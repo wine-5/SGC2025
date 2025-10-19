@@ -716,6 +716,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98669f52a63dcc842893f5f85f46a6a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemySpawner
+  useSimpleWaveSystem: 1
+  waveUpgradeInterval: 5
+  maxWaveLevel: 10
   spawnInterval: 0.1
   autoStart: 1
   positionManager:
@@ -725,6 +728,7 @@ MonoBehaviour:
     rightSpawnPoint: {fileID: 4934352239019622362}
     horizontalSpawnRange: 10
     verticalSpawnRange: 8
+  enableDebugLog: 0
   currentWaveLevel: 1
 --- !u!1 &6565634178138567960
 GameObject:
@@ -1210,11 +1214,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1156763169151722483, guid: 704587f4269e5a744879351244ad2d79, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 1156763169151722483, guid: 704587f4269e5a744879351244ad2d79, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 1156763169151722483, guid: 704587f4269e5a744879351244ad2d79, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1247,6 +1251,22 @@ PrefabInstance:
     - target: {fileID: 1156763169151722483, guid: 704587f4269e5a744879351244ad2d79, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2395800231365955594, guid: 704587f4269e5a744879351244ad2d79, type: 3}
+      propertyPath: positionLimitLow.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2395800231365955594, guid: 704587f4269e5a744879351244ad2d79, type: 3}
+      propertyPath: positionLimitLow.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2395800231365955594, guid: 704587f4269e5a744879351244ad2d79, type: 3}
+      propertyPath: positionLimitHigh.x
+      value: 149
+      objectReference: {fileID: 0}
+    - target: {fileID: 2395800231365955594, guid: 704587f4269e5a744879351244ad2d79, type: 3}
+      propertyPath: positionLimitHigh.y
+      value: 149
       objectReference: {fileID: 0}
     - target: {fileID: 4240489747714345096, guid: 704587f4269e5a744879351244ad2d79, type: 3}
       propertyPath: debugManualFiring
