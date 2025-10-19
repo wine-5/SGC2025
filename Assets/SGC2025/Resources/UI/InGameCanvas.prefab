@@ -29,13 +29,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 7275205884372825584}
+  m_Children: []
   m_Father: {fileID: 2343378516607040469}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 64, y: -17}
+  m_AnchoredPosition: {x: 90, y: -46}
   m_SizeDelta: {x: 125.00659, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &115673621729778497
@@ -167,11 +166,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6087178746958252974}
+  m_Father: {fileID: 2343378516607040469}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 154.37671, y: 0}
+  m_AnchoredPosition: {x: -161.99829, y: 182.5}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8533435032570737755
@@ -308,6 +307,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6087178746958252974}
+  - {fileID: 7275205884372825584}
   - {fileID: 8006365872950077703}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -391,9 +391,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff6eab23072078e45b0a9e3599450ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.InGameUI
-  scoreText: {fileID: 0}
+  scoreText: {fileID: 7435043580200541598}
   parentCanvas: {fileID: 2343378516607040469}
-  popupPrefab: {fileID: 0}
+  popupPrefab: {fileID: 7250157948439561387, guid: 9f2fd88126248d94da74896219718d63, type: 3}
   initialPoolSize: 10
 --- !u!1 &5716533305491628829
 GameObject:
@@ -429,7 +429,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 101.496735, y: -67}
+  m_AnchoredPosition: {x: 127.496735, y: -96}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6947433734831338871
