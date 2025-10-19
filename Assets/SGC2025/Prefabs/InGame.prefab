@@ -321,10 +321,10 @@ MonoBehaviour:
   objectPool: {fileID: 6455854541159092923}
   defaultBulletData: {fileID: 11400000, guid: da7a7f36ffadcad439df4f325a0c719a, type: 2}
   bulletPoolName: Bullet
-  topBoundary: {fileID: 7677415329602400584}
-  bottomBoundary: {fileID: 5442987977300901424}
-  leftBoundary: {fileID: 2974436985902984871}
-  rightBoundary: {fileID: 5559281074029546216}
+  topBoundary: {fileID: 3360120632267635696}
+  bottomBoundary: {fileID: 472101222240910147}
+  leftBoundary: {fileID: 1770658708453983358}
+  rightBoundary: {fileID: 4934352239019622362}
 --- !u!1 &5155880308864989970
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,7 +667,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TechC.ObjectPool
   poolItems:
   - name: Boy
-    prefab: {fileID: 4656762607192535733, guid: 433dc9864f139bd4fa19e7b372140933, type: 3}
+    prefab: {fileID: 4656762607192535733, guid: 9bb544251b5731249a2dc2d07c544c42, type: 3}
     parent: {fileID: 4234407522856795665}
     initialSize: 10
   - name: RedBoy
@@ -716,13 +716,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98669f52a63dcc842893f5f85f46a6a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemySpawner
-  spawnInterval: 2
+  spawnInterval: 0.1
   autoStart: 1
   positionManager:
     topSpawnPoint: {fileID: 3360120632267635696}
     bottomSpawnPoint: {fileID: 472101222240910147}
     leftSpawnPoint: {fileID: 1770658708453983358}
     rightSpawnPoint: {fileID: 4934352239019622362}
+    horizontalSpawnRange: 10
+    verticalSpawnRange: 8
   currentWaveLevel: 1
 --- !u!1 &6565634178138567960
 GameObject:
@@ -1246,11 +1248,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4240489747714345096, guid: 704587f4269e5a744879351244ad2d79, type: 3}
+      propertyPath: debugManualFiring
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5695510518103672783, guid: 704587f4269e5a744879351244ad2d79, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3161732890538178457, guid: 704587f4269e5a744879351244ad2d79, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
