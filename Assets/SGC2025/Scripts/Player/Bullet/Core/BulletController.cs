@@ -12,8 +12,8 @@ namespace SGC2025.Player.Bullet
     {
         #region 定数
 
-        private const int DEFAULT_ENEMY_LAYER = 6;
-        private const int DEFAULT_OBSTACLE_LAYER = 7;
+        private const int DEFAULT_ENEMY_LAYER = 7;  // Enemyレイヤー
+        private const int DEFAULT_OBSTACLE_LAYER = 8;  // 使用しない（障害物レイヤーが無いため）
         private const int CIRCLE_SPRITE_SIZE = 64;
         private const float CIRCLE_SPRITE_CENTER_FACTOR = 0.5f;
         private const float CIRCLE_SPRITE_RADIUS_OFFSET = 1f;
@@ -58,6 +58,11 @@ namespace SGC2025.Player.Bullet
         {
             CacheComponents();
             ConfigurePhysics();
+            
+            // レイヤー設定をログ出力
+            Debug.Log($"[BulletController] レイヤー設定 - Enemy: {enemyLayer.value} (Layer {DEFAULT_ENEMY_LAYER}), Obstacle: {obstacleLayer.value} (Layer {DEFAULT_OBSTACLE_LAYER})");
+            Debug.Log($"[BulletController] 'Enemy'レイヤー番号の確認: {LayerMask.NameToLayer("Enemy")}");
+            Debug.Log($"[BulletController] 'Player'レイヤー番号の確認: {LayerMask.NameToLayer("Player")}");
         }
 
         private void Update()
@@ -92,6 +97,13 @@ namespace SGC2025.Player.Bullet
         /// </summary>
         public void Deactivate()
         {
+            if (!isActive) 
+            {
+                Debug.LogWarning("[BulletController] 既に非アクティブな弾に対してDeactivateが呼ばれました");
+                return;
+            }
+            
+            Debug.Log("[BulletController] 弾を非アクティブ化し、プールに返却します");
             isActive = false;
             StopMovement();
             ReturnToPool();
@@ -134,17 +146,26 @@ namespace SGC2025.Player.Bullet
         {
             if (!isActive) return;
             
+            Debug.Log($"[BulletController] 衝突検出 - Object: {other.name}, Layer: {other.gameObject.layer}, LayerName: {LayerMask.LayerToName(other.gameObject.layer)}");
+            
             if (IsInLayerMask(other.gameObject, enemyLayer))
             {
+                Debug.Log($"[BulletController] 敵レイヤーとの衝突を確認");
                 HandleEnemyCollision(other);
             }
             else if (IsInLayerMask(other.gameObject, obstacleLayer))
             {
+                Debug.Log($"[BulletController] 障害物レイヤーとの衝突を確認");
                 HandleObstacleCollision();
             }
             else if (IsBoundaryObject(other.gameObject))
             {
+                Debug.Log($"[BulletController] 境界オブジェクトとの衝突を確認");
                 HandleBoundaryCollision();
+            }
+            else
+            {
+                Debug.Log($"[BulletController] 未処理のレイヤーとの衝突 - Layer: {other.gameObject.layer}");
             }
         }
 
@@ -283,11 +304,25 @@ namespace SGC2025.Player.Bullet
 
         private void HandleEnemyCollision(Collider other)
         {
+            // プレイヤーオブジェクトは除外（Layer 6はPlayer）
+            if (other.name.Contains("Player") || other.gameObject.layer == 6)
+            {
+                Debug.Log($"[BulletController] プレイヤーとの衝突を無視します - Object: {other.name}, Layer: {other.gameObject.layer}");
+                return;
+            }
+            
             var enemy = other.GetComponent<EnemyController>();
             if (enemy != null && enemy.IsAlive)
             {
+                Debug.Log($"[BulletController] 弾が敵に衝突 - 敵: {enemy.EnemyType}, ダメージ: {bulletData.Damage}");
                 enemy.TakeDamage(bulletData.Damage);
+                Debug.Log($"[BulletController] 弾を非アクティブ化します");
                 Deactivate();
+            }
+            else
+            {
+                Debug.LogWarning($"[BulletController] 敵レイヤーのオブジェクトと衝突しましたが、有効なEnemyControllerが見つかりません - " +
+                               $"Object: {other.name}, HasEnemyController: {enemy != null}, IsAlive: {enemy?.IsAlive}");
             }
         }
 
@@ -307,7 +342,9 @@ namespace SGC2025.Player.Bullet
 
         private bool IsInLayerMask(GameObject obj, LayerMask layerMask)
         {
-            return (layerMask.value & (1 << obj.layer)) != 0;
+            bool result = (layerMask.value & (1 << obj.layer)) != 0;
+            Debug.Log($"[BulletController] レイヤーチェック - Object: {obj.name}, Layer: {obj.layer}, LayerMask: {layerMask.value}, Result: {result}");
+            return result;
         }
 
         private bool IsBoundaryObject(GameObject obj)
