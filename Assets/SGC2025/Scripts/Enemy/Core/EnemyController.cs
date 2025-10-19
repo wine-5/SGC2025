@@ -113,9 +113,21 @@ namespace SGC2025.Enemy
         /// <param name="damage">ダメージ量</param>
         public void TakeDamage(float damage)
         {
+            Debug.Log($"[EnemyController] TakeDamage開始 - " +
+                     $"敵: {EnemyType}, " +
+                     $"IsAlive: {IsAlive}, " +
+                     $"IsInitialized: {IsInitialized}, " +
+                     $"現在HP: {currentHealth}, " +
+                     $"最大HP: {MaxHealth}, " +
+                     $"受けるダメージ: {damage}");
+            
             if (!IsAlive || damage <= 0f) 
             {
-                Debug.Log($"[EnemyController] ダメージ処理スキップ - IsAlive: {IsAlive}, Damage: {damage}");
+                Debug.LogWarning($"[EnemyController] ダメージ処理スキップ - " +
+                               $"IsAlive: {IsAlive}, " +
+                               $"IsInitialized: {IsInitialized}, " +
+                               $"currentHealth: {currentHealth}, " +
+                               $"Damage: {damage}");
                 return;
             }
             
@@ -130,8 +142,12 @@ namespace SGC2025.Enemy
             
             if (!IsAlive)
             {
-                Debug.Log($"[EnemyController] {EnemyType} が死亡しました");
+                Debug.Log($"[EnemyController] {EnemyType} が死亡しました - HandleDeath()を呼び出します");
                 HandleDeath();
+            }
+            else
+            {
+                Debug.Log($"[EnemyController] {EnemyType} はまだ生きています - HP: {currentHealth}");
             }
         }
 

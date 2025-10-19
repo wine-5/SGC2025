@@ -113,6 +113,8 @@ namespace SGC2025
         /// </summary>
         public GameObject CreateRandomEnemy(Vector3 position, int waveLevel = 1)
         {
+            Debug.Log($"EnemyFactory: CreateRandomEnemy呼び出し - Position: {position}, WaveLevel: {waveLevel}");
+            
             if (!spawnConfigManager.HasValidConfigs)
             {
                 Debug.LogError("EnemyFactory: EnemySpawnConfigManagerに有効な設定がありません");
@@ -125,6 +127,8 @@ namespace SGC2025
                 Debug.LogWarning($"EnemyFactory: ウェーブレベル {waveLevel} で選択可能な敵がいません");
                 return null;
             }
+            
+            Debug.Log($"EnemyFactory: 選択された敵タイプ: {selectedEnemy.EnemyType}");
             
             return CreateEnemy(selectedEnemy, position, waveLevel);
         }

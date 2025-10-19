@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025.Player.Bullet;
 
 public class Player : MonoBehaviour
 {
@@ -10,7 +11,8 @@ public class Player : MonoBehaviour
     public StateMachine stateMachine { get; private set; }
 
 
-
+    [Header("武器システム")]
+    [SerializeField] private PlayerWeaponSystem weaponSystem;
 
     public PlayerIdleState idleState {  get; private set; }
     public PlayerMoveState moveState {  get; private set; }
@@ -20,19 +22,19 @@ public class Player : MonoBehaviour
 
 
 
-    [Header("�X�e�[�^�X")]
+    [Header("�X�e�[�^�X")]
     //[SerializeField] private int health = 30;
 
     public float moveSpeed;
     [SerializeField] private float mutekiTime;
     private float nowMutekiTime;
 
-    //[Header("�ړ����x")]
+    //[Header("�ړ����x")]
     public Vector2 moveInput {  get; private set; }
 
 
     [Space]
-    [Header("�ړ�����")]
+    [Header("�ړ�����")]
     [SerializeField] public Vector2 positionLimitHigh;
     [SerializeField] public Vector2 positionLimitLow;
 
@@ -48,7 +50,13 @@ public class Player : MonoBehaviour
         stateMachine = new StateMachine();
         input = new PlayerInputSet();
 
-        //�X�e�[�g�� = new �N���X��(this, stateMachine, "animator�Őݒ肵��bool��")
+        // PlayerWeaponSystemが設定されていない場合は自動で取得
+        if (weaponSystem == null)
+        {
+            weaponSystem = GetComponent<PlayerWeaponSystem>();
+        }
+
+        //ステート名 = new クラス名(this, stateMachine, "animatorで設定したbool名")
         idleState = new PlayerIdleState(this, stateMachine, "fly");
         moveState = new PlayerMoveState(this, stateMachine, "fly");
     }
@@ -58,18 +66,34 @@ public class Player : MonoBehaviour
     {
         input.Enable();
 
-        input.Player.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        input.Player.Movement.canceled += ctx => moveInput = Vector2.zero;
+        // 移動入力の処理
+        input.Player.Movement.performed += OnMovementPerformed;
+        input.Player.Movement.canceled += OnMovementCanceled;
+        
+        // 射撃入力の処理
+        input.Player.Shot.performed += OnShotPerformed;
     }
 
     private void OnDisable()
     {
+        // 入力イベントの登録解除
+        input.Player.Movement.performed -= OnMovementPerformed;
+        input.Player.Movement.canceled -= OnMovementCanceled;
+        input.Player.Shot.performed -= OnShotPerformed;
+        
         input.Disable();
     }
 
     private void Start()
     {
         stateMachine.Initialize(idleState);
+        
+        // 手動発射モードを有効にする（スペースキーで弾を発射できるように）
+        if (weaponSystem != null)
+        {
+            weaponSystem.SetManualFiring(true);
+            Debug.Log("[Player] 手動発射モードを有効にしました");
+        }
     }
 
     private void Update()
@@ -82,14 +106,14 @@ public class Player : MonoBehaviour
 
     private void PlayerRotate()
     {
-        //�v���C���[�̉�]
+        //�v���C���[�̉�]
         if(moveInput != Vector2.zero)
             transform.up = rb.linearVelocity;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //�_���[�W����
+        //�_���[�W����
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             Damage();
@@ -115,6 +139,39 @@ public class Player : MonoBehaviour
         nowMutekiTime -= Time.deltaTime;
     }
 
+    /// <summary>
+    /// 移動入力開始時の処理
+    /// </summary>
+    private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
+        Debug.Log($"[Player] 移動入力: {moveInput}");
+    }
+
+    /// <summary>
+    /// 移動入力終了時の処理
+    /// </summary>
+    private void OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        moveInput = Vector2.zero;
+        Debug.Log("[Player] 移動入力停止");
+    }
+
+    /// <summary>
+    /// 射撃入力時の処理
+    /// </summary>
+    private void OnShotPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        if (weaponSystem != null)
+        {
+            weaponSystem.Fire();
+            Debug.Log("[Player] 射撃実行");
+        }
+        else
+        {
+            Debug.LogWarning("[Player] PlayerWeaponSystemが設定されていません");
+        }
+    }
 
     public void Damage()
     {
@@ -122,7 +179,7 @@ public class Player : MonoBehaviour
         if (nowMutekiTime > 0f)
             return;
 
-        //�����Ƀ_���[�W������ǉ�
+        //今後にダメージ処理追加
         Debug.Log("Player damaged");
 
 
@@ -130,13 +187,13 @@ public class Player : MonoBehaviour
         nowMutekiTime = mutekiTime;
     }
 
-    //�v���C���[�̗L����
+    //�v���C���[�̗L����
     private void PlayerActive()
     {
         gameObject.SetActive(true);
     }
 
-    //�v���C���[�̔�L����
+    //�v���C���[�̔�L����
     private void PlayerInactive()
     {
         gameObject.SetActive(false);

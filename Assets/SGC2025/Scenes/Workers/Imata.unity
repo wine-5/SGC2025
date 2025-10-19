@@ -119,6 +119,26 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &973038586 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3360120632267635696, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 4982227612467903538}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1240045704 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 472101222240910147, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 4982227612467903538}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1359232075 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4934352239019622362, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 4982227612467903538}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1783422610 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1770658708453983358, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 4982227612467903538}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4982227612467903538
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -127,6 +147,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1775421549668391348, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: spawnInterval
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2939030199755435917, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: topBoundary
+      value: 
+      objectReference: {fileID: 973038586}
+    - target: {fileID: 2939030199755435917, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: leftBoundary
+      value: 
+      objectReference: {fileID: 1783422610}
+    - target: {fileID: 2939030199755435917, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: rightBoundary
+      value: 
+      objectReference: {fileID: 1359232075}
+    - target: {fileID: 2939030199755435917, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: bottomBoundary
+      value: 
+      objectReference: {fileID: 1240045704}
+    - target: {fileID: 5027635215148334557, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: debugManualFiring
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5485042787687540399, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Name
       value: InGame

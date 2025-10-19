@@ -80,18 +80,29 @@ namespace SGC2025.Enemy
         {
             if (EnemyFactory.I == null)
             {
+                Debug.LogError("EnemySpawner: EnemyFactory.I がnullです！");
                 return;
             }
 
             Vector3 spawnPosition = positionManager.GetRandomEdgeSpawnPosition();
             
             // デバッグ: 生成位置を確認
+            Debug.Log($"EnemySpawner: 敵を生成します - 位置: {spawnPosition}");
+            
             if (spawnPosition == Vector3.zero)
             {
                 Debug.LogWarning("EnemySpawner: スポーン位置が中心(0,0,0)になっています。スポーンポイントの設定を確認してください。");
             }
             
             GameObject enemy = EnemyFactory.I.CreateRandomEnemy(spawnPosition, currentWaveLevel);
+            
+            if (enemy == null)
+            {
+                Debug.LogError("EnemySpawner: 敵の生成に失敗しました！");
+                return;
+            }
+            
+            Debug.Log($"EnemySpawner: 敵を生成しました - Name: {enemy.name}, Position: {enemy.transform.position}, Active: {enemy.activeInHierarchy}");
 
             if (enemy != null)
             {

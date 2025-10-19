@@ -157,10 +157,10 @@ MonoBehaviour:
   bulletData: {fileID: 11400000, guid: da7a7f36ffadcad439df4f325a0c719a, type: 2}
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   topBoundary: {fileID: 0}
   bottomBoundary: {fileID: 0}
   leftBoundary: {fileID: 0}
