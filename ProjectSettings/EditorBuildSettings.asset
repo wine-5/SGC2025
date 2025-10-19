@@ -8,12 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/SGC2025/Scenes/Title.unity
     guid: b14daa215ac94ea469ffb5c5fa8e6571
-  - enabled: 0
-    path: Assets/SGC2025/Scenes/Workers/Map_1.unity
-    guid: a66a6c9500d3e4647b1ead84642c666d
-  - enabled: 0
+  - enabled: 1
     path: Assets/SGC2025/Scenes/InGame.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/SGC2025/Scenes/Gameover.unity
+    guid: 914a7ac736ce1894c90622e77312994c
+  - enabled: 1
+    path: Assets/SGC2025/Scenes/Result.unity
+    guid: 3ce683d8fc507ee408e35c96f5aa043c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

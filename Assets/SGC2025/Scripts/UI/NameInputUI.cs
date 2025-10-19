@@ -11,11 +11,14 @@ namespace SGC2025
 
         private int lastScore;
 
-        void Start()
+        override public void Start()
         {
+            nameInputField.onSelect.AddListener(OnInputFocus);
 
-            // 文字数制限（最大6文字）
-            nameInputField.characterLimit = 6;
+            // 文字数制限
+            nameInputField.characterLimit = 5;
+
+            base.Start();
         }
 
         /// <summary>
@@ -34,7 +37,7 @@ namespace SGC2025
 
             if (string.IsNullOrEmpty(name))
             {
-                return;
+                name = "ナナシ";
             }
 
             RankingManager.I.AddScore(name, lastScore);
@@ -43,5 +46,14 @@ namespace SGC2025
 
             this.gameObject.SetActive(false); // シーンのロードで消えるので無効にしておくだけ
         }
+       public void OnInputFocus(string text)
+        {
+            // 入力状態に切り替え
+            nameInputField.ActivateInputField();
+        }
     }
+
 }
+
+
+    
