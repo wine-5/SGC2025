@@ -35,7 +35,7 @@ namespace SGC2025
             base.Init();
             
             // プレイヤーの死亡イベントを購読
-            global::Player.OnPlayerDeath += HandlePlayerDeath;
+            PlayerCharacter.OnPlayerDeath += HandlePlayerDeath;
             
             if (enableDebugLog)
             {
@@ -46,7 +46,7 @@ namespace SGC2025
         protected override void OnDestroy()
         {
             // イベントの購読解除
-            global::Player.OnPlayerDeath -= HandlePlayerDeath;
+            PlayerCharacter.OnPlayerDeath -= HandlePlayerDeath;
             
             base.OnDestroy();
         }

@@ -1,9 +1,8 @@
-using System;
 using UnityEngine;
 
 public class PlayerFlyingState : EntityState
 {
-    public PlayerFlyingState(Player player, StateMachine stateMachine, string animBoolName) : base(player, stateMachine, animBoolName)
+    public PlayerFlyingState(SGC2025.PlayerCharacter player, StateMachine stateMachine, string animBoolName) : base(player, stateMachine, animBoolName)
     {
     }
 
@@ -24,11 +23,11 @@ public class PlayerFlyingState : EntityState
 
 
 
-        //’e”­ŽË
+        //ï¿½eï¿½ï¿½ï¿½ï¿½
         if (input.Player.Shot.WasPerformedThisFrame())
         {
 
-            //’e‚Ì”­ŽË
+            //ï¿½eï¿½Ì”ï¿½ï¿½ï¿½
             PlayerShot();
 
         }
