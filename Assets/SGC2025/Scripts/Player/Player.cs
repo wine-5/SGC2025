@@ -1,23 +1,7 @@
 using UnityEngine;
-using SGC2025;
 
-public class Player : Singleton<Player>
+public class Player : MonoBehaviour
 {
-    // === é™çš„ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å‚ç…§æ©Ÿèƒ½ ===
-    /// <summary>
-    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Transform
-    /// </summary>
-    public static Transform PlayerTransform => I?.transform;
-    
-    /// <summary>
-    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨ä½ç½®
-    /// </summary>
-    public static Vector3 PlayerPosition => I != null ? I.transform.position : Vector3.zero;
-    
-    /// <summary>
-    /// DontDestroyOnLoadã‚’ä½¿ç”¨ã—ãªã„ï¼ˆã‚·ãƒ¼ãƒ³ã”ã¨ã«å†ç”Ÿæˆï¼‰
-    /// </summary>
-    protected override bool UseDontDestroyOnLoad => false;
 
     public Animator anim {  get; private set; }
     public Rigidbody rb { get; private set; }
@@ -36,19 +20,19 @@ public class Player : Singleton<Player>
 
 
 
-    [Header("ï¿½Xï¿½eï¿½[ï¿½^ï¿½X")]
+    [Header("ƒXƒe[ƒ^ƒX")]
     //[SerializeField] private int health = 30;
 
     public float moveSpeed;
     [SerializeField] private float mutekiTime;
     private float nowMutekiTime;
 
-    //[Header("ï¿½Ú“ï¿½ï¿½ï¿½ï¿½x")]
+    //[Header("ˆÚ“®‘¬“x")]
     public Vector2 moveInput {  get; private set; }
 
 
     [Space]
-    [Header("ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    [Header("ˆÚ“®§ŒÀ")]
     [SerializeField] public Vector2 positionLimitHigh;
     [SerializeField] public Vector2 positionLimitLow;
 
@@ -56,16 +40,7 @@ public class Player : Singleton<Player>
 
 
 
-    protected override void Awake()
-    {
-        // Singletonã®åŸºæœ¬å‡¦ç†ã‚’å®Ÿè¡Œ
-        base.Awake();
-    }
-    
-    /// <summary>
-    /// Singletonã®åˆæœŸåŒ–å‡¦ç†ã‚’ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
-    /// </summary>
-    protected override void Init()
+    private void Awake()
     {
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
@@ -73,11 +48,9 @@ public class Player : Singleton<Player>
         stateMachine = new StateMachine();
         input = new PlayerInputSet();
 
-        //ï¿½Xï¿½eï¿½[ï¿½gï¿½ï¿½ = new ï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½(this, stateMachine, "animatorï¿½Åİ’è‚µï¿½ï¿½boolï¿½ï¿½")
+        //ƒXƒe[ƒg–¼ = new ƒNƒ‰ƒX–¼(this, stateMachine, "animator‚Åİ’è‚µ‚½bool–¼")
         idleState = new PlayerIdleState(this, stateMachine, "fly");
         moveState = new PlayerMoveState(this, stateMachine, "fly");
-        
-        Debug.Log("Player: ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åˆæœŸåŒ–ãŒå®Œäº†ã—ã¾ã—ãŸ");
     }
 
 
@@ -104,14 +77,19 @@ public class Player : Singleton<Player>
         stateMachine.UpdateActiveState();
 
         DecreaseMutekiTime();
-
-        
+        PlayerRotate();
     }
 
+    private void PlayerRotate()
+    {
+        //ƒvƒŒƒCƒ„[‚Ì‰ñ“]
+        if(moveInput != Vector2.zero)
+            transform.up = rb.linearVelocity;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        //ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½
+        //ƒ_ƒ[ƒW”»’è
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             Damage();
@@ -140,12 +118,11 @@ public class Player : Singleton<Player>
 
     public void Damage()
     {
-        //ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½Ìï¿½ï¿½ï¿½
-
+        
         if (nowMutekiTime > 0f)
             return;
 
-        //ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Ç‰ï¿½
+        //‚±‚±‚Éƒ_ƒ[ƒWˆ—‚ğ’Ç‰Á
         Debug.Log("Player damaged");
 
 
@@ -153,17 +130,16 @@ public class Player : Singleton<Player>
         nowMutekiTime = mutekiTime;
     }
 
-
+    //ƒvƒŒƒCƒ„[‚Ì—LŒø‰»
     private void PlayerActive()
     {
         gameObject.SetActive(true);
     }
 
+    //ƒvƒŒƒCƒ„[‚Ì”ñ—LŒø‰»
     private void PlayerInactive()
     {
         gameObject.SetActive(false);
     }
-    
-
 
 }

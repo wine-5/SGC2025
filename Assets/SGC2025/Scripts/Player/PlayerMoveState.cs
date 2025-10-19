@@ -29,7 +29,7 @@ public class PlayerMoveState : PlayerFlyingState
             stateMachine.ChangeState(player.idleState);
         }
         
-
+        //ˆÚ“®§ŒÀ
         if(player.positionLimitHigh.x < player.transform.position.x || player.positionLimitHigh.y < player.transform.position.y
             || player.positionLimitLow.x > player.transform.position.x || player.positionLimitLow.y > player.transform.position.y)
         {
