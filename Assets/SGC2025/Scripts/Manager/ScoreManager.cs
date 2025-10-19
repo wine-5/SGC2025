@@ -4,18 +4,18 @@ namespace SGC2025
 {
     public class ScoreManager : Singleton<ScoreManager>
     {
-        //ƒXƒ^[ƒg‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“ŠÔ
+        //ï¿½Xï¿½^ï¿½[ï¿½gï¿½ï¿½ï¿½ÌƒJï¿½Eï¿½ï¿½ï¿½gï¿½_ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         [SerializeField] private float startCountDownTime;
-
-        //ŠÔŒo‰ß‚ÌŒv‘ª@§ŒÀŠÔ&Œo‰ßŠÔ
+        [SerializeField] private InGameUI gameScoreUI;
+        //ï¿½ï¿½ï¿½ÔŒoï¿½ß‚ÌŒvï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½&ï¿½oï¿½ßï¿½ï¿½ï¿½
         private bool isCountDown = false;
         private float currentCountDownTimer = 0f;
         private float countGameTimer = 0f;
 
-        //ƒGƒlƒ~[ƒXƒRƒA
+        //ï¿½Gï¿½lï¿½~ï¿½[ï¿½Xï¿½Rï¿½A
         private int scoreEnemy = 0;
 
-        //—Î‰»ƒXƒRƒA
+        //ï¿½Î‰ï¿½ï¿½Xï¿½Rï¿½A
         private int scoreGreen = 0;
 
 
@@ -42,7 +42,7 @@ namespace SGC2025
 
         private void ResetValue()
         {
-            //ŠJn‚ÉÀs ’l‚ÌƒŠƒZƒbƒg
+            //ï¿½Jï¿½nï¿½ï¿½ï¿½Éï¿½ï¿½s ï¿½lï¿½Ìƒï¿½ï¿½Zï¿½bï¿½g
             isCountDown = false;
             currentCountDownTimer = startCountDownTime;
             countGameTimer = 0f;
@@ -53,8 +53,8 @@ namespace SGC2025
 
         public void CountDownStart()
         {
-            //isCountDown‚ªtrue‚Ìê‡AƒJƒEƒ“ƒgƒ_ƒEƒ“‚ªÀs
-            //ƒQ[ƒ€ƒXƒ^[ƒg‚ÉŒÄ‚Ño‚·
+            //isCountDownï¿½ï¿½trueï¿½Ìê‡ï¿½Aï¿½Jï¿½Eï¿½ï¿½ï¿½gï¿½_ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½s
+            //ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½^ï¿½[ï¿½gï¿½ï¿½ï¿½ÉŒÄ‚Ñoï¿½ï¿½
 
             currentCountDownTimer = startCountDownTime;
             isCountDown = true;
@@ -62,7 +62,7 @@ namespace SGC2025
 
         private void CountDownTimer()
         {
-            //ƒJƒEƒ“ƒgƒ_ƒEƒ“‚ÌÀs Update‘z’è
+            //ï¿½Jï¿½Eï¿½ï¿½ï¿½gï¿½_ï¿½Eï¿½ï¿½ï¿½Ìï¿½ï¿½s Updateï¿½zï¿½ï¿½
             if (!isCountDown)
                 return ;
             currentCountDownTimer -= Time.deltaTime;
@@ -79,7 +79,7 @@ namespace SGC2025
 
         private void CountGameTimer()
         {
-            //ƒQ[ƒ€ŠÔ‚ÌƒJƒEƒ“ƒgÀs Update‘z’è
+            //ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚ÌƒJï¿½Eï¿½ï¿½ï¿½gï¿½ï¿½ï¿½s Updateï¿½zï¿½ï¿½
             if (currentCountDownTimer > 0f || isCountDown)
                 return ;
 
@@ -96,27 +96,29 @@ namespace SGC2025
 
         public void AddEnemyScore(int score)
         {
-            //ƒGƒlƒ~[ƒXƒRƒA‚Ì‰ÁZ
-
+            //ï¿½Gï¿½lï¿½~ï¿½[ï¿½Xï¿½Rï¿½Aï¿½Ì‰ï¿½ï¿½Z
             scoreEnemy += score;
+            CommonDef.currentEnemyScore = score;
+            gameScoreUI.ShowScorePopup(score);
         }
 
         public int GetEnemyScore()
         {
-            //ƒGƒlƒ~[ƒXƒRƒA‚Ìæ“¾
+            //ï¿½Gï¿½lï¿½~ï¿½[ï¿½Xï¿½Rï¿½Aï¿½Ìæ“¾
             return scoreEnemy;
         }
 
         public void AddGreenScore(int score)
         {
-            //—Î‰»ƒXƒRƒA‚Ì‰ÁZ
-
+            //ï¿½Î‰ï¿½ï¿½Xï¿½Rï¿½Aï¿½Ì‰ï¿½ï¿½Z
             scoreGreen += score;
+            CommonDef.currentGreeningScore = scoreGreen;
+            gameScoreUI.ShowScorePopup(score);
         }
 
         public int GetGreenScore()
         {
-            //—Î‰»ƒXƒRƒA‚Ìæ“¾
+            //ï¿½Î‰ï¿½ï¿½Xï¿½Rï¿½Aï¿½Ìæ“¾
             return scoreGreen;
         }
 
