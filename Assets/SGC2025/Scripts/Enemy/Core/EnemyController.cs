@@ -109,15 +109,24 @@ namespace SGC2025.Enemy
         /// <param name="damage">ダメージ量</param>
         public void TakeDamage(float damage)
         {
-            if (!IsAlive || damage <= 0f) return;
+            Debug.Log($"[EnemyController] TakeDamage開始 - IsAlive:{IsAlive}, damage:{damage}, currentHealth:{currentHealth}");
+            
+            if (!IsAlive || damage <= 0f) 
+            {
+                Debug.Log($"[EnemyController] ダメージ処理スキップ - IsAlive:{IsAlive}, damage:{damage}");
+                return;
+            }
             
             float actualDamage = Mathf.Min(damage, currentHealth);
             currentHealth = Mathf.Max(0f, currentHealth - actualDamage);
+            
+            Debug.Log($"[EnemyController] ダメージ適用完了 - actualDamage:{actualDamage}, 残りHP:{currentHealth}, IsAlive:{IsAlive}");
             
             OnDamageTaken?.Invoke(actualDamage);
             
             if (!IsAlive)
             {
+                Debug.Log($"[EnemyController] 敵が死亡しました - HandleDeath実行");
                 HandleDeath();
             }
         }

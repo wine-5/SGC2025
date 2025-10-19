@@ -14,6 +14,7 @@ namespace SGC2025.Player.Bullet
         #region 定数
 
         private const float FULL_CIRCLE_DEGREES = 360f;
+        private const float BULLET_Z_POSITION = 0f; // 2D用Z座標統一
 
         #endregion
 
@@ -188,7 +189,9 @@ namespace SGC2025.Player.Bullet
 
         private void ConfigureBulletPosition(GameObject bulletObj, Vector3 position)
         {
-            bulletObj.transform.position = position;
+            // Z座標を統一して当たり判定を確実にする
+            Vector3 adjustedPosition = new Vector3(position.x, position.y, BULLET_Z_POSITION);
+            bulletObj.transform.position = adjustedPosition;
             bulletObj.transform.rotation = Quaternion.identity;
         }
 

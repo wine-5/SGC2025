@@ -14,6 +14,7 @@ namespace SGC2025.Player.Bullet
 
         private const int DEFAULT_ENEMY_LAYER = 6;
         private const int DEFAULT_OBSTACLE_LAYER = 7;
+        private const int DEFAULT_PLAYER_LAYER = 3; // Playerレイヤー
         private const int CIRCLE_SPRITE_SIZE = 64;
         private const float CIRCLE_SPRITE_CENTER_FACTOR = 0.5f;
         private const float CIRCLE_SPRITE_RADIUS_OFFSET = 1f;
@@ -92,9 +93,12 @@ namespace SGC2025.Player.Bullet
         /// </summary>
         public void Deactivate()
         {
+            Debug.Log($"[BulletController] Deactivate開始 - isActive:{isActive}");
             isActive = false;
             StopMovement();
+            Debug.Log($"[BulletController] ReturnToPool実行前");
             ReturnToPool();
+            Debug.Log($"[BulletController] Deactivate完了");
         }
 
         /// <summary>
@@ -134,13 +138,16 @@ namespace SGC2025.Player.Bullet
         {
             if (!isActive) return;
             
+            // デバッグ情報：Z座標確認
+            Debug.Log($"[BulletController] 衝突検知 - 弾Z:{transform.position.z}, 相手Z:{other.transform.position.z}, 相手:{other.name}");
+            
             if (IsInLayerMask(other.gameObject, enemyLayer))
             {
                 HandleEnemyCollision(other);
             }
             else if (IsInLayerMask(other.gameObject, obstacleLayer))
             {
-                HandleObstacleCollision();
+                HandleObstacleCollision(other);
             }
             else if (IsBoundaryObject(other.gameObject))
             {
@@ -267,14 +274,20 @@ namespace SGC2025.Player.Bullet
 
         private void ReturnToPool()
         {
+            Debug.Log($"[BulletController] ReturnToPool開始 - BulletFactory.I:{BulletFactory.I != null}");
+            
             if (BulletFactory.I != null)
             {
+                Debug.Log($"[BulletController] BulletFactory経由でプールに返却");
                 BulletFactory.I.ReturnBullet(gameObject);
             }
             else
             {
+                Debug.Log($"[BulletController] 直接非アクティブ化");
                 gameObject.SetActive(false);
             }
+            
+            Debug.Log($"[BulletController] ReturnToPool完了");
         }
 
         #endregion
@@ -283,16 +296,59 @@ namespace SGC2025.Player.Bullet
 
         private void HandleEnemyCollision(Collider other)
         {
-            var enemy = other.GetComponent<EnemyController>();
-            if (enemy != null && enemy.IsAlive)
+            Debug.Log($"[BulletController] 敵との衝突開始 - オブジェクト名:{other.name}");
+            
+            // Playerレイヤーは除外
+            if (other.gameObject.layer == DEFAULT_PLAYER_LAYER)
             {
+                Debug.Log($"[BulletController] Playerレイヤーとの衝突は無視します - レイヤー:{other.gameObject.layer}");
+                return;
+            }
+            
+            var enemy = other.GetComponent<EnemyController>();
+            if (enemy == null)
+            {
+                Debug.LogWarning($"[BulletController] EnemyControllerが見つかりません - {other.name}");
+                return;
+            }
+            
+            Debug.Log($"[BulletController] Enemy情報 - IsAlive:{enemy.IsAlive}, CurrentHealth:{enemy.CurrentHealth}");
+            
+            if (enemy.IsAlive)
+            {
+                Debug.Log($"[BulletController] ダメージ処理開始 - Damage:{bulletData.Damage}");
                 enemy.TakeDamage(bulletData.Damage);
+                Debug.Log($"[BulletController] ダメージ処理後 - Enemy IsAlive:{enemy.IsAlive}");
+                
+                Debug.Log($"[BulletController] 弾を非アクティブ化します");
                 Deactivate();
+                Debug.Log($"[BulletController] 弾の非アクティブ化完了");
+            }
+            else
+            {
+                Debug.Log($"[BulletController] 敵は既に死亡しています");
             }
         }
 
         private void HandleObstacleCollision()
         {
+            Debug.Log($"[BulletController] 障害物衝突処理");
+            Deactivate();
+        }
+
+        private void HandleObstacleCollision(Collider other)
+        {
+            Debug.Log($"[BulletController] 障害物衝突処理 - オブジェクト名:{other.name}");
+            
+            // EnemyControllerがある場合は敵として処理
+            var enemy = other.GetComponent<EnemyController>();
+            if (enemy != null)
+            {
+                Debug.Log($"[BulletController] 障害物レイヤーの敵を発見 - {other.name}");
+                HandleEnemyCollision(other);
+                return;
+            }
+            
             Deactivate();
         }
 
@@ -307,7 +363,9 @@ namespace SGC2025.Player.Bullet
 
         private bool IsInLayerMask(GameObject obj, LayerMask layerMask)
         {
-            return (layerMask.value & (1 << obj.layer)) != 0;
+            bool result = (layerMask.value & (1 << obj.layer)) != 0;
+            Debug.Log($"[BulletController] レイヤーチェック - オブジェクト:{obj.name}, レイヤー:{obj.layer}, マスク値:{layerMask.value}, 結果:{result}");
+            return result;
         }
 
         private bool IsBoundaryObject(GameObject obj)
