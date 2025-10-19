@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -2033994243966344502}
   - component: {fileID: -1937362002728286994}
   - component: {fileID: -3191764097881675133}
+  - component: {fileID: 6590570624721586210}
   m_Layer: 7
   m_Name: Excavator
   m_TagString: Untagged
@@ -159,3 +160,25 @@ MonoBehaviour:
   useCustomLifeTime: 0
   customLifeTime: 15
   remainingTime: 0
+--- !u!95 &6590570624721586210
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5222075728982253602}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3f686540ca031e44c95f0fffa5ff2750, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
