@@ -47,7 +47,8 @@ namespace SGC2025
 
         public void Start()
         {
-            LoadStage( SceneManager.GetActiveScene().name );
+            LoadStage(SceneManager.GetActiveScene().name);
+            InitHighObject();
             grassMaterial = Resources.Load<Material>("Materials/grass");
             if (!grassMaterial)
             {
@@ -62,18 +63,22 @@ namespace SGC2025
         public bool DrawGround(Vector3 enemyPosition)
         {
             // todo 関数を分ける
-            // --近い座標のものを取得-------------------------------------------
-            int x = Mathf.RoundToInt((enemyPosition.x - currentOriginPosisiton.x) / cellSize);
-            int y = Mathf.RoundToInt((enemyPosition.y - currentOriginPosisiton.y) / cellSize);
+            Vector2Int cellPosition = SearchCellIndex(enemyPosition);
+            currentGroundArray[cellPosition.x, cellPosition.y].isDrawn = true;
+            currentGroundArray[cellPosition.x, cellPosition.y].renderer.material = grassMaterial;
+
+            Debug.Log("GroundManager : Draw" + cellPosition.x + "" + cellPosition.y);
+            return false;
+        }
+
+        private Vector2Int SearchCellIndex(Vector3 position)
+        {
+            int x = Mathf.RoundToInt((position.x - currentOriginPosisiton.x) / cellSize);
+            int y = Mathf.RoundToInt((position.y - currentOriginPosisiton.y) / cellSize);
 
             x = Mathf.Clamp(x, 0, mapSetting.columns - 1);
             y = Mathf.Clamp(y, 0, mapSetting.rows - 1);
-            // ---------------------------------------------
-            currentGroundArray[x, y].isDrawn = true;
-            currentGroundArray[x, y].renderer.material = grassMaterial;
-
-            Debug.Log("GroundManager : Draw" + x + "" + y);
-            return false;
+           return new Vector2Int(x,y);
         }
 
         /// <summary>
@@ -104,7 +109,7 @@ namespace SGC2025
             {
                 for (int x = 0; x < mapSettings.columns; x++)
                 {
-                    Vector3 pos = new Vector3(x * cellSize, y * cellSize, 0.0f);
+                    Vector3 pos = new Vector3(x * cellSize, y * cellSize, -1.0f);
                     GameObject tile = Instantiate(defaultTile, pos, Quaternion.identity, transform);
                     tile.name = $"Tile_{x}_{y}";
 
@@ -114,6 +119,17 @@ namespace SGC2025
                     currentGroundArray[x, y].gridPos = new Vector2Int(x, y);
                     currentGroundArray[x, y].renderer = tile.GetComponent<Renderer>();
                 }
+            }
+        }
+
+        private void InitHighObject()
+        {
+            GameObject[] objects = GameObject.FindGameObjectsWithTag("HighScoreObject");
+            
+            foreach(GameObject highScore in objects)
+            {
+                Vector2Int cellPosition = SearchCellIndex(highScore.transform.position);
+                currentGroundArray[cellPosition.x, cellPosition.y].point = currentGroundArray[cellPosition.x, cellPosition.y].point*2;
             }
         }
     }
