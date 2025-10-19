@@ -462,7 +462,7 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!1001 &545705165
+--- !u!1001 &475778999
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -470,10 +470,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 132859469757192758, guid: 10a40ee6daf53c149ab4d1ff9fa6dfdc, type: 3}
-      propertyPath: m_text
-      value: "\u53CD\u4E71\u958B\u59CB"
-      objectReference: {fileID: 0}
     - target: {fileID: 445929901970110000, guid: 10a40ee6daf53c149ab4d1ff9fa6dfdc, type: 3}
       propertyPath: m_Name
       value: TitleCanvas
@@ -619,5 +615,5 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 545705165}
   - {fileID: 227346592}
+  - {fileID: 475778999}

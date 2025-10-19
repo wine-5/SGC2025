@@ -20,14 +20,11 @@ namespace SGC2025
         virtual public void Start()
         {
             childrenMenu = new List<UIBase>();
-            EventSystem.current.SetSelectedGameObject(null);
-
-            // EventSystemを強制的に「今すぐ」再評価させる
-            EventSystem.current.UpdateModules();
-
-            // Unityの内部UI更新キューを明示的に動かす
-            Canvas.ForceUpdateCanvases();
-            EventSystem.current.SetSelectedGameObject(firstSelect);
+            if (firstSelect != null)
+            {
+                EventSystem.current.SetSelectedGameObject(firstSelect);
+             Debug.Log("aaa");
+           }
         }
         
         virtual public void Update()

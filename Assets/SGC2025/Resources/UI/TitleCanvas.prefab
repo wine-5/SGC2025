@@ -184,7 +184,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u8776\u3005\u53CD\u4E71"
+  m_text: "\u53CD\u4E71\u958B\u59CB"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c5f52db680c6974dbab0e1fa91d610d, type: 2}
   m_sharedMaterial: {fileID: 6535439758472176263, guid: 3c5f52db680c6974dbab0e1fa91d610d, type: 2}
