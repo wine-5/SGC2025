@@ -20,8 +20,27 @@ namespace SGC2025
 
 
 
+        private void Start()
+        {
+            ResetValue();
 
-        public void ResetValue()
+            //CountDownStart();
+        }
+
+        private void Update()
+        {
+            CountDownTimer();
+            CountGameTimer();
+
+
+
+
+            
+            //Debug.Log("countDown:" + GetCountDown() + ", gameCount:" + GetGameCount());
+        }
+
+
+        private void ResetValue()
         {
             //開始時に実行 値のリセット
             isCountDown = false;
@@ -35,31 +54,42 @@ namespace SGC2025
         public void CountDownStart()
         {
             //isCountDownがtrueの場合、カウントダウンが実行
+            //ゲームスタート時に呼び出す
 
             currentCountDownTimer = startCountDownTime;
             isCountDown = true;
         }
 
-        public float CountDownTimer()
+        private void CountDownTimer()
         {
             //カウントダウンの実行 Update想定
             if (!isCountDown)
-                return 0f;
+                return ;
             currentCountDownTimer -= Time.deltaTime;
 
             if (currentCountDownTimer <= 0f)
                 isCountDown = false;
+            //return currentCountDownTimer;
+        }
+
+        public float GetCountDown()
+        {
             return currentCountDownTimer;
         }
 
-        public float CountGameTimer()
+        private void CountGameTimer()
         {
             //ゲーム時間のカウント実行 Update想定
-            if (isCountDown)
-                return 0f;
+            if (currentCountDownTimer > 0f || isCountDown)
+                return ;
 
             countGameTimer += Time.deltaTime;
 
+            //return countGameTimer;
+        }
+
+        public float GetGameCount()
+        {
             return countGameTimer;
         }
 
