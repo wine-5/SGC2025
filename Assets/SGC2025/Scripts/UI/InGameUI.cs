@@ -7,7 +7,7 @@ namespace SGC2025
     public class InGameUI : MonoBehaviour
     {
         [SerializeField]
-        private TextMeshPro scoreText;
+        private TextMeshProUGUI scoreText;
         public static InGameUI Instance;
 
         [Header("スコアポップアップ設定")]
