@@ -1,4 +1,6 @@
+using Unity.Burst.Intrinsics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SGC2025
 {
@@ -32,9 +34,10 @@ namespace SGC2025
             CountDownTimer();
             CountGameTimer();
 
-
-
-
+            if(CommonDef.GAME_MINIT <= countGameTimer)
+            { // おわり
+                SceneManager.LoadScene("Result");
+            }
             
             //Debug.Log("countDown:" + GetCountDown() + ", gameCount:" + GetGameCount());
         }
@@ -90,7 +93,7 @@ namespace SGC2025
 
         public float GetGameCount()
         {
-            return countGameTimer;
+            return CommonDef.GAME_MINIT - countGameTimer;
         }
 
 
