@@ -27,24 +27,59 @@ namespace SGC2025
             public bool isDrawn;
 
             // ポイント
-            public uint point;
+            public int point;
+
+            // レンダラー
+            public Renderer renderer;
         }
 
         // 現在の地面の配列
         private GroundData[,] currentGroundArray;
 
+        // 現在の原点
+        private Vector3 currentOriginPosisiton;
+
+        // マップ情報
+        private MapSettings mapSetting;
+
+        // 緑地マテリアル
+        private Material grassMaterial;
+
         public void Start()
         {
-            LoadStage( SceneManager.GetActiveScene().name );
+            LoadStage(SceneManager.GetActiveScene().name);
+            InitHighObject();
+            grassMaterial = Resources.Load<Material>("Materials/grass");
+            if (!grassMaterial)
+            {
+                Debug.LogWarning("GroundManager : 草マテリアルがありません。");
+            }
         }
 
         /// <summary>
         /// 地面を塗る
         /// </summary>
         /// <returns>成否</returns>
-        public bool DrawGround()
+        public bool DrawGround(Vector3 enemyPosition)
         {
+            // todo 関数を分ける
+            Vector2Int cellPosition = SearchCellIndex(enemyPosition);
+            currentGroundArray[cellPosition.x, cellPosition.y].isDrawn = true;
+            currentGroundArray[cellPosition.x, cellPosition.y].renderer.material = grassMaterial;
+
+            ScoreManager.I.AddGreenScore(currentGroundArray[cellPosition.x, cellPosition.y].point);
+            Debug.Log("GroundManager : Draw" + cellPosition.x + "" + cellPosition.y);
             return false;
+        }
+
+        private Vector2Int SearchCellIndex(Vector3 position)
+        {
+            int x = Mathf.RoundToInt((position.x - currentOriginPosisiton.x) / cellSize);
+            int y = Mathf.RoundToInt((position.y - currentOriginPosisiton.y) / cellSize);
+
+            x = Mathf.Clamp(x, 0, mapSetting.columns - 1);
+            y = Mathf.Clamp(y, 0, mapSetting.rows - 1);
+           return new Vector2Int(x,y);
         }
 
         /// <summary>
@@ -55,7 +90,7 @@ namespace SGC2025
             string path = Path.Combine(Application.dataPath, "Maps", $"{sceneName}_map.json");
             if (!File.Exists(path))
             {
-                Debug.LogWarning($"JSON not found: {path}");
+                Debug.LogWarning($"GroundManager : JSON が見つかりません: {path}");
             }
 
             string json = File.ReadAllText(path);
@@ -69,20 +104,33 @@ namespace SGC2025
         /// </summary>
         private void SetStageObject(MapSettings mapSettings)
         {
+            mapSetting = mapSettings;
             currentGroundArray = new GroundData[mapSettings.columns, mapSettings.rows];
             for (int y = 0; y < mapSettings.rows; y++)
             {
                 for (int x = 0; x < mapSettings.columns; x++)
                 {
-                    Vector3 pos = new Vector3(x * cellSize, y * cellSize, 0.0f);
+                    Vector3 pos = new Vector3(x * cellSize, y * cellSize, -1.0f);
                     GameObject tile = Instantiate(defaultTile, pos, Quaternion.identity, transform);
                     tile.name = $"Tile_{x}_{y}";
 
-                    currentGroundArray[x, y].point = 100;
+                    currentGroundArray[x, y].point = 100; // todo 定数
                     currentGroundArray[x, y].isDrawn = false;
                     currentGroundArray[x, y].worldPos = pos;
-                    currentGroundArray[x, y].gridPos = new Vector2Int( x, y );
+                    currentGroundArray[x, y].gridPos = new Vector2Int(x, y);
+                    currentGroundArray[x, y].renderer = tile.GetComponent<Renderer>();
                 }
+            }
+        }
+
+        private void InitHighObject()
+        {
+            GameObject[] objects = GameObject.FindGameObjectsWithTag("HighScoreObject");
+            
+            foreach(GameObject highScore in objects)
+            {
+                Vector2Int cellPosition = SearchCellIndex(highScore.transform.position);
+                currentGroundArray[cellPosition.x, cellPosition.y].point = currentGroundArray[cellPosition.x, cellPosition.y].point*3;
             }
         }
     }
