@@ -30,7 +30,8 @@ namespace SGC2025
             }
             else
             {
-                //maxHealth = 
+                //エネミーの最大体力
+                maxHealth = entity.GetComponent<EnemyController>().MaxHealth;
             }
         }
 
@@ -41,6 +42,10 @@ namespace SGC2025
             if (isPlayer)
             {
                  currentHealth = entity.GetComponent<PlayerCharacter>().GetPlayerCurrentHalth();
+            }
+            else
+            {
+                currentHealth = entity.GetComponent<EnemyController>().CurrentHealth;
             }
 
 
