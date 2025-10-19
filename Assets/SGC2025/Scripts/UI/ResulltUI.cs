@@ -76,18 +76,25 @@ namespace SGC2025
                 case ResultPhase.EnemyKillScore:
                     {
                         // 敵撃破スコア処理
+                        int enemyKillScore = CommonDef.currentEnemyScore;
+
+                        enemyScoreText.SetText(enemyKillScore.ToString());
                         break;
                     }
 
                 case ResultPhase.GreeningScore:
                     {
                         // 緑化スコア処理
+                        int greeningScore = CommonDef.currentGreeningScore;
+                        greeningScoreText.SetText( greeningScore.ToString() );
                         break;
                     }
 
                 case ResultPhase.TotalScore:
                     {
                         // 合計スコア表示
+                        int totalScoreScore = CommonDef.currentEnemyScore + CommonDef.currentGreeningScore;
+                        totalScoreText.SetText(totalScoreScore.ToString());
                         break;
                     }
 
@@ -146,7 +153,7 @@ namespace SGC2025
                     {
                         // 緑化スコア処理
                         int greeningScore = CommonDef.currentGreeningScore;
-                        ScoreCountUp(waitTime, greeningScore, SCORE_COUNT_UP_TIME);
+                        greeningScoreText.SetText( ScoreCountUp( waitTime, greeningScore, SCORE_COUNT_UP_TIME ).ToString() );
                         break;
                     }
                 case ResultPhase.HighScore:
@@ -159,7 +166,7 @@ namespace SGC2025
                     {
                         // 合計スコア表示
                         int totalScoreScore = CommonDef.currentEnemyScore + CommonDef.currentGreeningScore;
-                        ScoreCountUp(waitTime, totalScoreScore, SCORE_COUNT_UP_TIME);
+                        totalScoreText.SetText(ScoreCountUp(waitTime, totalScoreScore, SCORE_COUNT_UP_TIME).ToString());
                         break;
                     }
 
