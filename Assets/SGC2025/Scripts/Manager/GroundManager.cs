@@ -34,10 +34,10 @@ namespace SGC2025
         }
 
         // 現在の地面の配列
-        private GroundData[,] currentGroundArray;
+        private GroundData[,] currentGroundArray ;
 
         // 現在の原点
-        private Vector3 currentOriginPosisiton;
+        private Vector3 currentOriginPosisiton ;
 
         // マップ情報
         private MapSettings mapSetting;
@@ -110,7 +110,7 @@ namespace SGC2025
             {
                 for (int x = 0; x < mapSettings.columns; x++)
                 {
-                    Vector3 pos = new Vector3(x * cellSize, y * cellSize, -1.0f);
+                    Vector3 pos = new Vector3(x * cellSize, y * cellSize, 0.0f);
                     GameObject tile = Instantiate(defaultTile, pos, Quaternion.identity, transform);
                     tile.name = $"Tile_{x}_{y}";
 

@@ -8,10 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/SGC2025/Scenes/Title.unity
     guid: b14daa215ac94ea469ffb5c5fa8e6571
-  - enabled: 0
-    path: Assets/SGC2025/Scenes/Workers/Map_1.unity
-    guid: a66a6c9500d3e4647b1ead84642c666d
-  - enabled: 0
+  - enabled: 1
     path: Assets/SGC2025/Scenes/InGame.unity
     guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:

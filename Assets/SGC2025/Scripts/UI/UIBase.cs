@@ -4,11 +4,14 @@ using TMPro;
 using UnityEngine.Animations;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
 
 namespace SGC2025
 {
     public class UIBase : MonoBehaviour
     {
+        [SerializeField]
+        protected GameObject firstSelect;
         protected float waitTime = 0.0f;
         protected UIBase parentUI;
 
@@ -17,6 +20,11 @@ namespace SGC2025
         virtual public void Start()
         {
             childrenMenu = new List<UIBase>();
+            if (firstSelect != null)
+            {
+                EventSystem.current.SetSelectedGameObject(firstSelect);
+             Debug.Log("aaa");
+           }
         }
         
         virtual public void Update()
@@ -25,7 +33,7 @@ namespace SGC2025
         }
         public void OnClickRestart()
         {
-            SceneManager.LoadScene("Map_1");
+            SceneManager.LoadScene("InGame");
         }
 
         public void OnClickBackTitle()
@@ -82,6 +90,11 @@ namespace SGC2025
             {
                 foreach(UIBase child in childrenMenu)
                 {
+                    if(child==null ||child.gameObject ==null)
+                    {
+                        //多分ロード破棄
+                        continue;
+                    }
                     // 親が死んだら子も死ぬ
                     Destroy(child.gameObject);
                 }
