@@ -8,6 +8,8 @@ namespace SGC2025
     {
         [SerializeField]
         private TextMeshProUGUI scoreText;
+        [SerializeField]
+        private TextMeshProUGUI timeText;
         public static InGameUI Instance;
 
         [Header("スコアポップアップ設定")]
@@ -39,6 +41,7 @@ namespace SGC2025
         private void Update()
         {
             UpdateScoreText();
+            UpdateTimeText();
         }
 
         /// <summary>
@@ -79,7 +82,13 @@ namespace SGC2025
         private void UpdateScoreText()
         {
             if (scoreText != null)
-                scoreText.text = "Score: " + ( CommonDef.currentEnemyScore + CommonDef.currentGreeningScore ).ToString();
+                scoreText.text =  ( CommonDef.currentEnemyScore + CommonDef.currentGreeningScore ).ToString();
+        }
+        private void UpdateTimeText()
+        {
+            if (timeText != null)
+
+                timeText.text =  ( ScoreManager.I.GetGameCount()).ToString();
         }
     }
 }
