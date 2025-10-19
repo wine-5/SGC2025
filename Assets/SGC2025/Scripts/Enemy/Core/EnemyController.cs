@@ -101,10 +101,6 @@ namespace SGC2025.Enemy
             cachedParameters = data.GetScaledParameters(currentWaveLevel);
             currentHealth = cachedParameters.health;
             isInitialized = true;
-            
-            Debug.Log($"[EnemyController] {EnemyType} を初期化しました - " +
-                     $"Layer: {gameObject.layer}, LayerName: {LayerMask.LayerToName(gameObject.layer)}, " +
-                     $"Health: {currentHealth}, Position: {transform.position}");
         }
 
         /// <summary>
@@ -113,41 +109,19 @@ namespace SGC2025.Enemy
         /// <param name="damage">ダメージ量</param>
         public void TakeDamage(float damage)
         {
-            Debug.Log($"[EnemyController] TakeDamage開始 - " +
-                     $"敵: {EnemyType}, " +
-                     $"IsAlive: {IsAlive}, " +
-                     $"IsInitialized: {IsInitialized}, " +
-                     $"現在HP: {currentHealth}, " +
-                     $"最大HP: {MaxHealth}, " +
-                     $"受けるダメージ: {damage}");
-            
             if (!IsAlive || damage <= 0f) 
             {
-                Debug.LogWarning($"[EnemyController] ダメージ処理スキップ - " +
-                               $"IsAlive: {IsAlive}, " +
-                               $"IsInitialized: {IsInitialized}, " +
-                               $"currentHealth: {currentHealth}, " +
-                               $"Damage: {damage}");
                 return;
             }
             
             float actualDamage = Mathf.Min(damage, currentHealth);
-            float oldHealth = currentHealth;
             currentHealth = Mathf.Max(0f, currentHealth - actualDamage);
-            
-            Debug.Log($"[EnemyController] {EnemyType} がダメージを受けました - " +
-                     $"ダメージ: {actualDamage}, ヘルス: {oldHealth} → {currentHealth}");
             
             OnDamageTaken?.Invoke(actualDamage);
             
             if (!IsAlive)
             {
-                Debug.Log($"[EnemyController] {EnemyType} が死亡しました - HandleDeath()を呼び出します");
                 HandleDeath();
-            }
-            else
-            {
-                Debug.Log($"[EnemyController] {EnemyType} はまだ生きています - HP: {currentHealth}");
             }
         }
 
@@ -169,8 +143,6 @@ namespace SGC2025.Enemy
 
         private void HandleDeath()
         {
-            Debug.Log($"[EnemyController] {EnemyType} の死亡処理を開始します");
-            
             OnDeath?.Invoke();
             OnEnemyDestroyed?.Invoke();
             
@@ -189,7 +161,6 @@ namespace SGC2025.Enemy
             if (SGC2025.EnemyFactory.I != null)
             {
                 SGC2025.EnemyFactory.I.ReturnEnemy(gameObject);
-                Debug.Log($"[EnemyController] {EnemyType} 敵をプールに返却しました");
             }
             else
             {

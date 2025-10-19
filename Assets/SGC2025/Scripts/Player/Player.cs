@@ -23,11 +23,15 @@ public class Player : MonoBehaviour
 
 
     [Header("�X�e�[�^�X")]
-    //[SerializeField] private int health = 30;
+    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float currentHealth;
 
     public float moveSpeed;
     [SerializeField] private float mutekiTime;
     private float nowMutekiTime;
+    
+    // HPイベント
+    public static event System.Action OnPlayerDeath;
 
     //[Header("�ړ����x")]
     public Vector2 moveInput {  get; private set; }
@@ -87,6 +91,9 @@ public class Player : MonoBehaviour
     private void Start()
     {
         stateMachine.Initialize(idleState);
+        
+        // HP初期化
+        currentHealth = maxHealth;
         
         // 手動発射モードを有効にする（スペースキーで弾を発射できるように）
         if (weaponSystem != null)
@@ -179,12 +186,41 @@ public class Player : MonoBehaviour
         if (nowMutekiTime > 0f)
             return;
 
-        //今後にダメージ処理追加
-        Debug.Log("Player damaged");
-
-
-
+        TakeDamage(10f); // デフォルトダメージ10
         nowMutekiTime = mutekiTime;
+    }
+    
+    /// <summary>
+    /// HPBarController用：最大HP取得
+    /// </summary>
+    public float GetPlayerMaxHealth()
+    {
+        return maxHealth;
+    }
+    
+    /// <summary>
+    /// HPBarController用：現在HP取得
+    /// </summary>
+    public float GetPlayerCurrentHalth()
+    {
+        return currentHealth;
+    }
+    
+    /// <summary>
+    /// ダメージを受ける
+    /// </summary>
+    public void TakeDamage(float damage)
+    {
+        if (damage <= 0f) return;
+        
+        currentHealth = Mathf.Max(0f, currentHealth - damage);
+        Debug.Log($"[Player] ダメージを受けました - HP: {currentHealth}/{maxHealth}");
+        
+        if (currentHealth <= 0f)
+        {
+            Debug.Log("[Player] プレイヤーが死亡しました");
+            OnPlayerDeath?.Invoke();
+        }
     }
 
     //�v���C���[�̗L����

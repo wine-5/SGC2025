@@ -63,12 +63,10 @@ namespace SGC2025.Player.Bullet
             
             // 実行時にレイヤー番号を取得して正しく設定
             int actualEnemyLayer = LayerMask.NameToLayer("Enemy");
-            int actualPlayerLayer = LayerMask.NameToLayer("Player");
             
             if (actualEnemyLayer != -1)
             {
                 enemyLayer = 1 << actualEnemyLayer;  // Layer 7 (Enemy) = 128
-                Debug.Log($"[BulletController] Enemyレイヤー設定: Layer {actualEnemyLayer} = LayerMask {enemyLayer.value}");
             }
             else
             {
@@ -77,10 +75,6 @@ namespace SGC2025.Player.Bullet
             
             // 障害物レイヤーは使用しないので0に設定
             obstacleLayer = 0;
-            
-            // レイヤー設定をログ出力
-            Debug.Log($"[BulletController] 最終レイヤー設定 - Enemy: {enemyLayer.value}, Obstacle: {obstacleLayer.value}");
-            Debug.Log($"[BulletController] Player Layer: {actualPlayerLayer}, Enemy Layer: {actualEnemyLayer}");
         }
 
         private void Update()
@@ -105,12 +99,6 @@ namespace SGC2025.Player.Bullet
             isActive = true;
             remainingLifeTime = bulletData.LifeTime;
             
-            Debug.Log($"[BulletController] 弾を初期化 - " +
-                     $"BulletData: {(bulletData != null ? bulletData.name : "null")}, " +
-                     $"Damage: {(bulletData != null ? bulletData.Damage : 0)}, " +
-                     $"LifeTime: {(bulletData != null ? bulletData.LifeTime : 0)}, " +
-                     $"Direction: {direction}");
-            
             SetupVisuals();
             SetupRotation();
             SetVelocity(direction);
@@ -124,11 +112,9 @@ namespace SGC2025.Player.Bullet
         {
             if (!isActive) 
             {
-                Debug.LogWarning("[BulletController] 既に非アクティブな弾に対してDeactivateが呼ばれました");
                 return;
             }
             
-            Debug.Log("[BulletController] 弾を非アクティブ化し、プールに返却します");
             isActive = false;
             StopMovement();
             ReturnToPool();
@@ -171,22 +157,13 @@ namespace SGC2025.Player.Bullet
         {
             if (!isActive) return;
             
-            Debug.Log($"[BulletController] 衝突検出 - Object: {other.name}, Layer: {other.gameObject.layer}, LayerName: {LayerMask.LayerToName(other.gameObject.layer)}");
-            
             if (IsInLayerMask(other.gameObject, enemyLayer))
             {
-                Debug.Log($"[BulletController] 敵レイヤーとの衝突を確認");
                 HandleEnemyCollision(other);
             }
             else if (IsBoundaryObject(other.gameObject))
             {
-                Debug.Log($"[BulletController] 境界オブジェクトとの衝突を確認");
                 HandleBoundaryCollision();
-            }
-            else
-            {
-                Debug.Log($"[BulletController] 未処理のレイヤーとの衝突 - Layer: {other.gameObject.layer}");
-                // 障害物レイヤーのチェックを削除（存在しないため）
             }
         }
 
@@ -329,26 +306,19 @@ namespace SGC2025.Player.Bullet
             // プレイヤーオブジェクトは除外（Layer 6はPlayer）
             if (other.name.Contains("Player") || other.gameObject.layer == 6)
             {
-                Debug.Log($"[BulletController] プレイヤーとの衝突を無視します - Object: {other.name}, Layer: {other.gameObject.layer}");
                 return;
             }
             
             var enemy = other.GetComponent<EnemyController>();
             if (enemy != null && enemy.IsAlive)
             {
-                float damageToApply = bulletData != null ? bulletData.Damage : 0f;
-                Debug.Log($"[BulletController] 弾が敵に衝突 - " +
-                         $"敵: {enemy.EnemyType}, " +
-                         $"敵HP: {enemy.CurrentHealth}/{enemy.MaxHealth}, " +
-                         $"BulletDataが存在: {bulletData != null}, " +
-                         $"ダメージ値: {damageToApply}");
-                
                 if (bulletData == null)
                 {
                     Debug.LogError("[BulletController] BulletDataSOがnullです！ダメージを与えられません");
                     return;
                 }
                 
+                float damageToApply = bulletData.Damage;
                 if (damageToApply <= 0)
                 {
                     Debug.LogWarning($"[BulletController] ダメージが0以下です: {damageToApply}");
@@ -356,16 +326,7 @@ namespace SGC2025.Player.Bullet
                 }
                 
                 enemy.TakeDamage(damageToApply);
-                Debug.Log($"[BulletController] ダメージ処理完了 - 弾を非アクティブ化します");
                 Deactivate();
-            }
-            else
-            {
-                Debug.LogWarning($"[BulletController] 敵レイヤーのオブジェクトと衝突しましたが、有効なEnemyControllerが見つかりません - " +
-                               $"Object: {other.name}, " +
-                               $"HasEnemyController: {enemy != null}, " +
-                               $"IsAlive: {enemy?.IsAlive}, " +
-                               $"CurrentHealth: {enemy?.CurrentHealth}");
             }
         }
 
