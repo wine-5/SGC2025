@@ -23,8 +23,7 @@ namespace SGC2025
             if (firstSelect != null)
             {
                 EventSystem.current.SetSelectedGameObject(firstSelect);
-             Debug.Log("aaa");
-           }
+            }
         }
         
         virtual public void Update()
