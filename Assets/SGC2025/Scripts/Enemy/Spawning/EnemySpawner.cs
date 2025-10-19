@@ -12,30 +12,43 @@ namespace SGC2025.Enemy
         private const float DEFAULT_SPAWN_INTERVAL = 2f;
         private const int DEFAULT_WAVE_LEVEL = 1;
 
-        [Header("生成設定")]
+        [Header("簡易Wave設定")]
+        [SerializeField] private bool useSimpleWaveSystem = true;
+        [SerializeField] private float waveUpgradeInterval = 5f; // 5秒ごとにWaveレベルアップ（テスト用）
+        [SerializeField] private int maxWaveLevel = 10;
         [SerializeField] private float spawnInterval = DEFAULT_SPAWN_INTERVAL;
         [SerializeField] private bool autoStart = true;
 
         [Header("生成位置管理")]
         [SerializeField] private EnemySpawnPositionManager positionManager = new EnemySpawnPositionManager();
 
-        [Header("ウェーブ設定")]
+        [Header("デバッグ設定")]
+        [SerializeField] private bool enableDebugLog = false;
         [SerializeField] private int currentWaveLevel = DEFAULT_WAVE_LEVEL;
 
         private bool isSpawning = false;
         private float nextSpawnTime = 0f;
+        private float gameStartTime = 0f;
 
         private void Start()
         {
             positionManager.InitRangesFromTransforms(); // ← ここで呼び出し
-            
+
             // スポーンポイントの設定を確認
             if (!positionManager.AreAllSpawnPointsSet())
             {
                 Debug.LogError("EnemySpawner: スポーンポイントが正しく設定されていません！");
                 positionManager.LogMissingSpawnPoints();
             }
-            
+
+            // ゲーム開始時間を記録
+            gameStartTime = Time.time;
+
+            if (enableDebugLog)
+            {
+                Debug.Log($"[EnemySpawner] 初期化完了 - 簡易Wave制御");
+            }
+
             if (autoStart)
             {
                 StartSpawning();
@@ -60,23 +73,35 @@ namespace SGC2025.Enemy
         {
             isSpawning = false;
         }
-        
+
         /// <summary>
         /// スポーン間隔を設定（WaveManager用）
         /// </summary>
         public void SetSpawnInterval(float interval)
         {
+            float oldInterval = spawnInterval;
             spawnInterval = Mathf.Max(0.1f, interval);
+
+            if (enableDebugLog)
+            {
+                Debug.Log($"[EnemySpawner] スポーン間隔変更: {oldInterval:F1}秒 → {spawnInterval:F1}秒");
+            }
         }
-        
+
         /// <summary>
         /// Waveレベルを設定（WaveManager用）
         /// </summary>
         public void SetWaveLevel(int waveLevel)
         {
+            int oldLevel = currentWaveLevel;
             currentWaveLevel = Mathf.Max(1, waveLevel);
+
+            if (enableDebugLog)
+            {
+                Debug.Log($"[EnemySpawner] Waveレベル変更: {oldLevel} → {currentWaveLevel}");
+            }
         }
-        
+
         /// <summary>
         /// 現在のスポーン間隔を取得
         /// </summary>
@@ -84,7 +109,7 @@ namespace SGC2025.Enemy
         {
             return spawnInterval;
         }
-        
+
         /// <summary>
         /// 現在のWaveレベルを取得
         /// </summary>
@@ -95,6 +120,12 @@ namespace SGC2025.Enemy
 
         private void Update()
         {
+            // 簡易Wave制御システム
+            if (useSimpleWaveSystem)
+            {
+                UpdateSimpleWaveSystem();
+            }
+
             if (!isSpawning) return;
 
             // DeltaTimeベースのスポーン判定
@@ -106,28 +137,77 @@ namespace SGC2025.Enemy
         }
 
         /// <summary>
+        /// 簡易Wave制御システムの更新
+        /// </summary>
+        private void UpdateSimpleWaveSystem()
+        {
+            float gameElapsedTime = Time.time - gameStartTime;
+            int calculatedWaveLevel = Mathf.FloorToInt(gameElapsedTime / waveUpgradeInterval) + 1;
+            calculatedWaveLevel = Mathf.Min(calculatedWaveLevel, maxWaveLevel);
+
+            if (calculatedWaveLevel != currentWaveLevel)
+            {
+                int previousWave = currentWaveLevel;
+                currentWaveLevel = calculatedWaveLevel;
+
+                if (enableDebugLog)
+                {
+                    Debug.Log($"[EnemySpawner] Wave更新: {previousWave} → {currentWaveLevel}");
+                }
+
+                // スポーン間隔を調整（オプション）
+                AdjustSpawnIntervalForWave();
+            }
+        }
+
+        /// <summary>
+        /// Waveレベルに応じてスポーン間隔を調整
+        /// </summary>
+        private void AdjustSpawnIntervalForWave()
+        {
+            // 例：Waveが上がるにつれてスポーン間隔を短くする
+            float baseInterval = 2f;
+            float minInterval = 0.5f;
+            float newInterval = Mathf.Max(minInterval, baseInterval - (currentWaveLevel - 1) * 0.1f);
+
+            if (Mathf.Abs(newInterval - spawnInterval) > 0.01f)
+            {
+                float oldInterval = spawnInterval;
+                spawnInterval = newInterval;
+
+                if (enableDebugLog)
+                {
+                    Debug.Log($"[EnemySpawner] スポーン間隔調整: {oldInterval:F1}秒 → {spawnInterval:F1}秒");
+                }
+            }
+        }
+
+        /// <summary>
         /// 敵を1体生成
         /// </summary>
         private void SpawnEnemy()
         {
             if (EnemyFactory.I == null)
             {
-                Debug.LogError("EnemySpawner: EnemyFactory.I がnullです！");  
+                Debug.LogError("EnemySpawner: EnemyFactory.I がnullです！");
                 return;
             }
 
             Vector3 spawnPosition = positionManager.GetRandomEdgeSpawnPosition();
-            
+
             if (spawnPosition == Vector3.zero)
             {
                 Debug.LogWarning("EnemySpawner: スポーン位置が中心(0,0,0)になっています。スポーンポイントの設定を確認してください。");
             }
-            
+
             GameObject enemy = EnemyFactory.I.CreateRandomEnemy(spawnPosition, currentWaveLevel);
-            
+
             if (enemy == null)
             {
-                Debug.LogError("EnemySpawner: 敵の生成に失敗しました！");
+                if (enableDebugLog)
+                {
+                    Debug.LogWarning($"[EnemySpawner] Wave {currentWaveLevel} で利用可能な敵がありません");
+                }
                 return;
             }
 
@@ -141,7 +221,7 @@ namespace SGC2025.Enemy
                 if (controller != null && controller.EnemyData != null && movement != null)
                 {
                     MovementType movementType = controller.EnemyData.MovementType;
-                    
+
                     // 移動タイプに応じて移動戦略を設定
                     var strategy = MovementStrategyFactory.CreateStrategy(movementType);
                     if (strategy != null)

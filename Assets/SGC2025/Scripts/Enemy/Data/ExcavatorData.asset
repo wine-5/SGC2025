@@ -16,5 +16,5 @@ MonoBehaviour:
   movementType: 4
   health: 1
   moveSpeed: 3
-  attackPower: 10
-  lifeTime: 10
+  attackPower: 20
+  lifeTime: 15

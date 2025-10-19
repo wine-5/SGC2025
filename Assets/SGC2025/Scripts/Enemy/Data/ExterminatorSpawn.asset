@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62e927b714de81c4a96ab0ebcf9fc546, type: 3}
-  m_Name: BoySpawn
+  m_Name: ExterminatorSpawn
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemySpawnConfigSO
   enemySpawnDataList:
   - enemyData: {fileID: 11400000, guid: ed2fd7887005f054e81e82eacf192099, type: 2}
-    spawnWeight: 50
-    minWaveLevel: 1
-    maxWaveLevel: 2
+    spawnWeight: 20
+    minWaveLevel: 3
+    maxWaveLevel: 5

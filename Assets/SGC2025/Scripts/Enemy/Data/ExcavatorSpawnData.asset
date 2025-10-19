@@ -16,4 +16,4 @@ MonoBehaviour:
   - enemyData: {fileID: 11400000, guid: 396c79954d1b6a040813ae29443c650c, type: 2}
     spawnWeight: 20
     minWaveLevel: 1
-    maxWaveLevel: 2
+    maxWaveLevel: 5
