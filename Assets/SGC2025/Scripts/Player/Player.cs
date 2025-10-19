@@ -21,9 +21,12 @@ public class Player : MonoBehaviour
 
 
     [Header("ステータス")]
-    //[SerializeField] private int health = 30;
-
+    //体力
+    [SerializeField] private float maxHealth = 30;
+    private float currentHealth;
+    //移動速度
     public float moveSpeed;
+    //無敵時間
     [SerializeField] private float mutekiTime;
     private float nowMutekiTime;
 
@@ -60,6 +63,8 @@ public class Player : MonoBehaviour
 
         input.Player.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         input.Player.Movement.canceled += ctx => moveInput = Vector2.zero;
+
+        currentHealth = maxHealth;
     }
 
     private void OnDisable()
@@ -125,7 +130,7 @@ public class Player : MonoBehaviour
         //ここにダメージ処理を追加
         Debug.Log("Player damaged");
 
-
+        //currentHealth -= 10;
 
         nowMutekiTime = mutekiTime;
     }
@@ -140,6 +145,17 @@ public class Player : MonoBehaviour
     private void PlayerInactive()
     {
         gameObject.SetActive(false);
+    }
+
+    public float GetPlayerMaxHealth()
+    {
+
+        return maxHealth;
+    }
+    public float GetPlayerCurrentHalth()
+    {
+
+        return currentHealth;
     }
 
 }
