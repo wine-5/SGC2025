@@ -6,6 +6,6 @@ namespace SGC2025
     {
         static public int currentEnemyScore;
         static public int currentGreeningScore;
-        static public float GAME_MINIT = 5.0f;
+        static public float GAME_MINIT = 600.0f;
     }
 }
