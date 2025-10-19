@@ -232,7 +232,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1025342199696819270}
   m_Layer: 0
-  m_Name: Boy
+  m_Name: Exterminator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -647,9 +647,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1025342199696819270}
   - {fileID: 6003517564270505714}
   - {fileID: 1824888424615378300}
+  - {fileID: 1025342199696819270}
   - {fileID: 4372083432131184707}
   m_Father: {fileID: 6805557713837787223}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

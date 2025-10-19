@@ -6,15 +6,16 @@ namespace SGC2025.Enemy
     /// </summary>
     public enum EnemyType
     {
-        /// <summary>
-        /// 基本的な敵。虫取り網少年。
-        /// </summary>
-        Boy,
 
         /// <summary>
         /// 赤い服の少年敵
         /// </summary>
         RedBoy,
+
+        /// <summary>
+        /// 黒い奴
+        /// </summary>
+        Exterminator,
 
         /// <summary>
         /// 老人敵

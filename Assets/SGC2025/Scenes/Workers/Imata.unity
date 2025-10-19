@@ -119,6 +119,58 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &1260877910 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5027635215148334557, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 4982227612467903538}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cc3751dfe8302f46afa6c70e50cf65e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Player.Bullet.PlayerWeaponSystem
+--- !u!1 &1285707958 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8455613011829971440, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 4982227612467903538}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1836970111 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6565634178138567960, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 4982227612467903538}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1836970113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1836970111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6155ebf6a0cb1f148a7319a54f15afc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.WaveManager
+  waveConfig: {fileID: 0}
+  gameStartTime: 0
+  enableDebugLog: 1
+  currentWaveLevel: 1
+  gameElapsedTime: 0
+  isGameActive: 1
+  currentWave:
+    startTime: 0
+    waveLevel: 1
+    waveName: Wave 1
+    spawnInterval: 2
+    maxEnemyCount: 10
+    enemyConfigs: []
+    enableDebugLog: 0
+--- !u!1 &1901196748 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4234407522856795665, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 4982227612467903538}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4982227612467903538
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -127,10 +179,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1775421549668391348, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: waveUpgradeInterval
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4234407522856795665, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_Name
+      value: Exterminator
+      objectReference: {fileID: 0}
     - target: {fileID: 5485042787687540399, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Name
       value: InGame
       objectReference: {fileID: 0}
+    - target: {fileID: 6783290750408320351, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: weaponSystem
+      value: 
+      objectReference: {fileID: 1260877910}
     - target: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.02853
@@ -171,10 +235,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7768601169847586187, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: poolItems.Array.data[0].name
+      value: RedBoy
+      objectReference: {fileID: 0}
+    - target: {fileID: 7768601169847586187, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: poolItems.Array.data[1].name
+      value: Exterminator
+      objectReference: {fileID: 0}
+    - target: {fileID: 7768601169847586187, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: poolItems.Array.data[0].parent
+      value: 
+      objectReference: {fileID: 1285707958}
+    - target: {fileID: 7768601169847586187, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: poolItems.Array.data[0].prefab
+      value: 
+      objectReference: {fileID: 6462408165022326274, guid: 5e5eaf98864ef0942aa3631c714d5027, type: 3}
+    - target: {fileID: 7768601169847586187, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: poolItems.Array.data[1].parent
+      value: 
+      objectReference: {fileID: 1901196748}
+    - target: {fileID: 7768601169847586187, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: poolItems.Array.data[1].prefab
+      value: 
+      objectReference: {fileID: 2065924155820946508, guid: 9ebac51ad01966f41a92177826632239, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6565634178138567960, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1836970113}
   m_SourcePrefab: {fileID: 100100000, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
