@@ -1,10 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 namespace SGC2025 
 {
     public class InGameUI : MonoBehaviour
     {
+        [SerializeField]
+        private TextMeshPro scoreText;
         public static InGameUI Instance;
 
         [Header("スコアポップアップ設定")]
@@ -32,6 +35,10 @@ namespace SGC2025
                 obj.SetActive(false);
                 popupPool.Enqueue(popup);
             }
+        }
+        private void Update()
+        {
+            UpdateScoreText();
         }
 
         /// <summary>
@@ -67,6 +74,12 @@ namespace SGC2025
         {
             popup.gameObject.SetActive(false);
             popupPool.Enqueue(popup);
+        }
+
+        private void UpdateScoreText()
+        {
+            if (scoreText != null)
+                scoreText.text = "Score: " + ( CommonDef.currentEnemyScore + CommonDef.currentGreeningScore ).ToString();
         }
     }
 }

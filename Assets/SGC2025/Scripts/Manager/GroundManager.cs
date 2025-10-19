@@ -27,7 +27,7 @@ namespace SGC2025
             public bool isDrawn;
 
             // ポイント
-            public uint point;
+            public int point;
 
             // レンダラー
             public Renderer renderer;
@@ -67,6 +67,7 @@ namespace SGC2025
             currentGroundArray[cellPosition.x, cellPosition.y].isDrawn = true;
             currentGroundArray[cellPosition.x, cellPosition.y].renderer.material = grassMaterial;
 
+            ScoreManager.I.AddGreenScore(currentGroundArray[cellPosition.x, cellPosition.y].point);
             Debug.Log("GroundManager : Draw" + cellPosition.x + "" + cellPosition.y);
             return false;
         }
@@ -129,7 +130,7 @@ namespace SGC2025
             foreach(GameObject highScore in objects)
             {
                 Vector2Int cellPosition = SearchCellIndex(highScore.transform.position);
-                currentGroundArray[cellPosition.x, cellPosition.y].point = currentGroundArray[cellPosition.x, cellPosition.y].point*2;
+                currentGroundArray[cellPosition.x, cellPosition.y].point = currentGroundArray[cellPosition.x, cellPosition.y].point*3;
             }
         }
     }
