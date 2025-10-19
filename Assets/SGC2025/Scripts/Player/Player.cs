@@ -77,10 +77,15 @@ public class Player : MonoBehaviour
         stateMachine.UpdateActiveState();
 
         DecreaseMutekiTime();
-
-        
+        PlayerRotate();
     }
 
+    private void PlayerRotate()
+    {
+        //プレイヤーの回転
+        if(moveInput != Vector2.zero)
+            transform.up = rb.linearVelocity;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -113,12 +118,11 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        //ダメージの処理
-
+        
         if (nowMutekiTime > 0f)
             return;
 
-        //ダメージ判定を追加
+        //ここにダメージ処理を追加
         Debug.Log("Player damaged");
 
 
@@ -126,12 +130,13 @@ public class Player : MonoBehaviour
         nowMutekiTime = mutekiTime;
     }
 
-
+    //プレイヤーの有効化
     private void PlayerActive()
     {
         gameObject.SetActive(true);
     }
 
+    //プレイヤーの非有効化
     private void PlayerInactive()
     {
         gameObject.SetActive(false);
