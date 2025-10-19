@@ -45,7 +45,7 @@ namespace SGC2025
                 Debug.LogError("EnemyFactory: EnemySpawnConfigManagerに有効な設定がありません");
             }
             
-            Debug.Log("EnemyFactory: ObjectPoolの初期化完了（プレファブはObjectPool側で設定済み）");
+            // Debug.Log("EnemyFactory: ObjectPoolの初期化完了（プレファブはObjectPool側で設定済み）");
         }
         
         /// <summary>
