@@ -52,8 +52,10 @@ namespace SGC2025
 
         protected int ScoreCountUp(float currentWaitTime, float scoreMaxValue, float waitMaxTime)
         {
-            float t = Mathf.Clamp01(currentWaitTime / waitMaxTime);
-            return (int)Mathf.Lerp(0f, scoreMaxValue, t);
+            float a = Mathf.Clamp01(currentWaitTime / waitMaxTime);
+            Debug.Log( "" );
+            return (int)Mathf.Lerp(0 , scoreMaxValue, a);
+
         }
 
         protected UIBase CreateMenu( string path )
