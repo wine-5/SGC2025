@@ -35,6 +35,9 @@ namespace SGC2025.Enemy
         /// <summary>敵が撃破された際に発火されるイベント</summary>
         public static event System.Action OnEnemyDestroyed;
         
+        /// <summary>敵が撃破された際に位置情報と共に発火されるイベント</summary>
+        public static event System.Action<Vector3> OnEnemyDestroyedAtPosition;
+        
         /// <summary>この敵がダメージを受けた際に発火されるイベント</summary>
         public event System.Action<float> OnDamageTaken;
         
@@ -145,6 +148,9 @@ namespace SGC2025.Enemy
         {
             OnDeath?.Invoke();
             OnEnemyDestroyed?.Invoke();
+            
+            // 位置情報付きで敵撃破イベントを発火
+            OnEnemyDestroyedAtPosition?.Invoke(transform.position);
             
             ProcessDeathEffects();
             DeactivateEnemy();
