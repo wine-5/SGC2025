@@ -74,6 +74,8 @@ namespace SGC2025
 
             // 射撃入力の処理
             input.Player.Shot.performed += OnShotPerformed;
+
+            AudioManager.I.PlayBGM("IGame");
         }
 
         private void OnDisable()
@@ -170,6 +172,9 @@ namespace SGC2025
             if (weaponSystem != null)
             {
                 weaponSystem.Fire();
+
+                //AudioManager.I.PlaySE("Damage_Taken");
+
                 Debug.Log("[Player] 射撃実行");
             }
             else
@@ -185,6 +190,9 @@ namespace SGC2025
                 return;
 
             TakeDamage(10f); // デフォルトダメージ10
+
+            AudioManager.I.PlaySE("Damage_Taken");
+
             nowMutekiTime = mutekiTime;
         }
 
@@ -217,6 +225,9 @@ namespace SGC2025
             if (currentHealth <= 0f)
             {
                 Debug.Log("[Player] プレイヤーが死亡しました");
+
+                AudioManager.I.PlaySE("Death");
+
                 OnPlayerDeath?.Invoke();
             }
         }

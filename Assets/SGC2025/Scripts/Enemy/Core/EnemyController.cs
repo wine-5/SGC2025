@@ -116,6 +116,8 @@ namespace SGC2025.Enemy
             
             float actualDamage = Mathf.Min(damage, currentHealth);
             currentHealth = Mathf.Max(0f, currentHealth - actualDamage);
+
+            AudioManager.I.PlaySE("Damage_Dealt");
             
             OnDamageTaken?.Invoke(actualDamage);
             

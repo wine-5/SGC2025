@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15afaf21832ad1049bb271c6e25ca6a1, type: 3}
+  m_Name: SEData
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.SEData
+  seClips:
+  - name: Damage_Dealt
+    clip: {fileID: 8300000, guid: 6eb889098bad71f46902e4d4cecd192c, type: 3}
+    volume: 1
+  - name: Damage_Taken
+    clip: {fileID: 8300000, guid: f0b9a0594e388234f918d0d7d6412886, type: 3}
+    volume: 1
+  - name: Death
+    clip: {fileID: 8300000, guid: cca63aa9d7d21f341a4f9aa55314a2b7, type: 3}
+    volume: 1
+  - name: Result_Score_1
+    clip: {fileID: 8300000, guid: 6daa9efe74d81a249b1f9596977df7d8, type: 3}
+    volume: 1
+  - name: Result_Score_2
+    clip: {fileID: 8300000, guid: 6567408c7d5dc9d4f8e8b380bc5b04e4, type: 3}
+    volume: 1
+  - name: Start_Screen
+    clip: {fileID: 8300000, guid: af8ffd7ee6468624da3ca065c06b65b0, type: 3}
+    volume: 1
+  - name: Dicision_1
+    clip: {fileID: 8300000, guid: 81c9fce7d332c2f45a9640f6cb957853, type: 3}
+    volume: 1
+  - name: Decision_2
+    clip: {fileID: 8300000, guid: 72997aef0c5dbb14f83352b7711dfd07, type: 3}
+    volume: 1
+  - name: Display
+    clip: {fileID: 8300000, guid: e5c05f3ba2b4583458a7d9f5f0de2d58, type: 3}
+    volume: 1
+  - name: Selection_1
+    clip: {fileID: 8300000, guid: 8c38a477dfe9f73438365357d8f171f7, type: 3}
+    volume: 1
+  - name: Selection_2
+    clip: {fileID: 8300000, guid: caac331205766054aa07ad0abc5520ff, type: 3}
+    volume: 1
+  - name: Warning_Siren_Boss
+    clip: {fileID: 8300000, guid: ab90c843781ae7b4aba879531384b98d, type: 3}
+    volume: 1
+  masterVolume: 1

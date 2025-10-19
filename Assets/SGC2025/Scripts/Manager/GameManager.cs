@@ -80,6 +80,8 @@ namespace SGC2025
             try
             {
                 SceneManager.LoadScene(gameOverSceneName);
+
+                AudioManager.I.PlayBGM("GameOver");
             }
             catch (System.Exception e)
             {
