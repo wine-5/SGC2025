@@ -27,10 +27,10 @@ namespace SGC2025.Player.Bullet
         [SerializeField] private string bulletPoolName = "PlayerBullet";
         
         [Header("画面境界設定")]
-        [SerializeField] private GameObject topBoundary;
-        [SerializeField] private GameObject bottomBoundary;
-        [SerializeField] private GameObject leftBoundary;
-        [SerializeField] private GameObject rightBoundary;
+        [SerializeField] private Transform topBoundary;
+        [SerializeField] private Transform bottomBoundary;
+        [SerializeField] private Transform leftBoundary;
+        [SerializeField] private Transform rightBoundary;
 
         #endregion
 

@@ -16,5 +16,4 @@ MonoBehaviour:
   moveSpeed: 10
   damage: 100
   lifeTime: 5
-  bulletSprite: {fileID: 0}
-  bulletSize: 2
+  bulletSize: 10

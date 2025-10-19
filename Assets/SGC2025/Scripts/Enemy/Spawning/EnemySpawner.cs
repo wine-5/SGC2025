@@ -60,6 +60,38 @@ namespace SGC2025.Enemy
         {
             isSpawning = false;
         }
+        
+        /// <summary>
+        /// スポーン間隔を設定（WaveManager用）
+        /// </summary>
+        public void SetSpawnInterval(float interval)
+        {
+            spawnInterval = Mathf.Max(0.1f, interval);
+        }
+        
+        /// <summary>
+        /// Waveレベルを設定（WaveManager用）
+        /// </summary>
+        public void SetWaveLevel(int waveLevel)
+        {
+            currentWaveLevel = Mathf.Max(1, waveLevel);
+        }
+        
+        /// <summary>
+        /// 現在のスポーン間隔を取得
+        /// </summary>
+        public float GetSpawnInterval()
+        {
+            return spawnInterval;
+        }
+        
+        /// <summary>
+        /// 現在のWaveレベルを取得
+        /// </summary>
+        public int GetWaveLevel()
+        {
+            return currentWaveLevel;
+        }
 
         private void Update()
         {
@@ -80,18 +112,24 @@ namespace SGC2025.Enemy
         {
             if (EnemyFactory.I == null)
             {
+                Debug.LogError("EnemySpawner: EnemyFactory.I がnullです！");  
                 return;
             }
 
             Vector3 spawnPosition = positionManager.GetRandomEdgeSpawnPosition();
             
-            // デバッグ: 生成位置を確認
             if (spawnPosition == Vector3.zero)
             {
                 Debug.LogWarning("EnemySpawner: スポーン位置が中心(0,0,0)になっています。スポーンポイントの設定を確認してください。");
             }
             
             GameObject enemy = EnemyFactory.I.CreateRandomEnemy(spawnPosition, currentWaveLevel);
+            
+            if (enemy == null)
+            {
+                Debug.LogError("EnemySpawner: 敵の生成に失敗しました！");
+                return;
+            }
 
             if (enemy != null)
             {
@@ -116,8 +154,6 @@ namespace SGC2025.Enemy
                         // 固定方向移動型
                         Vector3 targetPosition = positionManager.GetOppositeEdgePosition(spawnPosition);
                         movement.SetTargetPosition(targetPosition);
-                        
-
                     }
                 }
 

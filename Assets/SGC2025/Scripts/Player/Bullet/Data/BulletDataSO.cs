@@ -27,6 +27,16 @@ namespace SGC2025.Player.Bullet
          
         [Tooltip("弾のサイズ倍率")]
         [SerializeField] private float bulletSize = 0.1f;
+        
+        [Header("回転設定")]
+        [Tooltip("弾を回転させるかどうか")]
+        [SerializeField] private bool enableRotation = true;
+        
+        [Tooltip("回転速度（度/秒）")]
+        [SerializeField] private float rotationSpeed = 360f;
+        
+        [Tooltip("回転方向（1: 時計回り, -1: 反時計回り）")]
+        [SerializeField] private float rotationDirection = 1f;
 
         #endregion
 
@@ -46,6 +56,15 @@ namespace SGC2025.Player.Bullet
                 
         /// <summary>弾のサイズ倍率</summary>
         public float BulletSize => bulletSize;
+        
+        /// <summary>弾を回転させるかどうか</summary>
+        public bool EnableRotation => enableRotation;
+        
+        /// <summary>回転速度（度/秒）</summary>
+        public float RotationSpeed => rotationSpeed;
+        
+        /// <summary>回転方向（1: 時計回り, -1: 反時計回り）</summary>
+        public float RotationDirection => rotationDirection;
 
         #endregion
 
@@ -69,6 +88,10 @@ namespace SGC2025.Player.Bullet
             damage = Mathf.Max(Constants.MIN_DAMAGE, damage);
             lifeTime = Mathf.Max(Constants.MIN_LIFE_TIME, lifeTime);
             bulletSize = Mathf.Max(Constants.MIN_BULLET_SIZE, bulletSize);
+            
+            // 回転設定のバリデーション
+            rotationSpeed = Mathf.Max(0f, rotationSpeed);
+            rotationDirection = Mathf.Sign(rotationDirection) != 0 ? Mathf.Sign(rotationDirection) : 1f;
         }
 
         #endregion

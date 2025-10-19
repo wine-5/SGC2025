@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -661903214164330704}
   - component: {fileID: 7797705306475142724}
   - component: {fileID: 8005901574054368636}
+  - component: {fileID: 3543620121386132034}
   m_Layer: 7
   m_Name: RedBoy
   m_TagString: Untagged
@@ -159,3 +160,25 @@ MonoBehaviour:
   useCustomLifeTime: 0
   customLifeTime: 15
   remainingTime: 0
+--- !u!95 &3543620121386132034
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6462408165022326274}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 85724bf354eef7d44beeab4511395611, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

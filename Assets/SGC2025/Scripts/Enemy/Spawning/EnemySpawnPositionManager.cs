@@ -18,19 +18,36 @@ namespace SGC2025.Enemy
         [SerializeField] private Transform leftSpawnPoint;
         [SerializeField] private Transform rightSpawnPoint;
         
+        [Header("ランダム生成範囲設定")]
+        [SerializeField] private float horizontalSpawnRange = 10f; // 上下からスポーンする際のX軸範囲
+        [SerializeField] private float verticalSpawnRange = 8f;     // 左右からスポーンする際のY軸範囲
+        
         private float cachedRangeX;
         private float cachedRangeY;
 
         public void InitRangesFromTransforms()
         {
-            // 上下のランダムX範囲はtop/bottomのlocalScale.xの大きい方
-            float topX = topSpawnPoint != null ? topSpawnPoint.localScale.x : 0f;
-            float bottomX = bottomSpawnPoint != null ? bottomSpawnPoint.localScale.x : 0f;
-            cachedRangeX = Mathf.Max(topX, bottomX);
-            // 左右のランダムY範囲はleft/rightのlocalScale.yの大きい方
-            float leftY = leftSpawnPoint != null ? leftSpawnPoint.localScale.y : 0f;
-            float rightY = rightSpawnPoint != null ? rightSpawnPoint.localScale.y : 0f;
-            cachedRangeY = Mathf.Max(leftY, rightY);
+            // スポーンポイントの検証（エラーのみログ出力）
+            ValidateSpawnPoints();
+            
+            // Inspector設定の範囲値を直接使用
+            cachedRangeX = horizontalSpawnRange;
+            cachedRangeY = verticalSpawnRange;
+            
+            #if UNITY_EDITOR
+            Debug.Log($"[SpawnPositionManager] 初期化完了 - Range X: {cachedRangeX}, Y: {cachedRangeY}");
+            #endif
+        }
+        
+        /// <summary>
+        /// スポーンポイントの検証（設定ミスの早期発見用）
+        /// </summary>
+        private void ValidateSpawnPoints()
+        {
+            if (topSpawnPoint == null) Debug.LogError("[SpawnPositionManager] Top Spawn Point が設定されていません");
+            if (bottomSpawnPoint == null) Debug.LogError("[SpawnPositionManager] Bottom Spawn Point が設定されていません");
+            if (leftSpawnPoint == null) Debug.LogError("[SpawnPositionManager] Left Spawn Point が設定されていません");
+            if (rightSpawnPoint == null) Debug.LogError("[SpawnPositionManager] Right Spawn Point が設定されていません");
         }
 
         /// <summary>
@@ -61,7 +78,7 @@ namespace SGC2025.Enemy
             // 上下左右のどこから生成するかをランダム選択
             int side = Random.Range(0, 4);
             
-            return side switch
+            Vector3 spawnPos = side switch
             {
                 0 => GetTopPosition(),    // 上
                 1 => GetBottomPosition(), // 下
@@ -69,46 +86,63 @@ namespace SGC2025.Enemy
                 3 => GetRightPosition(),  // 右
                 _ => GetTopPosition()
             };
+            
+            return spawnPos;
         }
         
         private Vector3 GetTopPosition()
         {
-            if (topSpawnPoint == null) return Vector3.zero;
+            if (topSpawnPoint == null) 
+            {
+                Debug.LogError("[SpawnPositionManager] topSpawnPoint がnullです");
+                return Vector3.zero;
+            }
             Vector3 basePosition = topSpawnPoint.position;
-            float randomX = Random.Range(
-                basePosition.x - cachedRangeX * RANGE_HALF,
-                basePosition.x + cachedRangeX * RANGE_HALF
-            );
+            float minX = basePosition.x - cachedRangeX * RANGE_HALF;
+            float maxX = basePosition.x + cachedRangeX * RANGE_HALF;
+            float randomX = Random.Range(minX, maxX);
             return new Vector3(randomX, basePosition.y, basePosition.z);
         }
+        
         private Vector3 GetBottomPosition()
         {
-            if (bottomSpawnPoint == null) return Vector3.zero;
+            if (bottomSpawnPoint == null) 
+            {
+                Debug.LogError("[SpawnPositionManager] bottomSpawnPoint がnullです");
+                return Vector3.zero;
+            }
             Vector3 basePosition = bottomSpawnPoint.position;
-            float randomX = Random.Range(
-                basePosition.x - cachedRangeX * RANGE_HALF,
-                basePosition.x + cachedRangeX * RANGE_HALF
-            );
+            float minX = basePosition.x - cachedRangeX * RANGE_HALF;
+            float maxX = basePosition.x + cachedRangeX * RANGE_HALF;
+            float randomX = Random.Range(minX, maxX);
             return new Vector3(randomX, basePosition.y, basePosition.z);
         }
+        
         private Vector3 GetLeftPosition()
         {
-            if (leftSpawnPoint == null) return Vector3.zero;
+            if (leftSpawnPoint == null) 
+            {  
+                Debug.LogError("[SpawnPositionManager] leftSpawnPoint がnullです");
+                return Vector3.zero;
+            }
             Vector3 basePosition = leftSpawnPoint.position;
-            float randomY = Random.Range(
-                basePosition.y - cachedRangeY * RANGE_HALF,
-                basePosition.y + cachedRangeY * RANGE_HALF
-            );
+            float minY = basePosition.y - cachedRangeY * RANGE_HALF;
+            float maxY = basePosition.y + cachedRangeY * RANGE_HALF;
+            float randomY = Random.Range(minY, maxY);
             return new Vector3(basePosition.x, randomY, basePosition.z);
         }
+        
         private Vector3 GetRightPosition()
         {
-            if (rightSpawnPoint == null) return Vector3.zero;
+            if (rightSpawnPoint == null) 
+            {
+                Debug.LogError("[SpawnPositionManager] rightSpawnPoint がnullです");
+                return Vector3.zero;
+            }
             Vector3 basePosition = rightSpawnPoint.position;
-            float randomY = Random.Range(
-                basePosition.y - cachedRangeY * RANGE_HALF,
-                basePosition.y + cachedRangeY * RANGE_HALF
-            );
+            float minY = basePosition.y - cachedRangeY * RANGE_HALF;
+            float maxY = basePosition.y + cachedRangeY * RANGE_HALF;
+            float randomY = Random.Range(minY, maxY);
             return new Vector3(basePosition.x, randomY, basePosition.z);
         }
         
@@ -144,42 +178,35 @@ namespace SGC2025.Enemy
         public Vector3 GetOppositeEdgePosition(Vector3 spawnPos)
         {
             // 上端判定
-            if (topSpawnPoint != null && Mathf.Abs(spawnPos.y - topSpawnPoint.position.y) < cachedRangeY * RANGE_DETECT_RATIO)
+            if (topSpawnPoint != null && bottomSpawnPoint != null && Mathf.Abs(spawnPos.y - topSpawnPoint.position.y) < cachedRangeY * RANGE_DETECT_RATIO)
             {
                 // 上端→下端
-                Vector3 target = new Vector3(spawnPos.x, bottomSpawnPoint.position.y, spawnPos.z);
-
-                return target;
+                return new Vector3(spawnPos.x, bottomSpawnPoint.position.y, spawnPos.z);
             }
             // 下端判定
-            if (bottomSpawnPoint != null && Mathf.Abs(spawnPos.y - bottomSpawnPoint.position.y) < cachedRangeY * RANGE_DETECT_RATIO)
+            if (bottomSpawnPoint != null && topSpawnPoint != null && Mathf.Abs(spawnPos.y - bottomSpawnPoint.position.y) < cachedRangeY * RANGE_DETECT_RATIO)
             {
                 // 下端→上端
-                Vector3 target = new Vector3(spawnPos.x, topSpawnPoint.position.y, spawnPos.z);
-
-                return target;
+                return new Vector3(spawnPos.x, topSpawnPoint.position.y, spawnPos.z);
             }
             // 左端判定
-            if (leftSpawnPoint != null && Mathf.Abs(spawnPos.x - leftSpawnPoint.position.x) < cachedRangeX * RANGE_DETECT_RATIO)
+            if (leftSpawnPoint != null && rightSpawnPoint != null && Mathf.Abs(spawnPos.x - leftSpawnPoint.position.x) < cachedRangeX * RANGE_DETECT_RATIO)
             {
                 // 左端→右端
-                Vector3 target = new Vector3(rightSpawnPoint.position.x, spawnPos.y, spawnPos.z);
-
-                return target;
+                return new Vector3(rightSpawnPoint.position.x, spawnPos.y, spawnPos.z);
             }
             // 右端判定
-            if (rightSpawnPoint != null && Mathf.Abs(spawnPos.x - rightSpawnPoint.position.x) < cachedRangeX * RANGE_DETECT_RATIO)
+            if (rightSpawnPoint != null && leftSpawnPoint != null && Mathf.Abs(spawnPos.x - rightSpawnPoint.position.x) < cachedRangeX * RANGE_DETECT_RATIO)
             {
                 // 右端→左端
-                Vector3 target = new Vector3(leftSpawnPoint.position.x, spawnPos.y, spawnPos.z);
-
-                return target;
+                return new Vector3(leftSpawnPoint.position.x, spawnPos.y, spawnPos.z);
             }
             
             // どれにも該当しない場合はフォールバック処理
-            // 最も近いエッジを探して、その反対側を返す
-            Vector3 fallbackTarget = GetFallbackOppositePosition(spawnPos);
-            return fallbackTarget;
+#if UNITY_EDITOR
+            Debug.LogWarning($"[SpawnPositionManager] 端判定に該当しなかったため、フォールバック処理を実行");
+#endif
+            return GetFallbackOppositePosition(spawnPos);
         }
         
         /// <summary>
