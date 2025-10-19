@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
+using SGC2025.Enemy;
 
 namespace SGC2025
 {
@@ -54,32 +55,87 @@ namespace SGC2025
             {
                 Debug.LogWarning("GroundManager : 草マテリアルがありません。");
             }
+            
+            // 敵撃破イベントを購読
+            EnemyController.OnEnemyDestroyedAtPosition += OnEnemyDestroyed;
+        }
+        
+        protected override void OnDestroy()
+        {
+            // イベントの購読解除
+            EnemyController.OnEnemyDestroyedAtPosition -= OnEnemyDestroyed;
+            base.OnDestroy();
+        }
+        
+        /// <summary>
+        /// 敵撃破時の処理
+        /// </summary>
+        /// <param name="enemyPosition">敵が撃破された位置</param>
+        private void OnEnemyDestroyed(Vector3 enemyPosition)
+        {
+            DrawGround(enemyPosition);
         }
 
         /// <summary>
         /// 地面を塗る
         /// </summary>
+        /// <param name="enemyPosition">敵が倒された位置</param>
         /// <returns>成否</returns>
         public bool DrawGround(Vector3 enemyPosition)
         {
-            // todo 関数を分ける
+            if (currentGroundArray == null || grassMaterial == null)
+            {
+                Debug.LogWarning("GroundManager: 初期化が完了していないか、草マテリアルがありません");
+                return false;
+            }
+            
             Vector2Int cellPosition = SearchCellIndex(enemyPosition);
+            
+            // 範囲チェック
+            if (cellPosition.x < 0 || cellPosition.x >= mapSetting.columns ||
+                cellPosition.y < 0 || cellPosition.y >= mapSetting.rows)
+            {
+                Debug.LogWarning($"GroundManager: 位置 {enemyPosition} がマップ範囲外です");
+                return false;
+            }
+            
+            // 既に塗られている場合はスキップ
+            if (currentGroundArray[cellPosition.x, cellPosition.y].isDrawn)
+            {
+                Debug.Log($"GroundManager: セル({cellPosition.x}, {cellPosition.y})は既に塗られています");
+                return false;
+            }
+            
+            // 地面を塗る
             currentGroundArray[cellPosition.x, cellPosition.y].isDrawn = true;
             currentGroundArray[cellPosition.x, cellPosition.y].renderer.material = grassMaterial;
 
-            ScoreManager.I.AddGreenScore(currentGroundArray[cellPosition.x, cellPosition.y].point);
-            Debug.Log("GroundManager : Draw" + cellPosition.x + "" + cellPosition.y);
-            return false;
+            // スコア追加
+            int points = currentGroundArray[cellPosition.x, cellPosition.y].point;
+            if (ScoreManager.I != null)
+            {
+                ScoreManager.I.AddGreenScore(points);
+            }
+            
+            Debug.Log($"GroundManager: セル({cellPosition.x}, {cellPosition.y})を緑化しました (ポイント: {points})");
+            return true;
         }
 
+        /// <summary>
+        /// ワールド座標からセルインデックスを取得
+        /// </summary>
+        /// <param name="position">ワールド座標</param>
+        /// <returns>セルインデックス</returns>
         private Vector2Int SearchCellIndex(Vector3 position)
         {
             int x = Mathf.RoundToInt((position.x - currentOriginPosisiton.x) / cellSize);
             int y = Mathf.RoundToInt((position.y - currentOriginPosisiton.y) / cellSize);
 
+            // 範囲をクランプ
             x = Mathf.Clamp(x, 0, mapSetting.columns - 1);
             y = Mathf.Clamp(y, 0, mapSetting.rows - 1);
-           return new Vector2Int(x,y);
+            
+            return new Vector2Int(x, y);
         }
 
         /// <summary>
@@ -123,6 +179,9 @@ namespace SGC2025
             }
         }
 
+        /// <summary>
+        /// 高得点オブジェクトの初期化
+        /// </summary>
         private void InitHighObject()
         {
             GameObject[] objects = GameObject.FindGameObjectsWithTag("HighScoreObject");
@@ -132,6 +191,67 @@ namespace SGC2025
                 Vector2Int cellPosition = SearchCellIndex(highScore.transform.position);
                 currentGroundArray[cellPosition.x, cellPosition.y].point = currentGroundArray[cellPosition.x, cellPosition.y].point*3;
             }
+        }
+        
+        /// <summary>
+        /// 緑化状況をデバッグ表示
+        /// </summary>
+        [ContextMenu("Debug Ground Status")]
+        public void DebugGroundStatus()
+        {
+            if (currentGroundArray == null)
+            {
+                Debug.Log("GroundManager: 地面データが初期化されていません");
+                return;
+            }
+            
+            int totalCells = mapSetting.columns * mapSetting.rows;
+            int drawnCells = 0;
+            
+            for (int y = 0; y < mapSetting.rows; y++)
+            {
+                for (int x = 0; x < mapSetting.columns; x++)
+                {
+                    if (currentGroundArray[x, y].isDrawn)
+                    {
+                        drawnCells++;
+                    }
+                }
+            }
+            
+            float percentage = (float)drawnCells / totalCells * 100f;
+            Debug.Log($"GroundManager: 緑化状況 {drawnCells}/{totalCells} ({percentage:F1}%)");
+        }
+        
+        /// <summary>
+        /// 指定位置のセル情報を取得（デバッグ用）
+        /// </summary>
+        /// <param name="worldPosition">ワールド座標</param>
+        public void DebugCellInfo(Vector3 worldPosition)
+        {
+            if (currentGroundArray == null) return;
+            
+            Vector2Int cellPos = SearchCellIndex(worldPosition);
+            var cellData = currentGroundArray[cellPos.x, cellPos.y];
+            
+            Debug.Log($"セル情報 - 座標:({cellPos.x}, {cellPos.y}), " +
+                     $"ワールド座標:{cellData.worldPos}, " +
+                     $"塗られている:{cellData.isDrawn}, " +
+                     $"ポイント:{cellData.point}");
+        }
+        
+        /// <summary>
+        /// 手動で地面を塗る（テスト用）
+        /// </summary>
+        /// <param name="x">X座標</param>
+        /// <param name="y">Y座標</param>
+        [ContextMenu("Test Draw Ground")]
+        public void TestDrawGround()
+        {
+            // テスト用：中央付近の地面を塗る
+            Vector3 testPosition = new Vector3(mapSetting.columns * cellSize * 0.5f, 
+                                               mapSetting.rows * cellSize * 0.5f, 0);
+            DrawGround(testPosition);
         }
     }
 }
