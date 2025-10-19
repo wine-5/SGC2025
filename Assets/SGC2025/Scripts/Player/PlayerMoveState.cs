@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerMoveState : PlayerFlyingState
 {
-    public PlayerMoveState(PlayerCharacter player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
+    public PlayerMoveState(SGC2025.PlayerCharacter player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
     {
     }
 
@@ -29,7 +29,7 @@ public class PlayerMoveState : PlayerFlyingState
             stateMachine.ChangeState(player.idleState);
         }
         
-        //ˆÚ“®§ŒÀ
+        //ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½
         if(player.positionLimitHigh.x < player.transform.position.x || player.positionLimitHigh.y < player.transform.position.y
             || player.positionLimitLow.x > player.transform.position.x || player.positionLimitLow.y > player.transform.position.y)
         {

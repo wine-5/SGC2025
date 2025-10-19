@@ -19,14 +19,14 @@ MonoBehaviour:
     bulletDirections: 4
     fireInterval: 0.1
   - level: 2
-    bulletDirections: 8
+    bulletDirections: 6
     fireInterval: 0.1
   - level: 3
-    bulletDirections: 12
+    bulletDirections: 8
     fireInterval: 0.1
   - level: 4
-    bulletDirections: 16
+    bulletDirections: 10
     fireInterval: 0.1
   - level: 5
-    bulletDirections: 20
+    bulletDirections: 12
     fireInterval: 0.1

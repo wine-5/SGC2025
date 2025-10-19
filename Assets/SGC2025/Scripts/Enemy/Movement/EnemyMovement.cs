@@ -58,7 +58,7 @@ namespace SGC2025.Enemy
                 }
                 
                 // Playerコンポーネントを持つオブジェクトを検索
-                var player = FindFirstObjectByType<global::PlayerCharacter>();
+                var player = FindFirstObjectByType<SGC2025.PlayerCharacter>();
                 if (player != null)
                 {
                     playerTransform = player.transform;
