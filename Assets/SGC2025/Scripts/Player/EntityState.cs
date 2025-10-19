@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class EntityState
 {
-    protected Player player;
+    protected PlayerCharacter player;
     protected StateMachine stateMachine;
     protected string animBoolName;
 
@@ -11,7 +11,7 @@ public abstract class EntityState
     protected Rigidbody rb;
     protected PlayerInputSet input;
 
-    public EntityState(Player player, StateMachine stateMachine, string animBoolName)
+    public EntityState(PlayerCharacter player, StateMachine stateMachine, string animBoolName)
     {
         this.player = player;
         this.stateMachine = stateMachine;
