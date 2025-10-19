@@ -4,291 +4,117 @@ using SGC2025.Enemy;
 namespace SGC2025.Player.Bullet
 {
     /// <summary>
-    /// 弾の動作を制御するクラス
-    /// ObjectPoolで再利用される
+    /// 弾の動作とライフサイクルを管理するコントローラー
+    /// ObjectPoolパターンによる効率的な再利用をサポート
     /// </summary>
     [RequireComponent(typeof(Rigidbody), typeof(Collider))]
     public class BulletController : MonoBehaviour
     {
+        #region 定数
+
+        private const int DEFAULT_ENEMY_LAYER = 6;
+        private const int DEFAULT_OBSTACLE_LAYER = 7;
+        private const int CIRCLE_SPRITE_SIZE = 64;
+        private const float CIRCLE_SPRITE_CENTER_FACTOR = 0.5f;
+        private const float CIRCLE_SPRITE_RADIUS_OFFSET = 1f;
+        private const float CIRCLE_SPRITE_PIVOT = 0.5f;
+
+        #endregion
+
+        #region フィールド
+
         [Header("設定データ")]
         [SerializeField] private BulletDataSO bulletData;
         
         [Header("衝突設定")]
-        [SerializeField] private LayerMask enemyLayer = 1 << 6; // Enemyレイヤー（通常6番）
-        [SerializeField] private LayerMask obstacleLayer = 1 << 7; // 障害物レイヤー（通常7番）
+        [SerializeField] private LayerMask enemyLayer = 1 << DEFAULT_ENEMY_LAYER;
+        [SerializeField] private LayerMask obstacleLayer = 1 << DEFAULT_OBSTACLE_LAYER;
         
         [Header("画面境界設定")]
-        [SerializeField] private GameObject topBoundary;    // 上境界
-        [SerializeField] private GameObject bottomBoundary; // 下境界
-        [SerializeField] private GameObject leftBoundary;   // 左境界
-        [SerializeField] private GameObject rightBoundary;  // 右境界
+        [SerializeField] private GameObject topBoundary;
+        [SerializeField] private GameObject bottomBoundary;
+        [SerializeField] private GameObject leftBoundary;
+        [SerializeField] private GameObject rightBoundary;
         
-        // コンポーネント（自動取得）
-        private Rigidbody rb;
-        private Collider col;
-        private SpriteRenderer spriteRenderer;
+        // キャッシュされたコンポーネント
+        private Rigidbody cachedRigidbody;
+        private SpriteRenderer cachedSpriteRenderer;
         
-        // 内部状態
-        private float currentLifeTime;
-        private bool isActive = false;
-        
-        // プロパティ
-        public BulletDataSO BulletData => bulletData;
+        // 弾の状態
+        private float remainingLifeTime;
+        private bool isActive;
+
+        #endregion
+
+        #region プロパティ
+
+        /// <summary>弾がアクティブかどうか</summary>
         public bool IsActive => isActive;
-        
+
+        #endregion
+
+        #region Unityライフサイクル
         private void Awake()
         {
-            // コンポーネントの自動取得
-            rb = GetComponent<Rigidbody>();
-            col = GetComponent<Collider>();
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            
-            Debug.Log($"[BulletController] レイヤー設定確認 - enemyLayer: {enemyLayer.value}, obstacleLayer: {obstacleLayer.value}");
-            
-            // Rigidbodyの設定
-            if (rb != null)
-            {
-                rb.useGravity = false; // 重力を無効化
-                rb.linearDamping = 0f; // 空気抵抗なし
-            }
-            
-            // Colliderの設定
-            if (col != null)
-            {
-                col.isTrigger = true; // トリガーとして設定
-            }
+            CacheComponents();
+            ConfigurePhysics();
         }
-        
+
         private void Update()
         {
             if (!isActive) return;
             
-            // 生存時間のカウントダウン
-            currentLifeTime -= Time.deltaTime;
-            if (currentLifeTime <= 0f)
-            {
-                DeactivateBullet();
-                return;
-            }
+            UpdateLifeTime();
         }
-        
+
+        #endregion
+
+        #region パブリックメソッド
+
         /// <summary>
-        /// 弾を初期化して発射
+        /// 弾を初期化してアクティブ化
         /// </summary>
+        /// <param name="data">弾データ</param>
+        /// <param name="direction">発射方向</param>
         public void Initialize(BulletDataSO data, Vector3 direction)
         {
-            Debug.Log($"[BulletController] Initialize呼び出し - データ: {data?.BulletName}, 方向: {direction}");
-            
             bulletData = data;
             isActive = true;
-            currentLifeTime = bulletData.LifeTime;
+            remainingLifeTime = bulletData.LifeTime;
             
-            Debug.Log($"[BulletController] 設定 - 生存時間: {currentLifeTime}, 速度: {bulletData.MoveSpeed}");
-            
-            // 見た目の設定
-            ApplyVisualSettings();
-            
-            // 移動の設定
-            if (rb != null)
-            {
-                Vector3 velocity = direction.normalized * bulletData.MoveSpeed;
-                rb.linearVelocity = velocity;
-                Debug.Log($"[BulletController] Rigidbody速度設定: {velocity}");
-            }
-            else
-            {
-                Debug.LogError("[BulletController] Rigidbodyがnullです!");
-            }
-            
-            // オブジェクトを有効化
+            SetupVisuals();
+            SetVelocity(direction);
             gameObject.SetActive(true);
-            Debug.Log($"[BulletController] 弾をアクティブ化: {gameObject.name}");
         }
-        
+
         /// <summary>
-        /// 弾を無効化（ObjectPoolに戻す）
+        /// 弾を非アクティブ化してプールに返却
         /// </summary>
-        public void DeactivateBullet()
+        public void Deactivate()
         {
-            Debug.Log($"[BulletController] DeactivateBullet開始: {gameObject.name}");
-            
             isActive = false;
-            
-            // 移動を停止
-            if (rb != null)
-            {
-                rb.linearVelocity = Vector3.zero;
-            }
-            
-            // BulletFactoryを通してObjectPoolに返却
-            if (BulletFactory.I != null)
-            {
-                Debug.Log($"[BulletController] BulletFactoryを通して返却: {gameObject.name}");
-                BulletFactory.I.ReturnBullet(gameObject);
-            }
-            else
-            {
-                Debug.LogWarning($"[BulletController] BulletFactory.Iがnull、直接無効化: {gameObject.name}");
-                // フォールバック：直接無効化
-                gameObject.SetActive(false);
-            }
+            StopMovement();
+            ReturnToPool();
         }
-        
-        /// <summary>
-        /// 見た目の設定を適用
-        /// </summary>
-        private void ApplyVisualSettings()
-        {
-            if (bulletData == null) return;
-            
-            // サイズの設定
-            transform.localScale = Vector3.one * bulletData.BulletSize;
-            
-            if (spriteRenderer != null)
-            {
-                // スプライトの設定
-                if (bulletData.BulletSprite != null)
-                {
-                    spriteRenderer.sprite = bulletData.BulletSprite;
-                }
-                else
-                {
-                    // スプライトが設定されていない場合は円形スプライトを作成
-                    spriteRenderer.sprite = CreateCircleSprite();
-                }
-                
-                // 弾の色を設定（白色で統一）
-                spriteRenderer.color = Color.white;
-            }
-        }
-        
-        /// <summary>
-        /// 円形のスプライトを作成
-        /// </summary>
-        private Sprite CreateCircleSprite()
-        {
-            // 既存の円形スプライトがあるかチェック
-            Sprite existingSprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/Knob.psd");
-            if (existingSprite != null)
-            {
-                return existingSprite;
-            }
-            
-            // プログラムで円形テクスチャを生成
-            int size = 64;
-            Texture2D texture = new Texture2D(size, size);
-            Color[] colors = new Color[size * size];
-            
-            Vector2 center = new Vector2(size / 2f, size / 2f);
-            float radius = size / 2f - 1;
-            
-            for (int y = 0; y < size; y++)
-            {
-                for (int x = 0; x < size; x++)
-                {
-                    float distance = Vector2.Distance(new Vector2(x, y), center);
-                    if (distance <= radius)
-                    {
-                        colors[y * size + x] = Color.white;
-                    }
-                    else
-                    {
-                        colors[y * size + x] = Color.clear;
-                    }
-                }
-            }
-            
-            texture.SetPixels(colors);
-            texture.Apply();
-            
-            return Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f));
-        }
-        
-        /// <summary>
-        /// トリガー衝突処理
-        /// </summary>
-        private void OnTriggerEnter(Collider other)
-        {
-            if (!isActive) return;
-            
-            Debug.Log($"[BulletController] 衝突検知: {other.name}, Layer: {other.gameObject.layer}");
-            
-            int otherLayer = other.gameObject.layer;
-            
-            // 敵レイヤーとの衝突チェック
-            if ((enemyLayer.value & (1 << otherLayer)) != 0)
-            {
-                Debug.Log($"[BulletController] 敵レイヤーとの衝突確認: {other.name}");
-                
-                EnemyController enemy = other.GetComponent<EnemyController>();
-                if (enemy != null && enemy.IsAlive)
-                {
-                    Debug.Log($"[BulletController] 敵にダメージを与える: {bulletData.Damage}");
-                    
-                    // 敵にダメージを与える
-                    enemy.TakeDamage(bulletData.Damage);
-                    
-                    Debug.Log($"[BulletController] 弾を無効化開始");
-                    
-                    // 弾を無効化
-                    DeactivateBullet();
-                    return;
-                }
-                else
-                {
-                    Debug.Log($"[BulletController] EnemyControllerが見つからないか死亡済み: enemy={enemy}, IsAlive={enemy?.IsAlive}");
-                }
-            }
-            
-            // 障害物レイヤーとの衝突チェック
-            if ((obstacleLayer.value & (1 << otherLayer)) != 0)
-            {
-                Debug.Log($"[BulletController] 障害物レイヤーとの衝突: {other.name}");
-                DeactivateBullet();
-                return;
-            }
-            
-            // 境界オブジェクトとの衝突チェック
-            if (IsBoundaryObject(other.gameObject))
-            {
-                Debug.Log($"[BulletController] 境界オブジェクトとの衝突: {other.name}");
-                DeactivateBullet();
-                return;
-            }
-        }
-        
+
         /// <summary>
         /// ObjectPool用のリセット処理
         /// </summary>
         public void ResetBullet()
         {
             isActive = false;
-            currentLifeTime = 0f;
+            remainingLifeTime = 0f;
             
-            if (rb != null)
+            if (cachedRigidbody != null)
             {
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
+                cachedRigidbody.linearVelocity = Vector3.zero;
+                cachedRigidbody.angularVelocity = Vector3.zero;
             }
             
-            // 回転と初期スケールをリセット
             transform.rotation = Quaternion.identity;
             transform.localScale = Vector3.one;
         }
-        
-        /// <summary>
-        /// 指定されたオブジェクトが境界オブジェクトかどうかチェック
-        /// </summary>
-        private bool IsBoundaryObject(GameObject obj)
-        {
-            if (obj == null) return false;
-            
-            return obj == topBoundary || 
-                   obj == bottomBoundary || 
-                   obj == leftBoundary || 
-                   obj == rightBoundary;
-        }
-        
+
         /// <summary>
         /// 画面境界オブジェクトを設定
         /// </summary>
@@ -298,8 +124,202 @@ namespace SGC2025.Player.Bullet
             bottomBoundary = bottom;
             leftBoundary = left;
             rightBoundary = right;
-            
-            Debug.Log($"[BulletController] 境界設定完了 - Top: {top?.name}, Bottom: {bottom?.name}, Left: {left?.name}, Right: {right?.name}");
         }
+
+        #endregion
+
+        #region 衝突処理
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!isActive) return;
+            
+            if (IsInLayerMask(other.gameObject, enemyLayer))
+            {
+                HandleEnemyCollision(other);
+            }
+            else if (IsInLayerMask(other.gameObject, obstacleLayer))
+            {
+                HandleObstacleCollision();
+            }
+            else if (IsBoundaryObject(other.gameObject))
+            {
+                HandleBoundaryCollision();
+            }
+        }
+
+        #endregion
+
+        #region プライベートメソッド - 初期化
+
+        private void CacheComponents()
+        {
+            cachedRigidbody = GetComponent<Rigidbody>();
+            cachedSpriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
+        private void ConfigurePhysics()
+        {
+            if (cachedRigidbody != null)
+            {
+                cachedRigidbody.useGravity = false;
+                cachedRigidbody.linearDamping = 0f;
+            }
+
+            var collider = GetComponent<Collider>();
+            if (collider != null)
+            {
+                collider.isTrigger = true;
+            }
+        }
+
+        #endregion
+
+        #region プライベートメソッド - 更新処理
+
+        private void UpdateLifeTime()
+        {
+            remainingLifeTime -= Time.deltaTime;
+            if (remainingLifeTime <= 0f)
+            {
+                Deactivate();
+            }
+        }
+
+        #endregion
+
+        #region プライベートメソッド - 動作制御
+
+        private void SetVelocity(Vector3 direction)
+        {
+            if (cachedRigidbody != null && bulletData != null)
+            {
+                Vector3 velocity = direction.normalized * bulletData.MoveSpeed;
+                cachedRigidbody.linearVelocity = velocity;
+            }
+        }
+
+        private void StopMovement()
+        {
+            if (cachedRigidbody != null)
+            {
+                cachedRigidbody.linearVelocity = Vector3.zero;
+            }
+        }
+
+        #endregion
+
+        #region プライベートメソッド - 外観設定
+
+        private void SetupVisuals()
+        {
+            if (bulletData == null) return;
+            
+            transform.localScale = Vector3.one * bulletData.BulletSize;
+            
+            if (cachedSpriteRenderer != null)
+            {
+                // SpriteRendererに既存のSpriteがない場合のみ、円形スプライトを作成
+                if (cachedSpriteRenderer.sprite == null)
+                {
+                    cachedSpriteRenderer.sprite = CreateCircleSprite();
+                }
+                
+                cachedSpriteRenderer.color = Color.white;
+            }
+        }
+
+        private Sprite CreateCircleSprite()
+        {
+            var texture = new Texture2D(CIRCLE_SPRITE_SIZE, CIRCLE_SPRITE_SIZE);
+            var colors = new Color[CIRCLE_SPRITE_SIZE * CIRCLE_SPRITE_SIZE];
+            
+            var center = new Vector2(CIRCLE_SPRITE_SIZE * CIRCLE_SPRITE_CENTER_FACTOR, CIRCLE_SPRITE_SIZE * CIRCLE_SPRITE_CENTER_FACTOR);
+            var radius = CIRCLE_SPRITE_SIZE * CIRCLE_SPRITE_CENTER_FACTOR - CIRCLE_SPRITE_RADIUS_OFFSET;
+            
+            for (int y = 0; y < CIRCLE_SPRITE_SIZE; y++)
+            {
+                for (int x = 0; x < CIRCLE_SPRITE_SIZE; x++)
+                {
+                    float distance = Vector2.Distance(new Vector2(x, y), center);
+                    if (distance <= radius)
+                    {
+                        colors[y * CIRCLE_SPRITE_SIZE + x] = Color.white;
+                    }
+                    else
+                    {
+                        colors[y * CIRCLE_SPRITE_SIZE + x] = Color.clear;
+                    }
+                }
+            }
+            
+            texture.SetPixels(colors);
+            texture.Apply();
+            
+            var rect = new Rect(0, 0, CIRCLE_SPRITE_SIZE, CIRCLE_SPRITE_SIZE);
+            var pivot = new Vector2(CIRCLE_SPRITE_PIVOT, CIRCLE_SPRITE_PIVOT);
+            return Sprite.Create(texture, rect, pivot);
+        }
+
+        #endregion
+
+        #region プライベートメソッド - プール管理
+
+        private void ReturnToPool()
+        {
+            if (BulletFactory.I != null)
+            {
+                BulletFactory.I.ReturnBullet(gameObject);
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
+        }
+
+        #endregion
+
+        #region プライベートメソッド - 衝突ハンドリング
+
+        private void HandleEnemyCollision(Collider other)
+        {
+            var enemy = other.GetComponent<EnemyController>();
+            if (enemy != null && enemy.IsAlive)
+            {
+                enemy.TakeDamage(bulletData.Damage);
+                Deactivate();
+            }
+        }
+
+        private void HandleObstacleCollision()
+        {
+            Deactivate();
+        }
+
+        private void HandleBoundaryCollision()
+        {
+            Deactivate();
+        }
+
+        #endregion
+
+        #region プライベートメソッド - ユーティリティ
+
+        private bool IsInLayerMask(GameObject obj, LayerMask layerMask)
+        {
+            return (layerMask.value & (1 << obj.layer)) != 0;
+        }
+
+        private bool IsBoundaryObject(GameObject obj)
+        {
+            if (obj == null) return false;
+            
+            return obj == topBoundary || 
+                   obj == bottomBoundary || 
+                   obj == leftBoundary || 
+                   obj == rightBoundary;
+        }
+
+        #endregion
     }
 }
