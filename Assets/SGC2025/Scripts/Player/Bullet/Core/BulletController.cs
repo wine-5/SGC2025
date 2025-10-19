@@ -1,5 +1,6 @@
 using UnityEngine;
 using SGC2025.Enemy;
+using SGC2025.Player.Bullet.Effects;
 
 namespace SGC2025.Player.Bullet
 {
@@ -39,6 +40,7 @@ namespace SGC2025.Player.Bullet
         // キャッシュされたコンポーネント
         private Rigidbody cachedRigidbody;
         private SpriteRenderer cachedSpriteRenderer;
+        private BulletRotationEffect rotationEffect;
         
         // 弾の状態
         private float remainingLifeTime;
@@ -88,6 +90,7 @@ namespace SGC2025.Player.Bullet
             remainingLifeTime = bulletData.LifeTime;
             
             SetupVisuals();
+            SetupRotation();
             SetVelocity(direction);
             gameObject.SetActive(true);
         }
@@ -177,6 +180,7 @@ namespace SGC2025.Player.Bullet
         {
             cachedRigidbody = GetComponent<Rigidbody>();
             cachedSpriteRenderer = GetComponent<SpriteRenderer>();
+            rotationEffect = GetComponent<BulletRotationEffect>();
         }
 
         private void ConfigurePhysics()
@@ -355,6 +359,27 @@ namespace SGC2025.Player.Bullet
                    obj == bottomBoundary || 
                    obj == leftBoundary || 
                    obj == rightBoundary;
+        }
+
+        #endregion
+        
+        #region プライベートメソッド - 回転設定
+
+        private void SetupRotation()
+        {
+            if (rotationEffect != null && bulletData != null)
+            {
+                if (bulletData.EnableRotation)
+                {
+                    rotationEffect.SetRotationSpeed(bulletData.RotationSpeed);
+                    rotationEffect.SetRotationDirection(bulletData.RotationDirection);
+                    rotationEffect.StartRotation();
+                }
+                else
+                {
+                    rotationEffect.StopRotation();
+                }
+            }
         }
 
         #endregion
