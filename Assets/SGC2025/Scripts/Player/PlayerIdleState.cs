@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerIdleState : PlayerFlyingState
 {
-    public PlayerIdleState(Player player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
+    public PlayerIdleState(PlayerCharacter player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
     {
     }
 

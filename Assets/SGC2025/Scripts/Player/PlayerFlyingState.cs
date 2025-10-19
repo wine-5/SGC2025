@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerFlyingState : EntityState
 {
-    public PlayerFlyingState(Player player, StateMachine stateMachine, string animBoolName) : base(player, stateMachine, animBoolName)
+    public PlayerFlyingState(PlayerCharacter player, StateMachine stateMachine, string animBoolName) : base(player, stateMachine, animBoolName)
     {
     }
 

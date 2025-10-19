@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerMoveState : PlayerFlyingState
 {
-    public PlayerMoveState(Player player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
+    public PlayerMoveState(PlayerCharacter player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
     {
     }
 
