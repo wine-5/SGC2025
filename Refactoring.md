@@ -64,3 +64,27 @@
 - Update()は必要最小限の処理のみ。重い処理はコルーチンやイベントで分離
 
 ---
+
+## SOLID原則（設計指針）
+
+### 1. 単一責任の原則（Single Responsibility Principle）
+- クラス・メソッドは「1つの責務（役割）」だけを持つ
+- 例：Playerクラスはプレイヤーの状態管理のみ、入力処理はInputManagerに分離
+
+### 2. オープン/クローズドの原則（Open/Closed Principle）
+- クラス・関数は「拡張に対して開かれ、修正に対して閉じている」
+- 例：新しい敵タイプ追加時は既存クラスを修正せず、継承やインターフェースで拡張
+
+### 3. リスコフの置換原則（Liskov Substitution Principle）
+- 派生クラスは親クラスと置き換えても正しく動作する
+- 例：EnemyBaseを継承した全ての敵クラスはEnemyBase型として扱える
+
+### 4. インターフェース分離の原則（Interface Segregation Principle）
+- 不要な機能を持つ大きなインターフェースを避け、役割ごとに分割
+- 例：IDamageable, IMovableなど、必要な機能だけを持つインターフェース
+
+### 5. 依存性逆転の原則（Dependency Inversion Principle）
+- 具体的な実装ではなく、抽象（インターフェースや抽象クラス）に依存する
+- 例：WeaponSystemはIWeaponインターフェースに依存し、具体的な武器実装は注入
+
+---
