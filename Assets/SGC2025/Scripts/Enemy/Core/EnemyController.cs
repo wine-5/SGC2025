@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025.Events;
 
 namespace SGC2025.Enemy
 {
@@ -14,12 +15,11 @@ namespace SGC2025.Enemy
         [Header("設定データ")]
         [Tooltip("敵の基本データ設定")]
         [SerializeField] private EnemyDataSO enemyData;
+
+        private float currentHp;
         
-        [Header("現在状態")]
-        [Tooltip("現在のヘルス値")]
-        [SerializeField] private float currentHealth;
-        
-        [Tooltip("現在のウェーブレベル")]
+        [Tooltip("現在のウェーブレベル（実行時のみ変更）")]
+        [ReadOnly]
         [SerializeField] private int currentWaveLevel = 1;
         
         // キャッシュされたパラメーター
@@ -30,18 +30,12 @@ namespace SGC2025.Enemy
 
         #endregion
 
-        #region イベント
+        #region IDamageableインターフェース要求イベント
 
-        /// <summary>敵が撃破された際に発火されるイベント</summary>
-        public static event System.Action OnEnemyDestroyed;
-        
-        /// <summary>敵が撃破された際に位置情報と共に発火されるイベント</summary>
-        public static event System.Action<Vector3> OnEnemyDestroyedAtPosition;
-        
-        /// <summary>この敵がダメージを受けた際に発火されるイベント</summary>
+        /// <summary>この敵がダメージを受けた際に発火されるイベント（IDamageable要求）</summary>
         public event System.Action<float> OnDamageTaken;
         
-        /// <summary>この敵が死亡した際に発火されるイベント</summary>
+        /// <summary>この敵が死亡した際に発火されるイベント（IDamageable要求）</summary>
         public event System.Action OnDeath;
 
         #endregion
@@ -52,16 +46,14 @@ namespace SGC2025.Enemy
         public EnemyDataSO EnemyData => enemyData;
         
         /// <summary>現在のヘルス値</summary>
-        public float CurrentHealth => currentHealth;
+        public float CurrentHealth => currentHp;
         
         /// <summary>生存状態</summary>
-        public bool IsAlive => currentHealth > 0f && isInitialized;
+        public bool IsAlive => currentHp > 0f && isInitialized;
         
         /// <summary>現在のウェーブレベル</summary>
         public int CurrentWaveLevel => currentWaveLevel;
         
-        /// <summary>初期化済みかどうか</summary>
-        public bool IsInitialized => isInitialized;
 
         #endregion
 
@@ -105,14 +97,16 @@ namespace SGC2025.Enemy
         {
             if (data == null)
             {
-                Debug.LogError("[EnemyController] 敵データがnullです");
+
+                currentWaveLevel = Mathf.Max(1, waveLevel);
+                isInitialized = true;
                 return;
             }
             
             enemyData = data;
             currentWaveLevel = Mathf.Max(1, waveLevel);
             cachedParameters = data.GetScaledParameters(currentWaveLevel);
-            currentHealth = cachedParameters.health;
+            currentHp = cachedParameters.health;  // SOから正しいHPを設定
             isInitialized = true;
         }
 
@@ -122,16 +116,20 @@ namespace SGC2025.Enemy
         /// <param name="damage">ダメージ量</param>
         public void TakeDamage(float damage)
         {
-            if (!IsAlive || damage <= 0f) 
+            if (!IsAlive || damage <= 0f)
             {
                 return;
             }
-            
-            float actualDamage = Mathf.Min(damage, currentHealth);
-            currentHealth = Mathf.Max(0f, currentHealth - actualDamage);
-            
+
+            float actualDamage = Mathf.Min(damage, currentHp);
+            currentHp = Mathf.Max(0f, currentHp - actualDamage);
+
+            // インターフェース要求イベント発火
             OnDamageTaken?.Invoke(actualDamage);
-            
+
+            // 静的イベントクラス経由でダメージイベント発火
+            EnemyEvents.TriggerEnemyDamage(gameObject, actualDamage, currentHp, MaxHealth);
+
             if (!IsAlive)
             {
                 HandleDeath();
@@ -144,33 +142,21 @@ namespace SGC2025.Enemy
 
         private void HandleDeath()
         {
+            // インターフェース要求イベント発火
             OnDeath?.Invoke();
-            OnEnemyDestroyed?.Invoke();
             
-            // 位置情報付きで敵撃破イベントを発火
-            OnEnemyDestroyedAtPosition?.Invoke(transform.position);
+            // 静的イベントクラス経由で撃破イベント発火（スコアは将来的に追加）
+            EnemyEvents.TriggerEnemyDestroyed(transform.position, 0);
             
-            ProcessDeathEffects();
             DeactivateEnemy();
-        }
-
-        private void ProcessDeathEffects()
-        {
-            // 将来的にパーティクル、サウンド、スコア等の処理を追加
         }
 
         private void DeactivateEnemy()
         {
             // EnemyFactoryのプールに返却
-            if (SGC2025.EnemyFactory.I != null)
+            if (EnemyFactory.I != null)
             {
-                SGC2025.EnemyFactory.I.ReturnEnemy(gameObject);
-            }
-            else
-            {
-                // フォールバック: 直接非アクティブ化
-                gameObject.SetActive(false);
-                Debug.LogWarning("[EnemyController] EnemyFactoryが見つからないため、直接非アクティブ化しました");
+                EnemyFactory.I.ReturnEnemy(gameObject);
             }
         }
 

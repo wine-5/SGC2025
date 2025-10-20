@@ -1,5 +1,4 @@
 using UnityEngine;
-using SGC2025;
 
 namespace SGC2025.Enemy
 {
@@ -9,16 +8,9 @@ namespace SGC2025.Enemy
     /// </summary>
     public class EnemyAutoReturn : MonoBehaviour
     {
-        #region 定数
-        private const float DEFAULT_PLAYER_CHASER_LIFETIME = 20f;
-        private const float DEFAULT_FIXED_DIRECTION_LIFETIME = 30f;
-        #endregion
-        
-        #region フィールド
         private float currentLifeTime;
         private float elapsedTime;
         private bool isInitialized = false;
-        #endregion
         
         /// <summary>
         /// 初期化（生成時に呼ばれる）
@@ -30,8 +22,6 @@ namespace SGC2025.Enemy
             
             // 敵の種類に応じて生存時間を設定
             SetLifeTimeBasedOnEnemyType();
-            
-
         }
         
         /// <summary>
@@ -42,43 +32,18 @@ namespace SGC2025.Enemy
             var controller = GetComponent<EnemyController>();
             if (controller != null && controller.EnemyData != null)
             {
-                // 各敵タイプ固有の生存時間を使用
                 currentLifeTime = controller.LifeTime;
+                return;
             }
-            else
-            {
-                // フォールバック：移動タイプベースの時間設定
-                if (controller != null && controller.EnemyData != null)
-                {
-                    MovementType movementType = controller.EnemyData.MovementType;
-                    
-                    if (IsPlayerChaserType(movementType))
-                    {
-                        currentLifeTime = DEFAULT_PLAYER_CHASER_LIFETIME;
-                    }
-                    else
-                    {
-                        currentLifeTime = DEFAULT_FIXED_DIRECTION_LIFETIME;
-                    }
-                }
-                else
-                {
-                    // 最終フォールバック
-                    currentLifeTime = DEFAULT_FIXED_DIRECTION_LIFETIME;
-                }
-            }
+            
+            // SOが設定されていない場合の警告
+            Debug.LogError($"[EnemyAutoReturn] EnemyDataSOが設定されていません！ GameObject: {gameObject.name}");
+            Debug.LogError("[EnemyAutoReturn] EnemyDataSOを正しく設定してください。オブジェクトプールに即座に返却します。");
+            
+            // 設定不備のため即座にプールに返却
+            currentLifeTime = 0f;
         }
         
-        /// <summary>
-        /// プレイヤー追従型の敵かどうかを判定
-        /// </summary>
-        private bool IsPlayerChaserType(MovementType movementType)
-        {
-            return movementType == MovementType.LinearChaser ||
-                   movementType == MovementType.InertiaChaser ||
-                   movementType == MovementType.PredictiveChaser ||
-                   movementType == MovementType.ArcChaser;
-        }
         
         private void Update()
         {
@@ -93,30 +58,19 @@ namespace SGC2025.Enemy
             }
         }
         
-        /// <summary>
-        /// プールに返却すべきかチェック
-        /// </summary>
         private bool ShouldReturnToPool()
         {
             // 時間経過のみで判定
             return HasLifeTimeExpired();
         }
-        
-        /// <summary>
-        /// 生存時間が経過したかチェック
-        /// </summary>
+
         private bool HasLifeTimeExpired()
         {
             return elapsedTime >= currentLifeTime;
         }
-
-        /// <summary>
-        /// プールに返却
-        /// </summary>
+        
         private void ReturnToPool()
         {
-
-            
             if (EnemyFactory.I != null)
             {
                 EnemyFactory.I.ReturnEnemy(gameObject);

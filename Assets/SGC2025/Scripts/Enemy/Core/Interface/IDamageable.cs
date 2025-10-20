@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace SGC2025.Enemy
 {
@@ -8,10 +7,10 @@ namespace SGC2025.Enemy
     /// </summary>
     public interface IDamageable
     {
-        /// <summary>現在のヘルス値</summary>
+        /// <summary>現在の体力値</summary>
         float CurrentHealth { get; }
         
-        /// <summary>最大ヘルス値</summary>
+        /// <summary>最大体力値</summary>
         float MaxHealth { get; }
         
         /// <summary>生存状態</summary>
