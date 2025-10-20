@@ -18,6 +18,7 @@ namespace SGC2025.Enemy
 
         [Header("生成位置管理")]
         [SerializeField] private EnemySpawnPositionManager positionManager = new EnemySpawnPositionManager();
+        private ISpawnPositionProvider positionProvider; // インターフェース参照
 
         [Header("ウェーブ設定")]
         [SerializeField] private int currentWaveLevel = DEFAULT_WAVE_LEVEL;
@@ -27,7 +28,9 @@ namespace SGC2025.Enemy
 
         private void Start()
         {
-            positionManager.InitRangesFromTransforms(); // ← ここで呼び出し
+            // インターフェース参照を設定
+            positionProvider = positionManager;
+            positionProvider.Initialize(); // インターフェース経由で初期化
             
             // スポーンポイントの設定を確認
             if (!positionManager.AreAllSpawnPointsSet())
@@ -134,7 +137,7 @@ namespace SGC2025.Enemy
                 return;
             }
 
-            Vector3 spawnPosition = positionManager.GetRandomEdgeSpawnPosition();
+            Vector3 spawnPosition = positionProvider.GetRandomSpawnPosition();
             
             if (spawnPosition == Vector3.zero)
             {

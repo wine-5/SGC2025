@@ -8,7 +8,7 @@ namespace SGC2025.Enemy
     /// 四方向からのランダム生成位置を提供
     /// </summary>
     [System.Serializable]
-    public class EnemySpawnPositionManager
+    public class EnemySpawnPositionManager : ISpawnPositionProvider
     {
         private const float RANGE_DETECT_RATIO = 0.6f; // 端判定用の比率
         private const float RANGE_HALF = 0.5f;         // 範囲の半分
@@ -49,6 +49,31 @@ namespace SGC2025.Enemy
         
         private float cachedRangeX;
         private float cachedRangeY;
+        private bool isInitialized = false;
+
+        #region ISpawnPositionProviderの実装
+
+        /// <summary>初期化済みかどうか</summary>
+        public bool IsInitialized => isInitialized;
+
+        /// <summary>初期化処理</summary>
+        public void Initialize()
+        {
+            InitRangesFromTransforms();
+            isInitialized = true;
+        }
+
+        /// <summary>ランダムなスポーン位置を取得</summary>
+        public Vector3 GetRandomSpawnPosition()
+        {
+            if (!isInitialized)
+            {
+                Initialize();
+            }
+            return GetRandomEdgeSpawnPosition();
+        }
+
+        #endregion
 
         public void InitRangesFromTransforms()
         {

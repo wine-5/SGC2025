@@ -7,7 +7,7 @@ namespace SGC2025.Enemy
     /// EnemyDataSOからの設定取得とウェーブレベルスケーリングをサポート
     /// 弾システムとの相互作用を含む包括的な敵制御機能
     /// </summary>
-    public class EnemyController : MonoBehaviour, IDamageable
+    public class EnemyController : MonoBehaviour, IDamageable, IEnemyParameters, IMovable
     {
         #region フィールド
 
@@ -84,6 +84,16 @@ namespace SGC2025.Enemy
 
         #endregion
 
+        #region IMovableの実装
+
+        /// <summary>オブジェクトのTransform</summary>
+        public Transform Transform => transform;
+        
+        /// <summary>移動可能かどうか</summary>
+        public bool CanMove => IsAlive && isInitialized;
+
+        #endregion
+
         #region パブリックメソッド
 
         /// <summary>
@@ -126,18 +136,6 @@ namespace SGC2025.Enemy
             {
                 HandleDeath();
             }
-        }
-
-        /// <summary>
-        /// 敵をリセット（オブジェクトプール用）
-        /// </summary>
-        public void ResetEnemy()
-        {
-            isInitialized = false;
-            currentHealth = 0f;
-            currentWaveLevel = 1;
-            cachedParameters = default;
-            gameObject.SetActive(false);
         }
 
         #endregion

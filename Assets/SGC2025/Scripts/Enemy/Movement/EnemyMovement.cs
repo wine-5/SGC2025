@@ -10,7 +10,8 @@ namespace SGC2025.Enemy
     /// </summary>
     public class EnemyMovement : MonoBehaviour
     {
-        private EnemyController controller; // 段階的移行のため一時的に保持
+        private IMovable movableTarget; // インターフェースベースの依存
+        private EnemyController controller; // 後方互換性のため一時保持
         private IMovementStrategy movementStrategy;
         private Vector3 moveDirection = Vector3.down; // デフォルトは下向き
         private Vector3? targetPosition = null;
@@ -24,6 +25,7 @@ namespace SGC2025.Enemy
         private void Awake()
         {
             controller = GetComponent<EnemyController>();
+            movableTarget = controller; // IMovableとして参照
             lastPosition = transform.position;
         }
         
@@ -96,9 +98,9 @@ namespace SGC2025.Enemy
 
         private void Update()
         {
-            if (controller == null || !controller.IsAlive) return;
+            if (movableTarget == null || !movableTarget.CanMove) return;
             
-            float speed = controller.MoveSpeed;
+            float speed = movableTarget.MoveSpeed;
             
             // 固定目標位置がある場合（画面端への移動）
             if (targetPosition.HasValue)
