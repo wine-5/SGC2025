@@ -10,7 +10,7 @@ namespace SGC2025.Enemy
     /// </summary>
     public class EnemyMovement : MonoBehaviour
     {
-        private EnemyController controller;
+        private EnemyController controller; // 段階的移行のため一時的に保持
         private IMovementStrategy movementStrategy;
         private Vector3 moveDirection = Vector3.down; // デフォルトは下向き
         private Vector3? targetPosition = null;

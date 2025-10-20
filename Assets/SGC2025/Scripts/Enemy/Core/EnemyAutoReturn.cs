@@ -9,18 +9,16 @@ namespace SGC2025.Enemy
     /// </summary>
     public class EnemyAutoReturn : MonoBehaviour
     {
-        [Header("自動削除設定")]
-        [SerializeField] private float fixedDirectionLifeTime = 30f;    // 固定方向移動の生存時間
-        [SerializeField] private float playerChaserLifeTime = 20f;      // プレイヤー追従型の生存時間
-        [SerializeField] private bool useCustomLifeTime = false;        // カスタム時間を使用するか
-        [SerializeField] private float customLifeTime = 15f;            // カスタム生存時間
+        #region 定数
+        private const float DEFAULT_PLAYER_CHASER_LIFETIME = 20f;
+        private const float DEFAULT_FIXED_DIRECTION_LIFETIME = 30f;
+        #endregion
         
-        [Header("デバッグ情報")]
-        [SerializeField] private float remainingTime = 0f;              // 残り時間（読み取り専用）
-        
+        #region フィールド
         private float currentLifeTime;
         private float elapsedTime;
         private bool isInitialized = false;
+        #endregion
         
         /// <summary>
         /// 初期化（生成時に呼ばれる）
@@ -41,17 +39,10 @@ namespace SGC2025.Enemy
         /// </summary>
         private void SetLifeTimeBasedOnEnemyType()
         {
-            // カスタム時間を使用する場合
-            if (useCustomLifeTime)
-            {
-                currentLifeTime = customLifeTime;
-                return;
-            }
-            
             var controller = GetComponent<EnemyController>();
             if (controller != null && controller.EnemyData != null)
             {
-                // 各敵タイプ固有の生存時間を使用（推奨）
+                // 各敵タイプ固有の生存時間を使用
                 currentLifeTime = controller.LifeTime;
             }
             else
@@ -63,17 +54,17 @@ namespace SGC2025.Enemy
                     
                     if (IsPlayerChaserType(movementType))
                     {
-                        currentLifeTime = playerChaserLifeTime;
+                        currentLifeTime = DEFAULT_PLAYER_CHASER_LIFETIME;
                     }
                     else
                     {
-                        currentLifeTime = fixedDirectionLifeTime;
+                        currentLifeTime = DEFAULT_FIXED_DIRECTION_LIFETIME;
                     }
                 }
                 else
                 {
                     // 最終フォールバック
-                    currentLifeTime = fixedDirectionLifeTime;
+                    currentLifeTime = DEFAULT_FIXED_DIRECTION_LIFETIME;
                 }
             }
         }
@@ -95,11 +86,6 @@ namespace SGC2025.Enemy
             
             // DeltaTimeで経過時間を累積
             elapsedTime += Time.deltaTime;
-            
-            // デバッグ用の残り時間を更新
-            remainingTime = Mathf.Max(0f, currentLifeTime - elapsedTime);
-            
-
             
             if (ShouldReturnToPool())
             {
@@ -153,25 +139,5 @@ namespace SGC2025.Enemy
             }
         }
         
-        /// <summary>
-        /// 手動でライフタイムをリセット
-        /// </summary>
-        public void ResetLifeTime()
-        {
-            elapsedTime = 0f;
-            remainingTime = currentLifeTime;
-        }
-        
-        /// <summary>
-        /// カスタムライフタイムを設定
-        /// </summary>
-        public void SetCustomLifeTime(float customTime)
-        {
-            useCustomLifeTime = true;
-            customLifeTime = customTime;
-            currentLifeTime = customTime;
-            elapsedTime = 0f;
-            remainingTime = currentLifeTime;
-        }
     }
 }

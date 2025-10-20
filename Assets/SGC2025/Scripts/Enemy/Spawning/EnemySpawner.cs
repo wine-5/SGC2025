@@ -111,45 +111,6 @@ namespace SGC2025.Enemy
             return positionManager.IsCornerSpawnMode();
         }
         
-        /// <summary>
-        /// 四隅生成モードを切り替え（デバッグ用）
-        /// </summary>
-        [ContextMenu("Toggle Corner Spawn Mode")]
-        public void ToggleCornerSpawnMode()
-        {
-            bool newMode = !IsCornerSpawnMode();
-            SetCornerSpawnMode(newMode);
-        }
-        
-        /// <summary>
-        /// 四隅の位置をデバッグ表示（デバッグ用）
-        /// </summary>
-        [ContextMenu("Debug Corner Positions")]
-        public void DebugCornerPositions()
-        {
-            positionManager.DebugCornerPositions();
-        }
-        
-        /// <summary>
-        /// Canvas参照モードを設定
-        /// </summary>
-        /// <param name="enabled">Canvas参照を有効にするか</param>
-        /// <param name="canvas">対象のCanvas</param>
-        /// <param name="camera">参照カメラ（オプション）</param>
-        public void SetCanvasReferenceMode(bool enabled, Canvas canvas = null, Camera camera = null)
-        {
-            positionManager.SetCanvasReferenceMode(enabled, canvas, camera);
-        }
-        
-        /// <summary>
-        /// Canvas参照モードが有効かどうか
-        /// </summary>
-        /// <returns>Canvas参照が有効かどうか</returns>
-        public bool IsCanvasReferenceMode()
-        {
-            return positionManager.IsCanvasReferenceMode();
-        }
-
         private void Update()
         {
             if (!isSpawning) return;

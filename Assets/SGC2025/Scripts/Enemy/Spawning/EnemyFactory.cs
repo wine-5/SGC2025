@@ -35,12 +35,8 @@ namespace SGC2025
                 return;
             }
             
-            // 設定状況をログ出力
-            if (spawnConfigManager.HasValidConfigs)
-            {
-                spawnConfigManager.LogConfigStatus();
-            }
-            else
+            // 設定状況を確認
+            if (!spawnConfigManager.HasValidConfigs)
             {
                 Debug.LogError("EnemyFactory: EnemySpawnConfigManagerに有効な設定がありません");
             }

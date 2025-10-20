@@ -13,9 +13,6 @@ namespace SGC2025.Enemy
         [Header("敵生成設定")]
         [SerializeField] private List<EnemySpawnConfigSO> spawnConfigs = new List<EnemySpawnConfigSO>();
 
-        [Header("デバッグ設定")]
-        [SerializeField] private bool enableDebugLog = false;
-
         /// <summary>
         /// 登録されている設定の数を取得
         /// </summary>
@@ -50,11 +47,6 @@ namespace SGC2025.Enemy
 
             // 重み付きランダムで選択
             var selectedData = SelectByWeight(allAvailableEnemies);
-
-            if (enableDebugLog && selectedData != null)
-            {
-                Debug.Log($"EnemySpawnConfigManager: {selectedData.EnemyType} を選択しました (ウェーブレベル: {waveLevel})");
-            }
 
             return selectedData;
         }
@@ -126,20 +118,5 @@ namespace SGC2025.Enemy
             return enemies[0].enemyData;
         }
 
-        /// <summary>
-        /// 設定の状態をログ出力
-        /// </summary>
-        public void LogConfigStatus()
-        {
-
-            for (int i = 0; i < spawnConfigs.Count; i++)
-            {
-                var config = spawnConfigs[i];
-                if (config != null)
-                {
-                    // Debug.Log($"  設定 {i + 1}: {config.name} ({config.GetEnemyDataCount()} 種類の敵)");
-                }
-            }
-        }
     }
 }
