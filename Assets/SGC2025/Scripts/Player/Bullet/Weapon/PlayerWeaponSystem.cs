@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using SGC2025.Events;
 
 namespace SGC2025.Player.Bullet
 {
@@ -60,14 +61,14 @@ namespace SGC2025.Player.Bullet
         
         private void OnEnable()
         {
-            // 敵撃破イベントの購読
-            SGC2025.Enemy.EnemyController.OnEnemyDestroyed += OnEnemyDestroyed;
+            // 敵撃破イベントの購読（EnemyEventsクラス経由）
+            EnemyEvents.OnEnemyDestroyed += OnEnemyDestroyed;
         }
         
         private void OnDisable()
         {
             // 敵撃破イベントの購読解除
-            SGC2025.Enemy.EnemyController.OnEnemyDestroyed -= OnEnemyDestroyed;
+            EnemyEvents.OnEnemyDestroyed -= OnEnemyDestroyed;
             
             // 自動発射停止
             StopAutoFire();

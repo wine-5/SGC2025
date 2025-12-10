@@ -11,6 +11,8 @@ namespace SGC2025.Enemy
     {
         private const float DEFAULT_SPAWN_INTERVAL = 2f;
         private const int DEFAULT_WAVE_LEVEL = 1;
+        private const float MIN_SPAWN_INTERVAL = 0.1f;
+        private const string DEBUG_LOG_PREFIX = "[EnemySpawner]";
 
         [Header("生成設定")]
         [SerializeField] private float spawnInterval = DEFAULT_SPAWN_INTERVAL;
@@ -18,6 +20,7 @@ namespace SGC2025.Enemy
 
         [Header("生成位置管理")]
         [SerializeField] private EnemySpawnPositionManager positionManager = new EnemySpawnPositionManager();
+        private ISpawnPositionProvider positionProvider; // インターフェース参照
 
         [Header("ウェーブ設定")]
         [SerializeField] private int currentWaveLevel = DEFAULT_WAVE_LEVEL;
@@ -27,12 +30,14 @@ namespace SGC2025.Enemy
 
         private void Start()
         {
-            positionManager.InitRangesFromTransforms(); // ← ここで呼び出し
+            // インターフェース参照を設定
+            positionProvider = positionManager;
+            positionProvider.Initialize(); // インターフェース経由で初期化
             
             // スポーンポイントの設定を確認
             if (!positionManager.AreAllSpawnPointsSet())
             {
-                Debug.LogError("EnemySpawner: スポーンポイントが正しく設定されていません！");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} スポーンポイントが正しく設定されていません！");
                 positionManager.LogMissingSpawnPoints();
             }
             
@@ -66,7 +71,7 @@ namespace SGC2025.Enemy
         /// </summary>
         public void SetSpawnInterval(float interval)
         {
-            spawnInterval = Mathf.Max(0.1f, interval);
+            spawnInterval = Mathf.Max(MIN_SPAWN_INTERVAL, interval);
         }
         
         /// <summary>
@@ -74,7 +79,7 @@ namespace SGC2025.Enemy
         /// </summary>
         public void SetWaveLevel(int waveLevel)
         {
-            currentWaveLevel = Mathf.Max(1, waveLevel);
+            currentWaveLevel = Mathf.Max(DEFAULT_WAVE_LEVEL, waveLevel);
         }
         
         /// <summary>
@@ -111,45 +116,6 @@ namespace SGC2025.Enemy
             return positionManager.IsCornerSpawnMode();
         }
         
-        /// <summary>
-        /// 四隅生成モードを切り替え（デバッグ用）
-        /// </summary>
-        [ContextMenu("Toggle Corner Spawn Mode")]
-        public void ToggleCornerSpawnMode()
-        {
-            bool newMode = !IsCornerSpawnMode();
-            SetCornerSpawnMode(newMode);
-        }
-        
-        /// <summary>
-        /// 四隅の位置をデバッグ表示（デバッグ用）
-        /// </summary>
-        [ContextMenu("Debug Corner Positions")]
-        public void DebugCornerPositions()
-        {
-            positionManager.DebugCornerPositions();
-        }
-        
-        /// <summary>
-        /// Canvas参照モードを設定
-        /// </summary>
-        /// <param name="enabled">Canvas参照を有効にするか</param>
-        /// <param name="canvas">対象のCanvas</param>
-        /// <param name="camera">参照カメラ（オプション）</param>
-        public void SetCanvasReferenceMode(bool enabled, Canvas canvas = null, Camera camera = null)
-        {
-            positionManager.SetCanvasReferenceMode(enabled, canvas, camera);
-        }
-        
-        /// <summary>
-        /// Canvas参照モードが有効かどうか
-        /// </summary>
-        /// <returns>Canvas参照が有効かどうか</returns>
-        public bool IsCanvasReferenceMode()
-        {
-            return positionManager.IsCanvasReferenceMode();
-        }
-
         private void Update()
         {
             if (!isSpawning) return;
@@ -169,22 +135,22 @@ namespace SGC2025.Enemy
         {
             if (EnemyFactory.I == null)
             {
-                Debug.LogError("EnemySpawner: EnemyFactory.I がnullです！");  
+                Debug.LogError($"{DEBUG_LOG_PREFIX} EnemyFactory.I がnullです！");  
                 return;
             }
 
-            Vector3 spawnPosition = positionManager.GetRandomEdgeSpawnPosition();
+            Vector3 spawnPosition = positionProvider.GetRandomSpawnPosition();
             
             if (spawnPosition == Vector3.zero)
             {
-                Debug.LogWarning("EnemySpawner: スポーン位置が中心(0,0,0)になっています。スポーンポイントの設定を確認してください。");
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} スポーン位置が中心(0,0,0)になっています。スポーンポイントの設定を確認してください。");
             }
             
             GameObject enemy = EnemyFactory.I.CreateRandomEnemy(spawnPosition, currentWaveLevel);
             
             if (enemy == null)
             {
-                Debug.LogError("EnemySpawner: 敵の生成に失敗しました！");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} 敵の生成に失敗しました！");
                 return;
             }
 

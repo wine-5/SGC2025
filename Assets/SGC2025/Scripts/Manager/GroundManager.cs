@@ -2,6 +2,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
 using SGC2025.Enemy;
+using SGC2025.Events;
 
 namespace SGC2025
 {
@@ -56,14 +57,14 @@ namespace SGC2025
                 Debug.LogWarning("GroundManager : 草マテリアルがありません。");
             }
             
-            // 敵撃破イベントを購読
-            EnemyController.OnEnemyDestroyedAtPosition += OnEnemyDestroyed;
+            // 敵撃破イベントを購読（EnemyEventsクラス経由）
+            EnemyEvents.OnEnemyDestroyedAtPosition += OnEnemyDestroyed;
         }
         
         protected override void OnDestroy()
         {
             // イベントの購読解除
-            EnemyController.OnEnemyDestroyedAtPosition -= OnEnemyDestroyed;
+            EnemyEvents.OnEnemyDestroyedAtPosition -= OnEnemyDestroyed;
             base.OnDestroy();
         }
         

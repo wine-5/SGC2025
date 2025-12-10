@@ -11,6 +11,9 @@ namespace SGC2025
     /// </summary>
     public class EnemyFactory : Singleton<EnemyFactory>
     {
+        private const int DEFAULT_WAVE_LEVEL = 1;
+        private const string DEBUG_LOG_PREFIX = "[EnemyFactory]";
+
         [Header("プール設定")]
         [SerializeField] private ObjectPool objectPool;
         
@@ -31,16 +34,12 @@ namespace SGC2025
         {
             if (objectPool == null)
             {
-                Debug.LogError("EnemyFactory: ObjectPoolが設定されていません");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} ObjectPoolが設定されていません");
                 return;
             }
             
-            // 設定状況をログ出力
-            if (spawnConfigManager.HasValidConfigs)
-            {
-                spawnConfigManager.LogConfigStatus();
-            }
-            else
+            // 設定状況を確認
+            if (!spawnConfigManager.HasValidConfigs)
             {
                 Debug.LogError("EnemyFactory: EnemySpawnConfigManagerに有効な設定がありません");
             }
@@ -51,11 +50,11 @@ namespace SGC2025
         /// <summary>
         /// 敵を生成（EnemyDataSOから）
         /// </summary>
-        public GameObject CreateEnemy(EnemyDataSO enemyData, Vector3 position, int waveLevel = 1)
+        public GameObject CreateEnemy(EnemyDataSO enemyData, Vector3 position, int waveLevel = DEFAULT_WAVE_LEVEL)
         {
             if (enemyData == null)
             {
-                Debug.LogError("EnemyFactory: 無効なEnemyDataSOです");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} 無効なEnemyDataSOです");
                 return null;
             }
             
@@ -65,7 +64,7 @@ namespace SGC2025
             
             if (enemyObj == null)
             {
-                Debug.LogError($"EnemyFactory: {enemyData.EnemyType} の生成に失敗しました（プール名: {poolName}）");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} {enemyData.EnemyType} の生成に失敗しました（プール名: {poolName}）");
                 return null;
             }
             
@@ -81,7 +80,7 @@ namespace SGC2025
             }
             else
             {
-                Debug.LogError($"EnemyFactory: {enemyData.EnemyType}にEnemyControllerが見つかりません");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} {enemyData.EnemyType}にEnemyControllerが見つかりません");
             }
             
             return enemyObj;
@@ -90,18 +89,18 @@ namespace SGC2025
         /// <summary>
         /// 敵を生成（EnemyTypeから）
         /// </summary>
-        public GameObject CreateEnemy(EnemyType enemyType, Vector3 position, int waveLevel = 1)
+        public GameObject CreateEnemy(EnemyType enemyType, Vector3 position, int waveLevel = DEFAULT_WAVE_LEVEL)
         {
             if (!spawnConfigManager.HasValidConfigs)
             {
-                Debug.LogError("EnemyFactory: EnemySpawnConfigManagerに有効な設定がありません");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} EnemySpawnConfigManagerに有効な設定がありません");
                 return null;
             }
             
             var enemyData = spawnConfigManager.GetEnemyData(enemyType);
             if (enemyData == null)
             {
-                Debug.LogError($"EnemyFactory: EnemyType {enemyType} のデータが見つかりません");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} EnemyType {enemyType} のデータが見つかりません");
                 return null;
             }
             
@@ -111,18 +110,18 @@ namespace SGC2025
         /// <summary>
         /// ランダムな敵を生成（重み付きランダム）
         /// </summary>
-        public GameObject CreateRandomEnemy(Vector3 position, int waveLevel = 1)
+        public GameObject CreateRandomEnemy(Vector3 position, int waveLevel = DEFAULT_WAVE_LEVEL)
         {
             if (!spawnConfigManager.HasValidConfigs)
             {
-                Debug.LogError("EnemyFactory: EnemySpawnConfigManagerに有効な設定がありません");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} EnemySpawnConfigManagerに有効な設定がありません");
                 return null;
             }
             
             var selectedEnemy = spawnConfigManager.SelectRandomEnemyData(waveLevel);
             if (selectedEnemy == null)
             {
-                Debug.LogWarning($"EnemyFactory: ウェーブレベル {waveLevel} で選択可能な敵がいません");
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} ウェーブレベル {waveLevel} で選択可能な敵がいません");
                 return null;
             }
             
