@@ -6,54 +6,77 @@ namespace SGC2025.Character
 {
     /// <summary>
     /// キャラクターの武器・射撃システムを専門に管理するクラス
-    /// 弾丸生成、連射レート、将来の武器アップグレード拡張に対応
+    /// 弾丸生成、連射レート、武器アップグレード拡張に対応
     /// </summary>
     public class CharacterWeapon : MonoBehaviour
     {
+        #region 定数
+        private const float DEFAULT_FIRE_RATE = 0.3f;
+        private const float DEFAULT_BULLET_SPEED = 10f;
+        private const float DEFAULT_BULLET_LIFETIME = 5f;
+        private const int DEFAULT_BULLET_DAMAGE = 1;
+        private const int DEFAULT_WEAPON_LEVEL = 1;
+        private const int DEFAULT_MAX_WEAPON_LEVEL = 5;
+        private const int DEFAULT_ENEMIES_FOR_UPGRADE = 5;
+        private const float DEFAULT_SPREAD_ANGLE = 15f;
+        private const int DEFAULT_BULLET_COUNT = 1;
+        private const int DEFAULT_MAX_FOLLOWERS = 5;
+        private const float DEFAULT_MUZZLE_FLASH_DURATION = 0.1f;
+        private const float FOLLOWER_RADIUS = 1.5f;
+        private const float FOLLOWER_ROTATION_SPEED = 90f;
+        private const int ENEMIES_PER_FOLLOWER = 3;
+        private const float FIRE_RATE_IMPROVEMENT = 0.8f;
+        private const float BULLET_SPEED_IMPROVEMENT = 1.2f;
+        private const string DEBUG_LOG_PREFIX = "[CharacterWeapon]";
+        #endregion
+
+        #region Inspector設定
         [Header("基本武器設定")]
         [SerializeField] private GameObject bulletPrefab;  
         [SerializeField] private Transform[] firePoints;
-        [SerializeField] private float fireRate = 0.3f;
+        [SerializeField] private float fireRate = DEFAULT_FIRE_RATE;
         [SerializeField] private bool weaponEnabled = true;
 
         [Header("弾丸設定")]
-        [SerializeField] private float bulletSpeed = 10f;
-        [SerializeField] private float bulletLifetime = 5f;
-        [SerializeField] private int bulletDamage = 1;
+        [SerializeField] private float bulletSpeed = DEFAULT_BULLET_SPEED;
+        [SerializeField] private float bulletLifetime = DEFAULT_BULLET_LIFETIME;
+        [SerializeField] private int bulletDamage = DEFAULT_BULLET_DAMAGE;
 
         [Header("アップグレードシステム")]
-        [SerializeField] private int currentWeaponLevel = 1;
-        [SerializeField] private int maxWeaponLevel = 5;
-        [SerializeField] private int enemiesDefeatedForUpgrade = 5;
+        [SerializeField] private int currentWeaponLevel = DEFAULT_WEAPON_LEVEL;
+        [SerializeField] private int maxWeaponLevel = DEFAULT_MAX_WEAPON_LEVEL;
+        [SerializeField] private int enemiesDefeatedForUpgrade = DEFAULT_ENEMIES_FOR_UPGRADE;
         [SerializeField] private int currentEnemiesDefeated = 0;
 
         [Header("高度な機能")]
         [SerializeField] private bool enableSpread = false;
-        [SerializeField] private float spreadAngle = 15f;
+        [SerializeField] private float spreadAngle = DEFAULT_SPREAD_ANGLE;
         [SerializeField] private bool enableMultiShot = false;
-        [SerializeField] private int bulletCount = 1;
+        [SerializeField] private int bulletCount = DEFAULT_BULLET_COUNT;
 
         [Header("将来の機能")]
         [SerializeField] private bool enableButterflyFollowers = false;
-        [SerializeField] private int maxFollowers = 5;
+        [SerializeField] private int maxFollowers = DEFAULT_MAX_FOLLOWERS;
         [SerializeField] private List<GameObject> butterflyFollowers = new List<GameObject>();
 
         [Header("エフェクト")]
         [SerializeField] private GameObject muzzleFlashPrefab;
         [SerializeField] private AudioClip shotSound;
-        [SerializeField] private float muzzleFlashDuration = 0.1f;
+        [SerializeField] private float muzzleFlashDuration = DEFAULT_MUZZLE_FLASH_DURATION;
 
         [Header("デバッグ")]
         [SerializeField] private bool showFireDirection = true;
         [SerializeField] private bool enableDebugLogs = false;
+        #endregion
 
+        #region プライベート変数
         private CharacterController characterController;
         private float nextFireTime = 0f;
         private AudioSource audioSource;
-        // private ObjectPool bulletPool; // ObjectPoolクラスが未実装のためコメントアウト
+        #endregion
 
-        #region Events
-        /// <summary>射撃時のイベント</summary>
+        #region イベント
+        /// <summary>弾丸発射時のイベント</summary>
         public event Action<Vector3, Vector3> OnWeaponFired; // (position, direction)
         
         /// <summary>武器レベルアップ時のイベント</summary>
@@ -63,7 +86,7 @@ namespace SGC2025.Character
         public event Action<GameObject> OnBulletHit; // (hitTarget)
         #endregion
 
-        #region Properties
+        #region プロパティ
         /// <summary>現在の武器レベル</summary>
         public int CurrentWeaponLevel => currentWeaponLevel;
         
@@ -83,7 +106,7 @@ namespace SGC2025.Character
         public int FollowerCount => butterflyFollowers.Count;
         #endregion
 
-        #region Handler Lifecycle
+        #region ハンドラーライフサイクル
         /// <summary>
         /// CharacterControllerによる初期化
         /// </summary>
@@ -93,18 +116,37 @@ namespace SGC2025.Character
             characterController = controller;
             audioSource = GetComponent<AudioSource>();
             
-            // FirePointが設定されていない場合は自身のTransformを使用
-            if (firePoints == null || firePoints.Length == 0)
-            {
-                firePoints = new Transform[] { transform };
-            }
-
-            // オブジェクトプールの初期化
+            ValidateComponents();
             InitializeBulletPool();
 
             if (enableDebugLogs)
             {
-                Debug.Log($"[CharacterWeaponHandler] Initialized with {firePoints.Length} fire points");
+                Debug.Log($"{DEBUG_LOG_PREFIX} Initialized with {firePoints.Length} fire points");
+            }
+        }
+
+        /// <summary>
+        /// コンポーネントの妥当性チェック
+        /// </summary>
+        private void ValidateComponents()
+        {
+            // FirePointが設定されていない場合は自身のTransformを使用
+            if (firePoints == null || firePoints.Length == 0)
+            {
+                firePoints = new Transform[] { transform };
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} No fire points set. Using self transform.");
+            }
+
+            // 弾丸プレハブのチェック
+            if (bulletPrefab == null)
+            {
+                Debug.LogError($"{DEBUG_LOG_PREFIX} Bullet prefab is not assigned!");
+            }
+
+            // AudioSourceのチェック
+            if (audioSource == null && shotSound != null)
+            {
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} Shot sound is assigned but AudioSource component is missing.");
             }
         }
 
@@ -115,7 +157,7 @@ namespace SGC2025.Character
         public void OnDisable() { }
         #endregion
 
-        #region Update Processing
+        #region 更新処理
         private void Update()
         {
             if (characterController?.Input == null) return;
@@ -147,8 +189,8 @@ namespace SGC2025.Character
             {
                 if (butterflyFollowers[i] == null) continue;
 
-                float angle = (360f / butterflyFollowers.Count) * i + Time.time * 90f;
-                float radius = 1.5f;
+                float angle = (360f / butterflyFollowers.Count) * i + Time.time * FOLLOWER_ROTATION_SPEED;
+                float radius = FOLLOWER_RADIUS;
                 Vector3 offset = new Vector3(
                     Mathf.Cos(angle * Mathf.Deg2Rad) * radius,
                     Mathf.Sin(angle * Mathf.Deg2Rad) * radius,
@@ -160,13 +202,13 @@ namespace SGC2025.Character
         }
         #endregion
 
-        #region Weapon System
+        #region 武器システム
         /// <summary>
         /// 武器を発射
         /// </summary>
         public void FireWeapon()
         {
-            if (!CanFire) return;
+            if (!CanFire || bulletPrefab == null) return;
 
             nextFireTime = Time.time + fireRate;
 
@@ -192,7 +234,7 @@ namespace SGC2025.Character
 
             if (enableDebugLogs)
             {
-                Debug.Log($"[CharacterWeaponHandler] Weapon fired at direction: {fireDirection}");
+                Debug.Log($"{DEBUG_LOG_PREFIX} Weapon fired at direction: {fireDirection}");
             }
         }
 
@@ -204,7 +246,10 @@ namespace SGC2025.Character
         {
             foreach (Transform firePoint in firePoints)
             {
-                CreateBullet(firePoint.position, direction);
+                if (firePoint != null)
+                {
+                    CreateBullet(firePoint.position, direction);
+                }
             }
         }
 
@@ -227,7 +272,10 @@ namespace SGC2025.Character
 
                 foreach (Transform firePoint in firePoints)
                 {
-                    CreateBullet(firePoint.position, direction);
+                    if (firePoint != null)
+                    {
+                        CreateBullet(firePoint.position, direction);
+                    }
                 }
             }
         }
@@ -239,16 +287,11 @@ namespace SGC2025.Character
         /// <param name="direction">射撃方向</param>
         private void CreateBullet(Vector3 position, Vector3 direction)
         {
-            GameObject bullet;
-            
-            // 弾丸を生成（オブジェクトプール未実装のため直接生成）
-            bullet = Instantiate(bulletPrefab);
+            if (bulletPrefab == null) return;
+
+            GameObject bullet = Instantiate(bulletPrefab, position, Quaternion.LookRotation(Vector3.forward, direction));
 
             if (bullet == null) return;
-
-            // 弾丸の初期設定
-            bullet.transform.position = position;
-            bullet.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
 
             // 弾丸の物理設定
             Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
@@ -263,6 +306,11 @@ namespace SGC2025.Character
             {
                 bulletComponent.Initialize(bulletDamage, bulletLifetime, this);
             }
+            else
+            {
+                // Bulletコンポーネントがない場合は自動破棄
+                Destroy(bullet, bulletLifetime);
+            }
         }
 
         /// <summary>
@@ -276,7 +324,7 @@ namespace SGC2025.Character
         }
         #endregion
 
-        #region Upgrade System
+        #region アップグレードシステム
         /// <summary>
         /// 敵撃破時の処理
         /// </summary>
@@ -293,7 +341,7 @@ namespace SGC2025.Character
             // 蝶々フォロワーの追加判定
             if (enableButterflyFollowers && butterflyFollowers.Count < maxFollowers)
             {
-                if (currentEnemiesDefeated % 3 == 0) // 3体倒すごとに追加
+                if (currentEnemiesDefeated % ENEMIES_PER_FOLLOWER == 0)
                 {
                     AddButterflyFollower();
                 }
@@ -311,7 +359,7 @@ namespace SGC2025.Character
             switch (currentWeaponLevel)
             {
                 case 2:
-                    fireRate = Mathf.Max(0.1f, fireRate * 0.8f); // 連射速度向上
+                    fireRate = Mathf.Max(0.1f, fireRate * FIRE_RATE_IMPROVEMENT);
                     break;
                 case 3:
                     enableMultiShot = true;
@@ -323,7 +371,7 @@ namespace SGC2025.Character
                     break;
                 case 5:
                     bulletCount = 5;
-                    bulletSpeed *= 1.2f;
+                    bulletSpeed *= BULLET_SPEED_IMPROVEMENT;
                     break;
             }
 
@@ -331,7 +379,7 @@ namespace SGC2025.Character
 
             if (enableDebugLogs)
             {
-                Debug.Log($"[CharacterWeaponHandler] Weapon upgraded to level {currentWeaponLevel}");
+                Debug.Log($"{DEBUG_LOG_PREFIX} Weapon upgraded to level {currentWeaponLevel}");
             }
         }
 
@@ -348,12 +396,12 @@ namespace SGC2025.Character
             
             if (enableDebugLogs)
             {
-                Debug.Log($"[CharacterWeaponHandler] Butterfly follower added. Total: {butterflyFollowers.Count}");
+                Debug.Log($"{DEBUG_LOG_PREFIX} Butterfly follower added. Total: {butterflyFollowers.Count}");
             }
         }
         #endregion
 
-        #region Effects and Audio
+        #region エフェクトとオーディオ
         /// <summary>
         /// マズルフラッシュの再生
         /// </summary>
@@ -363,6 +411,8 @@ namespace SGC2025.Character
 
             foreach (Transform firePoint in firePoints)
             {
+                if (firePoint == null) continue;
+
                 GameObject flash = Instantiate(muzzleFlashPrefab, firePoint.position, firePoint.rotation);
                 Destroy(flash, muzzleFlashDuration);
             }
@@ -380,17 +430,17 @@ namespace SGC2025.Character
         }
         #endregion
 
-        #region Object Pool
+        #region オブジェクトプール
         /// <summary>
         /// 弾丸オブジェクトプールの初期化（現在は未実装）
         /// </summary>
         private void InitializeBulletPool()
         {
-            // ObjectPoolクラスが未実装のため何もしない
+            // TODO: ObjectPoolクラスが実装されたら対応
         }
         #endregion
 
-        #region Public Methods
+        #region パブリックメソッド
         /// <summary>
         /// 武器の有効/無効を切り替え
         /// </summary>
@@ -398,6 +448,11 @@ namespace SGC2025.Character
         public void SetWeaponEnabled(bool enabled)
         {
             weaponEnabled = enabled;
+
+            if (enableDebugLogs)
+            {
+                Debug.Log($"{DEBUG_LOG_PREFIX} Weapon {(enabled ? "enabled" : "disabled")}");
+            }
         }
 
         /// <summary>
@@ -405,11 +460,13 @@ namespace SGC2025.Character
         /// </summary>
         public void ResetWeapon()
         {
-            currentWeaponLevel = 1;
+            currentWeaponLevel = DEFAULT_WEAPON_LEVEL;
             currentEnemiesDefeated = 0;
             enableMultiShot = false;
             enableSpread = false;
-            bulletCount = 1;
+            bulletCount = DEFAULT_BULLET_COUNT;
+            fireRate = DEFAULT_FIRE_RATE;
+            bulletSpeed = DEFAULT_BULLET_SPEED;
             
             // フォロワーをクリア
             foreach (var follower in butterflyFollowers)
@@ -420,6 +477,11 @@ namespace SGC2025.Character
                 }
             }
             butterflyFollowers.Clear();
+
+            if (enableDebugLogs)
+            {
+                Debug.Log($"{DEBUG_LOG_PREFIX} Weapon reset to default state");
+            }
         }
 
         /// <summary>
@@ -430,9 +492,9 @@ namespace SGC2025.Character
         /// <param name="lifetime">弾丸寿命</param>
         public void SetBulletParameters(float speed, int damage, float lifetime)
         {
-            bulletSpeed = speed;
-            bulletDamage = damage;
-            bulletLifetime = lifetime;
+            bulletSpeed = Mathf.Max(0f, speed);
+            bulletDamage = Mathf.Max(0, damage);
+            bulletLifetime = Mathf.Max(0f, lifetime);
         }
 
         /// <summary>
@@ -450,6 +512,8 @@ namespace SGC2025.Character
         {
             if (!showFireDirection) return;
 
+            if (firePoints == null || firePoints.Length == 0) return;
+
             Gizmos.color = Color.red;
             foreach (Transform firePoint in firePoints)
             {
@@ -461,7 +525,7 @@ namespace SGC2025.Character
             }
 
             // 拡散角度の可視化
-            if (enableSpread)
+            if (enableSpread && firePoints.Length > 0 && firePoints[0] != null)
             {
                 Gizmos.color = Color.yellow;
                 Vector3 baseDirection = GetFireDirection();
@@ -477,7 +541,7 @@ namespace SGC2025.Character
     }
 
     /// <summary>
-    /// 弾丸の基本コンポーネント（別途実装が必要）
+    /// 弾丸の基本コンポーネント
     /// </summary>
     public class Bullet : MonoBehaviour
     {
@@ -485,6 +549,12 @@ namespace SGC2025.Character
         private float lifetime;
         private CharacterWeapon weaponHandler;
 
+        /// <summary>
+        /// 弾丸の初期化
+        /// </summary>
+        /// <param name="bulletDamage">ダメージ量</param>
+        /// <param name="bulletLifetime">寿命</param>
+        /// <param name="handler">武器ハンドラー</param>
         public void Initialize(int bulletDamage, float bulletLifetime, CharacterWeapon handler)
         {
             damage = bulletDamage;
@@ -497,16 +567,15 @@ namespace SGC2025.Character
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (other == null) return;
+
             if (other.CompareTag("Enemy"))
             {
                 // 敵にダメージを与える処理
                 var enemy = other.GetComponent<IDamageable>();
-                enemy?.TakeDamage(damage);
-                
-                // 弾丸ヒットイベントの通知
-                if (weaponHandler != null)
+                if (enemy != null)
                 {
-                    // weaponHandler.OnBulletHit?.Invoke(other.gameObject); // 現在は実装しない
+                    enemy.TakeDamage(damage);
                 }
                 
                 Destroy(gameObject);

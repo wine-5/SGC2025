@@ -5,36 +5,48 @@ namespace SGC2025.Character
 {
     /// <summary>
     /// キャラクターのHP管理を専門に行うクラス
-    /// ダメージ処理、死亡判定、将来の無敵時間・バフ拡張に対応
+    /// ダメージ処理、死亡判定、無敵時間・バフ拡張に対応
     /// </summary>
     public class CharacterHealth : MonoBehaviour
     {
+        #region 定数
+        private const int DEFAULT_MAX_HEALTH = 3;
+        private const float DEFAULT_INVINCIBILITY_DURATION = 1f;
+        private const float DEFAULT_FLASH_INTERVAL = 0.1f;
+        private const string DEBUG_LOG_PREFIX = "[CharacterHealth]";
+        #endregion
+
+        #region Inspector設定
         [Header("ヘルス設定")]
-        [SerializeField] private int maxHealth = 3;
+        [SerializeField] private int maxHealth = DEFAULT_MAX_HEALTH;
         [SerializeField] private int currentHealth;
         [SerializeField] private bool isDead = false;
 
         [Header("無敵時間設定")]
-        [SerializeField] private float invincibilityDuration = 1f;
+        [SerializeField] private float invincibilityDuration = DEFAULT_INVINCIBILITY_DURATION;
         [SerializeField] private bool enableInvincibility = true;
         [SerializeField] private float invincibilityTimer = 0f;
 
         [Header("視覚効果")]
         [SerializeField] private bool enableFlashing = true;
-        [SerializeField] private float flashInterval = 0.1f;
+        [SerializeField] private float flashInterval = DEFAULT_FLASH_INTERVAL;
         [SerializeField] private Color damageFlashColor = Color.red;
 
         [Header("デバッグ")]
         [SerializeField] private bool showHealthInGizmos = true;
+        [SerializeField] private bool enableDebugLogs = false;
+        #endregion
 
+        #region プライベート変数
         private CharacterController characterController;
         private SpriteRenderer spriteRenderer;
         private Color originalColor;
         private float flashTimer = 0f;
         private bool isFlashing = false;
+        #endregion
 
-        #region Events
-        /// <summary>ダメージを受けた時のイベント</summary>
+        #region イベント
+        /// <summary>ヘルスが変化したときのイベント</summary>
         public event Action<int, int> OnHealthChanged; // (currentHealth, maxHealth)
         
         /// <summary>死亡時のイベント</summary>
@@ -47,8 +59,8 @@ namespace SGC2025.Character
         public event Action<int> OnHealthRestored; // (restoredAmount)
         #endregion
 
-        #region Properties
-        /// <summary>現在のHP</summary>
+        #region プロパティ
+        /// <summary>現在のヘルス値</summary>
         public int CurrentHealth => currentHealth;
         
         /// <summary>最大HP</summary>
@@ -70,7 +82,7 @@ namespace SGC2025.Character
         public float RemainingInvincibilityTime => Mathf.Max(0f, invincibilityTimer);
         #endregion
 
-        #region Handler Lifecycle
+        #region ハンドラーライフサイクル
         /// <summary>
         /// CharacterControllerによる初期化
         /// </summary>
@@ -84,18 +96,31 @@ namespace SGC2025.Character
             {
                 originalColor = spriteRenderer.color;
             }
+            else
+            {
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} SpriteRenderer not found. Flashing effects will be disabled.");
+            }
 
             ResetHealth();
+
+            if (enableDebugLogs)
+            {
+                Debug.Log($"{DEBUG_LOG_PREFIX} Initialized with {currentHealth}/{maxHealth} HP");
+            }
         }
 
         public void OnStart() { }
 
         public void OnEnable() { }
 
-        public void OnDisable() { }
+        public void OnDisable() 
+        {
+            // 無効化時に点滅を停止
+            StopFlashing();
+        }
         #endregion
 
-        #region Update Processing
+        #region 更新処理
         private void Update()
         {
             UpdateInvincibility();
@@ -140,7 +165,7 @@ namespace SGC2025.Character
         }
         #endregion
 
-        #region Health Management
+        #region ヘルス管理
         /// <summary>
         /// ダメージを受ける
         /// </summary>
@@ -179,7 +204,11 @@ namespace SGC2025.Character
                 Die();
             }
 
-            Debug.Log($"[CharacterHealthHandler] Took {damage} damage. Health: {currentHealth}/{maxHealth}");
+            if (enableDebugLogs)
+            {
+                Debug.Log($"{DEBUG_LOG_PREFIX} Took {damage} damage. Health: {currentHealth}/{maxHealth}");
+            }
+
             return true;
         }
 
@@ -201,7 +230,10 @@ namespace SGC2025.Character
                 OnHealthChanged?.Invoke(currentHealth, maxHealth);
                 OnHealthRestored?.Invoke(actualRestored);
                 
-                Debug.Log($"[CharacterHealthHandler] Restored {actualRestored} health. Health: {currentHealth}/{maxHealth}");
+                if (enableDebugLogs)
+                {
+                    Debug.Log($"{DEBUG_LOG_PREFIX} Restored {actualRestored} health. Health: {currentHealth}/{maxHealth}");
+                }
             }
 
             return actualRestored;
@@ -222,7 +254,11 @@ namespace SGC2025.Character
         /// <param name="adjustCurrentHealth">現在HPも比例して調整するか</param>
         public void SetMaxHealth(int newMaxHealth, bool adjustCurrentHealth = false)
         {
-            if (newMaxHealth <= 0) return;
+            if (newMaxHealth <= 0)
+            {
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} Cannot set max health to {newMaxHealth}. Must be positive.");
+                return;
+            }
 
             if (adjustCurrentHealth && maxHealth > 0)
             {
@@ -253,7 +289,7 @@ namespace SGC2025.Character
         }
         #endregion
 
-        #region Invincibility Management
+        #region 無敵状態管理
         /// <summary>
         /// 無敵状態を設定
         /// </summary>
@@ -285,7 +321,7 @@ namespace SGC2025.Character
         }
         #endregion
 
-        #region Death Management
+        #region 死亡管理
         /// <summary>
         /// 死亡処理
         /// </summary>
@@ -300,10 +336,10 @@ namespace SGC2025.Character
             // 死亡イベント通知
             OnDeath?.Invoke();
             
-            // CharacterControllerに死亡を通知
-            characterController?.OnCharacterDeath();
-
-            Debug.Log($"[CharacterHealthHandler] Character {gameObject.name} has died");
+            if (enableDebugLogs)
+            {
+                Debug.Log($"{DEBUG_LOG_PREFIX} Character {gameObject.name} has died");
+            }
         }
 
         /// <summary>
@@ -329,11 +365,14 @@ namespace SGC2025.Character
             
             OnHealthChanged?.Invoke(currentHealth, maxHealth);
             
-            Debug.Log($"[CharacterHealthHandler] Character {gameObject.name} revived with {currentHealth} HP");
+            if (enableDebugLogs)
+            {
+                Debug.Log($"{DEBUG_LOG_PREFIX} Character {gameObject.name} revived with {currentHealth} HP");
+            }
         }
         #endregion
 
-        #region Visual Effects
+        #region ビジュアルエフェクト
         /// <summary>
         /// 点滅エフェクト開始
         /// </summary>

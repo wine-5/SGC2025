@@ -8,6 +8,10 @@ namespace SGC2025.Enemy
     /// </summary>
     public class EnemyAutoReturn : MonoBehaviour
     {
+        private const float DEFAULT_ELAPSED_TIME = 0f;
+        private const float IMMEDIATE_RETURN_TIME = 0f;
+        private const string DEBUG_LOG_PREFIX = "[EnemyAutoReturn]";
+
         private float currentLifeTime;
         private float elapsedTime;
         private bool isInitialized = false;
@@ -17,7 +21,7 @@ namespace SGC2025.Enemy
         /// </summary>
         public void Initialize()
         {
-            elapsedTime = 0f;
+            elapsedTime = DEFAULT_ELAPSED_TIME;
             isInitialized = true;
             
             // 敵の種類に応じて生存時間を設定
@@ -37,11 +41,10 @@ namespace SGC2025.Enemy
             }
             
             // SOが設定されていない場合の警告
-            Debug.LogError($"[EnemyAutoReturn] EnemyDataSOが設定されていません！ GameObject: {gameObject.name}");
-            Debug.LogError("[EnemyAutoReturn] EnemyDataSOを正しく設定してください。オブジェクトプールに即座に返却します。");
+            Debug.LogError($"{DEBUG_LOG_PREFIX} EnemyDataSOが設定されていません！ GameObject: {gameObject.name}");
+            Debug.LogError($"{DEBUG_LOG_PREFIX} EnemyDataSOを正しく設定してください。オブジェクトプールに即座に返却します。");
             
-            // 設定不備のため即座にプールに返却
-            currentLifeTime = 0f;
+            currentLifeTime = IMMEDIATE_RETURN_TIME;
         }
         
         

@@ -11,6 +11,8 @@ namespace SGC2025.Enemy
     {
         private const float DEFAULT_SPAWN_INTERVAL = 2f;
         private const int DEFAULT_WAVE_LEVEL = 1;
+        private const float MIN_SPAWN_INTERVAL = 0.1f;
+        private const string DEBUG_LOG_PREFIX = "[EnemySpawner]";
 
         [Header("生成設定")]
         [SerializeField] private float spawnInterval = DEFAULT_SPAWN_INTERVAL;
@@ -35,7 +37,7 @@ namespace SGC2025.Enemy
             // スポーンポイントの設定を確認
             if (!positionManager.AreAllSpawnPointsSet())
             {
-                Debug.LogError("EnemySpawner: スポーンポイントが正しく設定されていません！");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} スポーンポイントが正しく設定されていません！");
                 positionManager.LogMissingSpawnPoints();
             }
             
@@ -69,7 +71,7 @@ namespace SGC2025.Enemy
         /// </summary>
         public void SetSpawnInterval(float interval)
         {
-            spawnInterval = Mathf.Max(0.1f, interval);
+            spawnInterval = Mathf.Max(MIN_SPAWN_INTERVAL, interval);
         }
         
         /// <summary>
@@ -77,7 +79,7 @@ namespace SGC2025.Enemy
         /// </summary>
         public void SetWaveLevel(int waveLevel)
         {
-            currentWaveLevel = Mathf.Max(1, waveLevel);
+            currentWaveLevel = Mathf.Max(DEFAULT_WAVE_LEVEL, waveLevel);
         }
         
         /// <summary>
@@ -133,7 +135,7 @@ namespace SGC2025.Enemy
         {
             if (EnemyFactory.I == null)
             {
-                Debug.LogError("EnemySpawner: EnemyFactory.I がnullです！");  
+                Debug.LogError($"{DEBUG_LOG_PREFIX} EnemyFactory.I がnullです！");  
                 return;
             }
 
@@ -141,14 +143,14 @@ namespace SGC2025.Enemy
             
             if (spawnPosition == Vector3.zero)
             {
-                Debug.LogWarning("EnemySpawner: スポーン位置が中心(0,0,0)になっています。スポーンポイントの設定を確認してください。");
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} スポーン位置が中心(0,0,0)になっています。スポーンポイントの設定を確認してください。");
             }
             
             GameObject enemy = EnemyFactory.I.CreateRandomEnemy(spawnPosition, currentWaveLevel);
             
             if (enemy == null)
             {
-                Debug.LogError("EnemySpawner: 敵の生成に失敗しました！");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} 敵の生成に失敗しました！");
                 return;
             }
 

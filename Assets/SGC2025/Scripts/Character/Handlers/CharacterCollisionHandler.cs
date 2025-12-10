@@ -8,31 +8,45 @@ namespace SGC2025.Character
     /// キャラクターの衝突処理を専門に管理するクラス
     /// 敵との接触判定、アイテム取得処理を担当
     /// </summary>
-    public class CharacterCollision : MonoBehaviour
+    public class CharacterCollisionHandler : MonoBehaviour
     {
+        #region 定数
+        private const int ALL_LAYERS = -1;
+        private const float DEFAULT_KNOCKBACK_FORCE = 2f;
+        private const float DEFAULT_KNOCKBACK_DURATION = 0.2f;
+        private const float DEFAULT_ITEM_COLLECTION_RADIUS = 0.5f;
+        private const float DEFAULT_MAGNET_RANGE = 2f;
+        private const float DEFAULT_MAGNET_SPEED = 5f;
+        private const float DEFAULT_COLLISION_COOLDOWN = 0.5f;
+        private const string DEBUG_LOG_PREFIX = "[CharacterCollisionHandler]";
+        #endregion
+
+        #region Inspector設定
         [Header("衝突設定")]
-        [SerializeField] private LayerMask enemyLayerMask = -1;
-        [SerializeField] private LayerMask itemLayerMask = -1;
-        [SerializeField] private LayerMask boundaryLayerMask = -1;
+        [SerializeField] private LayerMask enemyLayerMask = ALL_LAYERS;
+        [SerializeField] private LayerMask itemLayerMask = ALL_LAYERS;
+        [SerializeField] private LayerMask boundaryLayerMask = ALL_LAYERS;
         [SerializeField] private bool enableCollisionDetection = true;
 
         [Header("衝突応答")]
-        [SerializeField] private float knockbackForce = 2f;
-        [SerializeField] private float knockbackDuration = 0.2f;
+        [SerializeField] private float knockbackForce = DEFAULT_KNOCKBACK_FORCE;
+        [SerializeField] private float knockbackDuration = DEFAULT_KNOCKBACK_DURATION;
         [SerializeField] private bool enableKnockback = true;
 
         [Header("アイテム収集")]
-        [SerializeField] private float itemCollectionRadius = 0.5f;
+        [SerializeField] private float itemCollectionRadius = DEFAULT_ITEM_COLLECTION_RADIUS;
         [SerializeField] private bool autoCollectItems = true;
-        [SerializeField] private float magnetRange = 2f;
-        [SerializeField] private float magnetSpeed = 5f;
+        [SerializeField] private float magnetRange = DEFAULT_MAGNET_RANGE;
+        [SerializeField] private float magnetSpeed = DEFAULT_MAGNET_SPEED;
 
         [Header("デバッグ")]
         [SerializeField] private bool showCollisionGizmos = true;
         [SerializeField] private bool enableDebugLogs = false;
         [SerializeField] private Color enemyCollisionColor = Color.red;
         [SerializeField] private Color itemCollectionColor = Color.green;
+        #endregion
 
+        #region プライベート変数
         private CharacterController characterController;
         private Collider2D characterCollider;
         private Rigidbody2D characterRigidbody;
@@ -44,23 +58,24 @@ namespace SGC2025.Character
 
         // 衝突追跡（同じオブジェクトとの連続衝突を防ぐ）
         private Dictionary<GameObject, float> lastCollisionTimes = new Dictionary<GameObject, float>();
-        private float collisionCooldown = 0.5f;
-
-        #region Events
-        /// <summary>敵との衝突時のイベント</summary>
-        public event Action<GameObject> OnEnemyCollision; // (enemy)
-        
-        /// <summary>アイテム取得時のイベント</summary>
-        public event Action<GameObject> OnItemCollected; // (item)
-        
-        /// <summary>境界との衝突時のイベント</summary>
-        public event Action<Vector3> OnBoundaryCollision; // (collisionPoint)
-        
-        /// <summary>ノックバック開始時のイベント</summary>
-        public event Action<Vector3> OnKnockbackStarted; // (knockbackDirection)
+        private float collisionCooldown = DEFAULT_COLLISION_COOLDOWN;
         #endregion
 
-        #region Properties
+        #region イベント
+        /// <summary>敵との衝突時のイベント</summary>
+        public event Action<GameObject> OnEnemyCollision;
+        
+        /// <summary>アイテム取得時のイベント</summary>
+        public event Action<GameObject> OnItemCollected;
+        
+        /// <summary>境界との衝突時のイベント</summary>
+        public event Action<Vector3> OnBoundaryCollision;
+        
+        /// <summary>ノックバック開始時のイベント</summary>
+        public event Action<Vector3> OnKnockbackStarted;
+        #endregion
+
+        #region プロパティ
         /// <summary>衝突検出が有効かどうか</summary>
         public bool IsCollisionEnabled => enableCollisionDetection;
         
@@ -74,7 +89,7 @@ namespace SGC2025.Character
         public float MagnetRange => magnetRange;
         #endregion
 
-        #region Handler Lifecycle
+        #region ハンドラーライフサイクル
         /// <summary>
         /// CharacterControllerによる初期化
         /// </summary>
@@ -85,20 +100,29 @@ namespace SGC2025.Character
             characterCollider = GetComponent<Collider2D>();
             characterRigidbody = GetComponent<Rigidbody2D>();
 
+            ValidateComponents();
+        }
+
+        /// <summary>
+        /// コンポーネントの妥当性チェック
+        /// </summary>
+        private void ValidateComponents()
+        {
             if (characterCollider == null)
             {
-                Debug.LogError($"[CharacterCollisionHandler] Collider2D not found on {gameObject.name}");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} Collider2D not found on {gameObject.name}");
+                return;
             }
 
             // Triggerとして設定されていることを確認
-            if (characterCollider != null && !characterCollider.isTrigger)
+            if (!characterCollider.isTrigger)
             {
-                Debug.LogWarning($"[CharacterCollisionHandler] Collider on {gameObject.name} should be set as Trigger");
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} Collider on {gameObject.name} should be set as Trigger");
             }
 
             if (enableDebugLogs)
             {
-                Debug.Log($"[CharacterCollisionHandler] Initialized for {gameObject.name}");
+                Debug.Log($"{DEBUG_LOG_PREFIX} Initialized for {gameObject.name}");
             }
         }
 
@@ -159,7 +183,7 @@ namespace SGC2025.Character
 
             foreach (var itemCollider in nearbyItems)
             {
-                if (itemCollider.gameObject == gameObject) continue;
+                if (itemCollider == null || itemCollider.gameObject == gameObject) continue;
 
                 float distance = Vector3.Distance(transform.position, itemCollider.transform.position);
                 
@@ -198,13 +222,13 @@ namespace SGC2025.Character
         }
         #endregion
 
-        #region Collision Detection
+        #region 衝突検出
         /// <summary>
         /// Triggerエリアに入った時の処理
         /// </summary>
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!enableCollisionDetection) return;
+            if (!enableCollisionDetection || other == null) return;
 
             ProcessCollision(other, CollisionType.Enter);
         }
@@ -214,7 +238,7 @@ namespace SGC2025.Character
         /// </summary>
         private void OnTriggerStay2D(Collider2D other)
         {
-            if (!enableCollisionDetection) return;
+            if (!enableCollisionDetection || other == null) return;
 
             ProcessCollision(other, CollisionType.Stay);
         }
@@ -224,7 +248,7 @@ namespace SGC2025.Character
         /// </summary>
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (!enableCollisionDetection) return;
+            if (!enableCollisionDetection || other == null) return;
 
             ProcessCollision(other, CollisionType.Exit);
         }
@@ -284,7 +308,7 @@ namespace SGC2025.Character
         }
         #endregion
 
-        #region Collision Handlers
+        #region 衝突処理
         /// <summary>
         /// 敵との衝突処理
         /// </summary>
@@ -314,7 +338,7 @@ namespace SGC2025.Character
 
             if (enableDebugLogs)
             {
-                Debug.Log($"[CharacterCollisionHandler] Collided with enemy: {enemy.name}");
+                Debug.Log($"{DEBUG_LOG_PREFIX} Collided with enemy: {enemy.name}");
             }
         }
 
@@ -343,12 +367,12 @@ namespace SGC2025.Character
 
             if (enableDebugLogs)
             {
-                Debug.Log($"[CharacterCollisionHandler] Hit boundary at: {collisionPoint}");
+                Debug.Log($"{DEBUG_LOG_PREFIX} Hit boundary at: {collisionPoint}");
             }
         }
         #endregion
 
-        #region Item Collection
+        #region アイテム収集
         /// <summary>
         /// アイテムを収集する
         /// </summary>
@@ -372,12 +396,12 @@ namespace SGC2025.Character
 
             if (enableDebugLogs)
             {
-                Debug.Log($"[CharacterCollisionHandler] Collected item: {item.name}");
+                Debug.Log($"{DEBUG_LOG_PREFIX} Collected item: {item.name}");
             }
         }
         #endregion
 
-        #region Knockback System
+        #region ノックバックシステム
         /// <summary>
         /// ノックバックを適用
         /// </summary>
@@ -399,7 +423,7 @@ namespace SGC2025.Character
 
             if (enableDebugLogs)
             {
-                Debug.Log($"[CharacterCollisionHandler] Knockback applied: {knockbackDirection} * {knockbackForce}");
+                Debug.Log($"{DEBUG_LOG_PREFIX} Knockback applied: {knockbackDirection} * {knockbackForce}");
             }
         }
 
@@ -419,7 +443,7 @@ namespace SGC2025.Character
         }
         #endregion
 
-        #region Public Methods
+        #region パブリックメソッド
         /// <summary>
         /// 衝突検出の有効/無効を切り替え
         /// </summary>
@@ -436,8 +460,8 @@ namespace SGC2025.Character
         /// <param name="duration">ノックバック時間</param>
         public void SetKnockbackParameters(float force, float duration)
         {
-            knockbackForce = force;
-            knockbackDuration = duration;
+            knockbackForce = Mathf.Max(0f, force);
+            knockbackDuration = Mathf.Max(0f, duration);
         }
 
         /// <summary>
@@ -447,8 +471,8 @@ namespace SGC2025.Character
         /// <param name="magnetRadius">マグネット範囲</param>
         public void SetItemCollectionRanges(float collectionRadius, float magnetRadius)
         {
-            itemCollectionRadius = collectionRadius;
-            magnetRange = magnetRadius;
+            itemCollectionRadius = Mathf.Max(0f, collectionRadius);
+            magnetRange = Mathf.Max(0f, magnetRadius);
         }
 
         /// <summary>

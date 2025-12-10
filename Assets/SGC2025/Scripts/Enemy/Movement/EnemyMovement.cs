@@ -10,15 +10,19 @@ namespace SGC2025.Enemy
     /// </summary>
     public class EnemyMovement : MonoBehaviour
     {
-        private IMovable movableTarget; // インターフェースベースの依存
-        private EnemyController controller; // 後方互換性のため一時保持
+        private const float DEFAULT_ARRIVE_THRESHOLD = 0.5f;
+        private const float OVERSHOOT_MULTIPLIER = 2f;
+        private const string PLAYER_TAG = "Player";
+        private const string DEBUG_LOG_PREFIX = "[EnemyMovement]";
+
+        private IMovable movableTarget;
+        private EnemyController controller;
         private IMovementStrategy movementStrategy;
-        private Vector3 moveDirection = Vector3.down; // デフォルトは下向き
+        private Vector3 moveDirection = Vector3.down;
         private Vector3? targetPosition = null;
-        private float arriveThreshold = 0.5f; // 到達判定を緩和
-        private Vector3 lastPosition; // 前フレームの位置
+        private float arriveThreshold = DEFAULT_ARRIVE_THRESHOLD;
+        private Vector3 lastPosition;
         
-        // プレイヤーTransformのキャッシュ
         private Transform playerTransform;
         private bool playerSearchAttempted = false;
 
@@ -43,8 +47,8 @@ namespace SGC2025.Enemy
             {
                 playerSearchAttempted = true;
                 
-                // "Player"タグでプレイヤーを検索
-                GameObject playerObject = GameObject.FindWithTag("Player");
+                // Playerタグでプレイヤーを検索
+                GameObject playerObject = GameObject.FindWithTag(PLAYER_TAG);
                 if (playerObject != null)
                 {
                     playerTransform = playerObject.transform;
@@ -67,7 +71,7 @@ namespace SGC2025.Enemy
                     return playerTransform;
                 }
                 
-                Debug.LogWarning("EnemyMovement: プレイヤーオブジェクトが見つかりませんでした");
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} プレイヤーオブジェクトが見つかりませんでした");
             }
             
             return null;
@@ -156,12 +160,10 @@ namespace SGC2025.Enemy
             Vector3 lastPos = lastPosition;
             lastPos.z = 0f;
             float lastDistance = Vector3.Distance(lastPos, targetPos);
-            bool overshot = distanceToTarget > lastDistance && lastDistance < arriveThreshold * 2f;
+            bool overshot = distanceToTarget > lastDistance && lastDistance < arriveThreshold * OVERSHOOT_MULTIPLIER;
             
-            // 到達判定またはオーバーシュート検出
             if (distanceToTarget < arriveThreshold || overshot)
             {
-
                 ReturnToPool();
             }
         }

@@ -9,10 +9,22 @@ namespace SGC2025.Character
     /// </summary>
     public class PlayerInputManager : MonoBehaviour
     {
+        #region 定数
+        private const float DEFAULT_INPUT_DEADZONE = 0.1f;
+        private const float MAX_INPUT_MAGNITUDE = 1f;
+        private const string DEBUG_LOG_PREFIX = "[PlayerInputManager]";
+        #endregion
+
+        #region Inspector設定
         [Header("入力設定")]
         [SerializeField] private bool inputEnabled = true;
-        [SerializeField] private float inputDeadzone = 0.1f;
+        [SerializeField] private float inputDeadzone = DEFAULT_INPUT_DEADZONE;
 
+        [Header("デバッグ")]
+        [SerializeField] private bool enableDebugLogs = false;
+        #endregion
+
+        #region プライベート変数
         private CharacterController characterController;
         private PlayerInput playerInput;
         
@@ -20,7 +32,7 @@ namespace SGC2025.Character
         private Vector2 rawMovementInput;
         private Vector2 processedMovementInput;
         private bool isShotPressed;
-        private bool isShotHeld;
+        #endregion
 
         #region プロパティ
         /// <summary>処理済み移動入力（デッドゾーン適用済み）</summary>
@@ -28,18 +40,12 @@ namespace SGC2025.Character
         
         /// <summary>射撃ボタンが押された瞬間</summary>
         public bool IsShotPressed => inputEnabled && isShotPressed;
-        
-        /// <summary>射撃ボタンが押し続けられている</summary>
-        public bool IsShotHeld => inputEnabled && isShotHeld;
-        
+
         /// <summary>入力が有効かどうか</summary>
         public bool IsInputEnabled => inputEnabled;
-        
-        /// <summary>移動入力があるかどうか</summary>
-        public bool HasMovementInput => MovementInput.magnitude > 0f;
         #endregion
 
-        #region 初期化
+        #region ハンドラーライフサイクル
         /// <summary>
         /// CharacterControllerによる初期化
         /// </summary>
@@ -48,17 +54,20 @@ namespace SGC2025.Character
         {
             characterController = controller;
             playerInput = GetComponent<PlayerInput>();
-            
+
             if (playerInput == null)
             {
-                Debug.LogError($"[PlayerInputManager] PlayerInput component not found on {gameObject.name}");
+                Debug.LogError($"{DEBUG_LOG_PREFIX} PlayerInput component not found on {gameObject.name}");
                 return;
             }
 
             SetupInputActions();
-        }
 
-        public void OnStart() { }
+            if (enableDebugLogs)
+            {
+                Debug.Log($"{DEBUG_LOG_PREFIX} Initialized for {gameObject.name}");
+            }
+        }
 
         public void OnEnable()
         {
@@ -69,15 +78,25 @@ namespace SGC2025.Character
         {
             DisableInputActions();
         }
+
+        private void OnDestroy()
+        {
+            // イベントのクリーンアップ
+            CleanupInputActions();
+        }
         #endregion
 
-        #region 入力セットアップ
+        #region 入力アクション設定
         /// <summary>
         /// Input Actionsのイベントバインディング設定
         /// </summary>
         private void SetupInputActions()
         {
-            if (playerInput?.actions == null) return;
+            if (playerInput?.actions == null)
+            {
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} PlayerInput actions are not set up");
+                return;
+            }
 
             // 移動入力のバインディング
             var moveAction = playerInput.actions["Move"];
@@ -86,13 +105,41 @@ namespace SGC2025.Character
                 moveAction.performed += OnMoveInput;
                 moveAction.canceled += OnMoveInput;
             }
+            else
+            {
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} 'Move' action not found in input actions");
+            }
 
             // 射撃入力のバインディング
             var shotAction = playerInput.actions["Shot"];
             if (shotAction != null)
             {
                 shotAction.performed += OnShotInput;
-                shotAction.canceled += OnShotCanceled;
+            }
+            else
+            {
+                Debug.LogWarning($"{DEBUG_LOG_PREFIX} 'Shot' action not found in input actions");
+            }
+        }
+
+        /// <summary>
+        /// Input Actionsのイベントバインディング解除
+        /// </summary>
+        private void CleanupInputActions()
+        {
+            if (playerInput?.actions == null) return;
+
+            var moveAction = playerInput.actions["Move"];
+            if (moveAction != null)
+            {
+                moveAction.performed -= OnMoveInput;
+                moveAction.canceled -= OnMoveInput;
+            }
+
+            var shotAction = playerInput.actions["Shot"];
+            if (shotAction != null)
+            {
+                shotAction.performed -= OnShotInput;
             }
         }
 
@@ -101,7 +148,10 @@ namespace SGC2025.Character
         /// </summary>
         private void EnableInputActions()
         {
-            playerInput?.ActivateInput();
+            if (playerInput != null)
+            {
+                playerInput.ActivateInput();
+            }
         }
 
         /// <summary>
@@ -109,7 +159,13 @@ namespace SGC2025.Character
         /// </summary>
         private void DisableInputActions()
         {
-            playerInput?.DeactivateInput();
+            if (playerInput != null)
+            {
+                playerInput.DeactivateInput();
+            }
+
+            // 入力状態をリセット
+            ResetInputState();
         }
         #endregion
 
@@ -122,6 +178,11 @@ namespace SGC2025.Character
         {
             rawMovementInput = context.ReadValue<Vector2>();
             processedMovementInput = ApplyDeadzone(rawMovementInput);
+
+            if (enableDebugLogs)
+            {
+                Debug.Log($"{DEBUG_LOG_PREFIX} Move input: {processedMovementInput}");
+            }
         }
 
         /// <summary>
@@ -133,16 +194,11 @@ namespace SGC2025.Character
             if (!inputEnabled) return;
             
             isShotPressed = true;
-            isShotHeld = true;
-        }
 
-        /// <summary>
-        /// 射撃入力コールバック（離上時）
-        /// </summary>
-        /// <param name="context">入力コンテキスト</param>
-        private void OnShotCanceled(InputAction.CallbackContext context)
-        {
-            isShotHeld = false;
+            if (enableDebugLogs)
+            {
+                Debug.Log($"{DEBUG_LOG_PREFIX} Shot pressed");
+            }
         }
         #endregion
 
@@ -160,7 +216,7 @@ namespace SGC2025.Character
             }
 
             // アナログスティックの場合は正規化
-            if (input.magnitude > 1f)
+            if (input.magnitude > MAX_INPUT_MAGNITUDE)
             {
                 return input.normalized;
             }
@@ -168,6 +224,18 @@ namespace SGC2025.Character
             return input;
         }
 
+        /// <summary>
+        /// 入力状態をリセット
+        /// </summary>
+        private void ResetInputState()
+        {
+            rawMovementInput = Vector2.zero;
+            processedMovementInput = Vector2.zero;
+            isShotPressed = false;
+        }
+        #endregion
+
+        #region フレーム更新
         /// <summary>
         /// フレーム終了時の入力状態リセット
         /// </summary>
@@ -178,7 +246,7 @@ namespace SGC2025.Character
         }
         #endregion
 
-        #region 公開メソッド
+        #region パブリックメソッド
         /// <summary>
         /// 入力の有効/無効を切り替え
         /// </summary>
@@ -190,11 +258,22 @@ namespace SGC2025.Character
             if (!enabled)
             {
                 // 入力を無効化する際は全ての入力状態をリセット
-                rawMovementInput = Vector2.zero;
-                processedMovementInput = Vector2.zero;
-                isShotPressed = false;
-                isShotHeld = false;
+                ResetInputState();
             }
+
+            if (enableDebugLogs)
+            {
+                Debug.Log($"{DEBUG_LOG_PREFIX} Input {(enabled ? "enabled" : "disabled")}");
+            }
+        }
+
+        /// <summary>
+        /// デッドゾーンの設定
+        /// </summary>
+        /// <param name="deadzone">新しいデッドゾーン値</param>
+        public void SetDeadzone(float deadzone)
+        {
+            inputDeadzone = Mathf.Clamp01(deadzone);
         }
         #endregion
     }
