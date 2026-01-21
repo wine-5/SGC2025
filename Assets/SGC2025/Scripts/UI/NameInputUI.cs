@@ -41,8 +41,6 @@ namespace SGC2025
             }
 
             RankingManager.I.AddScore(name, lastScore);
-            Debug.Log($"スコア登録: {name} - {lastScore}");
-
 
             this.gameObject.SetActive(false); // シーンのロードで消えるので無効にしておくだけ
         }

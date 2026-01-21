@@ -44,7 +44,7 @@ namespace SGC2025.Enemy
         [Header("直接座標指定設定")]
         [SerializeField] private bool useDirectCoordinates = true; // 直接座標指定を使用するか
         [SerializeField] private Vector2 gameAreaMin = new Vector2(0, 0);    // ゲームエリアの最小座標
-        [SerializeField] private Vector2 gameAreaMax = new Vector2(149, 149); // ゲームエリアの最大座標
+        [SerializeField] private Vector2 gameAreaMax = new Vector2(59, 44); // ゲームエリアの最大座標
         [SerializeField] private float cornerRandomRange = 3f; // 各角周辺のランダム範囲
         
         private float cachedRangeX;
@@ -84,15 +84,15 @@ namespace SGC2025.Enemy
             cachedRangeX = horizontalSpawnRange;
             cachedRangeY = verticalSpawnRange;
             
-            Debug.Log($"[SpawnPositionManager] 初期化完了 - 範囲 X:{cachedRangeX}, Y:{cachedRangeY}");
-            Debug.Log($"[SpawnPositionManager] 設定 - 境界線:{useBoundarySpawn}, 四隅:{useCornerSpawn}, 直接座標:{useDirectCoordinates}");
-            Debug.Log($"[SpawnPositionManager] エリア:{gameAreaMin}~{gameAreaMax}, 境界オフセット:{boundaryOffset}, 角ランダム範囲:{cornerRandomRange}");
+            // Debug.Log($"[SpawnPositionManager] 初期化完了 - 範囲 X:{cachedRangeX}, Y:{cachedRangeY}");
+            // Debug.Log($"[SpawnPositionManager] 設定 - 境界線:{useBoundarySpawn}, 四隅:{useCornerSpawn}, 直接座標:{useDirectCoordinates}");
+            // Debug.Log($"[SpawnPositionManager] エリア:{gameAreaMin}~{gameAreaMax}, 境界オフセット:{boundaryOffset}, 角ランダム範囲:{cornerRandomRange}");
             
             // 各スポーンポイントの位置をログ出力
-            if (topSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 上スポーンポイント: {topSpawnPoint.position}");
-            if (bottomSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 下スポーンポイント: {bottomSpawnPoint.position}");
-            if (leftSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 左スポーンポイント: {leftSpawnPoint.position}");
-            if (rightSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 右スポーンポイント: {rightSpawnPoint.position}");
+            // if (topSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 上スポーンポイント: {topSpawnPoint.position}");
+            // if (bottomSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 下スポーンポイント: {bottomSpawnPoint.position}");
+            // if (leftSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 左スポーンポイント: {leftSpawnPoint.position}");
+            // if (rightSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 右スポーンポイント: {rightSpawnPoint.position}");
         }
         
         /// <summary>
@@ -214,12 +214,12 @@ namespace SGC2025.Enemy
         {
             if (useBoundarySpawn)
             {
-                Debug.Log("[SpawnPositionManager] 境界線生成モードで生成");
+                // Debug.Log("[SpawnPositionManager] 境界線生成モードで生成");
                 return GetRandomBoundaryPosition();
             }
             else if (useCornerSpawn)
             {
-                Debug.Log("[SpawnPositionManager] 四隅生成モードで生成");
+                // Debug.Log("[SpawnPositionManager] 四隅生成モードで生成");
                 return GetRandomCornerSpawnPosition();
             }
             else
@@ -245,7 +245,7 @@ namespace SGC2025.Enemy
                     _ => "上"
                 };
                 
-                Debug.Log($"[SpawnPositionManager] エッジ生成位置: {spawnPos} ({sideName}側)");
+                // Debug.Log($"[SpawnPositionManager] エッジ生成位置: {spawnPos} ({sideName}側)");
                 return spawnPos;
             }
         }
@@ -407,7 +407,7 @@ namespace SGC2025.Enemy
                     break;
             }
             
-            Debug.Log($"[SpawnPositionManager] 境界線生成: {spawnPosition} ({sideName})");
+            // Debug.Log($"[SpawnPositionManager] 境界線生成: {spawnPosition} ({sideName})");
             return spawnPosition;
         }
 

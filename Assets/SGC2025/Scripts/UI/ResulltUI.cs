@@ -58,7 +58,6 @@ namespace SGC2025
 
         private void OnPhaseChanged()
         {
-            Debug.Log(currentPhase);
             switch (currentPhase)
             {
                 case ResultPhase.Init:

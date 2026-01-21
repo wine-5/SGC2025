@@ -340,8 +340,6 @@ namespace TechC
 
             // プールを再初期化
             InitializeAllPools();
-
-            Debug.Log("すべてのオブジェクトプールをクリアしました。");
         }
 
         /// <summary>

@@ -97,7 +97,6 @@ namespace SGC2025
             if (weaponSystem != null)
             {
                 weaponSystem.SetManualFiring(true);
-                Debug.Log("[Player] 手動発射モードを有効にしました");
             }
         }
 
@@ -150,7 +149,6 @@ namespace SGC2025
         private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
             moveInput = context.ReadValue<Vector2>();
-            Debug.Log($"[Player] 移動入力: {moveInput}");
         }
 
         /// <summary>
@@ -159,7 +157,6 @@ namespace SGC2025
         private void OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
             moveInput = Vector2.zero;
-            Debug.Log("[Player] 移動入力停止");
         }
 
         /// <summary>
@@ -170,7 +167,6 @@ namespace SGC2025
             if (weaponSystem != null)
             {
                 weaponSystem.Fire();
-                Debug.Log("[Player] 射撃実行");
             }
             else
             {
@@ -212,11 +208,9 @@ namespace SGC2025
             if (damage <= 0f) return;
 
             currentHealth = Mathf.Max(0f, currentHealth - damage);
-            Debug.Log($"[Player] ダメージを受けました - HP: {currentHealth}/{maxHealth}");
 
             if (currentHealth <= 0f)
             {
-                Debug.Log("[Player] プレイヤーが死亡しました");
                 OnPlayerDeath?.Invoke();
             }
         }

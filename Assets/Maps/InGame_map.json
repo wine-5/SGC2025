@@ -1,7 +1,7 @@
 {
     "sceneName": "InGame",
-    "columns": 150,
-    "rows": 150,
+    "columns": 60,
+    "rows": 45,
     "aspectW": 1.0,
     "aspectH": 1.0,
     "cellWidth": 1.0,

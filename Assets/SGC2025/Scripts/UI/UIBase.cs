@@ -53,7 +53,6 @@ namespace SGC2025
         protected int ScoreCountUp(float currentWaitTime, float scoreMaxValue, float waitMaxTime)
         {
             float a = Mathf.Clamp01(currentWaitTime / waitMaxTime);
-            Debug.Log( "" );
             return (int)Mathf.Lerp(0 , scoreMaxValue, a);
 
         }
