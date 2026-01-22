@@ -68,7 +68,6 @@ namespace SGC2025
         {
             stateMachine.Initialize(idleState);
             currentHealth = maxHealth;
-            if (weaponSystem != null) weaponSystem.SetManualFiring(true);
             if (GroundManager.I != null) transform.position = GroundManager.I.GetPlayerSpawnPosition();
         }
 

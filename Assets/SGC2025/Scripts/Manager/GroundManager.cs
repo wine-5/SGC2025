@@ -156,57 +156,5 @@ namespace SGC2025
                 currentGroundArray[cellPosition.x, cellPosition.y].point *= multiplier;
             }
         }
-        
-        #region Debug Methods
-        
-        [ContextMenu("Debug Ground Status")]
-        public void DebugGroundStatus()
-        {
-            if (currentGroundArray == null)
-            {
-                Debug.Log("GroundManager: 地面データが初期化されていません");
-                return;
-            }
-            
-            int totalCells = groundData.columns * groundData.rows;
-            int drawnCells = 0;
-            
-            for (int y = 0; y < groundData.rows; y++)
-            {
-                for (int x = 0; x < groundData.columns; x++)
-                {
-                    if (currentGroundArray[x, y].isDrawn)
-                        drawnCells++;
-                }
-            }
-            
-            float percentage = (float)drawnCells / totalCells * 100f;
-            Debug.Log($"GroundManager: 緑化状況 {drawnCells}/{totalCells} ({percentage:F1}%)");
-        }
-        
-        public void DebugCellInfo(Vector3 worldPosition)
-        {
-            if (currentGroundArray == null) return;
-            
-            Vector2Int cellPos = SearchCellIndex(worldPosition);
-            var cellData = currentGroundArray[cellPos.x, cellPos.y];
-            
-            Debug.Log($"セル情報 - 座標:({cellPos.x}, {cellPos.y}), " +
-                     $"ワールド座標:{cellData.worldPos}, " +
-                     $"塗られている:{cellData.isDrawn}, " +
-                     $"ポイント:{cellData.point}");
-        }
-        
-        [ContextMenu("Test Draw Ground")]
-        public void TestDrawGround()
-        {
-            Vector3 testPosition = new Vector3(
-                groundData.columns * groundData.cellWidth * 0.5f, 
-                groundData.rows * groundData.cellHeight * 0.5f, 
-                TILE_Z_POSITION);
-            DrawGround(testPosition);
-        }
-        
-        #endregion
     }
 }

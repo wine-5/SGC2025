@@ -78,17 +78,6 @@ namespace SGC2025.Enemy
         /// <summary>現在のWaveレベルを取得</summary>
         public int GetWaveLevel() => currentWaveLevel;
 
-        /// <summary>
-        /// 四隅生成モードを設定
-        /// </summary>
-        /// <param name="enabled">四隅生成を有効にするか</param>
-        public void SetCornerSpawnMode(bool enabled)
-        {
-            positionManager.SetCornerSpawnMode(enabled);
-        }
-
-        /// <summary>現在の生成モードを確認</summary>
-        public bool IsCornerSpawnMode() => positionManager.IsCornerSpawnMode();
 
         private void Update()
         {

@@ -190,32 +190,5 @@ namespace SGC2025.Player.Bullet.Effects
         }
         
         #endregion
-        
-        #region エディター用メソッド
-        
-        #if UNITY_EDITOR
-        /// <summary>
-        /// Inspector上でのテスト用メソッド
-        /// </summary>
-        [ContextMenu("Test Rotation")]
-        private void TestRotation()
-        {
-            if (Application.isPlaying)
-            {
-                if (isRotating)
-                    StopRotation();
-                else
-                    StartRotation();
-            }
-        }
-        
-        [ContextMenu("Apply Random Rotation")]
-        private void TestRandomRotation()
-        {
-            ApplyRandomInitialRotation();
-        }
-        #endif
-        
-        #endregion
     }
 }

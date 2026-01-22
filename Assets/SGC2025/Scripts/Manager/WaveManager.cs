@@ -196,22 +196,6 @@ namespace SGC2025
         }
         
         /// <summary>
-        /// 特定のWaveに強制変更（デバッグ用）
-        /// </summary>
-        [ContextMenu("Force Next Wave")]
-        public void ForceNextWave()
-        {
-            if (waveConfig != null)
-            {
-                var nextWave = waveConfig.GetNextWaveLevel(currentWaveLevel);
-                if (nextWave > currentWaveLevel)
-                {
-                    ChangeWave(nextWave);
-                }
-            }
-        }
-        
-        /// <summary>
         /// Wave情報を取得（UI表示用）
         /// </summary>
         public string GetWaveInfoText()

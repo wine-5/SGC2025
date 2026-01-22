@@ -86,15 +86,6 @@ namespace SGC2025
         }
 
         /// <summary>
-        /// ゲームを強制終了（デバッグ用）
-        /// </summary>
-        [ContextMenu("Force Game Over")]
-        public void ForceGameOver()
-        {
-            HandlePlayerDeath();
-        }
-
-        /// <summary>
         /// 現在のシーンをリロード
         /// </summary>
         public void RestartGame()

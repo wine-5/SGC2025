@@ -78,23 +78,6 @@ namespace SGC2025.Enemy
 
         #endregion
 
-        public void SetCornerSpawnMode(bool enabled) => useCornerSpawn = enabled;
-        
-        /// <summary>四隅生成モード取得</summary>
-        public bool IsCornerSpawnMode() => useCornerSpawn;
-        
-        /// <summary>
-        /// Canvas参照モードを設定
-        /// </summary>
-        public void SetCanvasReferenceMode(bool enabled, Canvas canvas = null, Camera camera = null)
-        {
-            useCanvasReference = enabled;
-            if (canvas != null) targetCanvas = canvas;
-            if (camera != null) referenceCamera = camera;
-            if (enabled)
-                useTileMapReference = false;
-        }
-        
         /// <summary>Canvas参照モード取得</summary>
         public bool IsCanvasReferenceMode() => useCanvasReference;
         
@@ -458,22 +441,6 @@ namespace SGC2025.Enemy
         }
         
         /// <summary>
-        /// 四隅の位置をデバッグ表示
-        /// </summary>
-        public void DebugCornerPositions()
-        {
-            Debug.Log("=== 四隅の生成位置 ===");
-            Debug.Log($"左上: {GetTopLeftCornerPosition()}");
-            Debug.Log($"右上: {GetTopRightCornerPosition()}");
-            Debug.Log($"左下: {GetBottomLeftCornerPosition()}");
-            Debug.Log($"右下: {GetBottomRightCornerPosition()}");
-            Debug.Log($"四隅生成モード: {(useCornerSpawn ? "有効" : "無効")}");
-            Debug.Log($"直接座標モード: {(useDirectCoordinates ? "有効" : "無効")}");
-            Debug.Log($"Canvas参照モード: {(useCanvasReference ? "有効" : "無効")}");
-            Debug.Log($"TileMap参照モード: {(useTileMapReference ? "有効" : "無効")}");
-        }
-
-        /// <summary>
         /// 逆側のエッジ位置を取得
         /// スポーン位置が端に近い場合、反対側の端の位置を返す
         /// </summary>
@@ -523,25 +490,6 @@ namespace SGC2025.Enemy
                 return new Vector3(gameAreaMax.x, spawnPos.y, 0f);
             
             return new Vector3(gameAreaMin.x, spawnPos.y, 0f);
-        }
-
-        /// <summary>
-        /// 境界線生成モードを設定
-        /// </summary>
-        /// <param name="enabled">境界線生成を有効にするか</param>
-        /// <param name="offset">境界線からのオフセット</param>
-        public void SetBoundarySpawnMode(bool enabled, float offset = 1f)
-        {
-            useBoundarySpawn = enabled;
-            boundaryOffset = offset;
-            
-            // 他のモードを無効化
-            if (enabled)
-            {
-                useCornerSpawn = false;
-            }
-            
-            Debug.Log($"[SpawnPositionManager] 境界線生成モード: {(enabled ? "有効" : "無効")}, オフセット: {offset}");
         }
 
         /// <summary>
