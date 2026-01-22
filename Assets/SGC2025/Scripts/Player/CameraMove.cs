@@ -10,11 +10,29 @@ namespace SGC2025
         [SerializeField]
         private Vector3 offset = new Vector3(0, 5, -10); // カメラの位置ずれ
         [SerializeField]
-        private float smoothSpeed = 5f; // スムーズな追従速度      
+        private float smoothSpeed = 5f; // スムーズな追従速度
+        
+        [Header("カメラサイズ設定")]
+        [SerializeField]
+        [Tooltip("カメラの視野の大きさ（Orthographicカメラの場合）")]
+        private float orthographicSize = 8f; // カメラのサイズ（大きいほど引きになる）
+
+        private Camera cam;
+
+        public void Awake()
+        {
+            cam = GetComponent<Camera>();
+        }
 
         public void Start()
         {
            transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
+           
+           // カメラサイズを設定
+           if (cam != null && cam.orthographic)
+           {
+               cam.orthographicSize = orthographicSize;
+           }
         }
         
         void LateUpdate()

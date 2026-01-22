@@ -46,6 +46,15 @@ namespace SGC2025
 
         // 緑地マテリアル
         private Material grassMaterial;
+        
+        /// <summary>マップの列数（幅）を取得</summary>
+        public int MapColumns => mapSetting?.columns ?? 0;
+        
+        /// <summary>マップの行数（高さ）を取得</summary>
+        public int MapRows => mapSetting?.rows ?? 0;
+        
+        /// <summary>マップの最大座標を取得（0ベース）</summary>
+        public Vector2Int MapMaxIndex => new Vector2Int(MapColumns - 1, MapRows - 1);
 
         public void Start()
         {
@@ -163,6 +172,9 @@ namespace SGC2025
         {
             mapSetting = mapSettings;
             currentGroundArray = new GroundData[mapSettings.columns, mapSettings.rows];
+            
+            Debug.Log($"GroundManager: マップ生成開始 - サイズ: {mapSettings.columns}x{mapSettings.rows}, cellSize: {cellSize}");
+            
             for (int y = 0; y < mapSettings.rows; y++)
             {
                 for (int x = 0; x < mapSettings.columns; x++)
@@ -178,6 +190,11 @@ namespace SGC2025
                     currentGroundArray[x, y].renderer = tile.GetComponent<Renderer>();
                 }
             }
+            
+            // 原点位置を設定
+            currentOriginPosisiton = transform.position;
+            
+            Debug.Log($"GroundManager: マップ生成完了 - タイル数: {mapSettings.columns * mapSettings.rows}");
         }
 
         /// <summary>

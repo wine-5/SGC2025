@@ -44,13 +44,32 @@ namespace SGC2025.Enemy
         [Header("直接座標指定設定")]
         [SerializeField] private bool useDirectCoordinates = true; // 直接座標指定を使用するか
         [SerializeField] private Vector2 gameAreaMin = new Vector2(0, 0);    // ゲームエリアの最小座標
-        [SerializeField] private Vector2 gameAreaMax = new Vector2(59, 44); // ゲームエリアの最大座標
+        // gameAreaMaxはGroundManagerから自動取得するため削除
         [SerializeField] private float cornerRandomRange = 3f; // 各角周辺のランダム範囲
+        
+        /// <summary>ゲームエリアの最大座標（GroundManagerから取得）</summary>
+        private Vector2 gameAreaMax => GetGameAreaMaxFromGroundManager();
         
         private float cachedRangeX;
         private float cachedRangeY;
         private bool isInitialized = false;
 
+        /// <summary>
+        /// GroundManagerからゲームエリアの最大座標を取得
+        /// </summary>
+        private Vector2 GetGameAreaMaxFromGroundManager()
+        {
+            if (SGC2025.GroundManager.I != null)
+            {
+                var maxIndex = SGC2025.GroundManager.I.MapMaxIndex;
+                return new Vector2(maxIndex.x, maxIndex.y);
+            }
+            
+            // GroundManagerが初期化されていない場合のフォールバック
+            Debug.LogWarning("[SpawnPositionManager] GroundManagerが初期化されていません。デフォルト値(59, 44)を使用します。");
+            return new Vector2(59, 44);
+        }
+        
         #region ISpawnPositionProviderの実装
 
         /// <summary>初期化済みかどうか</summary>
@@ -789,6 +808,37 @@ namespace SGC2025.Enemy
         /// <returns>逆側のエッジ位置</returns>
         public Vector3 GetOppositeEdgePosition(Vector3 spawnPos)
         {
+            // 直接座標モードの場合
+            if (useDirectCoordinates)
+            {
+                float threshold = 2f; // 端判定の閾値
+                
+                // 上端判定
+                if (Mathf.Abs(spawnPos.y - gameAreaMax.y) < threshold)
+                {
+                    return new Vector3(spawnPos.x, gameAreaMin.y, 0f);
+                }
+                // 下端判定
+                if (Mathf.Abs(spawnPos.y - gameAreaMin.y) < threshold)
+                {
+                    return new Vector3(spawnPos.x, gameAreaMax.y, 0f);
+                }
+                // 左端判定
+                if (Mathf.Abs(spawnPos.x - gameAreaMin.x) < threshold)
+                {
+                    return new Vector3(gameAreaMax.x, spawnPos.y, 0f);
+                }
+                // 右端判定
+                if (Mathf.Abs(spawnPos.x - gameAreaMax.x) < threshold)
+                {
+                    return new Vector3(gameAreaMin.x, spawnPos.y, 0f);
+                }
+                
+                // 最も近い端に基づいて反対側を返す
+                return GetFallbackOppositePositionDirect(spawnPos);
+            }
+            
+            // SpawnPointモードの場合
             // 上端判定
             if (topSpawnPoint != null && bottomSpawnPoint != null && Mathf.Abs(spawnPos.y - topSpawnPoint.position.y) < cachedRangeY * RANGE_DETECT_RATIO)
             {
@@ -814,15 +864,41 @@ namespace SGC2025.Enemy
                 return new Vector3(leftSpawnPoint.position.x, spawnPos.y, 0f);
             }
             
-            // どれにも該当しない場合はフォールバック処理
-#if UNITY_EDITOR
-            Debug.LogWarning($"[SpawnPositionManager] 端判定に該当しなかったため、フォールバック処理を実行");
-#endif
             return GetFallbackOppositePosition(spawnPos);
         }
         
         /// <summary>
-        /// フォールバック用の反対側位置計算
+        /// 直接座標モード用のフォールバック反対側位置計算
+        /// </summary>
+        private Vector3 GetFallbackOppositePositionDirect(Vector3 spawnPos)
+        {
+            float distToTop = Mathf.Abs(spawnPos.y - gameAreaMax.y);
+            float distToBottom = Mathf.Abs(spawnPos.y - gameAreaMin.y);
+            float distToLeft = Mathf.Abs(spawnPos.x - gameAreaMin.x);
+            float distToRight = Mathf.Abs(spawnPos.x - gameAreaMax.x);
+            
+            float minDistance = Mathf.Min(distToTop, distToBottom, distToLeft, distToRight);
+            
+            if (minDistance == distToTop)
+            {
+                return new Vector3(spawnPos.x, gameAreaMin.y, 0f);
+            }
+            else if (minDistance == distToBottom)
+            {
+                return new Vector3(spawnPos.x, gameAreaMax.y, 0f);
+            }
+            else if (minDistance == distToLeft)
+            {
+                return new Vector3(gameAreaMax.x, spawnPos.y, 0f);
+            }
+            else
+            {
+                return new Vector3(gameAreaMin.x, spawnPos.y, 0f);
+            }
+        }
+        
+        /// <summary>
+        /// フォールバック用の反対側位置計算（SpawnPointモード用）
         /// </summary>
         private Vector3 GetFallbackOppositePosition(Vector3 spawnPos)
         {
