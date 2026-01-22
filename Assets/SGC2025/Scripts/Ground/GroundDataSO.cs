@@ -20,6 +20,9 @@ namespace SGC2025
         [Tooltip("使用するタイルのプレハブ")]
         public GameObject tilePrefab;
         
+        [Tooltip("緑化後の草タイルのプレハブ")]
+        public GameObject grassTilePrefab;
+        
         [Tooltip("Prefabから自動的にサイズを取得するか")]
         public bool autoCalculateSize = true;
         
@@ -63,22 +66,79 @@ namespace SGC2025
         
         /// <summary>マップの中心座標（ワールド座標）を取得</summary>
         public Vector3 MapCenterPosition => new Vector3(
-            (columns - 1) * cellWidth * 0.5f,
-            (rows - 1) * cellHeight * 0.5f,
+            (columns - 1) * ActualCellWidth * 0.5f,
+            (rows - 1) * ActualCellHeight * 0.5f,
             0f
         );
         
         /// <summary>マップの物理的なサイズ（ワールド単位）を取得</summary>
         public Vector2 MapWorldSize => new Vector2(
-            columns * cellWidth,
-            rows * cellHeight
+            columns * ActualCellWidth,
+            rows * ActualCellHeight
         );
         
         /// <summary>マップの最大座標（ワールド座標）を取得</summary>
         public Vector2 MapMaxWorldPosition => new Vector2(
-            (columns - 1) * cellWidth,
-            (rows - 1) * cellHeight
+            (columns - 1) * ActualCellWidth,
+            (rows - 1) * ActualCellHeight
         );
+        
+        /// <summary>
+        /// Prefabから実際のサイズを取得
+        /// SpriteRenderer、MeshRenderer、Colliderの順で試行
+        /// </summary>
+        private Vector2 GetPrefabSize()
+        {
+            if (tilePrefab == null)
+            {
+                Debug.LogWarning("[GroundDataSO] tilePrefabが設定されていません");
+                return new Vector2(cellWidth, cellHeight);
+            }
+            
+            // SpriteRendererから取得を試みる
+            var spriteRenderer = tilePrefab.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null && spriteRenderer.sprite != null)
+            {
+                Sprite sprite = spriteRenderer.sprite;
+                // Spriteのピクセルサイズをワールド単位に変換
+                float pixelsPerUnit = sprite.pixelsPerUnit;
+                Vector2 size = new Vector2(
+                    sprite.rect.width / pixelsPerUnit,
+                    sprite.rect.height / pixelsPerUnit
+                );
+                // Prefabのスケールを適用
+                size.x *= tilePrefab.transform.localScale.x;
+                size.y *= tilePrefab.transform.localScale.y;
+                return size;
+            }
+            
+            // MeshRendererから取得を試みる
+            var meshRenderer = tilePrefab.GetComponent<MeshRenderer>();
+            if (meshRenderer != null)
+            {
+                Bounds bounds = meshRenderer.bounds;
+                return new Vector2(bounds.size.x, bounds.size.y);
+            }
+            
+            // Colliderから取得を試みる
+            var collider2D = tilePrefab.GetComponent<Collider2D>();
+            if (collider2D != null)
+            {
+                Bounds bounds = collider2D.bounds;
+                return new Vector2(bounds.size.x, bounds.size.y);
+            }
+            
+            var collider3D = tilePrefab.GetComponent<Collider>();
+            if (collider3D != null)
+            {
+                Bounds bounds = collider3D.bounds;
+                return new Vector2(bounds.size.x, bounds.size.y);
+            }
+            
+            // 取得できない場合は設定値を返す
+            Debug.LogWarning($"[GroundDataSO] {tilePrefab.name}からサイズを自動取得できませんでした。手動設定値を使用します。");
+            return new Vector2(cellWidth, cellHeight);
+        }
         
         /// <summary>エディタ用の検証メソッド</summary>
         private void OnValidate()

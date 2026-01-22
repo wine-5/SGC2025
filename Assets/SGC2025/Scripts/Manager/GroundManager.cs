@@ -30,7 +30,7 @@ namespace SGC2025
 
         private GroundData[,] currentGroundArray;
         private Vector3 currentOriginPosition;
-        private Material grassMaterial;
+        private GameObject[,] tileObjects;  // 各タイルのGameObject参照
         
         public GroundDataSO MapData => groundData;
         public int MapColumns => groundData?.columns ?? 0;
@@ -59,10 +59,7 @@ namespace SGC2025
             SetStageObject();
             InitHighObject();
             
-            grassMaterial = Resources.Load<Material>("Materials/grass");
-            if (!grassMaterial)
-                Debug.LogError("GroundManager: 草マテリアルが見つかりません");
-            
+            // イベント購読
             EnemyEvents.OnEnemyDestroyedAtPosition += OnEnemyDestroyed;
         }
         
@@ -77,25 +74,69 @@ namespace SGC2025
         /// <summary>指定位置の地面を緑化</summary>
         public bool DrawGround(Vector3 enemyPosition)
         {
-            if (currentGroundArray == null || grassMaterial == null) return false;
-            Vector2Int cellPosition = SearchCellIndex(enemyPosition);
-            if (cellPosition.x < 0 || cellPosition.x >= groundData.columns ||
-                cellPosition.y < 0 || cellPosition.y >= groundData.rows) return false;
-            if (currentGroundArray[cellPosition.x, cellPosition.y].isDrawn) return false;
+            if (currentGroundArray == null) return false;
             
+            Vector2Int cellPosition = SearchCellIndex(enemyPosition);
+            
+            // 範囲外チェック
+            if (cellPosition.x < 0 || cellPosition.x >= groundData.columns ||
+                cellPosition.y < 0 || cellPosition.y >= groundData.rows)
+            {
+                return false;
+            }
+            
+            // 既に緑化済みチェック
+            if (currentGroundArray[cellPosition.x, cellPosition.y].isDrawn)
+            {
+                return false;
+            }
+            
+            // grassTilePrefabが設定されていない場合は警告
+            if (groundData.grassTilePrefab == null)
+            {
+                Debug.LogWarning("[GroundManager] grassTilePrefabが設定されていません。緑化をスキップします。");
+                return false;
+            }
+            
+            // 古いタイルを破棄
+            if (tileObjects != null && tileObjects[cellPosition.x, cellPosition.y] != null)
+            {
+                Destroy(tileObjects[cellPosition.x, cellPosition.y]);
+            }
+            
+            // 新しい草タイルを生成
+            Vector3 pos = currentGroundArray[cellPosition.x, cellPosition.y].worldPos;
+            GameObject grassTile = Instantiate(groundData.grassTilePrefab, pos, Quaternion.identity, transform);
+            grassTile.name = $"GrassTile_{cellPosition.x}_{cellPosition.y}";
+            
+            // 草タイルのスケールをセルサイズに合わせて調整
+            AdjustTileScale(grassTile, groundData.ActualCellWidth, groundData.ActualCellHeight);
+            
+            // タイル参照を更新
+            if (tileObjects != null)
+            {
+                tileObjects[cellPosition.x, cellPosition.y] = grassTile;
+            }
+            
+            // Rendererを更新
+            Renderer newRenderer = grassTile.GetComponent<Renderer>();
+            currentGroundArray[cellPosition.x, cellPosition.y].renderer = newRenderer;
             currentGroundArray[cellPosition.x, cellPosition.y].isDrawn = true;
-            currentGroundArray[cellPosition.x, cellPosition.y].renderer.material = grassMaterial;
 
+            // ポイント加算
             int points = currentGroundArray[cellPosition.x, cellPosition.y].point;
             ScoreManager.I?.AddGreenScore(points);
+            
+            // イベント発火（音、エフェクトなどを追加できる）
+            GroundEvents.TriggerGroundGreenified(pos, points);
             
             return true;
         }
 
         private Vector2Int SearchCellIndex(Vector3 position)
         {
-            int x = Mathf.RoundToInt((position.x - currentOriginPosition.x) / groundData.cellWidth);
-            int y = Mathf.RoundToInt((position.y - currentOriginPosition.y) / groundData.cellHeight);
+            int x = Mathf.RoundToInt((position.x - currentOriginPosition.x) / groundData.ActualCellWidth);
+            int y = Mathf.RoundToInt((position.y - currentOriginPosition.y) / groundData.ActualCellHeight);
 
             x = Mathf.Clamp(x, 0, groundData.columns - 1);
             y = Mathf.Clamp(y, 0, groundData.rows - 1);
@@ -106,12 +147,13 @@ namespace SGC2025
         private void SetStageObject()
         {
             currentGroundArray = new GroundData[groundData.columns, groundData.rows];
+            tileObjects = new GameObject[groundData.columns, groundData.rows];
             
             for (int y = 0; y < groundData.rows; y++)
             {
                 for (int x = 0; x < groundData.columns; x++)
                 {
-                    Vector3 pos = new Vector3(x * groundData.cellWidth, y * groundData.cellHeight, TILE_Z_POSITION);
+                    Vector3 pos = new Vector3(x * groundData.ActualCellWidth, y * groundData.ActualCellHeight, TILE_Z_POSITION);
                     
                     if (groundData.tilePrefab == null)
                     {
@@ -121,6 +163,7 @@ namespace SGC2025
                     
                     GameObject tile = Instantiate(groundData.tilePrefab, pos, Quaternion.identity, transform);
                     tile.name = $"Tile_{x}_{y}";
+                    tileObjects[x, y] = tile;
 
                     if (ScoreManager.I == null)
                     {
@@ -155,6 +198,53 @@ namespace SGC2025
                 int multiplier = ScoreManager.I.HighScoreTileMultiplier;
                 currentGroundArray[cellPosition.x, cellPosition.y].point *= multiplier;
             }
+        }
+        
+        /// <summary>
+        /// タイルのスケールをセルサイズに合わせて調整
+        /// </summary>
+        private void AdjustTileScale(GameObject tile, float targetWidth, float targetHeight)
+        {
+            if (tile == null) return;
+            
+            // SpriteRendererから元のサイズを取得
+            var spriteRenderer = tile.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null && spriteRenderer.sprite != null)
+            {
+                Sprite sprite = spriteRenderer.sprite;
+                float pixelsPerUnit = sprite.pixelsPerUnit;
+                
+                // Spriteの実際のワールドサイズを計算
+                Vector2 spriteSize = new Vector2(
+                    sprite.rect.width / pixelsPerUnit,
+                    sprite.rect.height / pixelsPerUnit
+                );
+                
+                // 必要なスケールを計算
+                float scaleX = targetWidth / spriteSize.x;
+                float scaleY = targetHeight / spriteSize.y;
+                
+                // 同じスケールを適用（アスペクト比を維持する場合は小さい方を使う）
+                float uniformScale = Mathf.Min(scaleX, scaleY);
+                tile.transform.localScale = new Vector3(uniformScale, uniformScale, 1f);
+                
+                return;
+            }
+            
+            // MeshRendererやColliderからサイズを取得する場合
+            var meshRenderer = tile.GetComponent<MeshRenderer>();
+            if (meshRenderer != null)
+            {
+                Bounds bounds = meshRenderer.bounds;
+                float scaleX = targetWidth / bounds.size.x;
+                float scaleY = targetHeight / bounds.size.y;
+                float uniformScale = Mathf.Min(scaleX, scaleY);
+                tile.transform.localScale = new Vector3(uniformScale, uniformScale, 1f);
+                return;
+            }
+            
+            // スケール調整ができない場合はそのまま
+            Debug.LogWarning($"[GroundManager] {tile.name}のスケールを自動調整できませんでした");
         }
     }
 }

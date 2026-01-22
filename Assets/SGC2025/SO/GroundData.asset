@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.GroundDataSO
   columns: 60
   rows: 60
+  tilePrefab: {fileID: 1352666219919924646, guid: 004382af6c312084d8af9e63c4f5f976, type: 3}
+  grassTilePrefab: {fileID: 8457315100642936754, guid: e1f20ed76ac39104bbe1c51f58274ab3, type: 3}
+  autoCalculateSize: 1
   cellWidth: 1
   cellHeight: 1
   tileAspect: {x: 1, y: 1}
-  tilePrefab: {fileID: 1352666219919924646, guid: 004382af6c312084d8af9e63c4f5f976, type: 3}
