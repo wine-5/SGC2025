@@ -13,7 +13,7 @@ namespace SGC2025.Events
 
         public static event System.Action OnEnemyDestroyed;
         public static event System.Action<Vector3> OnEnemyDestroyedAtPosition;
-        public static event System.Action<int> OnEnemyDestroyedWithScore;
+        public static event System.Action<int, Vector3> OnEnemyDestroyedWithScore;
         public static event System.Action<GameObject, float> OnEnemyDamageTaken;
         public static event System.Action<GameObject, float, float> OnEnemyHealthChanged;
         public static event System.Action<GameObject> OnEnemySpawned;
@@ -25,7 +25,7 @@ namespace SGC2025.Events
             OnEnemyDestroyedAtPosition?.Invoke(position);
             if (score > MIN_SCORE)
             {
-                OnEnemyDestroyedWithScore?.Invoke(score);
+                OnEnemyDestroyedWithScore?.Invoke(score, position);
             }
         }
 

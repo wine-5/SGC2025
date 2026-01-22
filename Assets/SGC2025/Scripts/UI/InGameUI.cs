@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
+using SGC2025.Events;
 
 namespace SGC2025 
 {
@@ -9,10 +10,8 @@ namespace SGC2025
     /// </summary>
     public class InGameUI : MonoBehaviour
     {
-
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
-        public static InGameUI Instance;
 
         [Header("スコアポップアップ設定")]
         [SerializeField] private RectTransform parentCanvas;
@@ -23,7 +22,6 @@ namespace SGC2025
 
         private void Awake()
         {
-            Instance = this;
             if (parentCanvas == null) parentCanvas = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
             if (popupPrefab == null) popupPrefab = Resources.Load<GameObject>("UI/PulsScore");
 
@@ -35,9 +33,33 @@ namespace SGC2025
                 popupPool.Enqueue(popup);
             }
         }
-        private void Update()
+
+        private void OnEnable()
+        {
+            EnemyEvents.OnEnemyDestroyedWithScore += OnEnemyDestroyed;
+            GroundEvents.OnGroundGreenified += OnGroundGreenified;
+        }
+
+        private void OnDisable()
+        {
+            EnemyEvents.OnEnemyDestroyedWithScore -= OnEnemyDestroyed;
+            GroundEvents.OnGroundGreenified -= OnGroundGreenified;
+        }
+
+        private void OnEnemyDestroyed(int score, Vector3 position)
         {
             UpdateScoreText();
+            ShowScorePopup(score, Camera.main.WorldToScreenPoint(position));
+        }
+
+        private void OnGroundGreenified(Vector3 position, int points)
+        {
+            UpdateScoreText();
+            ShowScorePopup(points, Camera.main.WorldToScreenPoint(position));
+        }
+
+        private void Update()
+        {
             UpdateTimeText();
         }
 
@@ -77,7 +99,7 @@ namespace SGC2025
         private void UpdateScoreText()
         {
             if (scoreText == null) return;
-            scoreText.text = (CommonDef.currentEnemyScore + CommonDef.currentGreeningScore).ToString();
+            scoreText.text = ScoreManager.I.GetTotalScore().ToString();
         }
 
         private void UpdateTimeText()

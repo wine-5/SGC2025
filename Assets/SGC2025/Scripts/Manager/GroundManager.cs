@@ -101,7 +101,6 @@ namespace SGC2025
             currentGroundArray[cellPosition.x, cellPosition.y].isDrawn = true;
 
             int points = currentGroundArray[cellPosition.x, cellPosition.y].point;
-            ScoreManager.I?.AddGreenScore(points);
             GroundEvents.TriggerGroundGreenified(pos, points);
             
             return true;

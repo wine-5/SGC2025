@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using SGC2025.Events;
 
 namespace SGC2025
 {
@@ -27,13 +28,34 @@ namespace SGC2025
 
         [Header("タイマー設定")]
         [SerializeField] private float startCountDownTime;
-        [SerializeField] private InGameUI gameScoreUI;
 
         private bool isCountDown = false;
         private float currentCountDownTimer = 0f;
         private float countGameTimer = 0f;
         private int scoreEnemy = 0;
         private int scoreGreen = 0;
+
+        private void OnEnable()
+        {
+            EnemyEvents.OnEnemyDestroyedWithScore += OnEnemyDestroyedWithScore;
+            GroundEvents.OnGroundGreenified += OnGroundGreenified;
+        }
+
+        private void OnDisable()
+        {
+            EnemyEvents.OnEnemyDestroyedWithScore -= OnEnemyDestroyedWithScore;
+            GroundEvents.OnGroundGreenified -= OnGroundGreenified;
+        }
+
+        private void OnEnemyDestroyedWithScore(int score, Vector3 position)
+        {
+            scoreEnemy += score;
+        }
+
+        private void OnGroundGreenified(Vector3 position, int points)
+        {
+            scoreGreen += points;
+        }
 
         private void Start()
         {
@@ -83,26 +105,13 @@ namespace SGC2025
         /// <summary>ゲーム残り時間取得</summary>
         public float GetGameCount() => CommonDef.GAME_MINIT - countGameTimer;
 
-        /// <summary>エネミースコア加算</summary>
-        public void AddEnemyScore(int score)
-        {
-            scoreEnemy += score;
-            CommonDef.currentEnemyScore = score;
-            gameScoreUI.ShowScorePopup(score);
-        }
-
         /// <summary>エネミースコア取得</summary>
         public int GetEnemyScore() => scoreEnemy;
 
-        /// <summary>緑化スコア加算</summary>
-        public void AddGreenScore(int score)
-        {
-            scoreGreen += score;
-            CommonDef.currentGreeningScore = scoreGreen;
-            gameScoreUI.ShowScorePopup(score);
-        }
-
         /// <summary>緑化スコア取得</summary>
         public int GetGreenScore() => scoreGreen;
+
+        /// <summary>総合スコア取得</summary>
+        public int GetTotalScore() => scoreEnemy + scoreGreen;
     }
 }
