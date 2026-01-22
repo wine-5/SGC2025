@@ -237,6 +237,10 @@ PrefabInstance:
       propertyPath: m_fontSizeBase
       value: 40
       objectReference: {fileID: 0}
+    - target: {fileID: 4091371664631941561, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5485042787687540399, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Name
       value: InGame
@@ -309,6 +313,22 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8404949437244245253, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8404949437244245253, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.18039216
+      objectReference: {fileID: 0}
+    - target: {fileID: 8404949437244245253, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.05882353
+      objectReference: {fileID: 0}
+    - target: {fileID: 8404949437244245253, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.101960786
+      objectReference: {fileID: 0}
     - target: {fileID: 8502447621085655237, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_CullTransparentMesh
       value: 0
@@ -326,17 +346,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8003218262421739174, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
   m_PrefabInstance: {fileID: 1189758861}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1828305156 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 260943621656836768, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-  m_PrefabInstance: {fileID: 1189758861}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff6eab23072078e45b0a9e3599450ba3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.InGameUI
 --- !u!1 &1945701715
 GameObject:
   m_ObjectHideFlags: 0
@@ -385,7 +394,6 @@ MonoBehaviour:
   normalTilePoint: 100
   highScoreTileMultiplier: 3
   startCountDownTime: 0
-  gameScoreUI: {fileID: 1828305156}
 --- !u!114 &1945701720
 MonoBehaviour:
   m_ObjectHideFlags: 0
