@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.IO;
-using UnityEngine.SceneManagement;
 using SGC2025.Enemy;
 using SGC2025.Events;
 
