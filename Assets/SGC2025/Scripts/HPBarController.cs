@@ -1,56 +1,63 @@
 using UnityEngine;
-
 using SGC2025.Enemy;
 
 namespace SGC2025
 {
+    /// <summary>
+    /// エンティティのHPバーを制御するコンポーネント
+    /// </summary>
     public class HPBarController : MonoBehaviour
     {
-        [SerializeField] GameObject entity;
-        
-
+        [SerializeField] private GameObject entity;
         [Range(0f, 1f)]
         [SerializeField] private float rate;
+        [SerializeField] private bool isPlayer;
+
         private float maxHealth;
         private float currentHealth;
         private Vector3 originalPos;
         private Vector3 originalScale;
-
-        [SerializeField] private bool isPlayer;
+        private PlayerCharacter cachedPlayer;
+        private EnemyController cachedEnemy;
+        private Transform parentTransform;
+        private Transform entityTransform;
 
         void Start()
         {
-            originalPos = transform.parent.position;
+            if (entity == null) return;
+            parentTransform = transform.parent;
+            entityTransform = entity.transform;
+            originalPos = parentTransform.position;
             originalScale = transform.localScale;
 
             if (isPlayer)
             {
-                maxHealth = entity.GetComponent<PlayerCharacter>().GetPlayerMaxHealth();
-
+                cachedPlayer = entity.GetComponent<PlayerCharacter>();
+                if (cachedPlayer != null) maxHealth = cachedPlayer.GetPlayerMaxHealth();
             }
             else
             {
-                //�G�l�~�[�̍ő�̗�
-                maxHealth = entity.GetComponent<EnemyController>().MaxHealth;
+                cachedEnemy = entity.GetComponent<EnemyController>();
+                if (cachedEnemy != null) maxHealth = cachedEnemy.MaxHealth;
             }
         }
 
         void Update()
         {
-            transform.parent.position = entity.transform.position + originalPos;
+            if (entity == null) return;
+            parentTransform.position = entityTransform.position + originalPos;
 
             if (isPlayer)
             {
-                 currentHealth = entity.GetComponent<PlayerCharacter>().GetPlayerCurrentHalth();
+                if (cachedPlayer != null) currentHealth = cachedPlayer.GetPlayerCurrentHalth();
             }
             else
             {
-                currentHealth = entity.GetComponent<EnemyController>().CurrentHealth;
+                if (cachedEnemy != null) currentHealth = cachedEnemy.CurrentHealth;
             }
 
-
             rate = currentHealth / maxHealth;
-            transform.localScale = new Vector3(originalScale.x * rate, originalScale.y);
+            transform.localScale = new Vector3(originalScale.x * rate, originalScale.y, originalScale.z);
         }
     }
 }
