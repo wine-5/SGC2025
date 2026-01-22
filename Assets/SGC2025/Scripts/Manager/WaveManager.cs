@@ -65,7 +65,6 @@ namespace SGC2025
         private void Update()
         {
             if (!isGameActive) return;
-            
             UpdateGameTime();
             CheckWaveProgression();
         }
@@ -101,19 +100,12 @@ namespace SGC2025
             gameElapsedTime += Time.deltaTime;
         }
         
-        /// <summary>
-        /// Wave進行をチェック
-        /// </summary>
+        /// <summary>Wave進行をチェック</summary>
         private void CheckWaveProgression()
         {
             if (waveConfig == null) return;
-            
             int newWaveLevel = waveConfig.GetWaveLevelAtTime(gameElapsedTime);
-            
-            if (newWaveLevel != currentWaveLevel)
-            {
-                ChangeWave(newWaveLevel);
-            }
+            if (newWaveLevel != currentWaveLevel) ChangeWave(newWaveLevel);
         }
         
         /// <summary>

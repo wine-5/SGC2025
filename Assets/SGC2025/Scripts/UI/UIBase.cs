@@ -65,7 +65,7 @@ namespace SGC2025
             childMenu.gameObject.name = childMenu.gameObject.name.Replace("(Clone)", "");
             UIBase childUIBase = childMenu.GetComponent<UIBase>();
 
-            if(childUIBase == null){ return null; }
+            if(childUIBase == null) return null;
             childUIBase.parentUI = this;
             childrenMenu.Add(childUIBase);
 

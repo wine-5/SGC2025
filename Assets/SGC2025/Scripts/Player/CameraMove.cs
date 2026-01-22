@@ -2,20 +2,19 @@ using UnityEngine;
 
 namespace SGC2025
 {
-
+    /// <summary>
+    /// プレイヤーをスムーズに追従するカメラ制御
+    /// </summary>
     public class CameraMove : MonoBehaviour
     {
-        [SerializeField]
-        private Transform target;   // 追従する対象（プレイヤー）
-        [SerializeField]
-        private Vector3 offset = new Vector3(0, 5, -10); // カメラの位置ずれ
-        [SerializeField]
-        private float smoothSpeed = 5f; // スムーズな追従速度
+        [SerializeField] private Transform target;
+        [SerializeField] private Vector3 offset = new Vector3(0, 5, -10);
+        [SerializeField] private float smoothSpeed = 5f;
         
         [Header("カメラサイズ設定")]
         [SerializeField]
         [Tooltip("カメラの視野の大きさ（Orthographicカメラの場合）")]
-        private float orthographicSize = 8f; // カメラのサイズ（大きいほど引きになる）
+        private float orthographicSize = 8f;
 
         private Camera cam;
 
@@ -28,11 +27,8 @@ namespace SGC2025
         {
            transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
            
-           // カメラサイズを設定
            if (cam != null && cam.orthographic)
-           {
                cam.orthographicSize = orthographicSize;
-           }
         }
         
         void LateUpdate()
@@ -41,6 +37,5 @@ namespace SGC2025
             Vector3 newPos = new Vector3(target.position.x, target.position.y, transform.position.z);
             transform.position = Vector3.Lerp(transform.position, newPos, smoothSpeed * Time.deltaTime);
         }
-
     }
 }

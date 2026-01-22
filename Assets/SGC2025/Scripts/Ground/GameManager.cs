@@ -12,54 +12,36 @@ namespace SGC2025
     {
         [Header("ゲーム設定")]
         [SerializeField] private string gameOverSceneName = "Gameover";
-        [SerializeField] private float gameOverDelay = 2f; // ゲームオーバーまでの遅延時間
+        [SerializeField] private float gameOverDelay = 2f;
         
-        [Header("デバッグ設定")]
-        [SerializeField] private bool enableDebugLog = false;
-        
-        // ゲーム状態
         private bool isGameOver = false;
         private bool isPaused = false;
         
-        // イベント
         public static event System.Action OnGameOver;
         public static event System.Action OnGamePause;
         public static event System.Action OnGameResume;
         
-        // プロパティ
         public bool IsGameOver => isGameOver;
         public bool IsPaused => isPaused;
         
         protected override void Init()
         {
             base.Init();
-            
-            // プレイヤーの死亡イベントを購読
             PlayerCharacter.OnPlayerDeath += HandlePlayerDeath;
-            
-            if (enableDebugLog)
-            {
-                Debug.Log("[GameManager] 初期化完了");
-            }
         }
         
         protected override void OnDestroy()
         {
-            // イベントの購読解除
             PlayerCharacter.OnPlayerDeath -= HandlePlayerDeath;
             
             base.OnDestroy();
         }
         
-        /// <summary>
-        /// プレイヤー死亡時の処理
-        /// </summary>
+        /// <summary>プレイヤー死亡時の処理</summary>
         private void HandlePlayerDeath()
         {
             if (isGameOver) return;
-            
             Debug.Log("[GameManager] プレイヤーが死亡しました。ゲームオーバー処理を開始します");
-            
             isGameOver = true;
             OnGameOver?.Invoke();
             
@@ -72,11 +54,6 @@ namespace SGC2025
         /// </summary>
         private void LoadGameOverScene()
         {
-            if (enableDebugLog)
-            {
-                Debug.Log($"[GameManager] {gameOverSceneName}シーンに遷移します");
-            }
-            
             try
             {
                 SceneManager.LoadScene(gameOverSceneName);
@@ -84,43 +61,26 @@ namespace SGC2025
             catch (System.Exception e)
             {
                 Debug.LogError($"[GameManager] シーン遷移に失敗しました: {e.Message}");
-                // フォールバック：現在のシーンをリロード
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
         
-        /// <summary>
-        /// ゲームを一時停止
-        /// </summary>
+        /// <summary>ゲームを一時停止</summary>
         public void PauseGame()
         {
             if (isPaused || isGameOver) return;
-            
             isPaused = true;
             Time.timeScale = 0f;
             OnGamePause?.Invoke();
-            
-            if (enableDebugLog)
-            {
-                Debug.Log("[GameManager] ゲームを一時停止しました");
-            }
         }
         
-        /// <summary>
-        /// ゲームを再開
-        /// </summary>
+        /// <summary>ゲームを再開</summary>
         public void ResumeGame()
         {
             if (!isPaused || isGameOver) return;
-            
             isPaused = false;
             Time.timeScale = 1f;
             OnGameResume?.Invoke();
-            
-            if (enableDebugLog)
-            {
-                Debug.Log("[GameManager] ゲームを再開しました");
-            }
         }
         
         /// <summary>

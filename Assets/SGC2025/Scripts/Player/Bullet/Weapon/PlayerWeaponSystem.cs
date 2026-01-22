@@ -168,6 +168,8 @@ namespace SGC2025.Player.Bullet
         
         public void Fire()
         {
+            Debug.Log($"[PlayerWeaponSystem] Fire called. BulletFactory: {BulletFactory.I != null}, FirePoint: {firePoint != null}");
+            
             if (BulletFactory.I == null)
             {
                 Debug.LogError("PlayerWeaponSystem: BulletFactoryが見つかりません");

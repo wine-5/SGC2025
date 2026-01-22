@@ -65,7 +65,6 @@ namespace SGC2025
         {
             string json = JsonUtility.ToJson(ranking, true);
             File.WriteAllText(filePath, json);
-            Debug.Log($"ランキング保存: {json}");
         }
 
         /// <summary>

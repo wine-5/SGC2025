@@ -33,47 +33,32 @@ namespace SGC2025.Enemy
             lastPosition = transform.position;
         }
         
-        /// <summary>
-        /// プレイヤーのTransformを取得
-        /// </summary>
+        /// <summary>プレイヤーのTransformを取得</summary>
         private Transform GetPlayerTransform()
         {
-            // キャッシュがあればそれを返す
-            if (playerTransform != null)
-                return playerTransform;
-                
-            // まだ検索を試行していない場合のみ検索
+            if (playerTransform != null) return playerTransform;
             if (!playerSearchAttempted)
             {
                 playerSearchAttempted = true;
-                
-                // Playerタグでプレイヤーを検索
                 GameObject playerObject = GameObject.FindWithTag(PLAYER_TAG);
                 if (playerObject != null)
                 {
                     playerTransform = playerObject.transform;
                     return playerTransform;
                 }
-                
-                // PlayerWeaponSystemコンポーネントを持つオブジェクトを検索
                 var playerWeaponSystem = FindFirstObjectByType<PlayerWeaponSystem>();
                 if (playerWeaponSystem != null)
                 {
                     playerTransform = playerWeaponSystem.transform;
                     return playerTransform;
                 }
-                
-                // Playerコンポーネントを持つオブジェクトを検索
                 var player = FindFirstObjectByType<SGC2025.PlayerCharacter>();
                 if (player != null)
                 {
                     playerTransform = player.transform;
                     return playerTransform;
                 }
-                
-                Debug.LogWarning($"{DEBUG_LOG_PREFIX} プレイヤーオブジェクトが見つかりませんでした");
             }
-            
             return null;
         }
         

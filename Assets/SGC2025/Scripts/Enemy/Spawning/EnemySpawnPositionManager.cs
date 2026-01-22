@@ -96,22 +96,9 @@ namespace SGC2025.Enemy
 
         public void InitRangesFromTransforms()
         {
-            // スポーンポイントの検証（エラーのみログ出力）
             ValidateSpawnPoints();
-            
-            // Inspector設定の範囲値を直接使用
             cachedRangeX = horizontalSpawnRange;
             cachedRangeY = verticalSpawnRange;
-            
-            // Debug.Log($"[SpawnPositionManager] 初期化完了 - 範囲 X:{cachedRangeX}, Y:{cachedRangeY}");
-            // Debug.Log($"[SpawnPositionManager] 設定 - 境界線:{useBoundarySpawn}, 四隅:{useCornerSpawn}, 直接座標:{useDirectCoordinates}");
-            // Debug.Log($"[SpawnPositionManager] エリア:{gameAreaMin}~{gameAreaMax}, 境界オフセット:{boundaryOffset}, 角ランダム範囲:{cornerRandomRange}");
-            
-            // 各スポーンポイントの位置をログ出力
-            // if (topSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 上スポーンポイント: {topSpawnPoint.position}");
-            // if (bottomSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 下スポーンポイント: {bottomSpawnPoint.position}");
-            // if (leftSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 左スポーンポイント: {leftSpawnPoint.position}");
-            // if (rightSpawnPoint != null) Debug.Log($"[SpawnPositionManager] 右スポーンポイント: {rightSpawnPoint.position}");
         }
         
         /// <summary>
@@ -128,177 +115,89 @@ namespace SGC2025.Enemy
         /// <summary>
         /// 上から下への生成位置をランダムに取得
         /// </summary>
-        /// <returns>生成位置</returns>
         public Vector3 GetRandomTopSpawnPosition()
         {
-            if (topSpawnPoint == null)
-            {
-                Debug.LogWarning("topSpawnPoint が設定されていません");
-                return Vector3.zero;
-            }
+            if (topSpawnPoint == null) return Vector3.zero;
             Vector3 basePosition = topSpawnPoint.position;
             float randomX = Random.Range(
                 basePosition.x - cachedRangeX * RANGE_HALF,
                 basePosition.x + cachedRangeX * RANGE_HALF
             );
-            Vector3 spawnPosition = new Vector3(randomX, basePosition.y, 0f);
-            Debug.Log($"[SpawnPositionManager] 上からの生成位置: {spawnPosition} (基準位置: {basePosition}, 範囲: {cachedRangeX})");
-            return spawnPosition;
+            return new Vector3(randomX, basePosition.y, 0f);
         }
         
-        /// <summary>
-        /// 四隅生成モードを設定
-        /// </summary>
-        /// <param name="enabled">四隅生成を有効にするか</param>
-        public void SetCornerSpawnMode(bool enabled)
-        {
-            useCornerSpawn = enabled;
-            Debug.Log($"[SpawnPositionManager] 四隅生成モード: {(enabled ? "有効" : "無効")}");
-        }
+        public void SetCornerSpawnMode(bool enabled) => useCornerSpawn = enabled;
         
-        /// <summary>
-        /// 現在の生成モードを取得
-        /// </summary>
-        /// <returns>四隅生成が有効かどうか</returns>
-        public bool IsCornerSpawnMode()
-        {
-            return useCornerSpawn;
-        }
+        /// <summary>四隅生成モード取得</summary>
+        public bool IsCornerSpawnMode() => useCornerSpawn;
         
         /// <summary>
         /// Canvas参照モードを設定
         /// </summary>
-        /// <param name="enabled">Canvas参照を有効にするか</param>
-        /// <param name="canvas">対象のCanvas</param>
-        /// <param name="camera">参照カメラ（オプション）</param>
         public void SetCanvasReferenceMode(bool enabled, Canvas canvas = null, Camera camera = null)
         {
             useCanvasReference = enabled;
             if (canvas != null) targetCanvas = canvas;
             if (camera != null) referenceCamera = camera;
-            
-            // 他の参照モードを無効化
             if (enabled)
-            {
                 useTileMapReference = false;
-            }
-            
-            Debug.Log($"[SpawnPositionManager] Canvas参照モード: {(enabled ? "有効" : "無効")}");
         }
         
-        /// <summary>
-        /// Canvas参照モードが有効かどうか
-        /// </summary>
-        /// <returns>Canvas参照が有効かどうか</returns>
-        public bool IsCanvasReferenceMode()
-        {
-            return useCanvasReference;
-        }
+        /// <summary>Canvas参照モード取得</summary>
+        public bool IsCanvasReferenceMode() => useCanvasReference;
         
         /// <summary>
         /// TileMap参照モードを設定
         /// </summary>
-        /// <param name="enabled">TileMap参照を有効にするか</param>
-        /// <param name="tileMap">対象のTileMap</param>
-        /// <param name="padding">境界からのパディング</param>
         public void SetTileMapReferenceMode(bool enabled, Tilemap tileMap = null, float padding = 0.5f)
         {
             useTileMapReference = enabled;
             if (tileMap != null) targetTileMap = tileMap;
             tileMapPadding = padding;
-            
-            // 他の参照モードを無効化
             if (enabled)
-            {
                 useCanvasReference = false;
-            }
-            
-            Debug.Log($"[SpawnPositionManager] TileMap参照モード: {(enabled ? "有効" : "無効")}");
         }
         
-        /// <summary>
-        /// TileMap参照モードが有効かどうか
-        /// </summary>
-        /// <returns>TileMap参照が有効かどうか</returns>
-        public bool IsTileMapReferenceMode()
-        {
-            return useTileMapReference;
-        }
+        /// <summary>TileMap参照モード取得</summary>
+        public bool IsTileMapReferenceMode() => useTileMapReference;
         
         /// <summary>
         /// 画面の四方向または四隅からランダムに生成位置を取得
         /// </summary>
-        /// <returns>生成位置</returns>
         public Vector3 GetRandomEdgeSpawnPosition()
         {
             if (useBoundarySpawn)
-            {
-                // Debug.Log("[SpawnPositionManager] 境界線生成モードで生成");
                 return GetRandomBoundaryPosition();
-            }
-            else if (useCornerSpawn)
-            {
-                // Debug.Log("[SpawnPositionManager] 四隅生成モードで生成");
+            if (useCornerSpawn)
                 return GetRandomCornerSpawnPosition();
-            }
-            else
+                
+            int side = Random.Range(0, 4);
+            return side switch
             {
-                // 従来の四方向生成
-                int side = Random.Range(0, 4);
-                
-                Vector3 spawnPos = side switch
-                {
-                    0 => GetTopPosition(),    // 上
-                    1 => GetBottomPosition(), // 下
-                    2 => GetLeftPosition(),   // 左
-                    3 => GetRightPosition(),  // 右
-                    _ => GetTopPosition()
-                };
-                
-                string sideName = side switch
-                {
-                    0 => "上",
-                    1 => "下", 
-                    2 => "左",
-                    3 => "右",
-                    _ => "上"
-                };
-                
-                // Debug.Log($"[SpawnPositionManager] エッジ生成位置: {spawnPos} ({sideName}側)");
-                return spawnPos;
-            }
+                0 => GetTopPosition(),
+                1 => GetBottomPosition(),
+                2 => GetLeftPosition(),
+                3 => GetRightPosition(),
+                _ => GetTopPosition()
+            };
         }
         
         /// <summary>
         /// 四隅からランダムに生成位置を取得
         /// </summary>
-        /// <returns>生成位置</returns>
         public Vector3 GetRandomCornerSpawnPosition()
         {
-            // 四隅のどこから生成するかをランダム選択
             int corner = Random.Range(0, 4);
-            
-            Vector3 spawnPos = corner switch
+            return corner switch
             {
-                0 => GetTopLeftCornerPosition(),     // 左上
-                1 => GetTopRightCornerPosition(),    // 右上
-                2 => GetBottomLeftCornerPosition(),  // 左下
-                3 => GetBottomRightCornerPosition(), // 右下
+                0 => GetTopLeftCornerPosition(),
+                1 => GetTopRightCornerPosition(),
+                2 => GetBottomLeftCornerPosition(),
+                3 => GetBottomRightCornerPosition(),
                 _ => GetTopLeftCornerPosition()
             };
-            
-            string cornerName = corner switch
-            {
-                0 => "左上",
-                1 => "右上", 
-                2 => "左下",
-                3 => "右下",
-                _ => "左上"
-            };
-            
-            Debug.Log($"[SpawnPositionManager] 四隅生成位置: {spawnPos} ({cornerName}角)");
-            return spawnPos;
         }
+        
         
         /// <summary>
         /// Canvasの四隅を自動計算して取得
@@ -396,38 +295,15 @@ namespace SGC2025.Enemy
         /// <returns>境界線上のランダム生成位置</returns>
         private Vector3 GetRandomBoundaryPosition()
         {
-            // 四辺のどこから生成するかをランダム選択
             int side = Random.Range(0, 4);
-            
-            Vector3 spawnPosition;
-            string sideName;
-            
-            switch (side)
+            return side switch
             {
-                case 0: // 上辺
-                    spawnPosition = GetRandomTopBoundaryPosition();
-                    sideName = "上辺";
-                    break;
-                case 1: // 下辺
-                    spawnPosition = GetRandomBottomBoundaryPosition();
-                    sideName = "下辺";
-                    break;
-                case 2: // 左辺
-                    spawnPosition = GetRandomLeftBoundaryPosition();
-                    sideName = "左辺";
-                    break;
-                case 3: // 右辺
-                    spawnPosition = GetRandomRightBoundaryPosition();
-                    sideName = "右辺";
-                    break;
-                default:
-                    spawnPosition = GetRandomTopBoundaryPosition();
-                    sideName = "上辺";
-                    break;
-            }
-            
-            // Debug.Log($"[SpawnPositionManager] 境界線生成: {spawnPosition} ({sideName})");
-            return spawnPosition;
+                0 => GetRandomTopBoundaryPosition(),
+                1 => GetRandomBottomBoundaryPosition(),
+                2 => GetRandomLeftBoundaryPosition(),
+                3 => GetRandomRightBoundaryPosition(),
+                _ => GetRandomTopBoundaryPosition()
+            };
         }
 
         /// <summary>

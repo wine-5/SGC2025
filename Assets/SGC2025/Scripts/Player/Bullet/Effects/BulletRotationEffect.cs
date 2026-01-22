@@ -203,15 +203,9 @@ namespace SGC2025.Player.Bullet.Effects
             if (Application.isPlaying)
             {
                 if (isRotating)
-                {
                     StopRotation();
-                    Debug.Log("BulletRotationEffect: 回転停止");
-                }
                 else
-                {
                     StartRotation();
-                    Debug.Log("BulletRotationEffect: 回転開始");
-                }
             }
         }
         
@@ -219,7 +213,6 @@ namespace SGC2025.Player.Bullet.Effects
         private void TestRandomRotation()
         {
             ApplyRandomInitialRotation();
-            Debug.Log("BulletRotationEffect: ランダム回転適用");
         }
         #endif
         

@@ -4,12 +4,15 @@ using TMPro;
 
 namespace SGC2025 
 {
+    /// <summary>
+    /// インゲーム中のUI表示を管理
+    /// </summary>
     public class InGameUI : MonoBehaviour
     {
-        [SerializeField]
-        private TextMeshProUGUI scoreText;
-        [SerializeField]
-        private TextMeshProUGUI timeText;
+        private const int DEFAULT_POOL_SIZE = 10;
+
+        [SerializeField] private TextMeshProUGUI scoreText;
+        [SerializeField] private TextMeshProUGUI timeText;
         public static InGameUI Instance;
 
         [Header("スコアポップアップ設定")]
@@ -22,14 +25,9 @@ namespace SGC2025
         private void Awake()
         {
             Instance = this;
+            if (parentCanvas == null) parentCanvas = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
+            if (popupPrefab == null) popupPrefab = Resources.Load<GameObject>("UI/PulsScore");
 
-            if (parentCanvas == null)
-                parentCanvas = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-
-            if (popupPrefab == null)
-                popupPrefab = Resources.Load<GameObject>("UI/PulsScore");
-
-            // プール初期化
             for (int i = 0; i < initialPoolSize; i++)
             {
                 var obj = Instantiate(popupPrefab, parentCanvas);
@@ -64,9 +62,7 @@ namespace SGC2025
 
         private PopupScoreUI GetFromPool()
         {
-            if (popupPool.Count > 0)
-                return popupPool.Dequeue();
-
+            if (popupPool.Count > 0) return popupPool.Dequeue();
             var obj = Instantiate(popupPrefab, parentCanvas);
             var popup = obj.GetComponent<PopupScoreUI>();
             obj.SetActive(false);
@@ -81,14 +77,14 @@ namespace SGC2025
 
         private void UpdateScoreText()
         {
-            if (scoreText != null)
-                scoreText.text =  ( CommonDef.currentEnemyScore + CommonDef.currentGreeningScore ).ToString();
+            if (scoreText == null) return;
+            scoreText.text = (CommonDef.currentEnemyScore + CommonDef.currentGreeningScore).ToString();
         }
+
         private void UpdateTimeText()
         {
-            if (timeText != null)
-
-                timeText.text =  ( ScoreManager.I.GetGameCount()).ToString();
+            if (timeText == null) return;
+            timeText.text = ScoreManager.I.GetGameCount().ToString("F1");
         }
     }
 }

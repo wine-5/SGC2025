@@ -39,13 +39,7 @@ namespace TechC
                     Debug.LogError($"プール項目 '{poolItem.name}' のプレハブがnullです。");
                     continue;
                 }
-
-                if (poolItem.parent == null)
-                {
-                    // 親が指定されていない場合は、このオブジェクトを親として使用
-                    poolItem.parent = this.gameObject;
-                }
-
+                if (poolItem.parent == null) poolItem.parent = this.gameObject;
                 InitializePool(poolItem);
             }
         }
@@ -61,12 +55,7 @@ namespace TechC
                 Debug.LogError("プレハブがnullのプールを初期化できません。");
                 return;
             }
-
-            if (!objectPools.ContainsKey(poolItem.prefab))
-            {
-                objectPools[poolItem.prefab] = new Queue<GameObject>();
-            }
-
+            if (!objectPools.ContainsKey(poolItem.prefab)) objectPools[poolItem.prefab] = new Queue<GameObject>();
             for (int i = 0; i < poolItem.initialSize; i++)
             {
                 GameObject newObject = CreateNewInstance(poolItem);
@@ -74,11 +63,6 @@ namespace TechC
             }
         }
 
-        /// <summary>
-        /// 新しいインスタンスを作成します
-        /// </summary>
-        /// <param name="poolItem">生成元となるプール項目</param>
-        /// <returns>生成されたGameObject</returns>
         private GameObject CreateNewInstance(ObjectPoolItem poolItem)
         {
             if (poolItem.prefab == null)
@@ -86,15 +70,9 @@ namespace TechC
                 Debug.LogError("nullのプレハブからインスタンスを作成できません。");
                 return null;
             }
-
             GameObject newObject = Instantiate(poolItem.prefab);
             newObject.SetActive(false);
-
-            if (poolItem.parent != null)
-            {
-                newObject.transform.SetParent(poolItem.parent.transform);
-            }
-
+            if (poolItem.parent != null) newObject.transform.SetParent(poolItem.parent.transform);
             instanceToPoolItemMap[newObject] = poolItem;
             return newObject;
         }
@@ -139,37 +117,25 @@ namespace TechC
                 return null;
             }
 
-            // プールが存在し、オブジェクトがある場合
             if (objectPools.TryGetValue(prefab, out Queue<GameObject> pool) && pool.Count > 0)
             {
                 GameObject pooledObject = pool.Dequeue();
-
-                // nullチェック（破棄されたオブジェクトの対応）
                 if (pooledObject == null)
                 {
-                    // nullの場合は新しいインスタンスを作成
                     ObjectPoolItem poolItem = poolItems.Find(item => item.prefab == prefab);
-                    if (poolItem != null)
-                    {
-                        pooledObject = CreateNewInstance(poolItem);
-                    }
+                    if (poolItem != null) pooledObject = CreateNewInstance(poolItem);
                 }
-
                 pooledObject.SetActive(true);
                 return pooledObject;
             }
             else
             {
-                // 初期リストに含まれるプレハブか確認
                 ObjectPoolItem poolItem = poolItems.Find(item => item.prefab == prefab);
                 if (poolItem != null)
                 {
                     if (autoExpand)
                     {
-                        // プールの自動拡張
                         ExpandPool(poolItem, expandSize);
-
-                        // 拡張後に再度オブジェクトを取得
                         if (objectPools[prefab].Count > 0)
                         {
                             GameObject pooledObject = objectPools[prefab].Dequeue();
@@ -177,8 +143,6 @@ namespace TechC
                             return pooledObject;
                         }
                     }
-
-                    // 拡張しない場合または拡張後もプールが空の場合は新しいインスタンスを作成
                     GameObject newObject = CreateNewInstance(poolItem);
                     newObject.SetActive(true);
                     return newObject;
@@ -201,11 +165,9 @@ namespace TechC
         public GameObject GetObject(GameObject prefab, Vector3 position, Quaternion rotation)
         {
             GameObject obj = GetObject(prefab);
-            if (obj != null)
-            {
-                obj.transform.position = position;
-                obj.transform.rotation = rotation;
-            }
+            if (obj == null) return null;
+            obj.transform.position = position;
+            obj.transform.rotation = rotation;
             return obj;
         }
 

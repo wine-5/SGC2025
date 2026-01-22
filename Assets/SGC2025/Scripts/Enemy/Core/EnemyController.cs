@@ -60,21 +60,13 @@ namespace SGC2025.Enemy
 
         public void TakeDamage(float damage)
         {
-            if (!IsAlive || damage <= MIN_HEALTH)
-            {
-                return;
-            }
-
+            if (!IsAlive || damage <= MIN_HEALTH) return;
             float actualDamage = Mathf.Min(damage, currentHp);
             currentHp = Mathf.Max(MIN_HEALTH, currentHp - actualDamage);
 
             OnDamageTaken?.Invoke(actualDamage);
             EnemyEvents.TriggerEnemyDamage(gameObject, actualDamage, currentHp, MaxHealth);
-
-            if (!IsAlive)
-            {
-                HandleDeath();
-            }
+            if (!IsAlive) HandleDeath();
         }
 
         private void HandleDeath()

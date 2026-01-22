@@ -1,9 +1,11 @@
-using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace SGC2025
 {
+    /// <summary>
+    /// スコア管理とゲーム時間管理を行うマネージャー
+    /// </summary>
     public class ScoreManager : Singleton<ScoreManager>
     {
         [Header("スコア設定")]
@@ -22,46 +24,29 @@ namespace SGC2025
         public int HighScoreTileMultiplier => highScoreTileMultiplier;
         
         [Header("タイマー設定")]
-        //スタート時のカウントダウン時間
         [SerializeField] private float startCountDownTime;
         [SerializeField] private InGameUI gameScoreUI;
-        //時間経過の計測 カウントダウン&ゲーム時間
+        
         private bool isCountDown = false;
         private float currentCountDownTimer = 0f;
         private float countGameTimer = 0f;
-
-        //エネミースコア
         private int scoreEnemy = 0;
-
-        //塗り絵スコア
         private int scoreGreen = 0;
-
-
 
         private void Start()
         {
             ResetValue();
-
-            //CountDownStart();
         }
 
         private void Update()
         {
             CountDownTimer();
             CountGameTimer();
-
-            if(CommonDef.GAME_MINIT <= countGameTimer)
-            { // おわり
-                SceneManager.LoadScene("Result");
-            }
-            
-            //Debug.Log("countDown:" + GetCountDown() + ", gameCount:" + GetGameCount());
+            if(CommonDef.GAME_MINIT <= countGameTimer) SceneManager.LoadScene("Result");
         }
-
 
         private void ResetValue()
         {
-            //�J�n���Ɏ��s �l�̃��Z�b�g
             isCountDown = false;
             currentCountDownTimer = startCountDownTime;
             countGameTimer = 0f;
@@ -69,77 +54,53 @@ namespace SGC2025
             scoreGreen = 0;
         }
 
-
+        /// <summary>カウントダウン開始</summary>
         public void CountDownStart()
         {
-            //isCountDown��true�̏ꍇ�A�J�E���g�_�E�������s
-            //�Q�[���X�^�[�g���ɌĂяo��
-
             currentCountDownTimer = startCountDownTime;
             isCountDown = true;
         }
 
         private void CountDownTimer()
         {
-            //�J�E���g�_�E���̎��s Update�z��
-            if (!isCountDown)
-                return ;
+            if (!isCountDown) return;
             currentCountDownTimer -= Time.deltaTime;
-
-            if (currentCountDownTimer <= 0f)
-                isCountDown = false;
-            //return currentCountDownTimer;
+            if (currentCountDownTimer <= 0f) isCountDown = false;
         }
 
-        public float GetCountDown()
-        {
-            return currentCountDownTimer;
-        }
+        /// <summary>カウントダウン残り時間取得</summary>
+        public float GetCountDown() => currentCountDownTimer;
 
         private void CountGameTimer()
         {
-            //�Q�[�����Ԃ̃J�E���g���s Update�z��
-            if (currentCountDownTimer > 0f || isCountDown)
-                return ;
-
+            if (currentCountDownTimer > 0f || isCountDown) return;
+                
             countGameTimer += Time.deltaTime;
-
-            //return countGameTimer;
         }
 
-        public float GetGameCount()
-        {
-            return CommonDef.GAME_MINIT - countGameTimer;
-        }
+        /// <summary>ゲーム残り時間取得</summary>
+        public float GetGameCount() => CommonDef.GAME_MINIT - countGameTimer;
 
-
+        /// <summary>エネミースコア加算</summary>
         public void AddEnemyScore(int score)
         {
-            //�G�l�~�[�X�R�A�̉��Z
             scoreEnemy += score;
             CommonDef.currentEnemyScore = score;
             gameScoreUI.ShowScorePopup(score);
         }
 
-        public int GetEnemyScore()
-        {
-            //�G�l�~�[�X�R�A�̎擾
-            return scoreEnemy;
-        }
+        /// <summary>エネミースコア取得</summary>
+        public int GetEnemyScore() => scoreEnemy;
 
+        /// <summary>緑化スコア加算</summary>
         public void AddGreenScore(int score)
         {
-            //�Ή��X�R�A�̉��Z
             scoreGreen += score;
             CommonDef.currentGreeningScore = scoreGreen;
             gameScoreUI.ShowScorePopup(score);
         }
 
-        public int GetGreenScore()
-        {
-            //�Ή��X�R�A�̎擾
-            return scoreGreen;
-        }
-
+        /// <summary>緑化スコア取得</summary>
+        public int GetGreenScore() => scoreGreen;
     }
 }

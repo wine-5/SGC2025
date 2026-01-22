@@ -9,24 +9,14 @@ namespace SGC2025.Events
     public static class PlayerEvents
     {
         public static event System.Action<float> OnPlayerDamageTaken;
-        
-        public static event System.Action<float, float> OnPlayerHealthChanged; // (currentHP, maxHP)
-        
+        public static event System.Action<float, float> OnPlayerHealthChanged;
         public static event System.Action OnPlayerDeath;
-        
         public static event System.Action OnPlayerRespawned;
-
         public static event System.Action<Vector2> OnPlayerMoved;
-        
         public static event System.Action<Vector3> OnPlayerShot;
-        
-        public static event System.Action<int> OnPlayerWeaponChanged; // weaponId
-
+        public static event System.Action<int> OnPlayerWeaponChanged;
         public static event System.Action<int> OnScoreChanged;
-        
         public static event System.Action<int> OnPlayerLevelUp;
-        
-        public static event System.Action<string> OnItemCollected; // itemType
-
+        public static event System.Action<string> OnItemCollected;
     }
 }
