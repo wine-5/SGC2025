@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36521c61e51a62b40b72ddbc707d2403, type: 3}
+  m_Name: GroundData
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.GroundDataSO
+  columns: 60
+  rows: 60
+  cellWidth: 1
+  cellHeight: 1
+  tileAspect: {x: 1, y: 1}
+  tilePrefab: {fileID: 1479810453798237408, guid: b252ee321e8715047bd75ea6ffbbc0e0, type: 3}

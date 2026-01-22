@@ -8,13 +8,10 @@ namespace SGC2025
 {
     public class GroundManager : Singleton<GroundManager>
     {
-        // TODO:AddressableかResouseで取得する
+        [Header("地面データ設定")]
         [SerializeField]
-        private GameObject defaultTile;
-
-        // TODO:定数にしたい
-        [SerializeField]
-        private float cellSize;
+        [Tooltip("使用するGroundDataSO（マップ設定の単一の真実の源泉）")]
+        private GroundDataSO groundData;
 
         // 地面データ
         private struct GroundData
@@ -41,24 +38,43 @@ namespace SGC2025
         // 現在の原点
         private Vector3 currentOriginPosisiton ;
 
-        // マップ情報
-        private MapSettings mapSetting;
-
         // 緑地マテリアル
         private Material grassMaterial;
         
+        /// <summary>GroundDataSOへの公開参照</summary>
+        public GroundDataSO MapData => groundData;
+        
         /// <summary>マップの列数（幅）を取得</summary>
-        public int MapColumns => mapSetting?.columns ?? 0;
+        public int MapColumns => groundData?.columns ?? 0;
         
         /// <summary>マップの行数（高さ）を取得</summary>
-        public int MapRows => mapSetting?.rows ?? 0;
+        public int MapRows => groundData?.rows ?? 0;
         
         /// <summary>マップの最大座標を取得（0ベース）</summary>
         public Vector2Int MapMaxIndex => new Vector2Int(MapColumns - 1, MapRows - 1);
+        
+        /// <summary>
+        /// Playerのスポーン位置を取得（マップの中心）
+        /// </summary>
+        public Vector3 GetPlayerSpawnPosition()
+        {
+            if (groundData == null)
+            {
+                Debug.LogWarning("GroundManager: GroundDataSOが設定されていません。デフォルト位置(0,0,0)を返します。");
+                return Vector3.zero;
+            }
+            return groundData.MapCenterPosition;
+        }
 
         public void Start()
         {
-            LoadStage(SceneManager.GetActiveScene().name);
+            if (groundData == null)
+            {
+                Debug.LogError("GroundManager: GroundDataSOが設定されていません！");
+                return;
+            }
+            
+            SetStageObject();
             InitHighObject();
             grassMaterial = Resources.Load<Material>("Materials/grass");
             if (!grassMaterial)
@@ -102,8 +118,8 @@ namespace SGC2025
             Vector2Int cellPosition = SearchCellIndex(enemyPosition);
             
             // 範囲チェック
-            if (cellPosition.x < 0 || cellPosition.x >= mapSetting.columns ||
-                cellPosition.y < 0 || cellPosition.y >= mapSetting.rows)
+            if (cellPosition.x < 0 || cellPosition.x >= groundData.columns ||
+                cellPosition.y < 0 || cellPosition.y >= groundData.rows)
             {
                 Debug.LogWarning($"GroundManager: 位置 {enemyPosition} がマップ範囲外です");
                 return false;
@@ -138,52 +154,37 @@ namespace SGC2025
         /// <returns>セルインデックス</returns>
         private Vector2Int SearchCellIndex(Vector3 position)
         {
-            int x = Mathf.RoundToInt((position.x - currentOriginPosisiton.x) / cellSize);
-            int y = Mathf.RoundToInt((position.y - currentOriginPosisiton.y) / cellSize);
+            int x = Mathf.RoundToInt((position.x - currentOriginPosisiton.x) / groundData.cellWidth);
+            int y = Mathf.RoundToInt((position.y - currentOriginPosisiton.y) / groundData.cellHeight);
 
             // 範囲をクランプ
-            x = Mathf.Clamp(x, 0, mapSetting.columns - 1);
-            y = Mathf.Clamp(y, 0, mapSetting.rows - 1);
+            x = Mathf.Clamp(x, 0, groundData.columns - 1);
+            y = Mathf.Clamp(y, 0, groundData.rows - 1);
             
             return new Vector2Int(x, y);
         }
 
         /// <summary>
-        /// ステージロード
-        /// </summary>
-        public void LoadStage(string sceneName)
-        {
-            string path = Path.Combine(Application.dataPath, "Maps", $"{sceneName}_map.json");
-            if (!File.Exists(path))
-            {
-                Debug.LogWarning($"GroundManager : JSON が見つかりません: {path}");
-            }
-
-            string json = File.ReadAllText(path);
-            MapSettings temp = ScriptableObject.CreateInstance<MapSettings>();
-            JsonUtility.FromJsonOverwrite(json, temp);
-            SetStageObject(temp);
-        }
-
-        /// <summary>
         /// ステージの配置
         /// </summary>
-        private void SetStageObject(MapSettings mapSettings)
+        private void SetStageObject()
         {
-            mapSetting = mapSettings;
-            currentGroundArray = new GroundData[mapSettings.columns, mapSettings.rows];
+            currentGroundArray = new GroundData[groundData.columns, groundData.rows];
             
-            Debug.Log($"GroundManager: マップ生成開始 - サイズ: {mapSettings.columns}x{mapSettings.rows}, cellSize: {cellSize}");
+            Debug.Log($"GroundManager: マップ生成開始 - サイズ: {groundData.columns}x{groundData.rows}, cellSize: {groundData.cellWidth}");
             
-            for (int y = 0; y < mapSettings.rows; y++)
+            for (int y = 0; y < groundData.rows; y++)
             {
-                for (int x = 0; x < mapSettings.columns; x++)
+                for (int x = 0; x < groundData.columns; x++)
                 {
-                    Vector3 pos = new Vector3(x * cellSize, y * cellSize, 0.0f);
-                    GameObject tile = Instantiate(defaultTile, pos, Quaternion.identity, transform);
+                    Vector3 pos = new Vector3(x * groundData.cellWidth, y * groundData.cellHeight, 0.0f);
+                    GameObject tilePrefab = groundData.tilePrefab != null ? groundData.tilePrefab : groundData.tilePrefab;
+                    GameObject tile = Instantiate(tilePrefab, pos, Quaternion.identity, transform);
                     tile.name = $"Tile_{x}_{y}";
 
-                    currentGroundArray[x, y].point = 100; // todo 定数
+                    // ポイントはScoreManagerから取得
+                    int basePoint = ScoreManager.I != null ? ScoreManager.I.NormalTilePoint : 100;
+                    currentGroundArray[x, y].point = basePoint;
                     currentGroundArray[x, y].isDrawn = false;
                     currentGroundArray[x, y].worldPos = pos;
                     currentGroundArray[x, y].gridPos = new Vector2Int(x, y);
@@ -194,7 +195,7 @@ namespace SGC2025
             // 原点位置を設定
             currentOriginPosisiton = transform.position;
             
-            Debug.Log($"GroundManager: マップ生成完了 - タイル数: {mapSettings.columns * mapSettings.rows}");
+            Debug.Log($"GroundManager: マップ生成完了 - タイル数: {groundData.columns * groundData.rows}");
         }
 
         /// <summary>
@@ -207,7 +208,8 @@ namespace SGC2025
             foreach(GameObject highScore in objects)
             {
                 Vector2Int cellPosition = SearchCellIndex(highScore.transform.position);
-                currentGroundArray[cellPosition.x, cellPosition.y].point = currentGroundArray[cellPosition.x, cellPosition.y].point*3;
+                int multiplier = ScoreManager.I != null ? ScoreManager.I.HighScoreTileMultiplier : 3;
+                currentGroundArray[cellPosition.x, cellPosition.y].point = currentGroundArray[cellPosition.x, cellPosition.y].point * multiplier;
             }
         }
         
@@ -223,12 +225,12 @@ namespace SGC2025
                 return;
             }
             
-            int totalCells = mapSetting.columns * mapSetting.rows;
+            int totalCells = groundData.columns * groundData.rows;
             int drawnCells = 0;
             
-            for (int y = 0; y < mapSetting.rows; y++)
+            for (int y = 0; y < groundData.rows; y++)
             {
-                for (int x = 0; x < mapSetting.columns; x++)
+                for (int x = 0; x < groundData.columns; x++)
                 {
                     if (currentGroundArray[x, y].isDrawn)
                     {
@@ -267,8 +269,8 @@ namespace SGC2025
         public void TestDrawGround()
         {
             // テスト用：中央付近の地面を塗る
-            Vector3 testPosition = new Vector3(mapSetting.columns * cellSize * 0.5f, 
-                                               mapSetting.rows * cellSize * 0.5f, 0);
+            Vector3 testPosition = new Vector3(groundData.columns * groundData.cellWidth * 0.5f, 
+                                               groundData.rows * groundData.cellHeight * 0.5f, 0);
             DrawGround(testPosition);
         }
     }

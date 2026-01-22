@@ -384,6 +384,7 @@ MonoBehaviour:
   target: {fileID: 1630512991}
   offset: {x: 0, y: 5, z: -10}
   smoothSpeed: 5
+  orthographicSize: 8
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1660,8 +1661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 544bd0681cadb704bab998708c4b69a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.GroundManager
-  defaultTile: {fileID: 1479810453798237408, guid: b252ee321e8715047bd75ea6ffbbc0e0, type: 3}
-  cellSize: 1
+  groundData: {fileID: 11400000, guid: 2a067f0ee116ab1488b84407aa690e72, type: 2}
 --- !u!4 &1715340897
 Transform:
   m_ObjectHideFlags: 0
@@ -1805,6 +1805,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d372a4db83dafdc46baffd817c56f9b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.ScoreManager
+  normalTilePoint: 100
+  highScoreTileMultiplier: 3
   startCountDownTime: 0
   gameScoreUI: {fileID: 1828305156}
 --- !u!114 &1945701719
@@ -1819,8 +1821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 544bd0681cadb704bab998708c4b69a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.GroundManager
-  defaultTile: {fileID: 1479810453798237408, guid: b252ee321e8715047bd75ea6ffbbc0e0, type: 3}
-  cellSize: 1
+  groundData: {fileID: 0}
 --- !u!114 &1945701720
 MonoBehaviour:
   m_ObjectHideFlags: 0

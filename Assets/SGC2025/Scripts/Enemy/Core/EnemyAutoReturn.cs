@@ -63,13 +63,34 @@ namespace SGC2025.Enemy
         
         private bool ShouldReturnToPool()
         {
-            // 時間経過のみで判定
-            return HasLifeTimeExpired();
+            // 時間経過またはマップ範囲外で判定
+            return HasLifeTimeExpired() || IsOutOfMapBounds();
         }
 
         private bool HasLifeTimeExpired()
         {
             return elapsedTime >= currentLifeTime;
+        }
+        
+        /// <summary>
+        /// マップ範囲外に出たかをチェック
+        /// </summary>
+        private bool IsOutOfMapBounds()
+        {
+            if (GroundManager.I == null || GroundManager.I.MapData == null)
+            {
+                return false; // GroundManagerがない場合は時間でのみ判定
+            }
+            
+            var mapData = GroundManager.I.MapData;
+            Vector3 pos = transform.position;
+            
+            // マップの範囲外チェック（少し余裕を持たせる）
+            float margin = 5f; // 完全に見えなくなってから返却
+            return pos.x < -margin || 
+                   pos.x > mapData.MapMaxWorldPosition.x + margin ||
+                   pos.y < -margin || 
+                   pos.y > mapData.MapMaxWorldPosition.y + margin;
         }
         
         private void ReturnToPool()

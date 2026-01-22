@@ -98,6 +98,18 @@ namespace SGC2025
             {
                 weaponSystem.SetManualFiring(true);
             }
+            
+            // Playerの初期位置をGroundManagerから取得して設定（マップの中心に配置）
+            if (GroundManager.I != null)
+            {
+                Vector3 spawnPosition = GroundManager.I.GetPlayerSpawnPosition();
+                transform.position = spawnPosition;
+                Debug.Log($"Player: スポーン位置をマップ中心に設定 - {spawnPosition}");
+            }
+            else
+            {
+                Debug.LogWarning("Player: GroundManagerが見つかりません。現在の位置からスタートします。");
+            }
         }
 
         private void Update()

@@ -6,18 +6,34 @@ namespace SGC2025
 {
     public class ScoreManager : Singleton<ScoreManager>
     {
-        //�X�^�[�g���̃J�E���g�_�E������
+        [Header("スコア設定")]
+        [SerializeField]
+        [Tooltip("通常タイルを緑化した際のポイント")]
+        private int normalTilePoint = 100;
+        
+        [SerializeField]
+        [Tooltip("ハイスコアタイルのポイント倍率")]
+        private int highScoreTileMultiplier = 3;
+        
+        /// <summary>通常タイルポイントを取得</summary>
+        public int NormalTilePoint => normalTilePoint;
+        
+        /// <summary>ハイスコア倍率を取得</summary>
+        public int HighScoreTileMultiplier => highScoreTileMultiplier;
+        
+        [Header("タイマー設定")]
+        //スタート時のカウントダウン時間
         [SerializeField] private float startCountDownTime;
         [SerializeField] private InGameUI gameScoreUI;
-        //���Ԍo�߂̌v���@��������&�o�ߎ���
+        //時間経過の計測 カウントダウン&ゲーム時間
         private bool isCountDown = false;
         private float currentCountDownTimer = 0f;
         private float countGameTimer = 0f;
 
-        //�G�l�~�[�X�R�A
+        //エネミースコア
         private int scoreEnemy = 0;
 
-        //�Ή��X�R�A
+        //塗り絵スコア
         private int scoreGreen = 0;
 
 
