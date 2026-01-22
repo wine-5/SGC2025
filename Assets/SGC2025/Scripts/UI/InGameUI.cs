@@ -9,7 +9,6 @@ namespace SGC2025
     /// </summary>
     public class InGameUI : MonoBehaviour
     {
-        private const int DEFAULT_POOL_SIZE = 10;
 
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;

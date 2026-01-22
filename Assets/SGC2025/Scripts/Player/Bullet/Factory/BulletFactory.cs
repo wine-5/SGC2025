@@ -25,12 +25,6 @@ namespace SGC2025.Player.Bullet
         [Header("弾設定")]
         [SerializeField] private BulletDataSO defaultBulletData;
         [SerializeField] private string bulletPoolName = "PlayerBullet";
-        
-        [Header("画面境界設定")]
-        [SerializeField] private Transform topBoundary;
-        [SerializeField] private Transform bottomBoundary;
-        [SerializeField] private Transform leftBoundary;
-        [SerializeField] private Transform rightBoundary;
 
         #endregion
 
@@ -202,7 +196,6 @@ namespace SGC2025.Player.Bullet
                 return null;
             }
             
-            bulletController.SetBoundaries(topBoundary, bottomBoundary, leftBoundary, rightBoundary);
             bulletController.Initialize(bulletData, direction);
             
             return bulletController;

@@ -17,4 +17,4 @@ MonoBehaviour:
   cellWidth: 1
   cellHeight: 1
   tileAspect: {x: 1, y: 1}
-  tilePrefab: {fileID: 1479810453798237408, guid: b252ee321e8715047bd75ea6ffbbc0e0, type: 3}
+  tilePrefab: {fileID: 1352666219919924646, guid: 004382af6c312084d8af9e63c4f5f976, type: 3}
