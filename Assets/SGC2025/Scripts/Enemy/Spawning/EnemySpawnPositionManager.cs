@@ -10,19 +10,6 @@ namespace SGC2025.Enemy
     [System.Serializable]
     public class EnemySpawnPositionManager : ISpawnPositionProvider
     {
-        private const float RANGE_DETECT_RATIO = 0.6f; // 端判定用の比率
-        private const float RANGE_HALF = 0.5f;         // 範囲の半分
-
-        [Header("生成位置設定")]
-        [SerializeField] private Transform topSpawnPoint;
-        [SerializeField] private Transform bottomSpawnPoint;
-        [SerializeField] private Transform leftSpawnPoint;
-        [SerializeField] private Transform rightSpawnPoint;
-        
-        [Header("ランダム生成範囲設定")]
-        [SerializeField] private float horizontalSpawnRange = 10f; // 上下からスポーンする際のX軸範囲
-        [SerializeField] private float verticalSpawnRange = 8f;     // 左右からスポーンする際のY軸範囲
-        
         [Header("四隅生成設定")]
         [SerializeField] private bool useCornerSpawn = false; // 四隅から生成するかどうか
         [SerializeField] private float cornerOffset = 1f;    // 四隅からの少しのオフセット
@@ -50,8 +37,6 @@ namespace SGC2025.Enemy
         /// <summary>ゲームエリアの最大座標（GroundManagerから取得）</summary>
         private Vector2 gameAreaMax => GetGameAreaMaxFromGroundManager();
         
-        private float cachedRangeX;
-        private float cachedRangeY;
         private bool isInitialized = false;
 
         /// <summary>
@@ -78,7 +63,6 @@ namespace SGC2025.Enemy
         /// <summary>初期化処理</summary>
         public void Initialize()
         {
-            InitRangesFromTransforms();
             isInitialized = true;
         }
 
@@ -94,38 +78,6 @@ namespace SGC2025.Enemy
 
         #endregion
 
-        public void InitRangesFromTransforms()
-        {
-            ValidateSpawnPoints();
-            cachedRangeX = horizontalSpawnRange;
-            cachedRangeY = verticalSpawnRange;
-        }
-        
-        /// <summary>
-        /// スポーンポイントの検証（設定ミスの早期発見用）
-        /// </summary>
-        private void ValidateSpawnPoints()
-        {
-            if (topSpawnPoint == null) Debug.LogError("[SpawnPositionManager] Top Spawn Point が設定されていません");
-            if (bottomSpawnPoint == null) Debug.LogError("[SpawnPositionManager] Bottom Spawn Point が設定されていません");
-            if (leftSpawnPoint == null) Debug.LogError("[SpawnPositionManager] Left Spawn Point が設定されていません");
-            if (rightSpawnPoint == null) Debug.LogError("[SpawnPositionManager] Right Spawn Point が設定されていません");
-        }
-
-        /// <summary>
-        /// 上から下への生成位置をランダムに取得
-        /// </summary>
-        public Vector3 GetRandomTopSpawnPosition()
-        {
-            if (topSpawnPoint == null) return Vector3.zero;
-            Vector3 basePosition = topSpawnPoint.position;
-            float randomX = Random.Range(
-                basePosition.x - cachedRangeX * RANGE_HALF,
-                basePosition.x + cachedRangeX * RANGE_HALF
-            );
-            return new Vector3(randomX, basePosition.y, 0f);
-        }
-        
         public void SetCornerSpawnMode(bool enabled) => useCornerSpawn = enabled;
         
         /// <summary>四隅生成モード取得</summary>
@@ -171,15 +123,8 @@ namespace SGC2025.Enemy
             if (useCornerSpawn)
                 return GetRandomCornerSpawnPosition();
                 
-            int side = Random.Range(0, 4);
-            return side switch
-            {
-                0 => GetTopPosition(),
-                1 => GetBottomPosition(),
-                2 => GetLeftPosition(),
-                3 => GetRightPosition(),
-                _ => GetTopPosition()
-            };
+            // デフォルトは境界線生成
+            return GetRandomBoundaryPosition();
         }
         
         /// <summary>
@@ -384,70 +329,6 @@ namespace SGC2025.Enemy
             };
         }
         
-        private Vector3 GetTopPosition()
-        {
-            if (topSpawnPoint == null) 
-            {
-                Debug.LogError("[SpawnPositionManager] topSpawnPoint がnullです");
-                return Vector3.zero;
-            }
-            Vector3 basePosition = topSpawnPoint.position;
-            float minX = basePosition.x - cachedRangeX * RANGE_HALF;
-            float maxX = basePosition.x + cachedRangeX * RANGE_HALF;
-            float randomX = Random.Range(minX, maxX);
-            Vector3 spawnPosition = new Vector3(randomX, basePosition.y, 0f);
-            Debug.Log($"[SpawnPositionManager] 上側生成位置: {spawnPosition} (基準: {basePosition}, X範囲: {minX}~{maxX})");
-            return spawnPosition;
-        }
-        
-        private Vector3 GetBottomPosition()
-        {
-            if (bottomSpawnPoint == null) 
-            {
-                Debug.LogError("[SpawnPositionManager] bottomSpawnPoint がnullです");
-                return Vector3.zero;
-            }
-            Vector3 basePosition = bottomSpawnPoint.position;
-            float minX = basePosition.x - cachedRangeX * RANGE_HALF;
-            float maxX = basePosition.x + cachedRangeX * RANGE_HALF;
-            float randomX = Random.Range(minX, maxX);
-            Vector3 spawnPosition = new Vector3(randomX, basePosition.y, 0f);
-            Debug.Log($"[SpawnPositionManager] 下側生成位置: {spawnPosition} (基準: {basePosition}, X範囲: {minX}~{maxX})");
-            return spawnPosition;
-        }
-        
-        private Vector3 GetLeftPosition()
-        {
-            if (leftSpawnPoint == null) 
-            {  
-                Debug.LogError("[SpawnPositionManager] leftSpawnPoint がnullです");
-                return Vector3.zero;
-            }
-            Vector3 basePosition = leftSpawnPoint.position;
-            float minY = basePosition.y - cachedRangeY * RANGE_HALF;
-            float maxY = basePosition.y + cachedRangeY * RANGE_HALF;
-            float randomY = Random.Range(minY, maxY);
-            Vector3 spawnPosition = new Vector3(basePosition.x, randomY, 0f);
-            Debug.Log($"[SpawnPositionManager] 左側生成位置: {spawnPosition} (基準: {basePosition}, Y範囲: {minY}~{maxY})");
-            return spawnPosition;
-        }
-        
-        private Vector3 GetRightPosition()
-        {
-            if (rightSpawnPoint == null) 
-            {
-                Debug.LogError("[SpawnPositionManager] rightSpawnPoint がnullです");
-                return Vector3.zero;
-            }
-            Vector3 basePosition = rightSpawnPoint.position;
-            float minY = basePosition.y - cachedRangeY * RANGE_HALF;
-            float maxY = basePosition.y + cachedRangeY * RANGE_HALF;
-            float randomY = Random.Range(minY, maxY);
-            Vector3 spawnPosition = new Vector3(basePosition.x, randomY, 0f);
-            Debug.Log($"[SpawnPositionManager] 右側生成位置: {spawnPosition} (基準: {basePosition}, Y範囲: {minY}~{maxY})");
-            return spawnPosition;
-        }
-        
         /// <summary>
         /// 左上隅の位置を取得
         /// </summary>
@@ -475,21 +356,9 @@ namespace SGC2025.Enemy
                 Debug.Log($"[SpawnPositionManager] 左上角生成位置(Canvas): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
                 return spawnPosition;
             }
-            else
-            {
-                if (topSpawnPoint == null || leftSpawnPoint == null)
-                {
-                    Debug.LogError("[SpawnPositionManager] 左上隅の計算に必要なSpawnPointがnullです");
-                    return Vector3.zero;
-                }
-                
-                float x = leftSpawnPoint.position.x + cornerOffset;
-                float y = topSpawnPoint.position.y - cornerOffset;
-                
-                Vector3 spawnPosition = new Vector3(x, y, 0f);
-                Debug.Log($"[SpawnPositionManager] 左上角生成位置(Transform): {spawnPosition} (左: {leftSpawnPoint.position}, 上: {topSpawnPoint.position}, オフセット: {cornerOffset})");
-                return spawnPosition;
-            }
+            
+            Debug.LogError("[SpawnPositionManager] 左上隅の生成モードが設定されていません");
+            return Vector3.zero;
         }
         
         /// <summary>
@@ -519,19 +388,9 @@ namespace SGC2025.Enemy
                 Debug.Log($"[SpawnPositionManager] 右上角生成位置(Canvas): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
                 return spawnPosition;
             }
-            else
-            {
-                if (topSpawnPoint == null || rightSpawnPoint == null)
-                {
-                    Debug.LogError("[SpawnPositionManager] 右上隅の計算に必要なSpawnPointがnullです");
-                    return Vector3.zero;
-                }
-                
-                float x = rightSpawnPoint.position.x - cornerOffset;
-                float y = topSpawnPoint.position.y - cornerOffset;
-                
-                return new Vector3(x, y, 0f);
-            }
+            
+            Debug.LogError("[SpawnPositionManager] 右上隅の生成モードが設定されていません");
+            return Vector3.zero;
         }
         
         /// <summary>
@@ -561,19 +420,9 @@ namespace SGC2025.Enemy
                 Debug.Log($"[SpawnPositionManager] 左下角生成位置(Canvas): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
                 return spawnPosition;
             }
-            else
-            {
-                if (bottomSpawnPoint == null || leftSpawnPoint == null)
-                {
-                    Debug.LogError("[SpawnPositionManager] 左下隅の計算に必要なSpawnPointがnullです");
-                    return Vector3.zero;
-                }
-                
-                float x = leftSpawnPoint.position.x + cornerOffset;
-                float y = bottomSpawnPoint.position.y + cornerOffset;
-                
-                return new Vector3(x, y, 0f);
-            }
+            
+            Debug.LogError("[SpawnPositionManager] 左下隅の生成モードが設定されていません");
+            return Vector3.zero;
         }
         
         /// <summary>
@@ -603,42 +452,9 @@ namespace SGC2025.Enemy
                 Debug.Log($"[SpawnPositionManager] 右下角生成位置(Canvas): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
                 return spawnPosition;
             }
-            else
-            {
-                if (bottomSpawnPoint == null || rightSpawnPoint == null)
-                {
-                    Debug.LogError("[SpawnPositionManager] 右下隅の計算に必要なSpawnPointがnullです");
-                    return Vector3.zero;
-                }
-                
-                float x = rightSpawnPoint.position.x - cornerOffset;
-                float y = bottomSpawnPoint.position.y + cornerOffset;
-                
-                return new Vector3(x, y, 0f);
-            }
-        }
-        
-        /// <summary>
-        /// すべてのスポーンポイントが設定されているかチェック
-        /// </summary>
-        /// <returns>設定状況</returns>
-        public bool AreAllSpawnPointsSet()
-        {
-            return topSpawnPoint != null && 
-                   bottomSpawnPoint != null && 
-                   leftSpawnPoint != null && 
-                   rightSpawnPoint != null;
-        }
-        
-        /// <summary>
-        /// 設定されていないスポーンポイントの警告を表示
-        /// </summary>
-        public void LogMissingSpawnPoints()
-        {
-            if (topSpawnPoint == null) Debug.LogWarning("topSpawnPoint が設定されていません");
-            if (bottomSpawnPoint == null) Debug.LogWarning("bottomSpawnPoint が設定されていません");
-            if (leftSpawnPoint == null) Debug.LogWarning("leftSpawnPoint が設定されていません");
-            if (rightSpawnPoint == null) Debug.LogWarning("rightSpawnPoint が設定されていません");
+            
+            Debug.LogError("[SpawnPositionManager] 右下隅の生成モードが設定されていません");
+            return Vector3.zero;
         }
         
         /// <summary>
@@ -646,34 +462,15 @@ namespace SGC2025.Enemy
         /// </summary>
         public void DebugCornerPositions()
         {
-            if (useCanvasReference)
-            {
-                if (targetCanvas == null)
-                {
-                    Debug.LogWarning("[SpawnPositionManager] Canvas参照モードですが、targetCanvasが設定されていません");
-                    return;
-                }
-                
-                Debug.Log("=== 四隅の生成位置 (Canvas参照) ===");
-                Debug.Log($"対象Canvas: {targetCanvas.name}");
-            }
-            else
-            {
-                if (!AreAllSpawnPointsSet())
-                {
-                    Debug.LogWarning("[SpawnPositionManager] すべてのSpawnPointが設定されていないため、四隅位置を計算できません");
-                    return;
-                }
-                
-                Debug.Log("=== 四隅の生成位置 (Transform参照) ===");
-            }
-            
+            Debug.Log("=== 四隅の生成位置 ===");
             Debug.Log($"左上: {GetTopLeftCornerPosition()}");
             Debug.Log($"右上: {GetTopRightCornerPosition()}");
             Debug.Log($"左下: {GetBottomLeftCornerPosition()}");
             Debug.Log($"右下: {GetBottomRightCornerPosition()}");
             Debug.Log($"四隅生成モード: {(useCornerSpawn ? "有効" : "無効")}");
+            Debug.Log($"直接座標モード: {(useDirectCoordinates ? "有効" : "無効")}");
             Debug.Log($"Canvas参照モード: {(useCanvasReference ? "有効" : "無効")}");
+            Debug.Log($"TileMap参照モード: {(useTileMapReference ? "有効" : "無効")}");
         }
 
         /// <summary>
@@ -684,69 +481,32 @@ namespace SGC2025.Enemy
         /// <returns>逆側のエッジ位置</returns>
         public Vector3 GetOppositeEdgePosition(Vector3 spawnPos)
         {
-            // 直接座標モードの場合
-            if (useDirectCoordinates)
-            {
-                float threshold = 2f; // 端判定の閾値
-                
-                // 上端判定
-                if (Mathf.Abs(spawnPos.y - gameAreaMax.y) < threshold)
-                {
-                    return new Vector3(spawnPos.x, gameAreaMin.y, 0f);
-                }
-                // 下端判定
-                if (Mathf.Abs(spawnPos.y - gameAreaMin.y) < threshold)
-                {
-                    return new Vector3(spawnPos.x, gameAreaMax.y, 0f);
-                }
-                // 左端判定
-                if (Mathf.Abs(spawnPos.x - gameAreaMin.x) < threshold)
-                {
-                    return new Vector3(gameAreaMax.x, spawnPos.y, 0f);
-                }
-                // 右端判定
-                if (Mathf.Abs(spawnPos.x - gameAreaMax.x) < threshold)
-                {
-                    return new Vector3(gameAreaMin.x, spawnPos.y, 0f);
-                }
-                
-                // 最も近い端に基づいて反対側を返す
-                return GetFallbackOppositePositionDirect(spawnPos);
-            }
+            float threshold = 2f; // 端判定の閾値
             
-            // SpawnPointモードの場合
             // 上端判定
-            if (topSpawnPoint != null && bottomSpawnPoint != null && Mathf.Abs(spawnPos.y - topSpawnPoint.position.y) < cachedRangeY * RANGE_DETECT_RATIO)
-            {
-                // 上端→下端
-                return new Vector3(spawnPos.x, bottomSpawnPoint.position.y, 0f);
-            }
-            // 下端判定
-            if (bottomSpawnPoint != null && topSpawnPoint != null && Mathf.Abs(spawnPos.y - bottomSpawnPoint.position.y) < cachedRangeY * RANGE_DETECT_RATIO)
-            {
-                // 下端→上端
-                return new Vector3(spawnPos.x, topSpawnPoint.position.y, 0f);
-            }
-            // 左端判定
-            if (leftSpawnPoint != null && rightSpawnPoint != null && Mathf.Abs(spawnPos.x - leftSpawnPoint.position.x) < cachedRangeX * RANGE_DETECT_RATIO)
-            {
-                // 左端→右端
-                return new Vector3(rightSpawnPoint.position.x, spawnPos.y, 0f);
-            }
-            // 右端判定
-            if (rightSpawnPoint != null && leftSpawnPoint != null && Mathf.Abs(spawnPos.x - rightSpawnPoint.position.x) < cachedRangeX * RANGE_DETECT_RATIO)
-            {
-                // 右端→左端
-                return new Vector3(leftSpawnPoint.position.x, spawnPos.y, 0f);
-            }
+            if (Mathf.Abs(spawnPos.y - gameAreaMax.y) < threshold)
+                return new Vector3(spawnPos.x, gameAreaMin.y, 0f);
             
+            // 下端判定
+            if (Mathf.Abs(spawnPos.y - gameAreaMin.y) < threshold)
+                return new Vector3(spawnPos.x, gameAreaMax.y, 0f);
+            
+            // 左端判定
+            if (Mathf.Abs(spawnPos.x - gameAreaMin.x) < threshold)
+                return new Vector3(gameAreaMax.x, spawnPos.y, 0f);
+            
+            // 右端判定
+            if (Mathf.Abs(spawnPos.x - gameAreaMax.x) < threshold)
+                return new Vector3(gameAreaMin.x, spawnPos.y, 0f);
+            
+            // 最も近い端に基づいて反対側を返す
             return GetFallbackOppositePosition(spawnPos);
         }
         
         /// <summary>
-        /// 直接座標モード用のフォールバック反対側位置計算
+        /// フォールバック用の反対側位置計算
         /// </summary>
-        private Vector3 GetFallbackOppositePositionDirect(Vector3 spawnPos)
+        private Vector3 GetFallbackOppositePosition(Vector3 spawnPos)
         {
             float distToTop = Mathf.Abs(spawnPos.y - gameAreaMax.y);
             float distToBottom = Mathf.Abs(spawnPos.y - gameAreaMin.y);
@@ -756,56 +516,13 @@ namespace SGC2025.Enemy
             float minDistance = Mathf.Min(distToTop, distToBottom, distToLeft, distToRight);
             
             if (minDistance == distToTop)
-            {
                 return new Vector3(spawnPos.x, gameAreaMin.y, 0f);
-            }
-            else if (minDistance == distToBottom)
-            {
+            if (minDistance == distToBottom)
                 return new Vector3(spawnPos.x, gameAreaMax.y, 0f);
-            }
-            else if (minDistance == distToLeft)
-            {
+            if (minDistance == distToLeft)
                 return new Vector3(gameAreaMax.x, spawnPos.y, 0f);
-            }
-            else
-            {
-                return new Vector3(gameAreaMin.x, spawnPos.y, 0f);
-            }
-        }
-        
-        /// <summary>
-        /// フォールバック用の反対側位置計算（SpawnPointモード用）
-        /// </summary>
-        private Vector3 GetFallbackOppositePosition(Vector3 spawnPos)
-        {
-            // 各端との距離を計算
-            float distToTop = topSpawnPoint != null ? Mathf.Abs(spawnPos.y - topSpawnPoint.position.y) : float.MaxValue;
-            float distToBottom = bottomSpawnPoint != null ? Mathf.Abs(spawnPos.y - bottomSpawnPoint.position.y) : float.MaxValue;
-            float distToLeft = leftSpawnPoint != null ? Mathf.Abs(spawnPos.x - leftSpawnPoint.position.x) : float.MaxValue;
-            float distToRight = rightSpawnPoint != null ? Mathf.Abs(spawnPos.x - rightSpawnPoint.position.x) : float.MaxValue;
             
-            // 最も近い端を特定
-            float minDistance = Mathf.Min(distToTop, distToBottom, distToLeft, distToRight);
-            
-            if (minDistance == distToTop && topSpawnPoint != null && bottomSpawnPoint != null)
-            {
-                return new Vector3(spawnPos.x, bottomSpawnPoint.position.y, 0f);
-            }
-            else if (minDistance == distToBottom && bottomSpawnPoint != null && topSpawnPoint != null)
-            {
-                return new Vector3(spawnPos.x, topSpawnPoint.position.y, 0f);
-            }
-            else if (minDistance == distToLeft && leftSpawnPoint != null && rightSpawnPoint != null)
-            {
-                return new Vector3(rightSpawnPoint.position.x, spawnPos.y, 0f);
-            }
-            else if (minDistance == distToRight && rightSpawnPoint != null && leftSpawnPoint != null)
-            {
-                return new Vector3(leftSpawnPoint.position.x, spawnPos.y, 0f);
-            }
-            
-            // 最終フォールバック: 画面外の遠い位置
-            return new Vector3(spawnPos.x * -2f, spawnPos.y * -2f, 0f);
+            return new Vector3(gameAreaMin.x, spawnPos.y, 0f);
         }
 
         /// <summary>

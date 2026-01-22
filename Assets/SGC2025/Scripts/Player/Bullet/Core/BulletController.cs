@@ -344,12 +344,8 @@ namespace SGC2025.Player.Bullet
 
         #region プライベートメソッド - ユーティリティ
 
-        private bool IsInLayerMask(GameObject obj, LayerMask layerMask)
-        {
-            bool result = (layerMask.value & (1 << obj.layer)) != 0;
-            Debug.Log($"[BulletController] レイヤーチェック - Object: {obj.name}, Layer: {obj.layer}, LayerMask: {layerMask.value}, Result: {result}");
-            return result;
-        }
+        private bool IsInLayerMask(GameObject obj, LayerMask layerMask) =>
+            (layerMask.value & (1 << obj.layer)) != 0;
 
         private bool IsBoundaryObject(GameObject obj)
         {

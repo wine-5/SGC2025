@@ -34,13 +34,6 @@ namespace SGC2025.Enemy
             positionProvider = positionManager;
             positionProvider.Initialize(); // インターフェース経由で初期化
 
-            // スポーンポイントの設定を確認
-            if (!positionManager.AreAllSpawnPointsSet())
-            {
-                Debug.LogError($"{DEBUG_LOG_PREFIX} スポーンポイントが正しく設定されていません！");
-                positionManager.LogMissingSpawnPoints();
-            }
-
             if (autoStart)
             {
                 StartSpawning();

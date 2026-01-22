@@ -8,25 +8,27 @@ namespace SGC2025
     /// </summary>
     public class ScoreManager : Singleton<ScoreManager>
     {
+        protected override bool UseDontDestroyOnLoad => true;
+
         [Header("スコア設定")]
         [SerializeField]
         [Tooltip("通常タイルを緑化した際のポイント")]
         private int normalTilePoint = 100;
-        
+
         [SerializeField]
         [Tooltip("ハイスコアタイルのポイント倍率")]
         private int highScoreTileMultiplier = 3;
-        
+
         /// <summary>通常タイルポイントを取得</summary>
         public int NormalTilePoint => normalTilePoint;
-        
+
         /// <summary>ハイスコア倍率を取得</summary>
         public int HighScoreTileMultiplier => highScoreTileMultiplier;
-        
+
         [Header("タイマー設定")]
         [SerializeField] private float startCountDownTime;
         [SerializeField] private InGameUI gameScoreUI;
-        
+
         private bool isCountDown = false;
         private float currentCountDownTimer = 0f;
         private float countGameTimer = 0f;
@@ -42,7 +44,7 @@ namespace SGC2025
         {
             CountDownTimer();
             CountGameTimer();
-            if(CommonDef.GAME_MINIT <= countGameTimer) SceneManager.LoadScene("Result");
+            if (CommonDef.GAME_MINIT <= countGameTimer) SceneManager.LoadScene("Result");
         }
 
         private void ResetValue()
@@ -74,7 +76,7 @@ namespace SGC2025
         private void CountGameTimer()
         {
             if (currentCountDownTimer > 0f || isCountDown) return;
-                
+
             countGameTimer += Time.deltaTime;
         }
 

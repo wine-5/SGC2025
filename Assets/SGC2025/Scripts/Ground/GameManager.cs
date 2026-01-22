@@ -13,30 +13,32 @@ namespace SGC2025
         [Header("ゲーム設定")]
         [SerializeField] private string gameOverSceneName = "Gameover";
         [SerializeField] private float gameOverDelay = 2f;
-        
+
         private bool isGameOver = false;
         private bool isPaused = false;
-        
+
         public static event System.Action OnGameOver;
         public static event System.Action OnGamePause;
         public static event System.Action OnGameResume;
-        
+
         public bool IsGameOver => isGameOver;
         public bool IsPaused => isPaused;
-        
+        protected override bool UseDontDestroyOnLoad => true;
+
+
         protected override void Init()
         {
             base.Init();
             PlayerCharacter.OnPlayerDeath += HandlePlayerDeath;
         }
-        
+
         protected override void OnDestroy()
         {
             PlayerCharacter.OnPlayerDeath -= HandlePlayerDeath;
-            
+
             base.OnDestroy();
         }
-        
+
         /// <summary>プレイヤー死亡時の処理</summary>
         private void HandlePlayerDeath()
         {
@@ -44,11 +46,11 @@ namespace SGC2025
             Debug.Log("[GameManager] プレイヤーが死亡しました。ゲームオーバー処理を開始します");
             isGameOver = true;
             OnGameOver?.Invoke();
-            
+
             // 遅延後にゲームオーバーシーンに遷移
             Invoke(nameof(LoadGameOverScene), gameOverDelay);
         }
-        
+
         /// <summary>
         /// ゲームオーバーシーンに遷移
         /// </summary>
@@ -64,7 +66,7 @@ namespace SGC2025
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
-        
+
         /// <summary>ゲームを一時停止</summary>
         public void PauseGame()
         {
@@ -73,7 +75,7 @@ namespace SGC2025
             Time.timeScale = 0f;
             OnGamePause?.Invoke();
         }
-        
+
         /// <summary>ゲームを再開</summary>
         public void ResumeGame()
         {
@@ -82,7 +84,7 @@ namespace SGC2025
             Time.timeScale = 1f;
             OnGameResume?.Invoke();
         }
-        
+
         /// <summary>
         /// ゲームを強制終了（デバッグ用）
         /// </summary>
@@ -91,7 +93,7 @@ namespace SGC2025
         {
             HandlePlayerDeath();
         }
-        
+
         /// <summary>
         /// 現在のシーンをリロード
         /// </summary>

@@ -106,7 +106,6 @@ namespace SGC2025
 
         private void OnShotPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            Debug.Log($"[Player] OnShotPerformed called. WeaponSystem: {weaponSystem != null}");
             if (weaponSystem == null) return;
             weaponSystem.Fire();
         }
