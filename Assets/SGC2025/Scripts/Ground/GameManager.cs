@@ -111,13 +111,7 @@ namespace SGC2025
 
         private void LoadGameOverScene()
         {
-            if (SceneController.I == null)
-            {
-                Debug.LogError("[GameManager] SceneController instance not found!");
-                return;
-            }
-
-            // ゲームオーバーシーンがSceneNameに定義されていれば使用、なければTitleに戻る
+            if (SceneController.I == null) return;
             SceneController.I.LoadScene(SceneName.Title);
         }
 
@@ -144,8 +138,6 @@ namespace SGC2025
             Time.timeScale = 1f;
             if (SceneController.I != null)
                 SceneController.I.ReloadCurrentScene();
-            else
-                Debug.LogError("[GameManager] SceneController instance not found!");
         }
     }
 }

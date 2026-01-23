@@ -1,10 +1,8 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using SGC2025.Events;
-using UnityEditor;
 
 namespace SGC2025 
 {
@@ -13,6 +11,12 @@ namespace SGC2025
     /// </summary>
     public class InGameUI : MonoBehaviour
     {
+        private const int MAX_POPUP_COUNT = 5;
+        private const int INSPECTOR_MAX_POPUP_COUNT = 3;
+        private const float BOUNDARY_MARGIN = 100f;
+        private const int DEFAULT_POPUP_SIZE_WIDTH = 200;
+        private const int DEFAULT_POPUP_SIZE_HEIGHT = 100;
+        
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
 
@@ -27,7 +31,7 @@ namespace SGC2025
         [SerializeField] private RectTransform parentCanvas;
         [SerializeField] private GameObject popupPrefab;
         [SerializeField] private int initialPoolSize = 10;
-        [SerializeField] private Vector2 popupSpawnPosition = new Vector2(100, 150); // Inspectorで調整可能
+        [SerializeField] private Vector2 popupSpawnPosition = new Vector2(100, 150);
 
         private readonly Queue<PopupScoreUI> popupPool = new Queue<PopupScoreUI>();
         private Color originalScoreColor;
@@ -36,8 +40,10 @@ namespace SGC2025
 
         private void Awake()
         {
-            if (parentCanvas == null) parentCanvas = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-            if (popupPrefab == null) popupPrefab = Resources.Load<GameObject>("UI/PulsScore");
+            if (parentCanvas == null) 
+                parentCanvas = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
+            if (popupPrefab == null) 
+                popupPrefab = Resources.Load<GameObject>("UI/PulsScore");
 
             if (scoreText != null)
             {
@@ -73,14 +79,12 @@ namespace SGC2025
 
         private void OnEnemyDestroyed(int score, Vector3 position)
         {
-            Debug.Log($"[InGameUI] OnEnemyDestroyed: score={score}, position={position}");
             UpdateScoreText(score);
             ShowScorePopupAtInspectorPosition(score);
         }
 
         private void OnGroundGreenified(Vector3 position, int points)
         {
-            Debug.Log($"[InGameUI] OnGroundGreenified: points={points}, position={position}");
             UpdateScoreText(points);
             ShowScorePopupAtInspectorPosition(points);
         }
@@ -88,34 +92,22 @@ namespace SGC2025
         /// <summary>ワールド座標をキャンバス座標に変換</summary>
         private Vector2 WorldToCanvasPoint(Vector3 worldPosition)
         {
-            if (Camera.main == null || parentCanvas == null)
-            {
-                Debug.LogError("[InGameUI] Camera.main or parentCanvas is null");
+            if (Camera.main == null || parentCanvas == null) 
                 return Vector2.zero;
-            }
             
-            // ワールド座標をスクリーン座標に変換
             Vector3 screenPoint = Camera.main.WorldToScreenPoint(worldPosition);
             
-            // Canvas上の座標に変換
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 parentCanvas, screenPoint, Camera.main, out Vector2 canvasPoint);
             
-            // Canvas座標系の範囲内にクランプ（画面中央寄りの範囲を使用）
             var canvasRect = parentCanvas.rect;
-            float margin = 100f; // 画面端からのマージン
-            canvasPoint.x = Mathf.Clamp(canvasPoint.x, canvasRect.xMin + margin, canvasRect.xMax - margin);
-            canvasPoint.y = Mathf.Clamp(canvasPoint.y, canvasRect.yMin + margin, canvasRect.yMax - margin);
+            canvasPoint.x = Mathf.Clamp(canvasPoint.x, canvasRect.xMin + BOUNDARY_MARGIN, canvasRect.xMax - BOUNDARY_MARGIN);
+            canvasPoint.y = Mathf.Clamp(canvasPoint.y, canvasRect.yMin + BOUNDARY_MARGIN, canvasRect.yMax - BOUNDARY_MARGIN);
                 
-            Debug.Log($"[InGameUI] WorldToCanvasPoint: world={worldPosition} -> screen={screenPoint} -> canvas={canvasPoint}");
-            Debug.Log($"[InGameUI] Canvas rect: {canvasRect}, clamped range: x({canvasRect.xMin + margin} to {canvasRect.xMax - margin}), y({canvasRect.yMin + margin} to {canvasRect.yMax - margin})");
             return canvasPoint;
         }
 
-        private void Update()
-        {
-            UpdateTimeText();
-        }
+        private void Update() => UpdateTimeText();
 
         /// <summary>
         /// スコア表示を初期化（0から開始）
@@ -123,10 +115,7 @@ namespace SGC2025
         private void InitializeScoreDisplay()
         {
             if (scoreText != null)
-            {
-                scoreText.text = "0"; // 明示的に0から開始
-                Debug.Log("[InGameUI] Score display initialized to 0");
-            }
+                scoreText.text = "0";
         }
 
         /// <summary>
@@ -143,31 +132,18 @@ namespace SGC2025
         /// </summary>
         public void ShowScorePopup(int score, Vector2 position)
         {
-            // パフォーマンス保護：アクティブなポップアップ数を制限
             int activeCount = parentCanvas.childCount - popupPool.Count;
-            if (activeCount >= 5) // 最大5個まで同時表示
-            {
-                Debug.Log($"[InGameUI] Skipping popup - too many active ({activeCount})");
+            if (activeCount >= MAX_POPUP_COUNT) 
                 return;
-            }
             
-            Debug.Log($"[InGameUI] ShowScorePopup: score={score}, active={activeCount}");
-            
-            // 右上に移動して確実に見える位置でテスト
-            Vector2 testPosition = new Vector2(200, 100); // 右上寄り
+            Vector2 testPosition = new Vector2(200, 100);
             
             PopupScoreUI popup = GetFromPool();
-            if (popup == null)
-            {
-                Debug.LogError("[InGameUI] Failed to get popup from pool");
+            if (popup == null) 
                 return;
-            }
             
-            // テスト位置で初期化
             popup.Initialize(score, testPosition, ReturnToPool);
-            popup.transform.SetAsLastSibling(); // UIで最前面に
-            
-            Debug.Log($"[InGameUI] Popup created at test position: {testPosition}, active: {popup.gameObject.activeSelf}");
+            popup.transform.SetAsLastSibling();
         }
 
         /// <summary>
@@ -175,50 +151,28 @@ namespace SGC2025
         /// </summary>
         private void ShowScorePopupAtInspectorPosition(int score)
         {
-            // パフォーマンス保護：アクティブなポップアップ数を制限
-            // アクティブなポップアップ数を直接カウント
             int activeCount = 0;
             for (int i = 0; i < parentCanvas.childCount; i++)
             {
                 var child = parentCanvas.GetChild(i);
                 if (child.gameObject.activeSelf && child.GetComponent<PopupScoreUI>() != null)
-                {
                     activeCount++;
-                }
             }
             
-            if (activeCount >= 3) // 一時的に3個までに緊和
-            {
-                Debug.Log($"[InGameUI] Skipping popup - too many active ({activeCount})");
+            if (activeCount >= INSPECTOR_MAX_POPUP_COUNT) 
                 return;
-            }
 
-            // Inspector設定位置を取得
             Vector2 spawnPosition = GetSpawnPosition();
-            Debug.Log($"[InGameUI] ShowScorePopupAtInspectorPosition: score={score}, position={spawnPosition}, activeCount={activeCount}");
             
             PopupScoreUI popup = GetFromPool();
-            if (popup == null)
-            {
-                Debug.LogError("[InGameUI] Failed to get popup from pool");
+            if (popup == null) 
                 return;
-            }
             
-            // Inspector設定位置で初期化
             popup.Initialize(score, spawnPosition, ReturnToPool);
-            popup.transform.SetAsLastSibling(); // UIで最前面に
-            
-            Debug.Log($"[InGameUI] Popup created at inspector position: {spawnPosition}, active: {popup.gameObject.activeSelf}");
+            popup.transform.SetAsLastSibling();
         }
 
-        /// <summary>
-        /// Inspector設定のポップアップ位置を取得
-        /// </summary>
-        private Vector2 GetSpawnPosition()
-        {
-            // Inspectorで設定した位置を使用
-            return popupSpawnPosition;
-        }
+        private Vector2 GetSpawnPosition() => popupSpawnPosition;
 
         private PopupScoreUI GetFromPool()
         {
@@ -227,28 +181,22 @@ namespace SGC2025
             if (popupPool.Count > 0)
             {
                 popup = popupPool.Dequeue();
-                Debug.Log($"[InGameUI] Got popup from pool, remaining: {popupPool.Count}");
             }
             else
             {
                 if (popupPrefab == null)
-                {
-                    Debug.LogError("[InGameUI] popupPrefab is null!");
                     return null;
-                }
                 
                 var obj = Instantiate(popupPrefab, parentCanvas);
                 popup = obj.GetComponent<PopupScoreUI>();
                 
                 if (popup == null)
                 {
-                    Debug.LogError("[InGameUI] PopupScoreUI component not found on prefab!");
                     Destroy(obj);
                     return null;
                 }
                 
                 obj.SetActive(false);
-                Debug.Log($"[InGameUI] Created new popup from prefab (simple)");
             }
             
             return popup;
@@ -258,20 +206,15 @@ namespace SGC2025
         {
             popup.gameObject.SetActive(false);
             popupPool.Enqueue(popup);
-            Debug.Log($"[InGameUI] Popup returned to pool, pool size: {popupPool.Count}");
         }
 
         private void UpdateScoreText(int score)
         {
             if (scoreText == null) return;
             
-            // スコア表示を通常の数字表示に変更（0000形式ではなく、0から始まる普通の数字）
             int totalScore = ScoreManager.I.GetTotalScore();
             scoreText.text = totalScore.ToString();
             
-            Debug.Log($"[InGameUI] Score updated: {totalScore}");
-            
-            // 既存のアニメーションを停止して即座に新しいものを開始
             if (currentScoreAnimation != null)
             {
                 StopCoroutine(currentScoreAnimation);

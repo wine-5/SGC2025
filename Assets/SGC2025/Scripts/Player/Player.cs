@@ -9,9 +9,12 @@ namespace SGC2025
     /// </summary>
     public class PlayerCharacter : MonoBehaviour
     {
+        #region 定数
         private const float DEFAULT_MAX_HEALTH = 100f;
         private const float DEFAULT_DAMAGE = 10f;
+        #endregion
 
+        #region プロパティ
         public Animator anim { get; private set; }
         public Rigidbody rb { get; private set; }
         public PlayerInputSet input;
@@ -19,7 +22,9 @@ namespace SGC2025
         public PlayerIdleState idleState { get; private set; }
         public PlayerMoveState moveState { get; private set; }
         public Vector2 moveInput { get; private set; }
+        #endregion
 
+        #region フィールド
         [Header("武器システム")]
         private PlayerWeaponSystem weaponSystem;
 
@@ -31,11 +36,9 @@ namespace SGC2025
         private float nowMutekiTime;
 
         public static event System.Action OnPlayerDeath;
+        #endregion
 
-
-
-
-
+        #region Unityライフサイクル
         private void Awake()
         {
             anim = GetComponentInChildren<Animator>();
@@ -43,11 +46,11 @@ namespace SGC2025
             weaponSystem = GetComponent<PlayerWeaponSystem>();
             stateMachine = new StateMachine();
             input = new PlayerInputSet();
-            if (weaponSystem == null) weaponSystem = GetComponent<SGC2025.Player.Bullet.PlayerWeaponSystem>();
+            if (weaponSystem == null) 
+                weaponSystem = GetComponent<SGC2025.Player.Bullet.PlayerWeaponSystem>();
             idleState = new PlayerIdleState(this, stateMachine, "fly");
             moveState = new PlayerMoveState(this, stateMachine, "fly");
         }
-
 
         private void OnEnable()
         {
@@ -69,7 +72,8 @@ namespace SGC2025
         {
             stateMachine.Initialize(idleState);
             currentHealth = maxHealth;
-            if (GroundManager.I != null) transform.position = GroundManager.I.GetPlayerSpawnPosition();
+            if (GroundManager.I != null) 
+                transform.position = GroundManager.I.GetPlayerSpawnPosition();
         }
 
         private void Update()
@@ -80,6 +84,14 @@ namespace SGC2025
             HandlePauseInput();
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) 
+                Damage();
+        }
+        #endregion
+
+        #region 入力処理
         /// <summary>ポーズ入力処理</summary>
         private void HandlePauseInput()
         {
@@ -92,25 +104,6 @@ namespace SGC2025
                 GameManager.I.PauseGame();
         }
 
-        private void PlayerRotate()
-        {
-            if (moveInput != Vector2.zero) transform.up = rb.linearVelocity;
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) Damage();
-        }
-
-
-        public void SetVelocity(float moveInputX, float moveInputY)
-        {
-            Vector2 moveInputNormalized = new Vector2(moveInputX, moveInputY).normalized;
-            rb.linearVelocity = moveInputNormalized * moveSpeed;
-        }
-
-        private void DecreaseMutekiTime() => nowMutekiTime -= Time.deltaTime;
-
         private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context) =>
             moveInput = context.ReadValue<Vector2>();
 
@@ -122,6 +115,28 @@ namespace SGC2025
             if (weaponSystem == null) return;
             weaponSystem.Fire();
         }
+        #endregion
+
+        #region 移動処理
+        public void SetVelocity(float moveInputX, float moveInputY)
+        {
+            Vector2 moveInputNormalized = new Vector2(moveInputX, moveInputY).normalized;
+            rb.linearVelocity = moveInputNormalized * moveSpeed;
+        }
+
+        private void PlayerRotate()
+        {
+            if (moveInput != Vector2.zero) 
+                transform.up = rb.linearVelocity;
+        }
+        #endregion
+
+        #region ヘルスシステム
+        /// <summary>最大HP取得</summary>
+        public float GetPlayerMaxHealth() => maxHealth;
+
+        /// <summary>現在HP取得</summary>
+        public float GetPlayerCurrentHalth() => currentHealth;
 
         public void Damage()
         {
@@ -130,18 +145,16 @@ namespace SGC2025
             nowMutekiTime = mutekiTime;
         }
 
-        /// <summary>最大HP取得</summary>
-        public float GetPlayerMaxHealth() => maxHealth;
-
-        /// <summary>現在HP取得</summary>
-        public float GetPlayerCurrentHalth() => currentHealth;
-
         /// <summary>ダメージを受ける</summary>
         public void TakeDamage(float damage)
         {
             if (damage <= 0f) return;
             currentHealth = Mathf.Max(0f, currentHealth - damage);
-            if (currentHealth <= 0f) OnPlayerDeath?.Invoke();
+            if (currentHealth <= 0f) 
+                OnPlayerDeath?.Invoke();
         }
+
+        private void DecreaseMutekiTime() => nowMutekiTime -= Time.deltaTime;
+        #endregion
     }
 }

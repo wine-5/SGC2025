@@ -26,9 +26,7 @@ namespace SGC2025
         protected override void Awake()
         {
             base.Awake();
-            // 初期化：スコアを0からスタート
             ResetScore();
-            Debug.Log("[ScoreManager] Score initialized to 0");
         }
 
         /// <summary>
@@ -38,36 +36,23 @@ namespace SGC2025
         {
             scoreEnemy = 0;
             scoreGreen = 0;
-            Debug.Log("[ScoreManager] Score reset to 0");
         }
 
         private void OnEnable()
         {
-            Debug.Log("[ScoreManager] OnEnable: Subscribing to events");
             EnemyEvents.OnEnemyDestroyedWithScore += OnEnemyDestroyedWithScore;
             GroundEvents.OnGroundGreenified += OnGroundGreenified;
         }
 
         private void OnDisable()
         {
-            Debug.Log("[ScoreManager] OnDisable: Unsubscribing from events");
             EnemyEvents.OnEnemyDestroyedWithScore -= OnEnemyDestroyedWithScore;
             GroundEvents.OnGroundGreenified -= OnGroundGreenified;
         }
 
-        private void OnEnemyDestroyedWithScore(int score, Vector3 position)
-        {
-            Debug.Log($"[ScoreManager] OnEnemyDestroyedWithScore: +{score} (before: {scoreEnemy})");
-            scoreEnemy += score;
-            Debug.Log($"[ScoreManager] Enemy score updated: {scoreEnemy}, Total: {GetTotalScore()}");
-        }
+        private void OnEnemyDestroyedWithScore(int score, Vector3 position) => scoreEnemy += score;
 
-        private void OnGroundGreenified(Vector3 position, int points)
-        {
-            Debug.Log($"[ScoreManager] OnGroundGreenified: +{points} (before: {scoreGreen})");
-            scoreGreen += points;
-            Debug.Log($"[ScoreManager] Green score updated: {scoreGreen}, Total: {GetTotalScore()}");
-        }
+        private void OnGroundGreenified(Vector3 position, int points) => scoreGreen += points;
 
         public int GetEnemyScore() => scoreEnemy;
         public int GetGreenScore() => scoreGreen;
