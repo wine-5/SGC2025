@@ -12,7 +12,6 @@ namespace SGC2025.Enemy
     {
         private const int MIN_WAVE_LEVEL = 1;
         private const float MIN_HEALTH = 0f;
-        private const string DEBUG_LOG_PREFIX = "[EnemyController]";
 
         [Header("設定データ")]
         [Tooltip("敵の基本データ設定")]
@@ -36,7 +35,6 @@ namespace SGC2025.Enemy
         public int CurrentWaveLevel => currentWaveLevel;
         public float MaxHealth => cachedParameters.health;
         public float MoveSpeed => cachedParameters.moveSpeed;
-        public float AttackPower => cachedParameters.attackPower;
         public EnemyType EnemyType => cachedParameters.enemyType;
         public float LifeTime => cachedParameters.lifeTime;
         public Transform Transform => transform;
@@ -60,21 +58,14 @@ namespace SGC2025.Enemy
 
         public void TakeDamage(float damage)
         {
-            if (!IsAlive || damage <= MIN_HEALTH)
-            {
-                return;
-            }
-
+            if (!IsAlive || damage <= MIN_HEALTH) return;
             float actualDamage = Mathf.Min(damage, currentHp);
             currentHp = Mathf.Max(MIN_HEALTH, currentHp - actualDamage);
 
             OnDamageTaken?.Invoke(actualDamage);
             EnemyEvents.TriggerEnemyDamage(gameObject, actualDamage, currentHp, MaxHealth);
-
             if (!IsAlive)
-            {
                 HandleDeath();
-            }
         }
 
         private void HandleDeath()
@@ -87,9 +78,7 @@ namespace SGC2025.Enemy
         private void DeactivateEnemy()
         {
             if (EnemyFactory.I != null)
-            {
                 EnemyFactory.I.ReturnEnemy(gameObject);
-            }
         }
     }
 }

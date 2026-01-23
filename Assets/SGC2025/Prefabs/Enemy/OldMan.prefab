@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -129,7 +129,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemyController
   enemyData: {fileID: 11400000, guid: d5df2104c4d39c84eb5570d9c99e9e5e, type: 2}
-  currentHealth: 0
   currentWaveLevel: 1
 --- !u!114 &-4669731216849846409
 MonoBehaviour:
@@ -155,11 +154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73815b9e06d6d744f8ffdda7edbe1460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemyAutoReturn
-  fixedDirectionLifeTime: 30
-  playerChaserLifeTime: 20
-  useCustomLifeTime: 0
-  customLifeTime: 15
-  remainingTime: 0
 --- !u!95 &1464216507176391945
 Animator:
   serializedVersion: 7

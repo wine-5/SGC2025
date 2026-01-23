@@ -1,237 +1,160 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using SGC2025.Player.Bullet;
 
 namespace SGC2025
 {
+    /// <summary>
+    /// プレイヤーキャラクターの管理
+    /// </summary>
     public class PlayerCharacter : MonoBehaviour
     {
+        #region 定数
+        private const float DEFAULT_MAX_HEALTH = 100f;
+        private const float DEFAULT_DAMAGE = 10f;
+        #endregion
 
+        #region プロパティ
         public Animator anim { get; private set; }
         public Rigidbody rb { get; private set; }
-
         public PlayerInputSet input;
         public StateMachine stateMachine { get; private set; }
-
-
-    [Header("武器システム")]
-    [SerializeField] private SGC2025.Player.Bullet.PlayerWeaponSystem weaponSystem;        public PlayerIdleState idleState { get; private set; }
+        public PlayerIdleState idleState { get; private set; }
         public PlayerMoveState moveState { get; private set; }
+        public Vector2 moveInput { get; private set; }
+        #endregion
 
+        #region フィールド
+        [Header("武器システム")]
+        private PlayerWeaponSystem weaponSystem;
 
-
-
-
-
-        [Header("�X�e�[�^�X")]
-        [SerializeField] private float maxHealth = 100f;
+        [Header("ステータス")]
+        [SerializeField] private float maxHealth = DEFAULT_MAX_HEALTH;
         [SerializeField] private float currentHealth;
-
         public float moveSpeed;
         [SerializeField] private float mutekiTime;
         private float nowMutekiTime;
 
-        // HPイベント
         public static event System.Action OnPlayerDeath;
+        #endregion
 
-        //[Header("�ړ����x")]
-        public Vector2 moveInput { get; private set; }
-
-
-        [Space]
-        [Header("�ړ�����")]
-        [SerializeField] public Vector2 positionLimitHigh;
-        [SerializeField] public Vector2 positionLimitLow;
-
-
-
-
-
+        #region Unityライフサイクル
         private void Awake()
         {
             anim = GetComponentInChildren<Animator>();
             rb = GetComponent<Rigidbody>();
-
+            weaponSystem = GetComponent<PlayerWeaponSystem>();
             stateMachine = new StateMachine();
             input = new PlayerInputSet();
-
-        // PlayerWeaponSystemが設定されていない場合は自動で取得
-        if (weaponSystem == null)
-        {
-            weaponSystem = GetComponent<SGC2025.Player.Bullet.PlayerWeaponSystem>();
-        }            //ステート名 = new クラス名(this, stateMachine, "animatorで設定したbool名")
+            if (weaponSystem == null)
+                weaponSystem = GetComponent<SGC2025.Player.Bullet.PlayerWeaponSystem>();
             idleState = new PlayerIdleState(this, stateMachine, "fly");
             moveState = new PlayerMoveState(this, stateMachine, "fly");
         }
 
-
         private void OnEnable()
         {
             input.Enable();
-
-            // 移動入力の処理
             input.Player.Movement.performed += OnMovementPerformed;
             input.Player.Movement.canceled += OnMovementCanceled;
-
-            // 射撃入力の処理
             input.Player.Shot.performed += OnShotPerformed;
         }
 
         private void OnDisable()
         {
-            // 入力イベントの登録解除
             input.Player.Movement.performed -= OnMovementPerformed;
             input.Player.Movement.canceled -= OnMovementCanceled;
             input.Player.Shot.performed -= OnShotPerformed;
-
             input.Disable();
         }
 
         private void Start()
         {
             stateMachine.Initialize(idleState);
-
-            // HP初期化
             currentHealth = maxHealth;
-
-            // 手動発射モードを有効にする（スペースキーで弾を発射できるように）
-            if (weaponSystem != null)
-            {
-                weaponSystem.SetManualFiring(true);
-                Debug.Log("[Player] 手動発射モードを有効にしました");
-            }
+            if (GroundManager.I != null)
+                transform.position = GroundManager.I.GetPlayerSpawnPosition();
         }
 
         private void Update()
         {
             stateMachine.UpdateActiveState();
-
             DecreaseMutekiTime();
             PlayerRotate();
-        }
-
-        private void PlayerRotate()
-        {
-            //�v���C���[�̉�]
-            if (moveInput != Vector2.zero)
-                transform.up = rb.linearVelocity;
+            HandlePauseInput();
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            //�_���[�W����
             if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-            {
                 Damage();
-            }
+        }
+        #endregion
+
+        #region 入力処理
+        /// <summary>ポーズ入力処理</summary>
+        private void HandlePauseInput()
+        {
+            if (Keyboard.current?.escapeKey.wasPressedThisFrame != true) return;
+            if (GameManager.I == null) return;
+            
+            if (GameManager.I.IsPaused)
+                GameManager.I.ResumeGame();
+            else
+                GameManager.I.PauseGame();
         }
 
+        private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context) =>
+            moveInput = context.ReadValue<Vector2>();
 
+        private void OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context) =>
+            moveInput = Vector2.zero;
+
+        private void OnShotPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
+        {
+            if (weaponSystem == null) return;
+            weaponSystem.Fire();
+        }
+        #endregion
+
+        #region 移動処理
         public void SetVelocity(float moveInputX, float moveInputY)
         {
             Vector2 moveInputNormalized = new Vector2(moveInputX, moveInputY).normalized;
-            rb.linearVelocity = new Vector2(moveInputNormalized.x * moveSpeed, moveInputNormalized.y * moveSpeed);
-
+            rb.linearVelocity = moveInputNormalized * moveSpeed;
         }
 
-
-        //private void PositionLimit()
-        //{
-
-        //}
-
-        private void DecreaseMutekiTime()
+        private void PlayerRotate()
         {
-            nowMutekiTime -= Time.deltaTime;
+            if (moveInput != Vector2.zero)
+                transform.up = rb.linearVelocity;
         }
+        #endregion
 
-        /// <summary>
-        /// 移動入力開始時の処理
-        /// </summary>
-        private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
-        {
-            moveInput = context.ReadValue<Vector2>();
-            Debug.Log($"[Player] 移動入力: {moveInput}");
-        }
+        #region ヘルスシステム
+        /// <summary>最大HP取得</summary>
+        public float GetPlayerMaxHealth() => maxHealth;
 
-        /// <summary>
-        /// 移動入力終了時の処理
-        /// </summary>
-        private void OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context)
-        {
-            moveInput = Vector2.zero;
-            Debug.Log("[Player] 移動入力停止");
-        }
-
-        /// <summary>
-        /// 射撃入力時の処理
-        /// </summary>
-        private void OnShotPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
-        {
-            if (weaponSystem != null)
-            {
-                weaponSystem.Fire();
-                Debug.Log("[Player] 射撃実行");
-            }
-            else
-            {
-                Debug.LogWarning("[Player] PlayerWeaponSystemが設定されていません");
-            }
-        }
+        /// <summary>現在HP取得</summary>
+        public float GetPlayerCurrentHalth() => currentHealth;
 
         public void Damage()
         {
-
-            if (nowMutekiTime > 0f)
-                return;
-
-            TakeDamage(10f); // デフォルトダメージ10
+            if (nowMutekiTime > 0f) return;
+            TakeDamage(DEFAULT_DAMAGE);
             nowMutekiTime = mutekiTime;
         }
 
-        /// <summary>
-        /// HPBarController用：最大HP取得
-        /// </summary>
-        public float GetPlayerMaxHealth()
-        {
-            return maxHealth;
-        }
-
-        /// <summary>
-        /// HPBarController用：現在HP取得
-        /// </summary>
-        public float GetPlayerCurrentHalth()
-        {
-            return currentHealth;
-        }
-
-        /// <summary>
-        /// ダメージを受ける
-        /// </summary>
+        /// <summary>ダメージを受ける</summary>
         public void TakeDamage(float damage)
         {
             if (damage <= 0f) return;
-
             currentHealth = Mathf.Max(0f, currentHealth - damage);
-            Debug.Log($"[Player] ダメージを受けました - HP: {currentHealth}/{maxHealth}");
-
             if (currentHealth <= 0f)
-            {
-                Debug.Log("[Player] プレイヤーが死亡しました");
                 OnPlayerDeath?.Invoke();
-            }
         }
 
-        //�v���C���[�̗L����
-        private void PlayerActive()
-        {
-            gameObject.SetActive(true);
-        }
-
-        //�v���C���[�̔�L����
-        private void PlayerInactive()
-        {
-            gameObject.SetActive(false);
-        }
-
+        private void DecreaseMutekiTime() => nowMutekiTime -= Time.deltaTime;
+        #endregion
     }
 }

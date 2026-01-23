@@ -1,6 +1,9 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// エンティティ状態のベースクラス
+/// </summary>
 public abstract class EntityState
 {
     protected SGC2025.PlayerCharacter player;
@@ -30,24 +33,14 @@ public abstract class EntityState
         anim.SetBool(animBoolName, true);
 
 
-
-        //Debug.Log("Enter " + animBoolName);
     }
 
     public virtual void Update()
     {
-        //�X�e�[�g�Ɉڍs�����ہA���s���ꑱ����
-
-
-        //Debug.Log("Update " + animBoolName);
     }
 
     public virtual void Exit()
     {
-        //�X�e�[�g���痣���ۂɎ��s����鏈��
-
         anim.SetBool(animBoolName, false);
-
-        //Debug.Log("Exit " + animBoolName);
     }
 }

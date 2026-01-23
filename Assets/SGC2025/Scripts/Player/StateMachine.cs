@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// エンティティの状態遮移管理
+/// </summary>
 public class StateMachine
 {
     public EntityState currentState { get; private set; }

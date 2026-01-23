@@ -35,6 +35,5 @@ public class PlayerFlyingState : EntityState
 
     private void PlayerShot()
     {
-        Debug.Log("Shot");
     }
 }

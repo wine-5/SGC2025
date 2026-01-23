@@ -1,13 +1,16 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 namespace SGC2025
 {
+    /// <summary>
+    /// リザルト画面UI（スコア表示とカウントアップ演出）
+    /// </summary>
     public class ResulltUI : UIBase
     {
-        const float SCORE_COUNT_UP_TIME = 0.7f;
+        private const float SCORE_COUNT_UP_TIME = 0.7f;
+        private const int DEFAULT_RECORD_SCORE = 0;
+        private const float ZERO_WAIT_TIME = 0.0f;
 
         [SerializeField]
         private TextMeshProUGUI enemyScoreText;
@@ -47,7 +50,7 @@ namespace SGC2025
             {
                 currentPhase++;
                 OnPhaseChanged();
-                waitTime = 0.0f;
+                waitTime = ZERO_WAIT_TIME;
 
             }
             else
@@ -58,50 +61,38 @@ namespace SGC2025
 
         private void OnPhaseChanged()
         {
-            Debug.Log(currentPhase);
             switch (currentPhase)
             {
                 case ResultPhase.Init:
-                    {
-                        // 初期化処理
-                        break;
-                    }
+                    break;
 
                 case ResultPhase.Start:
-                    {
-                        // リザルト開始処理
-                        break;
-                    }
+                    break;
 
                 case ResultPhase.EnemyKillScore:
                     {
-                        // 敵撃破スコア処理
-                        int enemyKillScore = CommonDef.currentEnemyScore;
-
+                        int enemyKillScore = ScoreManager.I.GetEnemyScore();
                         enemyScoreText.SetText(enemyKillScore.ToString());
                         break;
                     }
 
                 case ResultPhase.GreeningScore:
                     {
-                        // 緑化スコア処理
-                        int greeningScore = CommonDef.currentGreeningScore;
+                        int greeningScore = ScoreManager.I.GetGreenScore();
                         greeningScoreText.SetText( greeningScore.ToString() );
                         break;
                     }
 
                 case ResultPhase.TotalScore:
                     {
-                        // 合計スコア表示
-                        int totalScoreScore = CommonDef.currentEnemyScore + CommonDef.currentGreeningScore;
+                        int totalScoreScore = ScoreManager.I.GetTotalScore();
                         totalScoreText.SetText(totalScoreScore.ToString());
                         break;
                     }
 
                 case ResultPhase.HighScore:
                     {
-                        // ハイスコア更新
-                        if (RankingManager.I.IsNewRecord(0))
+                        if (RankingManager.I.IsNewRecord(DEFAULT_RECORD_SCORE))
                         {
                             CreateMenu("UI/InputFieldCanvas");
                         }
@@ -110,7 +101,6 @@ namespace SGC2025
 
                 case ResultPhase.End:
                     {
-                        // リザルト終了処理
                         foreach (GameObject button in buttons)
                         {
                             button.SetActive(true);
@@ -119,9 +109,7 @@ namespace SGC2025
                     }
 
                 default:
-                    {
-                        break;
-                    }
+                    break;
             }
         }
         private void OnPhaseUpdate(float waitTime)
@@ -129,52 +117,39 @@ namespace SGC2025
             switch (currentPhase)
             {
                 case ResultPhase.Init:
-                    {
-                        // 初期化処理
-                        break;
-                    }
+                    break;
 
                 case ResultPhase.Start:
-                    {
-                        // リザルト開始処理
-                        break;
-                    }
+                    break;
 
                 case ResultPhase.EnemyKillScore:
                     {
-                        // 敵撃破スコア処理
-                        int enemyKillScore = CommonDef.currentEnemyScore;
-
+                        int enemyKillScore = ScoreManager.I.GetEnemyScore();
                         enemyScoreText.SetText(ScoreCountUp(waitTime, enemyKillScore, SCORE_COUNT_UP_TIME).ToString());
                         break;
                     }
 
                 case ResultPhase.GreeningScore:
                     {
-                        // 緑化スコア処理
-                        int greeningScore = CommonDef.currentGreeningScore;
+                        int greeningScore = ScoreManager.I.GetGreenScore();
                         greeningScoreText.SetText( ScoreCountUp( waitTime, greeningScore, SCORE_COUNT_UP_TIME ).ToString() );
                         break;
                     }
                 case ResultPhase.HighScore:
                     {
-                        waitTime = 0.0f;
+                        waitTime = ZERO_WAIT_TIME;
                         break;
                     }
 
                 case ResultPhase.TotalScore:
                     {
-                        // 合計スコア表示
-                        int totalScoreScore = CommonDef.currentEnemyScore + CommonDef.currentGreeningScore;
+                        int totalScoreScore = ScoreManager.I.GetTotalScore();
                         totalScoreText.SetText(ScoreCountUp(waitTime, totalScoreScore, SCORE_COUNT_UP_TIME).ToString());
                         break;
                     }
 
                 case ResultPhase.End:
-                    {
-                        // リザルト終了処理
-                        break;
-                    }
+                    break;
 
                 default:
                     {
@@ -189,7 +164,7 @@ namespace SGC2025
             if (uIBase.gameObject.name.Equals("InputFieldCanvas"))
             {
                 currentPhase = ResultPhase.End; // NextPhaseとかつくるべき
-                waitTime = 0.0f;
+                waitTime = ZERO_WAIT_TIME;
 
                 foreach (UIBase child in childrenMenu)
                 {

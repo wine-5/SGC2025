@@ -5,55 +5,37 @@ using UnityEngine.UI;
 
 namespace SGC2025
 {
+    /// <summary>
+    /// ハイスコア達成時の名前入力UI
+    /// </summary>
     public class NameInputUI : UIBase
     {
-        [SerializeField] private TMP_InputField nameInputField;
+        private const int MAX_NAME_LENGTH = 5;
+        private const string DEFAULT_NAME = "ナナシ";
 
-        private int lastScore;
+        [SerializeField] private TMP_InputField nameInputField;
 
         override public void Start()
         {
             nameInputField.onSelect.AddListener(OnInputFocus);
-
-            // 文字数制限
-            nameInputField.characterLimit = 5;
-
+            nameInputField.characterLimit = MAX_NAME_LENGTH;
             base.Start();
-        }
-
-        /// <summary>
-        /// ハイスコア時に呼び出す（他スクリプトから）
-        /// </summary>
-        public void ShowInput(int score)
-        {
-            lastScore = score;
-            nameInputField.text = "";
-            nameInputField.ActivateInputField();
         }
 
         public void OnSubmit()
         {
             string name = nameInputField.text.Trim();
-
             if (string.IsNullOrEmpty(name))
-            {
-                name = "ナナシ";
-            }
+                name = DEFAULT_NAME;
 
-            RankingManager.I.AddScore(name, lastScore);
-            Debug.Log($"スコア登録: {name} - {lastScore}");
-
-
-            this.gameObject.SetActive(false); // シーンのロードで消えるので無効にしておくだけ
+            RankingManager.I.AddScore(name, ScoreManager.I.GetTotalScore());
+            this.gameObject.SetActive(false);
         }
-       public void OnInputFocus(string text)
+
+        public void OnInputFocus(string text)
         {
-            // 入力状態に切り替え
             nameInputField.ActivateInputField();
         }
     }
-
 }
 
-
-    

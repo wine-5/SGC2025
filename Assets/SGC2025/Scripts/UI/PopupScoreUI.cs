@@ -3,12 +3,20 @@ using TMPro;
 
 namespace SGC2025
 {
+    /// <summary>
+    /// スコアポップアップUIの表示とアニメーション管理
+    /// </summary>
     public class PopupScoreUI : MonoBehaviour
     {
+        [Header("アニメーション設定")]
+        [SerializeField] private float lifetime = 0.5f;
+        [SerializeField] private float floatSpeed = 60f;
+        
+        [Header("テキスト設定")]
+        [SerializeField] private float fontSize = 48f;
         [SerializeField] private TextMeshProUGUI text;
+        
         private RectTransform rect;
-        private float lifetime = 1.0f;
-        private float floatSpeed = 60f;
         private float timer = 0f;
         private Vector2 startPos;
         private System.Action<PopupScoreUI> onComplete;
@@ -21,33 +29,34 @@ namespace SGC2025
                 rect = GetComponent<RectTransform>();
 
             text.text = $"+{score}";
+            text.color = Color.white;
+            text.fontSize = fontSize;
+            
             rect.anchoredPosition = position;
+            rect.sizeDelta = new Vector2(200, 100);
+            
             startPos = position;
             timer = 0f;
-
             this.onComplete = onComplete;
-
+            
             gameObject.SetActive(true);
         }
 
         private void Update()
         {
             timer += Time.unscaledDeltaTime;
-
-            // 上方向に移動
+            
             rect.anchoredPosition = startPos + Vector2.up * floatSpeed * timer;
 
-            // フェードアウト
-            var color = text.color;
+            var color = Color.white;
             color.a = Mathf.Lerp(1f, 0f, timer / lifetime);
             text.color = color;
 
-            if (timer > lifetime)
+            if (timer >= lifetime)
             {
                 gameObject.SetActive(false);
-                onComplete?.Invoke(this); // プールに返却
+                onComplete?.Invoke(this);
             }
         }
-
     }
 }

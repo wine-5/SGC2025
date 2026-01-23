@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerMoveState : PlayerFlyingState
 {
+    private const float BOUNDARY_MARGIN = 0.5f;
+
     public PlayerMoveState(SGC2025.PlayerCharacter player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
     {
     }
@@ -11,8 +13,6 @@ public class PlayerMoveState : PlayerFlyingState
     public override void Enter()
     {
         base.Enter();
-
-        
     }
 
     public override void Exit()
@@ -27,41 +27,40 @@ public class PlayerMoveState : PlayerFlyingState
         if (player.moveInput.x == 0 && player.moveInput.y == 0)
         {
             stateMachine.ChangeState(player.idleState);
+            return;
         }
         
-        //�ړ�����
-        if(player.positionLimitHigh.x < player.transform.position.x || player.positionLimitHigh.y < player.transform.position.y
-            || player.positionLimitLow.x > player.transform.position.x || player.positionLimitLow.y > player.transform.position.y)
+        if (SGC2025.GroundManager.I == null || SGC2025.GroundManager.I.MapData == null)
         {
-            playerLimitPos = player.transform.position;
-            if(player.positionLimitHigh.x < player.transform.position.x)
-            {
-                playerLimitPos = new Vector2(player.positionLimitHigh.x, playerLimitPos.y);
-            }
-            if(player.positionLimitHigh.y < player.transform.position.y)
-            {
-                playerLimitPos = new Vector2(playerLimitPos.x, player.positionLimitHigh.y);
-            }
-            if(player.positionLimitLow.x > player.transform.position.x)
-            {
-                playerLimitPos = new Vector2(player.positionLimitLow.x, playerLimitPos.y);
-            }
-            if(player.positionLimitLow.y > player.transform.position.y)
-            {
-                playerLimitPos = new Vector2(playerLimitPos.x, player.positionLimitLow.y);
-            }
+            player.SetVelocity(player.moveInput.x, player.moveInput.y);
+            return;
+        }
 
+        var mapData = SGC2025.GroundManager.I.MapData;
+        Vector2 limitHigh = new Vector2(
+            mapData.MapMaxWorldPosition.x - BOUNDARY_MARGIN,
+            mapData.MapMaxWorldPosition.y - BOUNDARY_MARGIN
+        );
+        Vector2 limitLow = new Vector2(BOUNDARY_MARGIN, BOUNDARY_MARGIN);
+        
+        Vector3 currentPos = player.transform.position;
+        if(limitHigh.x < currentPos.x || limitHigh.y < currentPos.y
+            || limitLow.x > currentPos.x || limitLow.y > currentPos.y)
+        {
+            playerLimitPos = currentPos;
+            if(limitHigh.x < currentPos.x)
+                playerLimitPos = new Vector2(limitHigh.x, playerLimitPos.y);
+            if(limitHigh.y < currentPos.y)
+                playerLimitPos = new Vector2(playerLimitPos.x, limitHigh.y);
+            if(limitLow.x > currentPos.x)
+                playerLimitPos = new Vector2(limitLow.x, playerLimitPos.y);
+            if(limitLow.y > currentPos.y)
+                playerLimitPos = new Vector2(playerLimitPos.x, limitLow.y);
             player.transform.position = playerLimitPos;
         }
         else
         {
             player.SetVelocity(player.moveInput.x, player.moveInput.y);
-
         }
-
-
-
-
-
     }
 }

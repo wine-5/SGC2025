@@ -1,129 +1,61 @@
-using Unity.Burst.Intrinsics;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using SGC2025.Events;
 
 namespace SGC2025
 {
+    /// <summary>
+    /// スコア管理を行うマネージャー
+    /// </summary>
     public class ScoreManager : Singleton<ScoreManager>
     {
-        //�X�^�[�g���̃J�E���g�_�E������
-        [SerializeField] private float startCountDownTime;
-        [SerializeField] private InGameUI gameScoreUI;
-        //���Ԍo�߂̌v���@��������&�o�ߎ���
-        private bool isCountDown = false;
-        private float currentCountDownTimer = 0f;
-        private float countGameTimer = 0f;
+        protected override bool UseDontDestroyOnLoad => true;
 
-        //�G�l�~�[�X�R�A
-        private int scoreEnemy = 0;
+        [Header("スコア設定")]
+        [SerializeField, Tooltip("通常タイルを緑化した際のポイント")]
+        private int normalTilePoint = 100;
 
-        //�Ή��X�R�A
-        private int scoreGreen = 0;
+        [SerializeField, Tooltip("ハイスコアタイルのポイント倍率")]
+        private int highScoreTileMultiplier = 3;
 
+        public int NormalTilePoint => normalTilePoint;
+        public int HighScoreTileMultiplier => highScoreTileMultiplier;
 
+        private int scoreEnemy;
+        private int scoreGreen;
 
-        private void Start()
+        protected override void Awake()
         {
-            ResetValue();
-
-            //CountDownStart();
+            base.Awake();
+            ResetScore();
         }
 
-        private void Update()
+        /// <summary>
+        /// スコアを初期化（0にリセット）
+        /// </summary>
+        public void ResetScore()
         {
-            CountDownTimer();
-            CountGameTimer();
-
-            if(CommonDef.GAME_MINIT <= countGameTimer)
-            { // おわり
-                SceneManager.LoadScene("Result");
-            }
-            
-            //Debug.Log("countDown:" + GetCountDown() + ", gameCount:" + GetGameCount());
-        }
-
-
-        private void ResetValue()
-        {
-            //�J�n���Ɏ��s �l�̃��Z�b�g
-            isCountDown = false;
-            currentCountDownTimer = startCountDownTime;
-            countGameTimer = 0f;
             scoreEnemy = 0;
             scoreGreen = 0;
         }
 
-
-        public void CountDownStart()
+        private void OnEnable()
         {
-            //isCountDown��true�̏ꍇ�A�J�E���g�_�E�������s
-            //�Q�[���X�^�[�g���ɌĂяo��
-
-            currentCountDownTimer = startCountDownTime;
-            isCountDown = true;
+            EnemyEvents.OnEnemyDestroyedWithScore += OnEnemyDestroyedWithScore;
+            GroundEvents.OnGroundGreenified += OnGroundGreenified;
         }
 
-        private void CountDownTimer()
+        private void OnDisable()
         {
-            //�J�E���g�_�E���̎��s Update�z��
-            if (!isCountDown)
-                return ;
-            currentCountDownTimer -= Time.deltaTime;
-
-            if (currentCountDownTimer <= 0f)
-                isCountDown = false;
-            //return currentCountDownTimer;
+            EnemyEvents.OnEnemyDestroyedWithScore -= OnEnemyDestroyedWithScore;
+            GroundEvents.OnGroundGreenified -= OnGroundGreenified;
         }
 
-        public float GetCountDown()
-        {
-            return currentCountDownTimer;
-        }
+        private void OnEnemyDestroyedWithScore(int score, Vector3 position) => scoreEnemy += score;
 
-        private void CountGameTimer()
-        {
-            //�Q�[�����Ԃ̃J�E���g���s Update�z��
-            if (currentCountDownTimer > 0f || isCountDown)
-                return ;
+        private void OnGroundGreenified(Vector3 position, int points) => scoreGreen += points;
 
-            countGameTimer += Time.deltaTime;
-
-            //return countGameTimer;
-        }
-
-        public float GetGameCount()
-        {
-            return CommonDef.GAME_MINIT - countGameTimer;
-        }
-
-
-        public void AddEnemyScore(int score)
-        {
-            //�G�l�~�[�X�R�A�̉��Z
-            scoreEnemy += score;
-            CommonDef.currentEnemyScore = score;
-            gameScoreUI.ShowScorePopup(score);
-        }
-
-        public int GetEnemyScore()
-        {
-            //�G�l�~�[�X�R�A�̎擾
-            return scoreEnemy;
-        }
-
-        public void AddGreenScore(int score)
-        {
-            //�Ή��X�R�A�̉��Z
-            scoreGreen += score;
-            CommonDef.currentGreeningScore = scoreGreen;
-            gameScoreUI.ShowScorePopup(score);
-        }
-
-        public int GetGreenScore()
-        {
-            //�Ή��X�R�A�̎擾
-            return scoreGreen;
-        }
-
+        public int GetEnemyScore() => scoreEnemy;
+        public int GetGreenScore() => scoreGreen;
+        public int GetTotalScore() => scoreEnemy + scoreGreen;
     }
 }

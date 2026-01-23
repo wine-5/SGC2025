@@ -79,11 +79,7 @@ namespace SGC2025.Player.Bullet
         /// </summary>
         private void InitializeWeapon()
         {
-            if (weaponUpgradeData == null)
-            {
-                Debug.LogError("PlayerWeaponSystem: WeaponUpgradeDataSOが設定されていません");
-                return;
-            }
+            if (weaponUpgradeData == null) return;
             
             // 初期レベルの設定
             UpdateWeaponLevel();
@@ -119,8 +115,6 @@ namespace SGC2025.Player.Bullet
             currentLevelData = weaponUpgradeData.GetLevelData(currentLevel);
             currentFireInterval = Mathf.Max(currentLevelData.fireInterval, weaponUpgradeData.MinFireInterval);
             currentBulletDirections = currentLevelData.bulletDirections;
-            
-            Debug.Log($"武器レベルアップ! レベル: {currentLevel}, 方向数: {currentBulletDirections}, 発射間隔: {currentFireInterval}秒");
             
             // 自動発射の再開（間隔が変わった場合）- デバッグフラグもチェック
             if (isAutoFiring && !debugManualFiring)
@@ -168,17 +162,7 @@ namespace SGC2025.Player.Bullet
         
         public void Fire()
         {
-            if (BulletFactory.I == null)
-            {
-                Debug.LogError("PlayerWeaponSystem: BulletFactoryが見つかりません");
-                return;
-            }
-            
-            if (firePoint == null)
-            {
-                Debug.LogError("PlayerWeaponSystem: 発射位置が設定されていません");
-                return;
-            }
+            if (BulletFactory.I == null || firePoint == null) return;
             
             // 円状に弾を発射
             BulletFactory.I.CreateCircularBullets(
@@ -186,65 +170,6 @@ namespace SGC2025.Player.Bullet
                 currentBulletDirections,
                 bulletData
             );
-        }
-        
-        /// <summary>
-        /// 手動で弾を発射（テスト用）
-        /// </summary>
-        [ContextMenu("Test Fire")]
-        public void TestFire()
-        {
-            Fire();
-        }
-        
-        /// <summary>
-        /// 武器レベルをリセット（テスト用）
-        /// </summary>
-        [ContextMenu("Reset Weapon Level")]
-        public void ResetWeaponLevel()
-        {
-            enemiesKilled = 0;
-            currentLevel = 1;
-            UpdateWeaponLevel();
-        }
-        
-        /// <summary>
-        /// 敵撃破数を増加（テスト用）
-        /// </summary>
-        [ContextMenu("Add Enemy Kill")]
-        public void AddEnemyKill()
-        {
-            OnEnemyDestroyed();
-        }
-        
-        /// <summary>
-        /// デバッグ用：手動発射モードの切り替え
-        /// </summary>
-        [ContextMenu("Toggle Manual Firing")]
-        public void ToggleManualFiring()
-        {
-            SetManualFiring(!debugManualFiring);
-        }
-        
-        /// <summary>
-        /// デバッグ用：手動発射モードの設定
-        /// </summary>
-        public void SetManualFiring(bool manualMode)
-        {
-            debugManualFiring = manualMode;
-            
-            if (debugManualFiring)
-            {
-                // 手動モードに切り替え：自動発射を停止
-                StopAutoFire();
-                Debug.Log("デバッグ：手動発射モードに切り替えました（スペースキーで発射）");
-            }
-            else
-            {
-                // 自動モードに切り替え：自動発射を開始
-                StartAutoFire();
-                Debug.Log("デバッグ：自動発射モードに切り替えました");
-            }
         }
     }
 }

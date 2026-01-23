@@ -40,11 +40,6 @@ namespace SGC2025
             SceneManager.LoadScene("Title");
         }
         
-        public void OnClickControllGuide()
-        {
-            //操作説明用ガイドプレハブ作成
-        }
-
         public void OnClickExit()
         {
             Application.Quit();
@@ -53,7 +48,6 @@ namespace SGC2025
         protected int ScoreCountUp(float currentWaitTime, float scoreMaxValue, float waitMaxTime)
         {
             float a = Mathf.Clamp01(currentWaitTime / waitMaxTime);
-            Debug.Log( "" );
             return (int)Mathf.Lerp(0 , scoreMaxValue, a);
 
         }
@@ -66,7 +60,7 @@ namespace SGC2025
             childMenu.gameObject.name = childMenu.gameObject.name.Replace("(Clone)", "");
             UIBase childUIBase = childMenu.GetComponent<UIBase>();
 
-            if(childUIBase == null){ return null; }
+            if(childUIBase == null) return null;
             childUIBase.parentUI = this;
             childrenMenu.Add(childUIBase);
 

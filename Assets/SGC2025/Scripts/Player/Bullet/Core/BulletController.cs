@@ -31,11 +31,6 @@ namespace SGC2025.Player.Bullet
         [SerializeField] private LayerMask enemyLayer = 1 << 7;  // Layer 7 (Enemy)
         [SerializeField] private LayerMask obstacleLayer = 0;    // 使用しない
         
-        [Header("画面境界設定")]
-        [SerializeField] private Transform topBoundary;
-        [SerializeField] private Transform bottomBoundary;
-        [SerializeField] private Transform leftBoundary;
-        [SerializeField] private Transform rightBoundary;
         
         // キャッシュされたコンポーネント
         private Rigidbody cachedRigidbody;
@@ -82,6 +77,7 @@ namespace SGC2025.Player.Bullet
             if (!isActive) return;
             
             UpdateLifeTime();
+            CheckBoundary();
         }
 
         #endregion
@@ -138,17 +134,6 @@ namespace SGC2025.Player.Bullet
             transform.localScale = Vector3.one;
         }
 
-        /// <summary>
-        /// 画面境界Transformを設定
-        /// </summary>
-        public void SetBoundaries(Transform top, Transform bottom, Transform left, Transform right)
-        {
-            topBoundary = top;
-            bottomBoundary = bottom;
-            leftBoundary = left;
-            rightBoundary = right;
-        }
-
         #endregion
 
         #region 衝突処理
@@ -160,10 +145,6 @@ namespace SGC2025.Player.Bullet
             if (IsInLayerMask(other.gameObject, enemyLayer))
             {
                 HandleEnemyCollision(other);
-            }
-            else if (IsBoundaryObject(other.gameObject))
-            {
-                HandleBoundaryCollision();
             }
         }
 
@@ -344,22 +325,25 @@ namespace SGC2025.Player.Bullet
 
         #region プライベートメソッド - ユーティリティ
 
-        private bool IsInLayerMask(GameObject obj, LayerMask layerMask)
-        {
-            bool result = (layerMask.value & (1 << obj.layer)) != 0;
-            Debug.Log($"[BulletController] レイヤーチェック - Object: {obj.name}, Layer: {obj.layer}, LayerMask: {layerMask.value}, Result: {result}");
-            return result;
-        }
+        private bool IsInLayerMask(GameObject obj, LayerMask layerMask) =>
+            (layerMask.value & (1 << obj.layer)) != 0;
 
-        private bool IsBoundaryObject(GameObject obj)
+        /// <summary>
+        /// 弾が画面境界を超えたかチェック
+        /// </summary>
+        private void CheckBoundary()
         {
-            if (obj == null) return false;
+            if (GroundManager.I == null) return;
             
-            Transform objTransform = obj.transform;
-            return objTransform == topBoundary || 
-                   objTransform == bottomBoundary || 
-                   objTransform == leftBoundary || 
-                   objTransform == rightBoundary;
+            Vector3 pos = transform.position;
+            Vector2Int maxIndex = GroundManager.I.MapMaxIndex;
+            
+            // GroundManagerの範囲外に出たら非アクティブ化
+            if (pos.x < -1f || pos.x > maxIndex.x + 1f ||
+                pos.y < -1f || pos.y > maxIndex.y + 1f)
+            {
+                Deactivate();
+            }
         }
 
         #endregion

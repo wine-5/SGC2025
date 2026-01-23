@@ -3,34 +3,26 @@ using UnityEngine;
 namespace SGC2025.Enemy
 {
     /// <summary>
-    /// 敵の自動削除を管理するコンポーネント
-    /// 一定時間後、または画面外に出たときにプールに返却する
+    /// 敵の自動返却管理
+    /// 一定時間経過またはマップ範囲外に出た際にプールに返却
     /// </summary>
     public class EnemyAutoReturn : MonoBehaviour
     {
         private const float DEFAULT_ELAPSED_TIME = 0f;
         private const float IMMEDIATE_RETURN_TIME = 0f;
-        private const string DEBUG_LOG_PREFIX = "[EnemyAutoReturn]";
+        private const float OUT_OF_BOUNDS_MARGIN = 5f;
 
         private float currentLifeTime;
         private float elapsedTime;
-        private bool isInitialized = false;
+        private bool isInitialized;
         
-        /// <summary>
-        /// 初期化（生成時に呼ばれる）
-        /// </summary>
         public void Initialize()
         {
             elapsedTime = DEFAULT_ELAPSED_TIME;
             isInitialized = true;
-            
-            // 敵の種類に応じて生存時間を設定
             SetLifeTimeBasedOnEnemyType();
         }
         
-        /// <summary>
-        /// 敵の種類に応じて生存時間を設定
-        /// </summary>
         private void SetLifeTimeBasedOnEnemyType()
         {
             var controller = GetComponent<EnemyController>();
@@ -40,36 +32,34 @@ namespace SGC2025.Enemy
                 return;
             }
             
-            // SOが設定されていない場合の警告
-            Debug.LogError($"{DEBUG_LOG_PREFIX} EnemyDataSOが設定されていません！ GameObject: {gameObject.name}");
-            Debug.LogError($"{DEBUG_LOG_PREFIX} EnemyDataSOを正しく設定してください。オブジェクトプールに即座に返却します。");
-            
+            Debug.LogError($"EnemyAutoReturn: EnemyDataSOが設定されていません - {gameObject.name}");
             currentLifeTime = IMMEDIATE_RETURN_TIME;
         }
-        
         
         private void Update()
         {
             if (!isInitialized) return;
             
-            // DeltaTimeで経過時間を累積
             elapsedTime += Time.deltaTime;
             
             if (ShouldReturnToPool())
-            {
                 ReturnToPool();
-            }
         }
         
-        private bool ShouldReturnToPool()
+        private bool ShouldReturnToPool() => HasLifeTimeExpired() || IsOutOfMapBounds();
+        
+        private bool HasLifeTimeExpired() => elapsedTime >= currentLifeTime;
+        
+        private bool IsOutOfMapBounds()
         {
-            // 時間経過のみで判定
-            return HasLifeTimeExpired();
-        }
-
-        private bool HasLifeTimeExpired()
-        {
-            return elapsedTime >= currentLifeTime;
+            if (GroundManager.I == null || GroundManager.I.MapData == null) return false;
+            var mapData = GroundManager.I.MapData;
+            Vector3 pos = transform.position;
+            
+            return pos.x < -OUT_OF_BOUNDS_MARGIN || 
+                   pos.x > mapData.MapMaxWorldPosition.x + OUT_OF_BOUNDS_MARGIN ||
+                   pos.y < -OUT_OF_BOUNDS_MARGIN || 
+                   pos.y > mapData.MapMaxWorldPosition.y + OUT_OF_BOUNDS_MARGIN;
         }
         
         private void ReturnToPool()
@@ -95,6 +85,5 @@ namespace SGC2025.Enemy
                 Initialize();
             }
         }
-        
     }
 }

@@ -33,27 +33,17 @@ namespace SGC2025.Enemy
             // インターフェース参照を設定
             positionProvider = positionManager;
             positionProvider.Initialize(); // インターフェース経由で初期化
-            
-            // スポーンポイントの設定を確認
-            if (!positionManager.AreAllSpawnPointsSet())
-            {
-                Debug.LogError($"{DEBUG_LOG_PREFIX} スポーンポイントが正しく設定されていません！");
-                positionManager.LogMissingSpawnPoints();
-            }
-            
+
             if (autoStart)
             {
                 StartSpawning();
             }
         }
 
-        /// <summary>
-        /// 敵の生成を開始
-        /// </summary>
+        /// <summary>敵の生成を開始</summary>
         public void StartSpawning()
         {
             if (isSpawning) return;
-
             isSpawning = true;
             nextSpawnTime = Time.time + spawnInterval;
         }
@@ -65,7 +55,7 @@ namespace SGC2025.Enemy
         {
             isSpawning = false;
         }
-        
+
         /// <summary>
         /// スポーン間隔を設定（WaveManager用）
         /// </summary>
@@ -73,7 +63,7 @@ namespace SGC2025.Enemy
         {
             spawnInterval = Mathf.Max(MIN_SPAWN_INTERVAL, interval);
         }
-        
+
         /// <summary>
         /// Waveレベルを設定（WaveManager用）
         /// </summary>
@@ -81,46 +71,18 @@ namespace SGC2025.Enemy
         {
             currentWaveLevel = Mathf.Max(DEFAULT_WAVE_LEVEL, waveLevel);
         }
-        
-        /// <summary>
-        /// 現在のスポーン間隔を取得
-        /// </summary>
-        public float GetSpawnInterval()
-        {
-            return spawnInterval;
-        }
-        
-        /// <summary>
-        /// 現在のWaveレベルを取得
-        /// </summary>
-        public int GetWaveLevel()
-        {
-            return currentWaveLevel;
-        }
-        
-        /// <summary>
-        /// 四隅生成モードを設定
-        /// </summary>
-        /// <param name="enabled">四隅生成を有効にするか</param>
-        public void SetCornerSpawnMode(bool enabled)
-        {
-            positionManager.SetCornerSpawnMode(enabled);
-        }
-        
-        /// <summary>
-        /// 現在の生成モードを確認
-        /// </summary>
-        /// <returns>四隅生成が有効かどうか</returns>
-        public bool IsCornerSpawnMode()
-        {
-            return positionManager.IsCornerSpawnMode();
-        }
-        
+
+        /// <summary>現在のスポーン間隔を取得</summary>
+        public float GetSpawnInterval() => spawnInterval;
+
+        /// <summary>現在のWaveレベルを取得</summary>
+        public int GetWaveLevel() => currentWaveLevel;
+
+
         private void Update()
         {
             if (!isSpawning) return;
 
-            // DeltaTimeベースのスポーン判定
             if (Time.time >= nextSpawnTime)
             {
                 SpawnEnemy();
@@ -133,59 +95,39 @@ namespace SGC2025.Enemy
         /// </summary>
         private void SpawnEnemy()
         {
-            if (EnemyFactory.I == null)
-            {
-                Debug.LogError($"{DEBUG_LOG_PREFIX} EnemyFactory.I がnullです！");  
-                return;
-            }
-
+            if (EnemyFactory.I == null) return;
             Vector3 spawnPosition = positionProvider.GetRandomSpawnPosition();
-            
-            if (spawnPosition == Vector3.zero)
-            {
-                Debug.LogWarning($"{DEBUG_LOG_PREFIX} スポーン位置が中心(0,0,0)になっています。スポーンポイントの設定を確認してください。");
-            }
-            
             GameObject enemy = EnemyFactory.I.CreateRandomEnemy(spawnPosition, currentWaveLevel);
-            
-            if (enemy == null)
+            if (enemy == null) return;
+            // 移動コンポーネントを取得
+            var movement = enemy.GetComponent<EnemyMovement>();
+
+            // 敵の種類を取得（手動アタッチ前提）
+            var controller = enemy.GetComponent<EnemyController>();
+            if (controller != null && controller.EnemyData != null && movement != null)
             {
-                Debug.LogError($"{DEBUG_LOG_PREFIX} 敵の生成に失敗しました！");
-                return;
+                MovementType movementType = controller.EnemyData.MovementType;
+
+                // 移動タイプに応じて移動戦略を設定
+                var strategy = MovementStrategyFactory.CreateStrategy(movementType);
+                if (strategy != null)
+                {
+                    // プレイヤー追従型
+                    movement.SetMovementStrategy(strategy);
+                }
+                else
+                {
+                    // 固定方向移動型
+                    Vector3 targetPosition = positionManager.GetOppositeEdgePosition(spawnPosition);
+                    movement.SetTargetPosition(targetPosition);
+                }
             }
 
-            if (enemy != null)
+            // 自動削除コンポーネントの初期化
+            var autoReturn = enemy.GetComponent<EnemyAutoReturn>();
+            if (autoReturn != null)
             {
-                // 移動コンポーネントを取得
-                var movement = enemy.GetComponent<EnemyMovement>();
-
-                // 敵の種類を取得（手動アタッチ前提）
-                var controller = enemy.GetComponent<EnemyController>();
-                if (controller != null && controller.EnemyData != null && movement != null)
-                {
-                    MovementType movementType = controller.EnemyData.MovementType;
-                    
-                    // 移動タイプに応じて移動戦略を設定
-                    var strategy = MovementStrategyFactory.CreateStrategy(movementType);
-                    if (strategy != null)
-                    {
-                        // プレイヤー追従型
-                        movement.SetMovementStrategy(strategy);
-                    }
-                    else
-                    {
-                        // 固定方向移動型
-                        Vector3 targetPosition = positionManager.GetOppositeEdgePosition(spawnPosition);
-                        movement.SetTargetPosition(targetPosition);
-                    }
-                }
-
-                // 自動削除コンポーネントの初期化
-                var autoReturn = enemy.GetComponent<EnemyAutoReturn>();
-                if (autoReturn != null)
-                {
-                    autoReturn.Initialize();
-                }
+                autoReturn.Initialize();
             }
         }
     }
