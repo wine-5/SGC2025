@@ -20,55 +20,33 @@ namespace SGC2025
     {
         protected override bool UseDontDestroyOnLoad => true;
 
-        /// <summary>
-        /// 現在のシーン情報
-        /// </summary>
         public SceneName CurrentStage { get; private set; } = SceneName.Title;
 
-        /// <summary>
-        /// enumで指定されたシーンに切り替え
-        /// </summary>
-        /// <param name="sceneName">遷移先のシーン</param>
+        /// <summary>指定されたシーンに切り替え</summary>
         public void LoadScene(SceneName sceneName)
         {
             CurrentStage = sceneName;
-            string sceneNameStr = sceneName.ToString();
-            SceneManager.LoadScene(sceneNameStr);
+            SceneManager.LoadScene(sceneName.ToString());
         }
 
-        /// <summary>
-        /// 次のシーンに進む
-        /// </summary>
+        /// <summary>次のシーンに進む</summary>
         public void LoadNextScene()
         {
-            SceneName nextScene = GetNextScene(CurrentStage);
-            LoadScene(nextScene);
+            LoadScene(GetNextScene(CurrentStage));
         }
 
-        /// <summary>
-        /// 指定したシーンの次のシーンを取得
-        /// </summary>
-        /// <param name="currentScene">現在のシーン</param>
-        /// <returns>次のシーン</returns>
         private SceneName GetNextScene(SceneName currentScene)
         {
             switch (currentScene)
             {
-                case SceneName.Title:
-                    return SceneName.InGame;
-                case SceneName.InGame:
-                    return SceneName.Result;
-                case SceneName.Result:
-                    return SceneName.Title;
-                default:
-                    return SceneName.Title;
+                case SceneName.Title: return SceneName.InGame;
+                case SceneName.InGame: return SceneName.Result;
+                case SceneName.Result: return SceneName.Title;
+                default: return SceneName.Title;
             }
         }
 
-        /// <summary>
-        /// 現在のシーンがゲームプレイ中かどうかを判定
-        /// </summary>
-        /// <returns>ゲームプレイ中の場合true</returns>
+        /// <summary>ゲームプレイ中かどうかを判定</summary>
         public bool IsInGame() => CurrentStage == SceneName.InGame;
     }
 }

@@ -15,19 +15,17 @@ namespace SGC2025
         [SerializeField] private float gameOverDelay = 2f;
 
         [Header("時間設定")]
-        [SerializeField]
-        [Tooltip("ゲーム開始前のカウントダウン時間（秒）")]
+        [SerializeField, Tooltip("ゲーム開始前のカウントダウン時間（秒）")]
         private float startCountDownTime = 3f;
 
-        [SerializeField]
-        [Tooltip("ゲームの制限時間（秒）")]
-        private float gameTimeLimit = 600.0f;
+        [SerializeField, Tooltip("ゲームの制限時間（秒）")]
+        private float gameTimeLimit = 600f;
 
-        private bool isGameOver = false;
-        private bool isPaused = false;
-        private bool isCountDown = false;
-        private float currentCountDownTimer = 0f;
-        private float countGameTimer = 0f;
+        private bool isGameOver;
+        private bool isPaused;
+        private bool isCountDown;
+        private float currentCountDownTimer;
+        private float countGameTimer;
 
         public static event System.Action OnGameOver;
         public static event System.Action OnGamePause;
@@ -61,16 +59,13 @@ namespace SGC2025
         private void Update()
         {
             if (isGameOver || isPaused) return;
-
             UpdateCountDown();
             UpdateGameTimer();
         }
 
-        /// <summary>カウントダウンタイマー更新</summary>
         private void UpdateCountDown()
         {
             if (!isCountDown) return;
-
             currentCountDownTimer -= Time.deltaTime;
             if (currentCountDownTimer <= 0f)
             {
@@ -79,47 +74,34 @@ namespace SGC2025
             }
         }
 
-        /// <summary>ゲームタイマー更新</summary>
         private void UpdateGameTimer()
         {
             if (isCountDown) return;
-
             countGameTimer += Time.deltaTime;
             if (countGameTimer >= gameTimeLimit)
-            {
                 OnGameTimeUp?.Invoke();
-            }
         }
 
-        /// <summary>カウントダウン開始</summary>
         public void StartCountDown()
         {
             currentCountDownTimer = startCountDownTime;
             isCountDown = true;
         }
 
-        /// <summary>ゲームタイマーをリセット</summary>
         public void ResetGameTimer()
         {
             countGameTimer = 0f;
             isCountDown = false;
         }
 
-        /// <summary>プレイヤー死亡時の処理</summary>
         private void HandlePlayerDeath()
         {
             if (isGameOver) return;
-            Debug.Log("[GameManager] プレイヤーが死亡しました。ゲームオーバー処理を開始します");
             isGameOver = true;
             OnGameOver?.Invoke();
-
-            // 遅延後にゲームオーバーシーンに遷移
             Invoke(nameof(LoadGameOverScene), gameOverDelay);
         }
 
-        /// <summary>
-        /// ゲームオーバーシーンに遷移
-        /// </summary>
         private void LoadGameOverScene()
         {
             try
@@ -133,7 +115,6 @@ namespace SGC2025
             }
         }
 
-        /// <summary>ゲームを一時停止</summary>
         public void PauseGame()
         {
             if (isPaused || isGameOver) return;
@@ -142,7 +123,6 @@ namespace SGC2025
             OnGamePause?.Invoke();
         }
 
-        /// <summary>ゲームを再開</summary>
         public void ResumeGame()
         {
             if (!isPaused || isGameOver) return;
@@ -151,12 +131,9 @@ namespace SGC2025
             OnGameResume?.Invoke();
         }
 
-        /// <summary>
-        /// 現在のシーンをリロード
-        /// </summary>
         public void RestartGame()
         {
-            Time.timeScale = 1f; // TimeScaleをリセット
+            Time.timeScale = 1f;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
