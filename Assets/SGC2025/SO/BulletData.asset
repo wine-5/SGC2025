@@ -15,5 +15,8 @@ MonoBehaviour:
   bulletName: "\u57FA\u672C\u5F3E"
   moveSpeed: 10
   damage: 100
-  lifeTime: 5
+  lifeTime: 2
   bulletSize: 10
+  enableRotation: 1
+  rotationSpeed: 360
+  rotationDirection: 1

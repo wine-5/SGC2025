@@ -35,6 +35,12 @@ namespace SGC2025
             LoadScene(GetNextScene(CurrentStage));
         }
 
+        /// <summary>現在のシーンをリロード</summary>
+        public void ReloadCurrentScene()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
         private SceneName GetNextScene(SceneName currentScene)
         {
             switch (currentScene)

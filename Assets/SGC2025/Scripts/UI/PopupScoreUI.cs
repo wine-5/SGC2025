@@ -10,7 +10,7 @@ namespace SGC2025
     {
         [SerializeField] private TextMeshProUGUI text;
         private RectTransform rect;
-        private float lifetime = 1.0f;
+        private float lifetime = 0.5f; // 0.5秒に短縮してパフォーマンス改善
         private float floatSpeed = 60f;
         private float timer = 0f;
         private Vector2 startPos;
@@ -23,26 +23,42 @@ namespace SGC2025
             if (rect == null)
                 rect = GetComponent<RectTransform>();
 
+            // シンプルな基本設定
             text.text = $"+{score}";
+            text.color = Color.white;  // 白色でシンプルに
+            text.fontSize = 48f;       // 適度なサイズ
+            
             rect.anchoredPosition = position;
+            rect.sizeDelta = new Vector2(200, 100);
+            
             startPos = position;
             timer = 0f;
             this.onComplete = onComplete;
+            
             gameObject.SetActive(true);
+            
+            Debug.Log($"[PopupScoreUI] Initialize: text='{text.text}', position={position}, lifetime={lifetime}s");
         }
 
         private void Update()
         {
             timer += Time.unscaledDeltaTime;
+            
+            // 上に浮き上がる動作
             rect.anchoredPosition = startPos + Vector2.up * floatSpeed * timer;
 
-            var color = text.color;
+            // アルファ値をフェードアウト（白色を保持）
+            var color = Color.white;
             color.a = Mathf.Lerp(1f, 0f, timer / lifetime);
             text.color = color;
 
-            if (timer <= lifetime) return;
-            gameObject.SetActive(false);
-            onComplete?.Invoke(this);
+            // 寿命終了で非アクティブ化
+            if (timer >= lifetime)
+            {
+                Debug.Log($"[PopupScoreUI] Lifetime ended: {timer:F2}s/{lifetime}s - calling onComplete");
+                gameObject.SetActive(false);
+                onComplete?.Invoke(this);
+            }
         }
     }
 }

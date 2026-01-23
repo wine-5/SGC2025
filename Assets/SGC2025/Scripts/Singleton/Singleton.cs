@@ -38,7 +38,18 @@ namespace SGC2025
             {
                 instance = this as T;
                 Init();
-                if (UseDontDestroyOnLoad) DontDestroyOnLoad(this.gameObject);
+                if (UseDontDestroyOnLoad) 
+                {
+                    // DontDestroyOnLoadはルートオブジェクトにのみ適用可能
+                    if (transform.parent == null)
+                    {
+                        DontDestroyOnLoad(this.gameObject);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[{typeof(T).Name}] DontDestroyOnLoad requires root GameObject. Current object has parent: {transform.parent.name}");
+                    }
+                }
             }
             else if (instance != this)
             {
