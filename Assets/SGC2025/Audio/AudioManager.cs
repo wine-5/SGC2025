@@ -1,330 +1,324 @@
-using UnityEngine;
 using System.Collections;
-using TechC;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Audio;
 
 namespace SGC2025
 {
-    /// <summary>
-    /// ゲーム全体のオーディオを管理するマネージャー
-    /// SE・BGMの再生、音量制御、フェード機能を提供
-    /// </summary>
     public class AudioManager : Singleton<AudioManager>
     {
-        [Header("オーディオデータ")]
-        [SerializeField] private SEData seData;
-        [SerializeField] private BGMData bgmData;
-        
-        [Header("オーディオソース")]
-        [SerializeField] private AudioSource seSource;
-        [SerializeField] private AudioSource bgmSource;
-        
-        [Header("設定")]
-        [SerializeField] private bool enableDebugLog = false;
-        
-        // BGMフェード用の変数
-        private Coroutine bgmFadeCoroutine;
-        private string currentBGMName = "";
-        
-        // 音量設定
-        private float seVolume = 1f;
-        private float bgmVolume = 1f;
-        
-        // プロパティ
-        public float SEVolume 
-        { 
-            get => seVolume; 
-            set 
-            { 
-                seVolume = Mathf.Clamp01(value);
-                UpdateSEVolume();
-            }
-        }
-        
-        public float BGMVolume 
-        { 
-            get => bgmVolume; 
-            set 
-            { 
-                bgmVolume = Mathf.Clamp01(value);
-                UpdateBGMVolume();
-            }  
-        }
-        
-        public bool IsPlayingBGM => bgmSource != null && bgmSource.isPlaying;
-        public string CurrentBGMName => currentBGMName;
+        [Header("音量設定")]
+        [Range(0f, 1f)] public float masterVolume = 1f;
+        [Range(0f, 1f)] public float bgmVolume = 0.7f;
+        [Range(0f, 1f)] public float seVolume = 1f;
 
-        protected override void Init()
+        [Header("フェード設定")]
+        [SerializeField] private AnimationCurve fadeCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+        [Header("AudioData")]
+        [SerializeField] private AudioDataSO audioData;
+
+        [Header("AudioMixer")]
+        [SerializeField] private AudioMixerGroup masterMixerGroup;
+        [SerializeField] private AudioMixerGroup bgmMixerGroup;
+        [SerializeField] private AudioMixerGroup seMixerGroup;
+
+        // BGM用のAudioSource
+        private AudioSource bgmAudioSource1;
+        private AudioSource bgmAudioSource2;
+        private AudioSource currentBgmAudioSource;
+        private AudioSource previousBgmAudioSource;
+
+        // SE用のAudioSourceプール
+        private List<AudioSource> seAudioSourcePool = new List<AudioSource>();
+        private int initialSePoolSize = 10;
+
+        // 音声データのディクショナリ
+        private Dictionary<SEType, SEAudioData> seDataDict = new Dictionary<SEType, SEAudioData>();
+        private Dictionary<BGMType, BGMAudioData> bgmDataDict = new Dictionary<BGMType, BGMAudioData>();
+
+        // フェード用のコルーチン
+        private Coroutine fadeCoroutine;
+
+        // 現在再生中のBGM
+        private BGMType currentBgmType = BGMType.None;
+
+        protected override void Awake()
         {
-            base.Init();
-            
-            // AudioSourceのセットアップ
-            SetupAudioSources();
-            
-            // 初期音量設定
-            UpdateVolumes();
-            
-            if (enableDebugLog)
+            base.Awake();
+            InitializeAudioSources();
+            BuildAudioDataDictionaries();
+        }
+
+        private void InitializeAudioSources()
+        {
+            // BGM用のAudioSourceを2つ作成（クロスフェード用）
+            bgmAudioSource1 = CreateAudioSource("BGM_AudioSource1", bgmMixerGroup);
+            bgmAudioSource2 = CreateAudioSource("BGM_AudioSource2", bgmMixerGroup);
+            currentBgmAudioSource = bgmAudioSource1;
+            previousBgmAudioSource = bgmAudioSource2;
+
+            // SE用のAudioSourceプールを作成
+            for (int i = 0; i < initialSePoolSize; i++)
             {
-                Debug.Log("[AudioManager] 初期化完了");
+                AudioSource seSource = CreateAudioSource($"SE_AudioSource_{i}", seMixerGroup);
+                seAudioSourcePool.Add(seSource);
             }
         }
-        
-        /// <summary>
-        /// AudioSourceを設定
-        /// </summary>
-        private void SetupAudioSources()
+
+        private AudioSource CreateAudioSource(string name, AudioMixerGroup mixerGroup)
         {
-            if (seSource == null)
+            GameObject audioObject = new GameObject(name);
+            audioObject.transform.SetParent(transform);
+            AudioSource audioSource = audioObject.AddComponent<AudioSource>();
+            audioSource.outputAudioMixerGroup = mixerGroup;
+            audioSource.playOnAwake = false;
+            return audioSource;
+        }
+
+        private void BuildAudioDataDictionaries()
+        {
+            if (audioData == null) return;
+
+            // SEデータのディクショナリ構築
+            foreach (var seData in audioData.SEAudioDataList)
             {
-                var seObj = new GameObject("SESource");
-                seObj.transform.SetParent(this.transform);
-                seSource = seObj.AddComponent<AudioSource>();
-                seSource.playOnAwake = false;
+                if (!seDataDict.ContainsKey(seData.SEType))
+                {
+                    seDataDict.Add(seData.SEType, seData);
+                }
             }
-            
-            if (bgmSource == null)
+
+            // BGMデータのディクショナリ構築
+            foreach (var bgmData in audioData.BGMAudioDataList)
             {
-                var bgmObj = new GameObject("BGMSource");
-                bgmObj.transform.SetParent(this.transform);
-                bgmSource = bgmObj.AddComponent<AudioSource>();
-                bgmSource.playOnAwake = false;
-                bgmSource.loop = true;
+                if (!bgmDataDict.ContainsKey(bgmData.BGMType))
+                {
+                    bgmDataDict.Add(bgmData.BGMType, bgmData);
+                }
             }
         }
 
         /// <summary>
         /// SEを再生
         /// </summary>
-        /// <param name="seName">SE名</param>
-        public void PlaySE(string seName)
+        public void PlaySE(SEType seType, float volumeMultiplier = 1f)
         {
-            if (seData == null)
-            {
-                Debug.LogWarning("[AudioManager] SEDataが設定されていません");
+            if (seType == SEType.None || !seDataDict.ContainsKey(seType))
                 return;
-            }
-            
-            var clip = seData.GetClip(seName);
-            if (clip != null)
+
+            SEAudioData seData = seDataDict[seType];
+            if (seData.AudioClip == null) return;
+
+            AudioSource availableSource = GetAvailableSeAudioSource();
+            if (availableSource != null)
             {
-                float volume = seData.GetVolume(seName) * seData.Volume * seVolume;
-                seSource.PlayOneShot(clip, volume);
-                
-                if (enableDebugLog)
-                {
-                    Debug.Log($"[AudioManager] SE再生: {seName} (音量: {volume:F2})");
-                }
-            }
-            else if (enableDebugLog)
-            {
-                Debug.LogWarning($"[AudioManager] SE '{seName}' が見つかりません");
+                availableSource.clip = seData.AudioClip;
+                availableSource.volume = seVolume * masterVolume * seData.VolumeMultiplier * volumeMultiplier;
+                availableSource.Play();
             }
         }
 
         /// <summary>
         /// BGMを再生
         /// </summary>
-        /// <param name="bgmName">BGM名</param>
-        /// <param name="fadeInTime">フェードイン時間（-1で設定値を使用）</param>
-        public void PlayBGM(string bgmName, float fadeInTime = -1f)
+        public void PlayBGM(BGMType bgmType, bool useFade = false)
         {
-            if (bgmData == null)
+            if (bgmType == BGMType.None)
             {
-                Debug.LogWarning("[AudioManager] BGMDataが設定されていません");
+                StopBGM(useFade);
                 return;
             }
-            
-            var clip = bgmData.GetClip(bgmName);
-            if (clip == null)
-            {
-                if (enableDebugLog)
-                {
-                    Debug.LogWarning($"[AudioManager] BGM '{bgmName}' が見つかりません");
-                }
+
+            if (currentBgmType == bgmType && currentBgmAudioSource.isPlaying)
                 return;
-            }
-            
-            // 既に同じBGMが再生中の場合は何もしない
-            if (currentBGMName == bgmName && IsPlayingBGM)
+
+            if (!bgmDataDict.ContainsKey(bgmType)) return;
+
+            BGMAudioData bgmData = bgmDataDict[bgmType];
+            if (bgmData.AudioClip == null) return;
+
+            // フェードのコルーチンがあれば停止
+            if (fadeCoroutine != null)
+                StopCoroutine(fadeCoroutine);
+
+            if (useFade && bgmData.UseFadeIn)
             {
-                return;
-            }
-            
-            // フェード時間の決定
-            float actualFadeTime = fadeInTime >= 0f ? fadeInTime : bgmData.GetFadeInTime(bgmName);
-            
-            // BGMの設定
-            bgmSource.clip = clip;
-            bgmSource.loop = bgmData.GetLoop(bgmName);
-            currentBGMName = bgmName;
-            
-            if (actualFadeTime > 0f)
-            {
-                StartBGMFadeIn(actualFadeTime);
+                fadeCoroutine = StartCoroutine(CrossFadeBGM(bgmData));
             }
             else
             {
-                UpdateBGMVolume();
-                bgmSource.Play();
+                // 即座にBGM切り替え
+                SwapBgmAudioSources();
+                currentBgmAudioSource.clip = bgmData.AudioClip;
+                currentBgmAudioSource.loop = bgmData.Loop;
+                currentBgmAudioSource.volume = bgmVolume * masterVolume * bgmData.VolumeMultiplier;
+                currentBgmAudioSource.Play();
+
+                previousBgmAudioSource.Stop();
             }
-            
-            if (enableDebugLog)
-            {
-                Debug.Log($"[AudioManager] BGM再生: {bgmName} (フェードイン: {actualFadeTime:F1}秒)");
-            }
+
+            currentBgmType = bgmType;
         }
 
         /// <summary>
         /// BGMを停止
         /// </summary>
-        /// <param name="fadeOutTime">フェードアウト時間（-1で設定値を使用）</param>
-        public void StopBGM(float fadeOutTime = -1f)
+        public void StopBGM(bool useFade = false)
         {
-            if (!IsPlayingBGM) return;
-            
-            // フェード時間の決定
-            float actualFadeTime = fadeOutTime >= 0f ? fadeOutTime : 
-                                   (bgmData != null ? bgmData.GetFadeOutTime(currentBGMName) : 0f);
-            
-            if (actualFadeTime > 0f)
+            if (fadeCoroutine != null)
+                StopCoroutine(fadeCoroutine);
+
+            if (useFade && currentBgmAudioSource.isPlaying)
             {
-                StartBGMFadeOut(actualFadeTime);
+                BGMType currentType = currentBgmType;
+                if (bgmDataDict.ContainsKey(currentType) && bgmDataDict[currentType].UseFadeOut)
+                {
+                    fadeCoroutine = StartCoroutine(FadeOutBGM(bgmDataDict[currentType].FadeOutDuration));
+                }
+                else
+                {
+                    currentBgmAudioSource.Stop();
+                }
             }
             else
             {
-                bgmSource.Stop();
-                currentBGMName = "";
+                currentBgmAudioSource.Stop();
+                previousBgmAudioSource.Stop();
             }
-            
-            if (enableDebugLog)
-            {
-                Debug.Log($"[AudioManager] BGM停止: {currentBGMName} (フェードアウト: {actualFadeTime:F1}秒)");
-            }
-        }
-        
-        /// <summary>
-        /// BGMを一時停止
-        /// </summary>
-        public void PauseBGM()
-        {
-            if (IsPlayingBGM)
-            {
-                bgmSource.Pause();
-                
-                if (enableDebugLog)
-                {
-                    Debug.Log($"[AudioManager] BGM一時停止: {currentBGMName}");
-                }
-            }
-        }
-        
-        /// <summary>
-        /// BGMを再開
-        /// </summary>
-        public void ResumeBGM()
-        {
-            if (bgmSource.clip != null && !IsPlayingBGM)
-            {
-                bgmSource.UnPause();
-                
-                if (enableDebugLog)
-                {
-                    Debug.Log($"[AudioManager] BGM再開: {currentBGMName}");
-                }
-            }
+
+            currentBgmType = BGMType.None;
         }
 
         /// <summary>
-        /// 全音量を更新
+        /// BGMの音量を設定
         /// </summary>
-        public void UpdateVolumes()
+        public void SetBGMVolume(float volume)
         {
-            UpdateSEVolume();
-            UpdateBGMVolume();
+            bgmVolume = Mathf.Clamp01(volume);
+            UpdateBgmVolume();
         }
-        
+
         /// <summary>
-        /// SE音量を更新
+        /// SEの音量を設定
         /// </summary>
-        private void UpdateSEVolume()
+        public void SetSEVolume(float volume)
         {
-            if (seSource != null && seData != null)
+            seVolume = Mathf.Clamp01(volume);
+        }
+
+        /// <summary>
+        /// マスター音量を設定
+        /// </summary>
+        public void SetMasterVolume(float volume)
+        {
+            masterVolume = Mathf.Clamp01(volume);
+            UpdateBgmVolume();
+        }
+
+        private AudioSource GetAvailableSeAudioSource()
+        {
+            // 使用可能なAudioSourceを探す
+            foreach (var source in seAudioSourcePool)
             {
-                seSource.volume = seData.Volume * seVolume;
+                if (!source.isPlaying)
+                    return source;
+            }
+
+            // すべて使用中の場合、新しいものを作成
+            AudioSource newSource = CreateAudioSource($"SE_AudioSource_{seAudioSourcePool.Count}", seMixerGroup);
+            seAudioSourcePool.Add(newSource);
+            return newSource;
+        }
+
+        private void SwapBgmAudioSources()
+        {
+            AudioSource temp = currentBgmAudioSource;
+            currentBgmAudioSource = previousBgmAudioSource;
+            previousBgmAudioSource = temp;
+        }
+
+        private void UpdateBgmVolume()
+        {
+            if (currentBgmType != BGMType.None && bgmDataDict.ContainsKey(currentBgmType))
+            {
+                BGMAudioData bgmData = bgmDataDict[currentBgmType];
+                currentBgmAudioSource.volume = bgmVolume * masterVolume * bgmData.VolumeMultiplier;
             }
         }
-        
-        /// <summary>
-        /// BGM音量を更新
-        /// </summary>
-        private void UpdateBGMVolume()
+
+        private IEnumerator CrossFadeBGM(BGMAudioData newBgmData)
         {
-            if (bgmSource != null && bgmData != null && !string.IsNullOrEmpty(currentBGMName))
+            float fadeInDuration = newBgmData.FadeInDuration;
+            float fadeOutDuration = 0f;
+
+            // 現在のBGMがあるなら、フェードアウト時間を設定
+            if (currentBgmType != BGMType.None && bgmDataDict.ContainsKey(currentBgmType))
             {
-                float targetVolume = bgmData.GetVolume(currentBGMName) * bgmData.Volume * bgmVolume;
-                bgmSource.volume = targetVolume;
+                fadeOutDuration = bgmDataDict[currentBgmType].FadeOutDuration;
             }
-        }
-        
-        /// <summary>
-        /// BGMフェードイン開始
-        /// </summary>
-        private void StartBGMFadeIn(float fadeTime)
-        {
-            if (bgmFadeCoroutine != null)
+
+            // AudioSourceを切り替え
+            SwapBgmAudioSources();
+
+            // 新しいBGMを設定して開始
+            currentBgmAudioSource.clip = newBgmData.AudioClip;
+            currentBgmAudioSource.loop = newBgmData.Loop;
+            currentBgmAudioSource.volume = 0f;
+            currentBgmAudioSource.Play();
+
+            // クロスフェードを実行
+            float maxDuration = Mathf.Max(fadeInDuration, fadeOutDuration);
+            float elapsedTime = 0f;
+
+            while (elapsedTime < maxDuration)
             {
-                StopCoroutine(bgmFadeCoroutine);
-            }
-            
-            bgmFadeCoroutine = StartCoroutine(FadeBGM(0f, 1f, fadeTime, true));
-        }
-        
-        /// <summary>
-        /// BGMフェードアウト開始
-        /// </summary>
-        private void StartBGMFadeOut(float fadeTime)
-        {
-            if (bgmFadeCoroutine != null)
-            {
-                StopCoroutine(bgmFadeCoroutine);
-            }
-            
-            bgmFadeCoroutine = StartCoroutine(FadeBGM(1f, 0f, fadeTime, false));
-        }
-        
-        /// <summary>
-        /// BGMフェード処理
-        /// </summary>
-        private IEnumerator FadeBGM(float startVolume, float endVolume, float fadeTime, bool playAtStart)
-        {
-            if (playAtStart)
-            {
-                bgmSource.volume = 0f;
-                bgmSource.Play();
-            }
-            
-            float targetVolume = bgmData != null && !string.IsNullOrEmpty(currentBGMName) ? 
-                                bgmData.GetVolume(currentBGMName) * bgmData.Volume * bgmVolume : 1f;
-            
-            float elapsed = 0f;
-            while (elapsed < fadeTime)
-            {
-                elapsed += Time.deltaTime;
-                float t = elapsed / fadeTime;
-                float currentVolume = Mathf.Lerp(startVolume, endVolume, t) * targetVolume;
-                bgmSource.volume = currentVolume;
+                elapsedTime += Time.deltaTime;
+
+                // フェードイン
+                if (fadeInDuration > 0f)
+                {
+                    float fadeInProgress = Mathf.Clamp01(elapsedTime / fadeInDuration);
+                    float fadeInVolume = fadeCurve.Evaluate(fadeInProgress);
+                    currentBgmAudioSource.volume = bgmVolume * masterVolume * newBgmData.VolumeMultiplier * fadeInVolume;
+                }
+
+                // フェードアウト
+                if (fadeOutDuration > 0f && elapsedTime < fadeOutDuration)
+                {
+                    float fadeOutProgress = Mathf.Clamp01(elapsedTime / fadeOutDuration);
+                    float fadeOutVolume = fadeCurve.Evaluate(1f - fadeOutProgress);
+                    if (currentBgmType != BGMType.None && bgmDataDict.ContainsKey(currentBgmType))
+                    {
+                        previousBgmAudioSource.volume = bgmVolume * masterVolume * bgmDataDict[currentBgmType].VolumeMultiplier * fadeOutVolume;
+                    }
+                }
+
                 yield return null;
             }
-            
-            bgmSource.volume = endVolume * targetVolume;
-            
-            if (!playAtStart && endVolume <= 0f)
+
+            // フェード完了
+            previousBgmAudioSource.Stop();
+            currentBgmAudioSource.volume = bgmVolume * masterVolume * newBgmData.VolumeMultiplier;
+            fadeCoroutine = null;
+        }
+
+        private IEnumerator FadeOutBGM(float fadeOutDuration)
+        {
+            float startVolume = currentBgmAudioSource.volume;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < fadeOutDuration)
             {
-                bgmSource.Stop();
-                currentBGMName = "";
+                elapsedTime += Time.deltaTime;
+                float fadeProgress = elapsedTime / fadeOutDuration;
+                float volume = startVolume * fadeCurve.Evaluate(1f - fadeProgress);
+                currentBgmAudioSource.volume = volume;
+                yield return null;
             }
-            
-            bgmFadeCoroutine = null;
+
+            currentBgmAudioSource.Stop();
+            fadeCoroutine = null;
         }
     }
 }
