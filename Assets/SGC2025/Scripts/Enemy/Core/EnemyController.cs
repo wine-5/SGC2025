@@ -12,7 +12,6 @@ namespace SGC2025.Enemy
     {
         private const int MIN_WAVE_LEVEL = 1;
         private const float MIN_HEALTH = 0f;
-        private const string DEBUG_LOG_PREFIX = "[EnemyController]";
 
         [Header("設定データ")]
         [Tooltip("敵の基本データ設定")]

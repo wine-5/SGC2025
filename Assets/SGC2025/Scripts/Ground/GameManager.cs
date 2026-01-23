@@ -50,6 +50,12 @@ namespace SGC2025
             PlayerCharacter.OnPlayerDeath += HandlePlayerDeath;
         }
 
+        private void Start()
+        {
+            if (pausePanel != null)
+                pausePanel.SetActive(false);
+        }
+
         protected override void OnDestroy()
         {
             PlayerCharacter.OnPlayerDeath -= HandlePlayerDeath;
