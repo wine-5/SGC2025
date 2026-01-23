@@ -89,18 +89,6 @@ namespace SGC2025
                 OnGameTimeUp?.Invoke();
         }
 
-        public void StartCountDown()
-        {
-            currentCountDownTimer = startCountDownTime;
-            isCountDown = true;
-        }
-
-        public void ResetGameTimer()
-        {
-            countGameTimer = 0f;
-            isCountDown = false;
-        }
-
         private void HandlePlayerDeath()
         {
             if (isGameOver) return;
@@ -133,11 +121,5 @@ namespace SGC2025
             OnGameResume?.Invoke();
         }
 
-        public void RestartGame()
-        {
-            Time.timeScale = 1f;
-            if (SceneController.I != null)
-                SceneController.I.ReloadCurrentScene();
-        }
     }
 }

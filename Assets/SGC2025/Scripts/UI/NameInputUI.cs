@@ -15,23 +15,11 @@ namespace SGC2025
 
         [SerializeField] private TMP_InputField nameInputField;
 
-        private int lastScore;
-
         override public void Start()
         {
             nameInputField.onSelect.AddListener(OnInputFocus);
             nameInputField.characterLimit = MAX_NAME_LENGTH;
             base.Start();
-        }
-
-        /// <summary>
-        /// ハイスコア時に呼び出す（他スクリプトから）
-        /// </summary>
-        public void ShowInput(int score)
-        {
-            lastScore = score;
-            nameInputField.text = "";
-            nameInputField.ActivateInputField();
         }
 
         public void OnSubmit()
@@ -40,7 +28,7 @@ namespace SGC2025
             if (string.IsNullOrEmpty(name))
                 name = DEFAULT_NAME;
 
-            RankingManager.I.AddScore(name, lastScore);
+            RankingManager.I.AddScore(name, ScoreManager.I.GetTotalScore());
             this.gameObject.SetActive(false);
         }
 

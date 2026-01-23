@@ -89,23 +89,6 @@ namespace SGC2025
             ShowScorePopupAtInspectorPosition(points);
         }
 
-        /// <summary>ワールド座標をキャンバス座標に変換</summary>
-        private Vector2 WorldToCanvasPoint(Vector3 worldPosition)
-        {
-            if (Camera.main == null || parentCanvas == null) return Vector2.zero;
-            
-            Vector3 screenPoint = Camera.main.WorldToScreenPoint(worldPosition);
-            
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                parentCanvas, screenPoint, Camera.main, out Vector2 canvasPoint);
-            
-            var canvasRect = parentCanvas.rect;
-            canvasPoint.x = Mathf.Clamp(canvasPoint.x, canvasRect.xMin + BOUNDARY_MARGIN, canvasRect.xMax - BOUNDARY_MARGIN);
-            canvasPoint.y = Mathf.Clamp(canvasPoint.y, canvasRect.yMin + BOUNDARY_MARGIN, canvasRect.yMax - BOUNDARY_MARGIN);
-                
-            return canvasPoint;
-        }
-
         private void Update() => UpdateTimeText();
 
         /// <summary>
@@ -115,15 +98,6 @@ namespace SGC2025
         {
             if (scoreText != null)
                 scoreText.text = "0";
-        }
-
-        /// <summary>
-        /// スコアポップアップを表示（中央付近）
-        /// </summary>
-        public void ShowScorePopup(int score)
-        {
-            Vector2 basePos = new Vector2(0, 100);
-            ShowScorePopup(score, basePos);
         }
 
         /// <summary>

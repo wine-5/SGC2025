@@ -40,11 +40,6 @@ namespace SGC2025
             SceneManager.LoadScene("Title");
         }
         
-        public void OnClickControllGuide()
-        {
-            //操作説明用ガイドプレハブ作成
-        }
-
         public void OnClickExit()
         {
             Application.Quit();
