@@ -39,7 +39,8 @@ namespace TechC
                     Debug.LogError($"プール項目 '{poolItem.name}' のプレハブがnullです。");
                     continue;
                 }
-                if (poolItem.parent == null) poolItem.parent = this.gameObject;
+                if (poolItem.parent == null)
+                    poolItem.parent = this.gameObject;
                 InitializePool(poolItem);
             }
         }
@@ -55,7 +56,8 @@ namespace TechC
                 Debug.LogError("プレハブがnullのプールを初期化できません。");
                 return;
             }
-            if (!objectPools.ContainsKey(poolItem.prefab)) objectPools[poolItem.prefab] = new Queue<GameObject>();
+            if (!objectPools.ContainsKey(poolItem.prefab))
+                objectPools[poolItem.prefab] = new Queue<GameObject>();
             for (int i = 0; i < poolItem.initialSize; i++)
             {
                 GameObject newObject = CreateNewInstance(poolItem);
@@ -65,14 +67,11 @@ namespace TechC
 
         private GameObject CreateNewInstance(ObjectPoolItem poolItem)
         {
-            if (poolItem.prefab == null)
-            {
-                Debug.LogError("nullのプレハブからインスタンスを作成できません。");
-                return null;
-            }
+            if (poolItem.prefab == null) return null;
             GameObject newObject = Instantiate(poolItem.prefab);
             newObject.SetActive(false);
-            if (poolItem.parent != null) newObject.transform.SetParent(poolItem.parent.transform);
+            if (poolItem.parent != null)
+                newObject.transform.SetParent(poolItem.parent.transform);
             instanceToPoolItemMap[newObject] = poolItem;
             return newObject;
         }
@@ -123,7 +122,8 @@ namespace TechC
                 if (pooledObject == null)
                 {
                     ObjectPoolItem poolItem = poolItems.Find(item => item.prefab == prefab);
-                    if (poolItem != null) pooledObject = CreateNewInstance(poolItem);
+                    if (poolItem != null)
+                        pooledObject = CreateNewInstance(poolItem);
                 }
                 pooledObject.SetActive(true);
                 return pooledObject;

@@ -53,7 +53,8 @@ namespace SGC2025
             }
             else if (instance != this)
             {
-                if (DestroyTargetGameObject) Destroy(gameObject);
+                if (DestroyTargetGameObject)
+                    Destroy(gameObject);
                 else Destroy(this);
             }
         }
@@ -64,9 +65,7 @@ namespace SGC2025
         protected virtual void OnDestroy()
         {
             if (instance == this)
-            {
                 instance = null;
-            }
         }
 
         /// <summary>
