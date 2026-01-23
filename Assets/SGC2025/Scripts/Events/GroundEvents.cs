@@ -28,8 +28,6 @@ namespace SGC2025.Events
         public static void ClearAllEvents()
         {
             OnGroundGreenified = null;
-            
-            Debug.Log("[GroundEvents] すべてのイベントリスナーをクリアしました");
         }
     }
 }

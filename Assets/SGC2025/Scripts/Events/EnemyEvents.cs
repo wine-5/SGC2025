@@ -9,7 +9,6 @@ namespace SGC2025.Events
     public static class EnemyEvents
     {
         private const int MIN_SCORE = 0;
-        private const string DEBUG_LOG_PREFIX = "[EnemyEvents]";
 
         public static event System.Action OnEnemyDestroyed;
         public static event System.Action<Vector3> OnEnemyDestroyedAtPosition;
@@ -24,9 +23,7 @@ namespace SGC2025.Events
             OnEnemyDestroyed?.Invoke();
             OnEnemyDestroyedAtPosition?.Invoke(position);
             if (score > MIN_SCORE)
-            {
                 OnEnemyDestroyedWithScore?.Invoke(score, position);
-            }
         }
 
         public static void TriggerEnemyDamage(GameObject enemy, float damage, float currentHP, float maxHP)
@@ -55,8 +52,6 @@ namespace SGC2025.Events
             OnEnemyHealthChanged = null;
             OnEnemySpawned = null;
             OnEnemyReturnedToPool = null;
-            
-            Debug.Log($"{DEBUG_LOG_PREFIX} すべてのイベントリスナーをクリアしました");
         }
     }
 }
