@@ -1,7 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 namespace SGC2025
 {
@@ -12,6 +10,7 @@ namespace SGC2025
     {
         private const float SCORE_COUNT_UP_TIME = 0.7f;
         private const int DEFAULT_RECORD_SCORE = 0;
+        private const float ZERO_WAIT_TIME = 0.0f;
 
         [SerializeField]
         private TextMeshProUGUI enemyScoreText;
@@ -51,7 +50,7 @@ namespace SGC2025
             {
                 currentPhase++;
                 OnPhaseChanged();
-                waitTime = 0.0f;
+                waitTime = ZERO_WAIT_TIME;
 
             }
             else
@@ -138,7 +137,7 @@ namespace SGC2025
                     }
                 case ResultPhase.HighScore:
                     {
-                        waitTime = 0.0f;
+                        waitTime = ZERO_WAIT_TIME;
                         break;
                     }
 
@@ -165,7 +164,7 @@ namespace SGC2025
             if (uIBase.gameObject.name.Equals("InputFieldCanvas"))
             {
                 currentPhase = ResultPhase.End; // NextPhaseとかつくるべき
-                waitTime = 0.0f;
+                waitTime = ZERO_WAIT_TIME;
 
                 foreach (UIBase child in childrenMenu)
                 {

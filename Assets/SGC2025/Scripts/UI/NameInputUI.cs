@@ -50,7 +50,3 @@ namespace SGC2025
         }
     }
 
-}
-
-
-    
