@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using SGC2025.Player.Bullet;
 
 namespace SGC2025
@@ -76,6 +77,19 @@ namespace SGC2025
             stateMachine.UpdateActiveState();
             DecreaseMutekiTime();
             PlayerRotate();
+            HandlePauseInput();
+        }
+
+        /// <summary>ポーズ入力処理</summary>
+        private void HandlePauseInput()
+        {
+            if (Keyboard.current?.escapeKey.wasPressedThisFrame != true) return;
+            if (GameManager.I == null) return;
+            
+            if (GameManager.I.IsPaused)
+                GameManager.I.ResumeGame();
+            else
+                GameManager.I.PauseGame();
         }
 
         private void PlayerRotate()
