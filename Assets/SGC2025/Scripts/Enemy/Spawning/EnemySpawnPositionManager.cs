@@ -87,7 +87,8 @@ namespace SGC2025.Enemy
         public void SetTileMapReferenceMode(bool enabled, Tilemap tileMap = null, float padding = 0.5f)
         {
             useTileMapReference = enabled;
-            if (tileMap != null) targetTileMap = tileMap;
+            if (tileMap != null)
+                targetTileMap = tileMap;
             tileMapPadding = padding;
             if (enabled)
                 useCanvasReference = false;

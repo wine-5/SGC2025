@@ -65,7 +65,8 @@ namespace SGC2025.Enemy
 
             OnDamageTaken?.Invoke(actualDamage);
             EnemyEvents.TriggerEnemyDamage(gameObject, actualDamage, currentHp, MaxHealth);
-            if (!IsAlive) HandleDeath();
+            if (!IsAlive)
+                HandleDeath();
         }
 
         private void HandleDeath()
@@ -78,9 +79,7 @@ namespace SGC2025.Enemy
         private void DeactivateEnemy()
         {
             if (EnemyFactory.I != null)
-            {
                 EnemyFactory.I.ReturnEnemy(gameObject);
-            }
         }
     }
 }
