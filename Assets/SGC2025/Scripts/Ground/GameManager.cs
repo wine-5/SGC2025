@@ -11,7 +11,6 @@ namespace SGC2025
     public class GameManager : Singleton<GameManager>
     {
         [Header("ゲーム設定")]
-        [SerializeField] private string gameOverSceneName = "Gameover";
         [SerializeField] private float gameOverDelay = 2f;
 
         [Header("時間設定")]
@@ -20,6 +19,8 @@ namespace SGC2025
 
         [SerializeField, Tooltip("ゲームの制限時間（秒）")]
         private float gameTimeLimit = 600f;
+        [Header("ポーズ設定")]
+        [SerializeField] private GameObject pausePanel;
 
         private bool isGameOver;
         private bool isPaused;
@@ -104,21 +105,21 @@ namespace SGC2025
 
         private void LoadGameOverScene()
         {
-            try
+            if (SceneController.I == null)
             {
-                SceneManager.LoadScene(gameOverSceneName);
+                Debug.LogError("[GameManager] SceneController instance not found!");
+                return;
             }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"[GameManager] シーン遷移に失敗しました: {e.Message}");
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            }
+
+            // ゲームオーバーシーンがSceneNameに定義されていれば使用、なければTitleに戻る
+            SceneController.I.LoadScene(SceneName.Title);
         }
 
         public void PauseGame()
         {
             if (isPaused || isGameOver) return;
             isPaused = true;
+            pausePanel.SetActive(true);
             Time.timeScale = 0f;
             OnGamePause?.Invoke();
         }
@@ -127,6 +128,7 @@ namespace SGC2025
         {
             if (!isPaused || isGameOver) return;
             isPaused = false;
+            pausePanel.SetActive(false);
             Time.timeScale = 1f;
             OnGameResume?.Invoke();
         }
@@ -134,7 +136,10 @@ namespace SGC2025
         public void RestartGame()
         {
             Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            if (SceneController.I != null)
+                SceneController.I.ReloadCurrentScene();
+            else
+                Debug.LogError("[GameManager] SceneController instance not found!");
         }
     }
 }
