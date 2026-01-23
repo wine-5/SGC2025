@@ -46,7 +46,7 @@ namespace SGC2025
             weaponSystem = GetComponent<PlayerWeaponSystem>();
             stateMachine = new StateMachine();
             input = new PlayerInputSet();
-            if (weaponSystem == null) 
+            if (weaponSystem == null)
                 weaponSystem = GetComponent<SGC2025.Player.Bullet.PlayerWeaponSystem>();
             idleState = new PlayerIdleState(this, stateMachine, "fly");
             moveState = new PlayerMoveState(this, stateMachine, "fly");
@@ -72,7 +72,7 @@ namespace SGC2025
         {
             stateMachine.Initialize(idleState);
             currentHealth = maxHealth;
-            if (GroundManager.I != null) 
+            if (GroundManager.I != null)
                 transform.position = GroundManager.I.GetPlayerSpawnPosition();
         }
 
@@ -86,7 +86,7 @@ namespace SGC2025
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) 
+            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                 Damage();
         }
         #endregion
@@ -126,7 +126,7 @@ namespace SGC2025
 
         private void PlayerRotate()
         {
-            if (moveInput != Vector2.zero) 
+            if (moveInput != Vector2.zero)
                 transform.up = rb.linearVelocity;
         }
         #endregion
@@ -150,7 +150,7 @@ namespace SGC2025
         {
             if (damage <= 0f) return;
             currentHealth = Mathf.Max(0f, currentHealth - damage);
-            if (currentHealth <= 0f) 
+            if (currentHealth <= 0f)
                 OnPlayerDeath?.Invoke();
         }
 

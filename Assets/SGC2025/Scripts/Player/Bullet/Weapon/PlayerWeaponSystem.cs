@@ -79,11 +79,7 @@ namespace SGC2025.Player.Bullet
         /// </summary>
         private void InitializeWeapon()
         {
-            if (weaponUpgradeData == null)
-            {
-                Debug.LogError("PlayerWeaponSystem: WeaponUpgradeDataSOが設定されていません");
-                return;
-            }
+            if (weaponUpgradeData == null) return;
             
             // 初期レベルの設定
             UpdateWeaponLevel();
@@ -119,8 +115,6 @@ namespace SGC2025.Player.Bullet
             currentLevelData = weaponUpgradeData.GetLevelData(currentLevel);
             currentFireInterval = Mathf.Max(currentLevelData.fireInterval, weaponUpgradeData.MinFireInterval);
             currentBulletDirections = currentLevelData.bulletDirections;
-            
-            // Debug.Log($"武器レベルアップ! レベル: {currentLevel}, 方向数: {currentBulletDirections}, 発射間隔: {currentFireInterval}秒");
             
             // 自動発射の再開（間隔が変わった場合）- デバッグフラグもチェック
             if (isAutoFiring && !debugManualFiring)
@@ -168,17 +162,7 @@ namespace SGC2025.Player.Bullet
         
         public void Fire()
         {
-            if (BulletFactory.I == null)
-            {
-                Debug.LogError("PlayerWeaponSystem: BulletFactoryが見つかりません");
-                return;
-            }
-            
-            if (firePoint == null)
-            {
-                Debug.LogError("PlayerWeaponSystem: 発射位置が設定されていません");
-                return;
-            }
+            if (BulletFactory.I == null || firePoint == null) return;
             
             // 円状に弾を発射
             BulletFactory.I.CreateCircularBullets(

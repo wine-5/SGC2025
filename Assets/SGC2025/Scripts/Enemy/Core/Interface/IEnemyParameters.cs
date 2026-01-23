@@ -8,9 +8,6 @@ namespace SGC2025.Enemy
         /// <summary>移動速度</summary>
         float MoveSpeed { get; }
         
-        /// <summary>攻撃力</summary>
-        float AttackPower { get; }
-        
         /// <summary>敵の種類</summary>
         EnemyType EnemyType { get; }
         

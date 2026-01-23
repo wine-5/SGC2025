@@ -33,12 +33,14 @@ namespace SGC2025
             if (isPlayer)
             {
                 cachedPlayer = entity.GetComponent<PlayerCharacter>();
-                if (cachedPlayer != null) maxHealth = cachedPlayer.GetPlayerMaxHealth();
+                if (cachedPlayer != null)
+                    maxHealth = cachedPlayer.GetPlayerMaxHealth();
             }
             else
             {
                 cachedEnemy = entity.GetComponent<EnemyController>();
-                if (cachedEnemy != null) maxHealth = cachedEnemy.MaxHealth;
+                if (cachedEnemy != null)
+                    maxHealth = cachedEnemy.MaxHealth;
             }
         }
 
@@ -49,11 +51,13 @@ namespace SGC2025
 
             if (isPlayer)
             {
-                if (cachedPlayer != null) currentHealth = cachedPlayer.GetPlayerCurrentHalth();
+                if (cachedPlayer != null)
+                    currentHealth = cachedPlayer.GetPlayerCurrentHalth();
             }
             else
             {
-                if (cachedEnemy != null) currentHealth = cachedEnemy.CurrentHealth;
+                if (cachedEnemy != null)
+                    currentHealth = cachedEnemy.CurrentHealth;
             }
 
             rate = currentHealth / maxHealth;

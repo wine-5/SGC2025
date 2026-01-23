@@ -12,7 +12,7 @@ namespace SGC2025
     {
         private const int MAX_NAME_LENGTH = 5;
         private const string DEFAULT_NAME = "ナナシ";
-        
+
         [SerializeField] private TMP_InputField nameInputField;
 
         private int lastScore;
@@ -43,10 +43,11 @@ namespace SGC2025
             RankingManager.I.AddScore(name, lastScore);
             this.gameObject.SetActive(false);
         }
-        
+
         public void OnInputFocus(string text)
         {
             nameInputField.ActivateInputField();
         }
     }
+}
 

@@ -41,14 +41,5 @@ namespace TechC
             this.parent = parent;
             this.initialSize = Mathf.Max(0, initialSize); // 負の値を防止
         }
-
-        /// <summary>
-        /// プレハブと親オブジェクトのnullチェックを行います
-        /// </summary>
-        /// <returns>有効なプール項目の場合はtrue</returns>
-        public bool IsValid()
-        {
-            return prefab != null && parent != null;
-        }
     }
 }

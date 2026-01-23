@@ -40,9 +40,9 @@ namespace SGC2025
 
         private void Awake()
         {
-            if (parentCanvas == null) 
+            if (parentCanvas == null)
                 parentCanvas = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-            if (popupPrefab == null) 
+            if (popupPrefab == null)
                 popupPrefab = Resources.Load<GameObject>("UI/PulsScore");
 
             if (scoreText != null)
@@ -92,8 +92,7 @@ namespace SGC2025
         /// <summary>ワールド座標をキャンバス座標に変換</summary>
         private Vector2 WorldToCanvasPoint(Vector3 worldPosition)
         {
-            if (Camera.main == null || parentCanvas == null) 
-                return Vector2.zero;
+            if (Camera.main == null || parentCanvas == null) return Vector2.zero;
             
             Vector3 screenPoint = Camera.main.WorldToScreenPoint(worldPosition);
             
@@ -133,8 +132,7 @@ namespace SGC2025
         public void ShowScorePopup(int score, Vector2 position)
         {
             int activeCount = parentCanvas.childCount - popupPool.Count;
-            if (activeCount >= MAX_POPUP_COUNT) 
-                return;
+            if (activeCount >= MAX_POPUP_COUNT) return;
             
             Vector2 testPosition = new Vector2(200, 100);
             
@@ -159,8 +157,7 @@ namespace SGC2025
                     activeCount++;
             }
             
-            if (activeCount >= INSPECTOR_MAX_POPUP_COUNT) 
-                return;
+            if (activeCount >= INSPECTOR_MAX_POPUP_COUNT) return;
 
             Vector2 spawnPosition = GetSpawnPosition();
             
@@ -184,8 +181,7 @@ namespace SGC2025
             }
             else
             {
-                if (popupPrefab == null)
-                    return null;
+                if (popupPrefab == null) return null;
                 
                 var obj = Instantiate(popupPrefab, parentCanvas);
                 popup = obj.GetComponent<PopupScoreUI>();

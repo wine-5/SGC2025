@@ -35,7 +35,6 @@ namespace SGC2025.Enemy
         public int CurrentWaveLevel => currentWaveLevel;
         public float MaxHealth => cachedParameters.health;
         public float MoveSpeed => cachedParameters.moveSpeed;
-        public float AttackPower => cachedParameters.attackPower;
         public EnemyType EnemyType => cachedParameters.enemyType;
         public float LifeTime => cachedParameters.lifeTime;
         public Transform Transform => transform;

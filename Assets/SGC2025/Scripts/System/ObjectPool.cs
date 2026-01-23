@@ -261,26 +261,6 @@ namespace TechC
         }
 
         /// <summary>
-        /// すべてのプールの統計情報を取得します
-        /// </summary>
-        /// <returns>各プールのサイズを含む文字列</returns>
-        public string GetPoolStats()
-        {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            sb.AppendLine("Object Pool 統計:");
-
-            foreach (var poolItem in poolItems)
-            {
-                if (poolItem.prefab != null && objectPools.ContainsKey(poolItem.prefab))
-                {
-                    sb.AppendLine($"プール '{poolItem.name}': {objectPools[poolItem.prefab].Count} オブジェクト");
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        /// <summary>
         /// すべてのプールを空にします
         /// </summary>
         public void ClearAllPools()

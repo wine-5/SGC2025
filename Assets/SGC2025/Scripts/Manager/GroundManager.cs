@@ -37,21 +37,13 @@ namespace SGC2025
         /// <summary>Playerのスポーン位置を取得（マップの中心）</summary>
         public Vector3 GetPlayerSpawnPosition()
         {
-            if (groundData == null)
-            {
-                Debug.LogError("GroundManager: GroundDataSOが設定されていません");
-                return Vector3.zero;
-            }
+            if (groundData == null) return Vector3.zero;
             return groundData.MapCenterPosition;
         }
 
         public void Start()
         {
-            if (groundData == null)
-            {
-                Debug.LogError("GroundManager: GroundDataSOが設定されていません！");
-                return;
-            }
+            if (groundData == null) return;
             
             SetStageObject();
             InitHighObject();
@@ -78,11 +70,7 @@ namespace SGC2025
             
             if (currentGroundArray[cellPosition.x, cellPosition.y].isDrawn) return false;
             
-            if (groundData.grassTilePrefab == null)
-            {
-                Debug.LogWarning("[GroundManager] grassTilePrefabが設定されていません。緑化をスキップします。");
-                return false;
-            }
+            if (groundData.grassTilePrefab == null) return false;
             
             if (tileObjects != null && tileObjects[cellPosition.x, cellPosition.y] != null)
                 Destroy(tileObjects[cellPosition.x, cellPosition.y]);
@@ -128,21 +116,13 @@ namespace SGC2025
                 {
                     Vector3 pos = new Vector3(x * groundData.ActualCellWidth, y * groundData.ActualCellHeight, TILE_Z_POSITION);
                     
-                    if (groundData.tilePrefab == null)
-                    {
-                        Debug.LogError("GroundManager: tilePrefabが設定されていません");
-                        return;
-                    }
+                    if (groundData.tilePrefab == null) return;
                     
                     GameObject tile = Instantiate(groundData.tilePrefab, pos, Quaternion.identity, transform);
                     tile.name = $"Tile_{x}_{y}";
                     tileObjects[x, y] = tile;
 
-                    if (ScoreManager.I == null)
-                    {
-                        Debug.LogError("GroundManager: ScoreManagerが見つかりません");
-                        return;
-                    }
+                    if (ScoreManager.I == null) return;
                     
                     currentGroundArray[x, y].point = ScoreManager.I.NormalTilePoint;
                     currentGroundArray[x, y].isDrawn = false;
@@ -159,11 +139,7 @@ namespace SGC2025
         {
             GameObject[] objects = GameObject.FindGameObjectsWithTag("HighScoreObject");
             
-            if (ScoreManager.I == null)
-            {
-                Debug.LogError("GroundManager: ScoreManagerが見つかりません");
-                return;
-            }
+            if (ScoreManager.I == null) return;
             
             foreach(GameObject highScore in objects)
             {
@@ -207,8 +183,7 @@ namespace SGC2025
                 tile.transform.localScale = new Vector3(uniformScale, uniformScale, 1f);
                 return;
             }
-            
-            Debug.LogWarning($"[GroundManager] {tile.name}のスケールを自動調整できませんでした");
+
         }
     }
 }
