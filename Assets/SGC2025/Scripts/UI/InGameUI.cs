@@ -172,7 +172,7 @@ namespace SGC2025
         private void UpdateTimeText()
         {
             if (timeText == null) return;
-            timeText.text = ScoreManager.I.GetGameCount().ToString("F1");
+            timeText.text = GameManager.I.RemainingGameTime.ToString("F1");
         }
     }
 }

@@ -72,21 +72,21 @@ namespace SGC2025
 
                 case ResultPhase.EnemyKillScore:
                     {
-                        int enemyKillScore = CommonDef.currentEnemyScore;
+                        int enemyKillScore = ScoreManager.I.GetEnemyScore();
                         enemyScoreText.SetText(enemyKillScore.ToString());
                         break;
                     }
 
                 case ResultPhase.GreeningScore:
                     {
-                        int greeningScore = CommonDef.currentGreeningScore;
+                        int greeningScore = ScoreManager.I.GetGreenScore();
                         greeningScoreText.SetText( greeningScore.ToString() );
                         break;
                     }
 
                 case ResultPhase.TotalScore:
                     {
-                        int totalScoreScore = CommonDef.currentEnemyScore + CommonDef.currentGreeningScore;
+                        int totalScoreScore = ScoreManager.I.GetTotalScore();
                         totalScoreText.SetText(totalScoreScore.ToString());
                         break;
                     }
@@ -125,14 +125,14 @@ namespace SGC2025
 
                 case ResultPhase.EnemyKillScore:
                     {
-                        int enemyKillScore = CommonDef.currentEnemyScore;
+                        int enemyKillScore = ScoreManager.I.GetEnemyScore();
                         enemyScoreText.SetText(ScoreCountUp(waitTime, enemyKillScore, SCORE_COUNT_UP_TIME).ToString());
                         break;
                     }
 
                 case ResultPhase.GreeningScore:
                     {
-                        int greeningScore = CommonDef.currentGreeningScore;
+                        int greeningScore = ScoreManager.I.GetGreenScore();
                         greeningScoreText.SetText( ScoreCountUp( waitTime, greeningScore, SCORE_COUNT_UP_TIME ).ToString() );
                         break;
                     }
@@ -144,7 +144,7 @@ namespace SGC2025
 
                 case ResultPhase.TotalScore:
                     {
-                        int totalScoreScore = CommonDef.currentEnemyScore + CommonDef.currentGreeningScore;
+                        int totalScoreScore = ScoreManager.I.GetTotalScore();
                         totalScoreText.SetText(ScoreCountUp(waitTime, totalScoreScore, SCORE_COUNT_UP_TIME).ToString());
                         break;
                     }
