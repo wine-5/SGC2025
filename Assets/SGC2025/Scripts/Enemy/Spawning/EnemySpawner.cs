@@ -83,7 +83,6 @@ namespace SGC2025.Enemy
         {
             if (!isSpawning) return;
 
-            // DeltaTimeベースのスポーン判定
             if (Time.time >= nextSpawnTime)
             {
                 SpawnEnemy();
@@ -96,11 +95,7 @@ namespace SGC2025.Enemy
         /// </summary>
         private void SpawnEnemy()
         {
-            if (EnemyFactory.I == null)
-            {
-                Debug.LogError($"{DEBUG_LOG_PREFIX} EnemyFactory.I がnullです！");
-                return;
-            }
+            if (EnemyFactory.I == null) return;
             Vector3 spawnPosition = positionProvider.GetRandomSpawnPosition();
             GameObject enemy = EnemyFactory.I.CreateRandomEnemy(spawnPosition, currentWaveLevel);
             if (enemy == null) return;

@@ -32,19 +32,13 @@ namespace SGC2025
         /// </summary>
         private void InitializeEnemyPools()
         {
-            if (objectPool == null)
-            {
-                Debug.LogError($"{DEBUG_LOG_PREFIX} ObjectPoolが設定されていません");
-                return;
-            }
+            if (objectPool == null) return;
             
             // 設定状況を確認
             if (!spawnConfigManager.HasValidConfigs)
             {
                 Debug.LogError("EnemyFactory: EnemySpawnConfigManagerに有効な設定がありません");
             }
-            
-            // Debug.Log("EnemyFactory: ObjectPoolの初期化完了（プレファブはObjectPool側で設定済み）");
         }
         
         /// <summary>
@@ -52,21 +46,13 @@ namespace SGC2025
         /// </summary>
         public GameObject CreateEnemy(EnemyDataSO enemyData, Vector3 position, int waveLevel = DEFAULT_WAVE_LEVEL)
         {
-            if (enemyData == null)
-            {
-                Debug.LogError($"{DEBUG_LOG_PREFIX} 無効なEnemyDataSOです");
-                return null;
-            }
+            if (enemyData == null) return null;
             
             // EnemyTypeの名前でプールから取得
             string poolName = enemyData.EnemyType.ToString();
             GameObject enemyObj = objectPool.GetObjectByName(poolName);
             
-            if (enemyObj == null)
-            {
-                Debug.LogError($"{DEBUG_LOG_PREFIX} {enemyData.EnemyType} の生成に失敗しました（プール名: {poolName}）");
-                return null;
-            }
+            if (enemyObj == null) return null;
             
             // 位置を設定
             enemyObj.transform.position = position;

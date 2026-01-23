@@ -101,10 +101,8 @@ namespace SGC2025.Enemy
         /// </summary>
         public Vector3 GetRandomEdgeSpawnPosition()
         {
-            if (useBoundarySpawn)
-                return GetRandomBoundaryPosition();
-            if (useCornerSpawn)
-                return GetRandomCornerSpawnPosition();
+            if (useBoundarySpawn) return GetRandomBoundaryPosition();
+            if (useCornerSpawn) return GetRandomCornerSpawnPosition();
                 
             // デフォルトは境界線生成
             return GetRandomBoundaryPosition();
@@ -490,15 +488,6 @@ namespace SGC2025.Enemy
                 return new Vector3(gameAreaMax.x, spawnPos.y, 0f);
             
             return new Vector3(gameAreaMin.x, spawnPos.y, 0f);
-        }
-
-        /// <summary>
-        /// 境界線生成モードが有効かどうか
-        /// </summary>
-        /// <returns>境界線生成モードの状態</returns>
-        public bool IsBoundarySpawnMode()
-        {
-            return useBoundarySpawn;
         }
     }
 }
