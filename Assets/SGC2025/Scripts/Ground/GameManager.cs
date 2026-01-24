@@ -124,19 +124,16 @@ namespace SGC2025
         {
             if (isCountDown) return;
             
-            float previousTime = countGameTimer;
             countGameTimer += Time.deltaTime;
-            
             
             if (countGameTimer >= gameTimeLimit)
             {
                 if (isGameOver) return;
                 isGameOver = true;
                 
-                // 時間切れ時にBGMを停止＆SE再生
                 if (AudioManager.I != null)
                 {
-                    AudioManager.I.StopBGM(true); // フェードアウトで停止
+                    AudioManager.I.StopBGM(true);
                     AudioManager.I.PlaySE(SEType.TimeUp);
                 }
                 
@@ -150,9 +147,8 @@ namespace SGC2025
             if (isGameOver) return;
             isGameOver = true;
             
-            // BGMを停止
             if (AudioManager.I != null)
-                AudioManager.I.StopBGM(true); // フェードアウトで停止
+                AudioManager.I.StopBGM(true);
             
             OnGameOver?.Invoke();
             Invoke(nameof(LoadGameOverScene), gameOverDelay);
@@ -161,7 +157,7 @@ namespace SGC2025
         private void LoadGameOverScene()
         {
             if (SceneController.I == null) return;
-            SceneController.I.LoadtResultScene();
+            SceneController.I.LoadResultScene();
         }
 
         public void PauseGame()

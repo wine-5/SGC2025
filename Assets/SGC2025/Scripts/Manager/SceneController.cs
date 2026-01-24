@@ -29,15 +29,11 @@ namespace SGC2025
             SceneManager.LoadScene(sceneName.ToString());
         }
 
-
         /// <summary>現在のシーンをリロード</summary>
-        public void ReloadCurrentScene()
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
+        public void ReloadCurrentScene() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-        public void LoadtTitleScene() => LoadScene(SceneName.Title);
-        public void LoadtInGameScene() => LoadScene(SceneName.InGame);
-        public void LoadtResultScene() => LoadScene(SceneName.Result);
+        public void LoadTitleScene() => LoadScene(SceneName.Title);
+        public void LoadInGameScene() => LoadScene(SceneName.InGame);
+        public void LoadResultScene() => LoadScene(SceneName.Result);
     }
 }

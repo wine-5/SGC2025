@@ -52,13 +52,11 @@ namespace SGC2025
 
         private void InitializeAudioSources()
         {
-            // BGM用のAudioSourceを2つ作成（クロスフェード用）
             bgmAudioSource1 = CreateAudioSource("BGM_AudioSource1", bgmMixerGroup);
             bgmAudioSource2 = CreateAudioSource("BGM_AudioSource2", bgmMixerGroup);
             currentBgmAudioSource = bgmAudioSource1;
             previousBgmAudioSource = bgmAudioSource2;
 
-            // SE用のAudioSourceプールを作成
             for (int i = 0; i < initialSePoolSize; i++)
             {
                 AudioSource seSource = CreateAudioSource($"SE_AudioSource_{i}", seMixerGroup);
@@ -78,24 +76,22 @@ namespace SGC2025
 
         private void BuildAudioDataDictionaries()
         {
-            if (audioData == null) return;
+            if (audioData == null)
+            {
+                Debug.LogError("[AudioManager] AudioDataSO is not assigned!");
+                return;
+            }
 
-            // SEデータのディクショナリ構築
             foreach (var seData in audioData.SEAudioDataList)
             {
                 if (!seDataDict.ContainsKey(seData.SEType))
-                {
                     seDataDict.Add(seData.SEType, seData);
-                }
             }
 
-            // BGMデータのディクショナリ構築
             foreach (var bgmData in audioData.BGMAudioDataList)
             {
                 if (!bgmDataDict.ContainsKey(bgmData.BGMType))
-                {
                     bgmDataDict.Add(bgmData.BGMType, bgmData);
-                }
             }
         }
 
@@ -110,12 +106,11 @@ namespace SGC2025
             if (seData.AudioClip == null) return;
 
             AudioSource availableSource = GetAvailableSeAudioSource();
-            if (availableSource != null)
-            {
-                availableSource.clip = seData.AudioClip;
-                availableSource.volume = seVolume * masterVolume * seData.VolumeMultiplier * volumeMultiplier;
-                availableSource.Play();
-            }
+            if (availableSource == null) return;
+            
+            availableSource.clip = seData.AudioClip;
+            availableSource.volume = seVolume * masterVolume * seData.VolumeMultiplier * volumeMultiplier;
+            availableSource.Play();
         }
 
         /// <summary>
@@ -137,7 +132,6 @@ namespace SGC2025
             BGMAudioData bgmData = bgmDataDict[bgmType];
             if (bgmData.AudioClip == null) return;
 
-            // フェードのコルーチンがあれば停止
             if (fadeCoroutine != null)
                 StopCoroutine(fadeCoroutine);
 
@@ -147,7 +141,6 @@ namespace SGC2025
             }
             else
             {
-                // 即座にBGM切り替え
                 SwapBgmAudioSources();
                 currentBgmAudioSource.clip = bgmData.AudioClip;
                 currentBgmAudioSource.loop = bgmData.Loop;
@@ -197,10 +190,7 @@ namespace SGC2025
         /// <summary>
         /// SEの音量を設定
         /// </summary>
-        public void SetSEVolume(float volume)
-        {
-            seVolume = Mathf.Clamp01(volume);
-        }
+        public void SetSEVolume(float volume) => seVolume = Mathf.Clamp01(volume);
 
         /// <summary>
         /// マスター音量を設定
@@ -213,14 +203,12 @@ namespace SGC2025
 
         private AudioSource GetAvailableSeAudioSource()
         {
-            // 使用可能なAudioSourceを探す
             foreach (var source in seAudioSourcePool)
             {
                 if (!source.isPlaying)
                     return source;
             }
 
-            // すべて使用中の場合、新しいものを作成
             AudioSource newSource = CreateAudioSource($"SE_AudioSource_{seAudioSourcePool.Count}", seMixerGroup);
             seAudioSourcePool.Add(newSource);
             return newSource;
@@ -247,20 +235,16 @@ namespace SGC2025
             float fadeInDuration = newBgmData.FadeInDuration;
             float fadeOutDuration = 0f;
 
-            // 現在のBGMがあるなら、フェードアウト時間を設定
             if (currentBgmType != BGMType.None && bgmDataDict.ContainsKey(currentBgmType))
                 fadeOutDuration = bgmDataDict[currentBgmType].FadeOutDuration;
 
-            // AudioSourceを切り替え
             SwapBgmAudioSources();
 
-            // 新しいBGMを設定して開始
             currentBgmAudioSource.clip = newBgmData.AudioClip;
             currentBgmAudioSource.loop = newBgmData.Loop;
             currentBgmAudioSource.volume = 0f;
             currentBgmAudioSource.Play();
 
-            // クロスフェードを実行
             float maxDuration = Mathf.Max(fadeInDuration, fadeOutDuration);
             float elapsedTime = 0f;
 
@@ -268,7 +252,6 @@ namespace SGC2025
             {
                 elapsedTime += Time.deltaTime;
 
-                // フェードイン
                 if (fadeInDuration > 0f)
                 {
                     float fadeInProgress = Mathf.Clamp01(elapsedTime / fadeInDuration);
@@ -276,7 +259,6 @@ namespace SGC2025
                     currentBgmAudioSource.volume = bgmVolume * masterVolume * newBgmData.VolumeMultiplier * fadeInVolume;
                 }
 
-                // フェードアウト
                 if (fadeOutDuration > 0f && elapsedTime < fadeOutDuration)
                 {
                     float fadeOutProgress = Mathf.Clamp01(elapsedTime / fadeOutDuration);
@@ -290,7 +272,6 @@ namespace SGC2025
                 yield return null;
             }
 
-            // フェード完了
             previousBgmAudioSource.Stop();
             currentBgmAudioSource.volume = bgmVolume * masterVolume * newBgmData.VolumeMultiplier;
             fadeCoroutine = null;
