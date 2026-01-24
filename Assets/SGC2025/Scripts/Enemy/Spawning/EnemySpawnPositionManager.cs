@@ -40,14 +40,14 @@ namespace SGC2025.Enemy
         private bool isInitialized = false;
 
         /// <summary>
-        /// GroundManagerからゲームエリアの最大座標を取得
+        /// GroundManagerからゲームエリアの最大座標を取得（ワールド座標）
         /// </summary>
         private Vector2 GetGameAreaMaxFromGroundManager()
         {
-            if (SGC2025.GroundManager.I != null)
+            if (SGC2025.GroundManager.I != null && SGC2025.GroundManager.I.MapData != null)
             {
-                var maxIndex = SGC2025.GroundManager.I.MapMaxIndex;
-                return new Vector2(maxIndex.x, maxIndex.y);
+                var maxWorldPos = SGC2025.GroundManager.I.MapData.MapMaxWorldPosition;
+                return maxWorldPos;
             }
             
             // GroundManagerが初期化されていない場合のフォールバック
