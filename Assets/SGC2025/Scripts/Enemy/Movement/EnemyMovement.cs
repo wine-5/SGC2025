@@ -13,7 +13,6 @@ namespace SGC2025.Enemy
         private const float DEFAULT_ARRIVE_THRESHOLD = 0.5f;
         private const float OVERSHOOT_MULTIPLIER = 2f;
         private const string PLAYER_TAG = "Player";
-        private const string DEBUG_LOG_PREFIX = "[EnemyMovement]";
 
         private IMovable movableTarget;
         private EnemyController controller;
@@ -77,12 +76,9 @@ namespace SGC2025.Enemy
         public void SetTargetPosition(Vector3 target)
         {
             targetPosition = target;
-            // 方向ベクトルを計算
             Vector3 direction = target - transform.position;
-            direction.z = 0f; // Z軸を除外
+            direction.z = 0f;
             moveDirection = direction.normalized;
-            
-
         }
 
         private void Update()
@@ -91,32 +87,26 @@ namespace SGC2025.Enemy
             
             float speed = movableTarget.MoveSpeed;
             
-            // 固定目標位置がある場合（画面端への移動）
             if (targetPosition.HasValue)
             {
                 MoveToFixedTarget(speed);
             }
-            // 移動戦略がある場合（プレイヤー追従）
             else if (movementStrategy != null)
             {
                 Transform player = GetPlayerTransform();
                 if (player != null)
-                {
                     movementStrategy.Move(transform, player, speed, Time.deltaTime);
-                }
                 else
                 {
-                    // プレイヤーが見つからない場合はデフォルト移動
                     Vector3 movement = moveDirection * speed * Time.deltaTime;
-                    movement.z = 0f; // Z軸移動を制限
+                    movement.z = 0f;
                     transform.Translate(movement);
                 }
             }
-            // どちらもない場合はデフォルト移動（下向き、XY平面のみ）
             else
             {
                 Vector3 movement = moveDirection * speed * Time.deltaTime;
-                movement.z = 0f; // Z軸移動を制限
+                movement.z = 0f;
                 transform.Translate(movement);
             }
         }
@@ -127,13 +117,11 @@ namespace SGC2025.Enemy
         private void MoveToFixedTarget(float speed)
         {
             Vector3 movement = moveDirection * speed * Time.deltaTime;
-            movement.z = 0f; // Z軸移動を制限
+            movement.z = 0f;
             
-            // 前フレームの位置を記録
             lastPosition = transform.position;
             transform.position += movement;
 
-            // 改善された到達判定
             Vector3 currentPos = transform.position;
             Vector3 targetPos = targetPosition.Value;
             currentPos.z = 0f;
@@ -141,16 +129,13 @@ namespace SGC2025.Enemy
             
             float distanceToTarget = Vector3.Distance(currentPos, targetPos);
             
-            // オーバーシュート検出: 目標位置を通り越したかチェック
             Vector3 lastPos = lastPosition;
             lastPos.z = 0f;
             float lastDistance = Vector3.Distance(lastPos, targetPos);
             bool overshot = distanceToTarget > lastDistance && lastDistance < arriveThreshold * OVERSHOOT_MULTIPLIER;
             
             if (distanceToTarget < arriveThreshold || overshot)
-            {
                 ReturnToPool();
-            }
         }
         
         /// <summary>

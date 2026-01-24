@@ -79,11 +79,8 @@ namespace SGC2025.Enemy
         /// </summary>
         private void OnEnable()
         {
-            // プールから再取得された場合は再初期化
             if (isInitialized)
-            {
                 Initialize();
-            }
         }
     }
 }
