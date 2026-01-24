@@ -155,11 +155,14 @@ namespace SGC2025.Player.Bullet
         {
             while (isAutoFiring)
             {
-                Fire();
+                // カウントダウン中は発射しない
+                if (GameManager.I == null || !GameManager.I.IsCountingDown)
+                    Fire();
+                
                 yield return new WaitForSeconds(currentFireInterval);
             }
         }
-        
+
         public void Fire()
         {
             if (BulletFactory.I == null || firePoint == null) return;
