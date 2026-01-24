@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.AudioDataSO
   seAudioDataList:
   - seType: 1
-    audioClip: {fileID: 0}
-    volumeMultiplier: 0
+    audioClip: {fileID: 8300000, guid: dd2f139668efba547a8f30196023c863, type: 3}
+    volumeMultiplier: 0.4
   - seType: 2
-    audioClip: {fileID: 0}
-    volumeMultiplier: 0
-  - seType: 0
-    audioClip: {fileID: 0}
-    volumeMultiplier: 0
-  - seType: 0
-    audioClip: {fileID: 0}
-    volumeMultiplier: 0
+    audioClip: {fileID: 8300000, guid: a56a071257410b7449243303de2592d9, type: 3}
+    volumeMultiplier: 0.4
+  - seType: 3
+    audioClip: {fileID: 8300000, guid: 8b70b5e725574af40a1b4f995ca05ffb, type: 3}
+    volumeMultiplier: 0.4
+  - seType: 4
+    audioClip: {fileID: 8300000, guid: e88c5beed5588154387a3952da5c344a, type: 3}
+    volumeMultiplier: 0.4
   bgmAudioDataList:
-  - bgmType: 0
-    audioClip: {fileID: 0}
-    volumeMultiplier: 0
+  - bgmType: 1
+    audioClip: {fileID: 8300000, guid: 7a74a42255a083049a4702bc9108cd96, type: 3}
+    volumeMultiplier: 0.4
     loop: 0
     useFadeIn: 0
     fadeInDuration: 0
     useFadeOut: 0
     fadeOutDuration: 0
-  - bgmType: 0
-    audioClip: {fileID: 0}
-    volumeMultiplier: 0
+  - bgmType: 2
+    audioClip: {fileID: 8300000, guid: 6876902a92de1364dbb9475ab78ed323, type: 3}
+    volumeMultiplier: 0.4
     loop: 0
     useFadeIn: 0
     fadeInDuration: 0
     useFadeOut: 0
     fadeOutDuration: 0
-  - bgmType: 0
-    audioClip: {fileID: 0}
-    volumeMultiplier: 0
+  - bgmType: 3
+    audioClip: {fileID: 8300000, guid: 037027bab9fa5f2458d946281ff00802, type: 3}
+    volumeMultiplier: 0.4
     loop: 0
     useFadeIn: 0
     fadeInDuration: 0
