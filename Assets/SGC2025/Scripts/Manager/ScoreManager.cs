@@ -57,13 +57,11 @@ namespace SGC2025
         private void OnEnemyDestroyedWithScore(int score, Vector3 position)
         {
             scoreEnemy += score;
-            Debug.Log($"[ScoreManager] 敵スコア加算: +{score} -> 合計敵スコア: {scoreEnemy}, 総合スコア: {GetTotalScore()}");
         }
 
         private void OnGroundGreenified(Vector3 position, int points)
         {
             scoreGreen += points;
-            Debug.Log($"[ScoreManager] 緑化スコア加算: +{points} -> 合計緑化スコア: {scoreGreen}, 総合スコア: {GetTotalScore()}");
         }
 
         public int GetEnemyScore() => scoreEnemy;

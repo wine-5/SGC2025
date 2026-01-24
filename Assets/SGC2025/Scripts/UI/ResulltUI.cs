@@ -73,7 +73,6 @@ namespace SGC2025
                     {
                         int enemyKillScore = ScoreManager.I.GetEnemyScore();
                         enemyScoreText.SetText("0");
-                        Debug.Log($"[ResultUI] 敵スコア表示開始: {enemyKillScore}");
                         break;
                     }
 
@@ -81,7 +80,6 @@ namespace SGC2025
                     {
                         int greeningScore = ScoreManager.I.GetGreenScore();
                         greeningScoreText.SetText("0");
-                        Debug.Log($"[ResultUI] 緑化スコア表示開始: {greeningScore}");
                         break;
                     }
 
@@ -89,7 +87,6 @@ namespace SGC2025
                     {
                         int totalScoreScore = ScoreManager.I.GetTotalScore();
                         totalScoreText.SetText("0");
-                        Debug.Log($"[ResultUI] 総合スコア表示開始: {totalScoreScore}");
                         break;
                     }
 
