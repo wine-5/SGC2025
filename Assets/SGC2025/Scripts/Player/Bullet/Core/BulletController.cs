@@ -333,14 +333,16 @@ namespace SGC2025.Player.Bullet
         /// </summary>
         private void CheckBoundary()
         {
-            if (GroundManager.I == null) return;
+            if (GroundManager.I == null || GroundManager.I.MapData == null) return;
             
             Vector3 pos = transform.position;
-            Vector2Int maxIndex = GroundManager.I.MapMaxIndex;
+            var mapData = GroundManager.I.MapData;
+            Vector2 maxWorldPos = mapData.MapMaxWorldPosition;
             
-            // GroundManagerの範囲外に出たら非アクティブ化
-            if (pos.x < -1f || pos.x > maxIndex.x + 1f ||
-                pos.y < -1f || pos.y > maxIndex.y + 1f)
+            // マップのワールド座標範囲外に出たら非アクティブ化（マージン付き）
+            const float BOUNDARY_MARGIN = 1f;
+            if (pos.x < -BOUNDARY_MARGIN || pos.x > maxWorldPos.x + BOUNDARY_MARGIN ||
+                pos.y < -BOUNDARY_MARGIN || pos.y > maxWorldPos.y + BOUNDARY_MARGIN)
             {
                 Deactivate();
             }
