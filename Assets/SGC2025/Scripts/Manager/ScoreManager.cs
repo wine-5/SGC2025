@@ -11,12 +11,16 @@ namespace SGC2025
         protected override bool UseDontDestroyOnLoad => true;
 
         [Header("スコア設定")]
+        [SerializeField, Tooltip("敵を倒した際のポイント")]
+        private int enemyKillPoint = 50;
+        
         [SerializeField, Tooltip("通常タイルを緑化した際のポイント")]
         private int normalTilePoint = 100;
 
         [SerializeField, Tooltip("ハイスコアタイルのポイント倍率")]
         private int highScoreTileMultiplier = 3;
 
+        public int EnemyKillPoint => enemyKillPoint;
         public int NormalTilePoint => normalTilePoint;
         public int HighScoreTileMultiplier => highScoreTileMultiplier;
 
@@ -50,9 +54,17 @@ namespace SGC2025
             GroundEvents.OnGroundGreenified -= OnGroundGreenified;
         }
 
-        private void OnEnemyDestroyedWithScore(int score, Vector3 position) => scoreEnemy += score;
+        private void OnEnemyDestroyedWithScore(int score, Vector3 position)
+        {
+            scoreEnemy += score;
+            Debug.Log($"[ScoreManager] 敵スコア加算: +{score} -> 合計敵スコア: {scoreEnemy}, 総合スコア: {GetTotalScore()}");
+        }
 
-        private void OnGroundGreenified(Vector3 position, int points) => scoreGreen += points;
+        private void OnGroundGreenified(Vector3 position, int points)
+        {
+            scoreGreen += points;
+            Debug.Log($"[ScoreManager] 緑化スコア加算: +{points} -> 合計緑化スコア: {scoreGreen}, 総合スコア: {GetTotalScore()}");
+        }
 
         public int GetEnemyScore() => scoreEnemy;
         public int GetGreenScore() => scoreGreen;

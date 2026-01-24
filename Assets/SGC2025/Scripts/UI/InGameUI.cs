@@ -184,6 +184,7 @@ namespace SGC2025
             
             int totalScore = ScoreManager.I.GetTotalScore();
             scoreText.text = totalScore.ToString();
+            Debug.Log($"[InGameUI] スコア更新: +{score} -> 総合スコア: {totalScore}");
             
             if (currentScoreAnimation != null)
             {

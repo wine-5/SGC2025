@@ -71,7 +71,8 @@ namespace SGC2025.Enemy
         private void HandleDeath()
         {   
             OnDeath?.Invoke();
-            EnemyEvents.TriggerEnemyDestroyed(transform.position, 0);
+            int score = SGC2025.ScoreManager.I.EnemyKillPoint;
+            EnemyEvents.TriggerEnemyDestroyed(transform.position, score);
             DeactivateEnemy();
         }
 

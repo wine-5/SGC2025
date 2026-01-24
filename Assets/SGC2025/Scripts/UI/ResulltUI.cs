@@ -48,10 +48,10 @@ namespace SGC2025
 
             if (waitTime >= SCORE_COUNT_UP_TIME)
             {
+                OnPhaseUpdate(SCORE_COUNT_UP_TIME); // 最終値を表示
                 currentPhase++;
                 OnPhaseChanged();
                 waitTime = ZERO_WAIT_TIME;
-
             }
             else
             {
@@ -72,21 +72,24 @@ namespace SGC2025
                 case ResultPhase.EnemyKillScore:
                     {
                         int enemyKillScore = ScoreManager.I.GetEnemyScore();
-                        enemyScoreText.SetText(enemyKillScore.ToString());
+                        enemyScoreText.SetText("0");
+                        Debug.Log($"[ResultUI] 敵スコア表示開始: {enemyKillScore}");
                         break;
                     }
 
                 case ResultPhase.GreeningScore:
                     {
                         int greeningScore = ScoreManager.I.GetGreenScore();
-                        greeningScoreText.SetText( greeningScore.ToString() );
+                        greeningScoreText.SetText("0");
+                        Debug.Log($"[ResultUI] 緑化スコア表示開始: {greeningScore}");
                         break;
                     }
 
                 case ResultPhase.TotalScore:
                     {
                         int totalScoreScore = ScoreManager.I.GetTotalScore();
-                        totalScoreText.SetText(totalScoreScore.ToString());
+                        totalScoreText.SetText("0");
+                        Debug.Log($"[ResultUI] 総合スコア表示開始: {totalScoreScore}");
                         break;
                     }
 
