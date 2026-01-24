@@ -21,9 +21,7 @@ namespace SGC2025
         {
             childrenMenu = new List<UIBase>();
             if (firstSelect != null)
-            {
                 EventSystem.current.SetSelectedGameObject(firstSelect);
-            }
         }
         
         virtual public void Update()
@@ -32,16 +30,28 @@ namespace SGC2025
         }
         public void OnClickRestart()
         {
+            // ボタンクリック音を再生
+            if (AudioManager.I != null)
+                AudioManager.I.PlaySE(SEType.ButtonClick);
+            
             SceneManager.LoadScene("InGame");
         }
 
         public void OnClickBackTitle()
         {
+            // ボタンクリック音を再生
+            if (AudioManager.I != null)
+                AudioManager.I.PlaySE(SEType.ButtonClick);
+            
             SceneManager.LoadScene("Title");
         }
         
         public void OnClickExit()
         {
+            // ボタンクリック音を再生
+            if (AudioManager.I != null)
+                AudioManager.I.PlaySE(SEType.ButtonClick);
+            
             Application.Quit();
         }
 
@@ -76,10 +86,8 @@ namespace SGC2025
         public void OnDestroy()
         {
             if (parentUI != null)
-            {
                 // 子が死んだら親に死んだことを通知
                 parentUI.DestoryChild(this);
-            }
 
             if( childrenMenu.Count > 0 )
             {

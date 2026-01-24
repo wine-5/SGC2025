@@ -113,6 +113,11 @@ namespace SGC2025
         private void OnShotPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
             if (weaponSystem == null) return;
+            
+            // 弾発射SEを再生
+            if (AudioManager.I != null)
+                AudioManager.I.PlaySE(SEType.PlayerShoot);
+            
             weaponSystem.Fire();
         }
         #endregion

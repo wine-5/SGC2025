@@ -54,6 +54,9 @@ namespace SGC2025
         {
             if (pausePanel != null)
                 pausePanel.SetActive(false);
+                
+            if (AudioManager.I != null)
+                AudioManager.I.PlayBGM(BGMType.InGame);
         }
 
         protected override void OnDestroy()
@@ -84,15 +87,33 @@ namespace SGC2025
         private void UpdateGameTimer()
         {
             if (isCountDown) return;
+            
+            float previousTime = countGameTimer;
             countGameTimer += Time.deltaTime;
+            
+            
             if (countGameTimer >= gameTimeLimit)
+            {
+                // 時間切れ時にBGMを停止＆SE再生
+                if (AudioManager.I != null)
+                {
+                    AudioManager.I.StopBGM(true); // フェードアウトで停止
+                    AudioManager.I.PlaySE(SEType.TimeUp);
+                }
+                
                 OnGameTimeUp?.Invoke();
+            }
         }
 
         private void HandlePlayerDeath()
         {
             if (isGameOver) return;
             isGameOver = true;
+            
+            // BGMを停止
+            if (AudioManager.I != null)
+                AudioManager.I.StopBGM(true); // フェードアウトで停止
+            
             OnGameOver?.Invoke();
             Invoke(nameof(LoadGameOverScene), gameOverDelay);
         }

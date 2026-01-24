@@ -69,7 +69,7 @@ namespace SGC2025.Enemy
         }
 
         private void HandleDeath()
-        {
+        {   
             OnDeath?.Invoke();
             EnemyEvents.TriggerEnemyDestroyed(transform.position, 0);
             DeactivateEnemy();

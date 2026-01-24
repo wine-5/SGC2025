@@ -12,6 +12,9 @@ namespace SGC2025
             base.Start();
 
             CreateMenu("UI/RankingCanvas");
+            
+            if (AudioManager.I != null)
+                AudioManager.I.PlayBGM(BGMType.Title);
         }
     }
 }

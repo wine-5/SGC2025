@@ -91,6 +91,10 @@ namespace SGC2025
             int points = currentGroundArray[cellPosition.x, cellPosition.y].point;
             GroundEvents.TriggerGroundGreenified(pos, points);
             
+            // 地面が緑化した時のSEを再生
+            if (AudioManager.I != null)
+                AudioManager.I.PlaySE(SEType.Grass);
+            
             return true;
         }
 
