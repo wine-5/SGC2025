@@ -46,8 +46,6 @@ namespace SGC2025
             weaponSystem = GetComponent<PlayerWeaponSystem>();
             stateMachine = new StateMachine();
             input = new PlayerInputSet();
-            if (weaponSystem == null)
-                weaponSystem = GetComponent<SGC2025.Player.Bullet.PlayerWeaponSystem>();
             idleState = new PlayerIdleState(this, stateMachine, "fly");
             moveState = new PlayerMoveState(this, stateMachine, "fly");
         }

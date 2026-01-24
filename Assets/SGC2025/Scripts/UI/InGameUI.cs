@@ -13,9 +13,6 @@ namespace SGC2025
     {
         private const int MAX_POPUP_COUNT = 5;
         private const int INSPECTOR_MAX_POPUP_COUNT = 3;
-        private const float BOUNDARY_MARGIN = 100f;
-        private const int DEFAULT_POPUP_SIZE_WIDTH = 200;
-        private const int DEFAULT_POPUP_SIZE_HEIGHT = 100;
         
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
@@ -108,13 +105,10 @@ namespace SGC2025
             int activeCount = parentCanvas.childCount - popupPool.Count;
             if (activeCount >= MAX_POPUP_COUNT) return;
             
-            Vector2 testPosition = new Vector2(200, 100);
-            
             PopupScoreUI popup = GetFromPool();
-            if (popup == null) 
-                return;
+            if (popup == null) return;
             
-            popup.Initialize(score, testPosition, ReturnToPool);
+            popup.Initialize(score, position, ReturnToPool);
             popup.transform.SetAsLastSibling();
         }
 
@@ -136,8 +130,7 @@ namespace SGC2025
             Vector2 spawnPosition = GetSpawnPosition();
             
             PopupScoreUI popup = GetFromPool();
-            if (popup == null) 
-                return;
+            if (popup == null) return;
             
             popup.Initialize(score, spawnPosition, ReturnToPool);
             popup.transform.SetAsLastSibling();
