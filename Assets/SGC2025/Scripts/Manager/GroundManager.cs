@@ -112,6 +112,42 @@ namespace SGC2025
             return new Vector2Int(x, y);
         }
 
+        /// <summary>緑化率を取得（0.0～1.0）</summary>
+        public float GetGreenificationRate()
+        {
+            if (currentGroundArray == null || groundData == null) return 0f;
+            
+            int totalTiles = groundData.columns * groundData.rows;
+            if (totalTiles == 0) return 0f;
+            
+            int greenifiedCount = CountGreenifiedTiles();
+            return (float)greenifiedCount / totalTiles;
+        }
+
+        /// <summary>緑化済みタイル数を取得</summary>
+        public int CountGreenifiedTiles()
+        {
+            if (currentGroundArray == null) return 0;
+            
+            int count = 0;
+            for (int x = 0; x < groundData.columns; x++)
+            {
+                for (int y = 0; y < groundData.rows; y++)
+                {
+                    if (currentGroundArray[x, y].isDrawn)
+                        count++;
+                }
+            }
+            return count;
+        }
+
+        /// <summary>総タイル数を取得</summary>
+        public int GetTotalTileCount()
+        {
+            if (groundData == null) return 0;
+            return groundData.columns * groundData.rows;
+        }
+
         private void SetStageObject()
         {
             currentGroundArray = new GroundData[groundData.columns, groundData.rows];
