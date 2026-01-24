@@ -97,6 +97,7 @@ namespace SGC2025
             isCountDown = true;
             currentCountDownTimer = startCountDownTime;
             countGameTimer = 0f;
+            Time.timeScale = 1f;
             
             if (ScoreManager.I != null)
                 ScoreManager.I.ResetScore();
