@@ -15,13 +15,13 @@ MonoBehaviour:
   seAudioDataList:
   - seType: 1
     audioClip: {fileID: 8300000, guid: dd2f139668efba547a8f30196023c863, type: 3}
-    volumeMultiplier: 2
+    volumeMultiplier: 1
   - seType: 2
     audioClip: {fileID: 8300000, guid: a56a071257410b7449243303de2592d9, type: 3}
     volumeMultiplier: 0.2
   - seType: 3
     audioClip: {fileID: 8300000, guid: 8b70b5e725574af40a1b4f995ca05ffb, type: 3}
-    volumeMultiplier: 0.4
+    volumeMultiplier: 0.8
   - seType: 4
     audioClip: {fileID: 8300000, guid: e88c5beed5588154387a3952da5c344a, type: 3}
     volumeMultiplier: 0.4
