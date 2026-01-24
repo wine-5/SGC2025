@@ -170,6 +170,9 @@ namespace SGC2025.Player.Bullet
                 currentBulletDirections,
                 bulletData
             );
+            // 弾発射SEを再生
+            if (AudioManager.I != null)
+                AudioManager.I.PlaySE(SEType.PlayerShoot);
         }
     }
 }
