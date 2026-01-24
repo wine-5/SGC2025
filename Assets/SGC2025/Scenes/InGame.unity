@@ -242,7 +242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.GameManager
   gameOverDelay: 2
   startCountDownTime: 3
-  gameTimeLimit: 600
+  gameTimeLimit: 5
   pausePanel: {fileID: 1217229828}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
