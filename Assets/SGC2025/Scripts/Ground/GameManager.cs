@@ -48,19 +48,58 @@ namespace SGC2025
         {
             base.Init();
             PlayerCharacter.OnPlayerDeath += HandlePlayerDeath;
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         private void Start()
         {
+            InitializeGameState();
+            
             if (pausePanel != null)
                 pausePanel.SetActive(false);
+                
+            if (AudioManager.I != null)
+                AudioManager.I.PlayBGM(BGMType.InGame);
         }
 
         protected override void OnDestroy()
         {
             PlayerCharacter.OnPlayerDeath -= HandlePlayerDeath;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
 
             base.OnDestroy();
+        }
+
+        /// <summary>
+        /// シーンがロードされたときの処理
+        /// </summary>
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (scene.name == SceneName.InGame.ToString())
+            {
+                InitializeGameState();
+                
+                if (pausePanel != null)
+                    pausePanel.SetActive(false);
+                    
+                if (AudioManager.I != null)
+                    AudioManager.I.PlayBGM(BGMType.InGame);
+            }
+        }
+
+        /// <summary>
+        /// ゲーム状態を初期化
+        /// </summary>
+        private void InitializeGameState()
+        {
+            isGameOver = false;
+            isPaused = false;
+            isCountDown = true;
+            currentCountDownTimer = startCountDownTime;
+            countGameTimer = 0f;
+            
+            if (ScoreManager.I != null)
+                ScoreManager.I.ResetScore();
         }
 
         private void Update()
@@ -84,15 +123,33 @@ namespace SGC2025
         private void UpdateGameTimer()
         {
             if (isCountDown) return;
+            
             countGameTimer += Time.deltaTime;
+            
             if (countGameTimer >= gameTimeLimit)
+            {
+                if (isGameOver) return;
+                isGameOver = true;
+                
+                if (AudioManager.I != null)
+                {
+                    AudioManager.I.StopBGM(true);
+                    AudioManager.I.PlaySE(SEType.TimeUp);
+                }
+                
                 OnGameTimeUp?.Invoke();
+                Invoke(nameof(LoadGameOverScene), gameOverDelay);
+            }
         }
 
         private void HandlePlayerDeath()
         {
             if (isGameOver) return;
             isGameOver = true;
+            
+            if (AudioManager.I != null)
+                AudioManager.I.StopBGM(true);
+            
             OnGameOver?.Invoke();
             Invoke(nameof(LoadGameOverScene), gameOverDelay);
         }
@@ -100,7 +157,7 @@ namespace SGC2025
         private void LoadGameOverScene()
         {
             if (SceneController.I == null) return;
-            SceneController.I.LoadScene(SceneName.Title);
+            SceneController.I.LoadResultScene();
         }
 
         public void PauseGame()

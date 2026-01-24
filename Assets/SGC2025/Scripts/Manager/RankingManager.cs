@@ -48,10 +48,8 @@ namespace SGC2025
 
             ranking.scores.Add(new ScoreData(playerName, score));
 
-            // スコア降順に並べ替え
             ranking.scores.Sort((a, b) => b.score.CompareTo(a.score));
 
-            // 上位のみ保持
             if (ranking.scores.Count > MAX_RANK)
                 ranking.scores = ranking.scores.GetRange(0, MAX_RANK);
 
@@ -86,10 +84,7 @@ namespace SGC2025
         /// <summary>
         /// 現在のランキングを取得
         /// </summary>
-        public List<ScoreData> GetRanking()
-        {
-            return ranking.scores;
-        }
+        public List<ScoreData> GetRanking() => ranking.scores;
         /// <summary>
         /// 新しいスコアがランキングに入ったか判定する
         /// </summary>
@@ -98,7 +93,6 @@ namespace SGC2025
             List<ScoreData> rankingList = GetRanking();
             if (rankingList.Count == 0) return true;
 
-            // ランキング内で最も低いスコアより大きければ新記録
             int lowestScore = rankingList[Mathf.Min(rankingList.Count, MAX_RANK) - 1].score;
             return score > lowestScore || rankingList.Count < MAX_RANK;
         }

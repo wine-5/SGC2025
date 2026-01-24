@@ -226,6 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d372a4db83dafdc46baffd817c56f9b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.ScoreManager
+  enemyKillPoint: 50
   normalTilePoint: 100
   highScoreTileMultiplier: 3
 --- !u!114 &1945701720
@@ -242,7 +243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.GameManager
   gameOverDelay: 2
   startCountDownTime: 3
-  gameTimeLimit: 600
+  gameTimeLimit: 5
   pausePanel: {fileID: 1217229828}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

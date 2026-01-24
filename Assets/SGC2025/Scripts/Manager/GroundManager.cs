@@ -43,7 +43,11 @@ namespace SGC2025
 
         public void Start()
         {
-            if (groundData == null) return;
+            if (groundData == null)
+            {
+                Debug.LogError("[GroundManager] GroundDataSO is not assigned!");
+                return;
+            }
             
             SetStageObject();
             InitHighObject();
@@ -90,6 +94,9 @@ namespace SGC2025
 
             int points = currentGroundArray[cellPosition.x, cellPosition.y].point;
             GroundEvents.TriggerGroundGreenified(pos, points);
+            
+            if (AudioManager.I != null)
+                AudioManager.I.PlaySE(SEType.Grass);
             
             return true;
         }

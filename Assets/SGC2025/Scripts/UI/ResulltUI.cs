@@ -48,10 +48,10 @@ namespace SGC2025
 
             if (waitTime >= SCORE_COUNT_UP_TIME)
             {
+                OnPhaseUpdate(SCORE_COUNT_UP_TIME); // 最終値を表示
                 currentPhase++;
                 OnPhaseChanged();
                 waitTime = ZERO_WAIT_TIME;
-
             }
             else
             {
@@ -70,25 +70,16 @@ namespace SGC2025
                     break;
 
                 case ResultPhase.EnemyKillScore:
-                    {
-                        int enemyKillScore = ScoreManager.I.GetEnemyScore();
-                        enemyScoreText.SetText(enemyKillScore.ToString());
-                        break;
-                    }
+                    enemyScoreText.SetText("0");
+                    break;
 
                 case ResultPhase.GreeningScore:
-                    {
-                        int greeningScore = ScoreManager.I.GetGreenScore();
-                        greeningScoreText.SetText( greeningScore.ToString() );
-                        break;
-                    }
+                    greeningScoreText.SetText("0");
+                    break;
 
                 case ResultPhase.TotalScore:
-                    {
-                        int totalScoreScore = ScoreManager.I.GetTotalScore();
-                        totalScoreText.SetText(totalScoreScore.ToString());
-                        break;
-                    }
+                    totalScoreText.SetText("0");
+                    break;
 
                 case ResultPhase.HighScore:
                     {
@@ -123,30 +114,20 @@ namespace SGC2025
                     break;
 
                 case ResultPhase.EnemyKillScore:
-                    {
-                        int enemyKillScore = ScoreManager.I.GetEnemyScore();
-                        enemyScoreText.SetText(ScoreCountUp(waitTime, enemyKillScore, SCORE_COUNT_UP_TIME).ToString());
-                        break;
-                    }
+                    enemyScoreText.SetText(ScoreCountUp(waitTime, ScoreManager.I.GetEnemyScore(), SCORE_COUNT_UP_TIME).ToString());
+                    break;
 
                 case ResultPhase.GreeningScore:
-                    {
-                        int greeningScore = ScoreManager.I.GetGreenScore();
-                        greeningScoreText.SetText( ScoreCountUp( waitTime, greeningScore, SCORE_COUNT_UP_TIME ).ToString() );
-                        break;
-                    }
+                    greeningScoreText.SetText(ScoreCountUp(waitTime, ScoreManager.I.GetGreenScore(), SCORE_COUNT_UP_TIME).ToString());
+                    break;
+                    
                 case ResultPhase.HighScore:
-                    {
-                        waitTime = ZERO_WAIT_TIME;
-                        break;
-                    }
+                    waitTime = ZERO_WAIT_TIME;
+                    break;
 
                 case ResultPhase.TotalScore:
-                    {
-                        int totalScoreScore = ScoreManager.I.GetTotalScore();
-                        totalScoreText.SetText(ScoreCountUp(waitTime, totalScoreScore, SCORE_COUNT_UP_TIME).ToString());
-                        break;
-                    }
+                    totalScoreText.SetText(ScoreCountUp(waitTime, ScoreManager.I.GetTotalScore(), SCORE_COUNT_UP_TIME).ToString());
+                    break;
 
                 case ResultPhase.End:
                     break;

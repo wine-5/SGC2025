@@ -12,7 +12,6 @@ namespace SGC2025.Enemy
         private const float DEFAULT_SPAWN_INTERVAL = 2f;
         private const int DEFAULT_WAVE_LEVEL = 1;
         private const float MIN_SPAWN_INTERVAL = 0.1f;
-        private const string DEBUG_LOG_PREFIX = "[EnemySpawner]";
 
         [Header("生成設定")]
         [SerializeField] private float spawnInterval = DEFAULT_SPAWN_INTERVAL;
@@ -82,6 +81,10 @@ namespace SGC2025.Enemy
         private void Update()
         {
             if (!isSpawning) return;
+
+            // カウントダウン中はスポーンしない
+            if (SGC2025.GameManager.I != null && SGC2025.GameManager.I.IsCountingDown)
+                return;
 
             if (Time.time >= nextSpawnTime)
             {

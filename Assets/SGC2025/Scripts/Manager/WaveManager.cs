@@ -61,7 +61,11 @@ namespace SGC2025
         /// </summary>
         private void InitializeWaveSystem()
         {
-            if (waveConfig == null) return;
+            if (waveConfig == null)
+            {
+                Debug.LogError("[WaveManager] WaveConfigSO is not assigned!");
+                return;
+            }
             
             gameElapsedTime = gameStartTime;
             currentWaveLevel = 1;

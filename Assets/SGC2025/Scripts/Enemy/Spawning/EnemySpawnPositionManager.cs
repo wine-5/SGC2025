@@ -40,14 +40,14 @@ namespace SGC2025.Enemy
         private bool isInitialized = false;
 
         /// <summary>
-        /// GroundManagerからゲームエリアの最大座標を取得
+        /// GroundManagerからゲームエリアの最大座標を取得（ワールド座標）
         /// </summary>
         private Vector2 GetGameAreaMaxFromGroundManager()
         {
-            if (SGC2025.GroundManager.I != null)
+            if (SGC2025.GroundManager.I != null && SGC2025.GroundManager.I.MapData != null)
             {
-                var maxIndex = SGC2025.GroundManager.I.MapMaxIndex;
-                return new Vector2(maxIndex.x, maxIndex.y);
+                var maxWorldPos = SGC2025.GroundManager.I.MapData.MapMaxWorldPosition;
+                return maxWorldPos;
             }
             
             // GroundManagerが初期化されていない場合のフォールバック
@@ -317,26 +317,20 @@ namespace SGC2025.Enemy
         private Vector3 GetTopLeftCornerPosition()
         {
             if (useDirectCoordinates)
-            {
-                Vector3 spawnPosition = GetRandomPositionAroundCorner(0); // 左上角周辺
-                Debug.Log($"[SpawnPositionManager] 左上角生成: {spawnPosition} (範囲: {cornerRandomRange})");
-                return spawnPosition;
-            }
-            else if (useTileMapReference)
+                return GetRandomPositionAroundCorner(0);
+            
+            if (useTileMapReference)
             {
                 Vector3[] corners = GetTileMapCorners();
-                Vector3 corner = corners[0]; // 左上
-                Vector3 spawnPosition = new Vector3(corner.x + cornerOffset, corner.y - cornerOffset, 0f);
-                Debug.Log($"[SpawnPositionManager] 左上角生成位置(TileMap): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
-                return spawnPosition;
+                Vector3 corner = corners[0];
+                return new Vector3(corner.x + cornerOffset, corner.y - cornerOffset, 0f);
             }
-            else if (useCanvasReference)
+            
+            if (useCanvasReference)
             {
                 Vector3[] corners = GetCanvasCorners();
-                Vector3 corner = corners[0]; // 左上
-                Vector3 spawnPosition = new Vector3(corner.x + cornerOffset, corner.y - cornerOffset, 0f);
-                Debug.Log($"[SpawnPositionManager] 左上角生成位置(Canvas): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
-                return spawnPosition;
+                Vector3 corner = corners[0];
+                return new Vector3(corner.x + cornerOffset, corner.y - cornerOffset, 0f);
             }
             
             Debug.LogError("[SpawnPositionManager] 左上隅の生成モードが設定されていません");
@@ -349,26 +343,20 @@ namespace SGC2025.Enemy
         private Vector3 GetTopRightCornerPosition()
         {
             if (useDirectCoordinates)
-            {
-                Vector3 spawnPosition = GetRandomPositionAroundCorner(1); // 右上角周辺
-                Debug.Log($"[SpawnPositionManager] 右上角生成: {spawnPosition} (範囲: {cornerRandomRange})");
-                return spawnPosition;
-            }
-            else if (useTileMapReference)
+                return GetRandomPositionAroundCorner(1);
+            
+            if (useTileMapReference)
             {
                 Vector3[] corners = GetTileMapCorners();
-                Vector3 corner = corners[1]; // 右上
-                Vector3 spawnPosition = new Vector3(corner.x - cornerOffset, corner.y - cornerOffset, 0f);
-                Debug.Log($"[SpawnPositionManager] 右上角生成位置(TileMap): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
-                return spawnPosition;
+                Vector3 corner = corners[1];
+                return new Vector3(corner.x - cornerOffset, corner.y - cornerOffset, 0f);
             }
-            else if (useCanvasReference)
+            
+            if (useCanvasReference)
             {
                 Vector3[] corners = GetCanvasCorners();
-                Vector3 corner = corners[1]; // 右上
-                Vector3 spawnPosition = new Vector3(corner.x - cornerOffset, corner.y - cornerOffset, 0f);
-                Debug.Log($"[SpawnPositionManager] 右上角生成位置(Canvas): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
-                return spawnPosition;
+                Vector3 corner = corners[1];
+                return new Vector3(corner.x - cornerOffset, corner.y - cornerOffset, 0f);
             }
             
             Debug.LogError("[SpawnPositionManager] 右上隅の生成モードが設定されていません");
@@ -381,26 +369,20 @@ namespace SGC2025.Enemy
         private Vector3 GetBottomLeftCornerPosition()
         {
             if (useDirectCoordinates)
-            {
-                Vector3 spawnPosition = GetRandomPositionAroundCorner(2); // 左下角周辺
-                Debug.Log($"[SpawnPositionManager] 左下角生成: {spawnPosition} (範囲: {cornerRandomRange})");
-                return spawnPosition;
-            }
-            else if (useTileMapReference)
+                return GetRandomPositionAroundCorner(2);
+            
+            if (useTileMapReference)
             {
                 Vector3[] corners = GetTileMapCorners();
-                Vector3 corner = corners[2]; // 左下
-                Vector3 spawnPosition = new Vector3(corner.x + cornerOffset, corner.y + cornerOffset, 0f);
-                Debug.Log($"[SpawnPositionManager] 左下角生成位置(TileMap): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
-                return spawnPosition;
+                Vector3 corner = corners[2];
+                return new Vector3(corner.x + cornerOffset, corner.y + cornerOffset, 0f);
             }
-            else if (useCanvasReference)
+            
+            if (useCanvasReference)
             {
                 Vector3[] corners = GetCanvasCorners();
-                Vector3 corner = corners[2]; // 左下
-                Vector3 spawnPosition = new Vector3(corner.x + cornerOffset, corner.y + cornerOffset, 0f);
-                Debug.Log($"[SpawnPositionManager] 左下角生成位置(Canvas): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
-                return spawnPosition;
+                Vector3 corner = corners[2];
+                return new Vector3(corner.x + cornerOffset, corner.y + cornerOffset, 0f);
             }
             
             Debug.LogError("[SpawnPositionManager] 左下隅の生成モードが設定されていません");
@@ -413,26 +395,20 @@ namespace SGC2025.Enemy
         private Vector3 GetBottomRightCornerPosition()
         {
             if (useDirectCoordinates)
-            {
-                Vector3 spawnPosition = GetRandomPositionAroundCorner(3); // 右下角周辺
-                Debug.Log($"[SpawnPositionManager] 右下角生成: {spawnPosition} (範囲: {cornerRandomRange})");
-                return spawnPosition;
-            }
-            else if (useTileMapReference)
+                return GetRandomPositionAroundCorner(3);
+            
+            if (useTileMapReference)
             {
                 Vector3[] corners = GetTileMapCorners();
-                Vector3 corner = corners[3]; // 右下
-                Vector3 spawnPosition = new Vector3(corner.x - cornerOffset, corner.y + cornerOffset, 0f);
-                Debug.Log($"[SpawnPositionManager] 右下角生成位置(TileMap): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
-                return spawnPosition;
+                Vector3 corner = corners[3];
+                return new Vector3(corner.x - cornerOffset, corner.y + cornerOffset, 0f);
             }
-            else if (useCanvasReference)
+            
+            if (useCanvasReference)
             {
                 Vector3[] corners = GetCanvasCorners();
-                Vector3 corner = corners[3]; // 右下
-                Vector3 spawnPosition = new Vector3(corner.x - cornerOffset, corner.y + cornerOffset, 0f);
-                Debug.Log($"[SpawnPositionManager] 右下角生成位置(Canvas): {spawnPosition} (基準角: {corner}, オフセット: {cornerOffset})");
-                return spawnPosition;
+                Vector3 corner = corners[3];
+                return new Vector3(corner.x - cornerOffset, corner.y + cornerOffset, 0f);
             }
             
             Debug.LogError("[SpawnPositionManager] 右下隅の生成モードが設定されていません");

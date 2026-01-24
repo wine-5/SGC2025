@@ -46,8 +46,6 @@ namespace SGC2025
             weaponSystem = GetComponent<PlayerWeaponSystem>();
             stateMachine = new StateMachine();
             input = new PlayerInputSet();
-            if (weaponSystem == null)
-                weaponSystem = GetComponent<SGC2025.Player.Bullet.PlayerWeaponSystem>();
             idleState = new PlayerIdleState(this, stateMachine, "fly");
             moveState = new PlayerMoveState(this, stateMachine, "fly");
         }
@@ -78,6 +76,10 @@ namespace SGC2025
 
         private void Update()
         {
+            // カウントダウン中は処理をスキップ
+            if (GameManager.I != null && GameManager.I.IsCountingDown)
+                return;
+            
             stateMachine.UpdateActiveState();
             DecreaseMutekiTime();
             PlayerRotate();
@@ -104,15 +106,32 @@ namespace SGC2025
                 GameManager.I.PauseGame();
         }
 
-        private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context) =>
+        private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
+        {
+            // カウントダウン中は入力を無視
+            if (GameManager.I != null && GameManager.I.IsCountingDown)
+                return;
+            
             moveInput = context.ReadValue<Vector2>();
+        }
 
-        private void OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context) =>
+        private void OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context)
+        {
+            // カウントダウン中は入力を無視
+            if (GameManager.I != null && GameManager.I.IsCountingDown)
+                return;
+            
             moveInput = Vector2.zero;
+        }
 
         private void OnShotPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
+            // カウントダウン中は射撃を無視
+            if (GameManager.I != null && GameManager.I.IsCountingDown)
+                return;
+            
             if (weaponSystem == null) return;
+            
             weaponSystem.Fire();
         }
         #endregion
