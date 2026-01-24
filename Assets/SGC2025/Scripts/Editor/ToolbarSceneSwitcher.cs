@@ -60,7 +60,6 @@ namespace SGC2025.Editor
                 
                 if (currentToolbar != null)
                 {
-                    // ToolbarのGUIイベントにフックを追加
                     var root = currentToolbar.GetType().GetField("m_Root", BindingFlags.NonPublic | BindingFlags.Instance);
                     var rawRoot = root?.GetValue(currentToolbar);
                     var mRoot = rawRoot as VisualElement;
@@ -71,7 +70,6 @@ namespace SGC2025.Editor
                     }
                     else
                     {
-                        // フォールバック: ToolbarのOnGUIをフック
                         FieldInfo onGuiHandler = currentToolbar.GetType()
                             .GetField("m_OnGUI", BindingFlags.NonPublic | BindingFlags.Instance);
                         
@@ -151,13 +149,11 @@ namespace SGC2025.Editor
         private static void ShowSceneMenu()
         {
             var menu = new GenericMenu();
-            
-            // 現在のシーン
             var currentScene = SceneManager.GetActiveScene();
+            
             menu.AddDisabledItem(new GUIContent($"● {currentScene.name} (現在)"));
             menu.AddSeparator("");
             
-            // Build Settingsに登録されている全シーン
             var scenes = GetAllScenes();
             
             if (scenes.Count == 0)
@@ -168,14 +164,28 @@ namespace SGC2025.Editor
             {
                 foreach (var sceneInfo in scenes)
                 {
-                    var sceneName = sceneInfo.name;
-                    var scenePath = sceneInfo.path;
-                    var isCurrent = sceneName == currentScene.name;
-                    
-                    if (isCurrent)
+                    if (sceneInfo.Name == currentScene.name)
                     {
-                        // 現在のシーンはスキップ（既に上部に表示）
                         continue;
+                    }
+                    
+                    menu.AddItem(
+                        new GUIContent(sceneInfo.Name),
+                        false,
+                        () => OpenScene(sceneInfo.Path)
+                    );
+                }
+            }
+            
+            menu.AddSeparator("");
+            menu.AddItem(new GUIContent("Build Settings..."), false, () =>
+            {
+                EditorWindow.GetWindow(Type.GetType("UnityEditor.BuildPlayerWindow,UnityEditor"));
+            });
+            
+            menu.ShowAsContext();
+        }
+
         #endregion
 
         #region プライベートメソッド - シーン管理
@@ -187,17 +197,16 @@ namespace SGC2025.Editor
         private static List<SceneInfo> GetAllScenes()
         {
             var scenes = new List<SceneInfo>();
-            
             var allScenePaths = AssetDatabase.FindAssets("t:Scene", new[] { SCENE_FOLDER })
                 .Select(guid => AssetDatabase.GUIDToAssetPath(guid));
             
             foreach (var path in allScenePaths)
             {
                 var sceneName = System.IO.Path.GetFileNameWithoutExtension(path);
-                scenes.Add(new SceneInfo { name = sceneName, path = path });
+                scenes.Add(new SceneInfo(sceneName, path));
             }
             
-            return scenes.OrderBy(s => s.name).ToList();
+            return scenes.OrderBy(s => s.Name).ToList();
         }
 
         /// <summary>
@@ -218,33 +227,20 @@ namespace SGC2025.Editor
 
         /// <summary>
         /// シーン情報を保持する構造体
-        /// </summary>            var allScenePaths = AssetDatabase.FindAssets("t:Scene", new[] { sceneFolder })
-                .Select(guid => AssetDatabase.GUIDToAssetPath(guid));
-            
-            foreach (var path in allScenePaths)
-            {
-                var sceneName = System.IO.Path.GetFileNameWithoutExtension(path);
-                scenes.Add(new SceneInfo { name = sceneName, path = path });
-            }
-
-        #endregion
-            
-            return scenes.OrderBy(s => s.name).ToList();
-        }
-
-        private static void OpenScene(string scenePath)
-        {
-            if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-            {
-                EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
-            }
-        }
-
+        /// </summary>
         private struct SceneInfo
         {
-            public string name;
-            public string path;
+            public string Name { get; }
+            public string Path { get; }
+
+            public SceneInfo(string name, string path)
+            {
+                Name = name;
+                Path = path;
+            }
         }
+
+        #endregion
     }
 }
 
