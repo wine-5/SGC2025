@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025
+namespace SGC2025.Camera
 {
     /// <summary>
     /// プレイヤーをスムーズに追従するカメラ制御
@@ -16,11 +16,11 @@ namespace SGC2025
         [Tooltip("カメラの視野の大きさ（Orthographicカメラの場合）")]
         private float orthographicSize = 8f;
 
-        private Camera cam;
+        private UnityEngine.Camera cam;
 
         public void Awake()
         {
-            cam = GetComponent<Camera>();
+            cam = GetComponent<UnityEngine.Camera>();
         }
 
         public void Start()

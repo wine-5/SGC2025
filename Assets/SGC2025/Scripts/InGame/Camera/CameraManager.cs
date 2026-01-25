@@ -1,7 +1,7 @@
 using UnityEngine;
 using SGC2025.Player;
 
-namespace SGC2025
+namespace SGC2025.Camera
 {
     /// <summary>
     /// カメラ関連機能を統括するマネージャー

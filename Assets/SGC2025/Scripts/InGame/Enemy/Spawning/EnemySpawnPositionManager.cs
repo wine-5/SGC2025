@@ -19,9 +19,9 @@ namespace SGC2025.Enemy
         [SerializeField] private float boundaryOffset = 1f;   // 境界線からのオフセット
         
         [Header("Canvas自動取得設定")]
-        [SerializeField] private bool useCanvasReference = false; // Canvasから四隅を自動計算するか
-        [SerializeField] private Canvas targetCanvas;             // 対象のCanvas
-        [SerializeField] private Camera referenceCamera;         // ワールド座標変換用のカメラ
+        [SerializeField] private bool useCanvasReference = false;
+        [SerializeField] private Canvas targetCanvas;
+        [SerializeField] private UnityEngine.Camera referenceCamera;
         
         [Header("TileMap自動取得設定")]
         [SerializeField] private bool useTileMapReference = false; // TileMapから四隅を自動計算するか
