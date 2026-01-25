@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TechC;
+using SGC2025.Player;
 
 namespace SGC2025
 {

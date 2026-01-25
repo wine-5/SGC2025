@@ -1,8 +1,10 @@
 using UnityEngine;
 
-public class PlayerIdleState : PlayerFlyingState
+namespace SGC2025.Player
 {
-    public PlayerIdleState(SGC2025.PlayerCharacter player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
+    public class PlayerIdleState : PlayerFlyingState
+    {
+        public PlayerIdleState(PlayerCharacter player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
     {
     }
 
@@ -29,5 +31,6 @@ public class PlayerIdleState : PlayerFlyingState
         }
 
         
+    }
     }
 }

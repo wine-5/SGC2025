@@ -1,12 +1,14 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-/// <summary>
-/// エンティティ状態のベースクラス
-/// </summary>
-public abstract class EntityState
+namespace SGC2025.Player
 {
-    protected SGC2025.PlayerCharacter player;
+    /// <summary>
+    /// エンティティ状態のベースクラス
+    /// </summary>
+    public abstract class EntityState
+{
+    protected PlayerCharacter player;
     protected StateMachine stateMachine;
     protected string animBoolName;
 
@@ -14,7 +16,7 @@ public abstract class EntityState
     protected Rigidbody2D rb;
     protected PlayerInputSet input;
 
-    public EntityState(SGC2025.PlayerCharacter player, StateMachine stateMachine, string animBoolName)
+    public EntityState(PlayerCharacter player, StateMachine stateMachine, string animBoolName)
     {
         this.player = player;
         this.stateMachine = stateMachine;
@@ -42,5 +44,6 @@ public abstract class EntityState
     public virtual void Exit()
     {
         anim.SetBool(animBoolName, false);
+    }
     }
 }

@@ -1,8 +1,10 @@
 using UnityEngine;
 
-public class PlayerFlyingState : EntityState
+namespace SGC2025.Player
 {
-    public PlayerFlyingState(SGC2025.PlayerCharacter player, StateMachine stateMachine, string animBoolName) : base(player, stateMachine, animBoolName)
+    public class PlayerFlyingState : EntityState
+    {
+        public PlayerFlyingState(PlayerCharacter player, StateMachine stateMachine, string animBoolName) : base(player, stateMachine, animBoolName)
     {
     }
 
@@ -35,5 +37,6 @@ public class PlayerFlyingState : EntityState
 
     private void PlayerShot()
     {
+    }
     }
 }

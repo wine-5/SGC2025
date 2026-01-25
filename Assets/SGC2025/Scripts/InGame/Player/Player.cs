@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using SGC2025.Player.Bullet;
 
-namespace SGC2025
+namespace SGC2025.Player
 {
     /// <summary>
     /// プレイヤーキャラクターの管理

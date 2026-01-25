@@ -1,9 +1,12 @@
 using UnityEngine;
+using SGC2025.Player;
 
-/// <summary>
-/// エンティティの状態遮移管理
-/// </summary>
-public class StateMachine
+namespace SGC2025.Player
+{
+    /// <summary>
+    /// エンティティの状態遮移管理
+    /// </summary>
+    public class StateMachine
 {
     public EntityState currentState { get; private set; }
     
@@ -24,5 +27,6 @@ public class StateMachine
     public void UpdateActiveState()
     {
         currentState.Update();
+    }
     }
 }

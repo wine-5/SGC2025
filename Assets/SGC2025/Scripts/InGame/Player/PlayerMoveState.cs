@@ -1,10 +1,12 @@
 using UnityEngine;
 
-public class PlayerMoveState : PlayerFlyingState
+namespace SGC2025.Player
 {
-    private const float BOUNDARY_MARGIN = 0.5f;
+    public class PlayerMoveState : PlayerFlyingState
+    {
+        private const float BOUNDARY_MARGIN = 0.5f;
 
-    public PlayerMoveState(SGC2025.PlayerCharacter player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
+        public PlayerMoveState(PlayerCharacter player, StateMachine stateMachine, string stateName) : base(player, stateMachine, stateName)
     {
     }
 
@@ -62,5 +64,6 @@ public class PlayerMoveState : PlayerFlyingState
         {
             player.SetVelocity(player.moveInput.x, player.moveInput.y);
         }
+    }
     }
 }

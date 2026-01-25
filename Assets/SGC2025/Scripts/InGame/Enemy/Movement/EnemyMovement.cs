@@ -1,6 +1,7 @@
 using UnityEngine;
 using SGC2025.Enemy.Interface;
 using SGC2025.Player.Bullet;
+using SGC2025.Player;
 
 namespace SGC2025.Enemy
 {
@@ -51,7 +52,7 @@ namespace SGC2025.Enemy
                     playerTransform = playerWeaponSystem.transform;
                     return playerTransform;
                 }
-                var player = FindFirstObjectByType<SGC2025.PlayerCharacter>();
+                var player = FindFirstObjectByType<PlayerCharacter>();
                 if (player != null)
                 {
                     playerTransform = player.transform;
