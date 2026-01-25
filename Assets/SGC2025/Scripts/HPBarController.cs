@@ -27,7 +27,7 @@ namespace SGC2025
             if (entity == null) return;
             parentTransform = transform.parent;
             entityTransform = entity.transform;
-            originalPos = parentTransform.position;
+            originalPos = parentTransform.position - entityTransform.position;
             originalScale = transform.localScale;
 
             if (isPlayer)
@@ -47,7 +47,9 @@ namespace SGC2025
         void Update()
         {
             if (entity == null) return;
-            parentTransform.position = entityTransform.position + originalPos;
+            Vector3 newPos = entityTransform.position + originalPos;
+            newPos.x = entityTransform.position.x + originalPos.x;
+            parentTransform.position = newPos;
 
             if (isPlayer)
             {
@@ -60,8 +62,11 @@ namespace SGC2025
                     currentHealth = cachedEnemy.CurrentHealth;
             }
 
-            rate = currentHealth / maxHealth;
-            transform.localScale = new Vector3(originalScale.x * rate, originalScale.y, originalScale.z);
+            if (maxHealth > 0)
+            {
+                rate = currentHealth / maxHealth;
+                transform.localScale = new Vector3(originalScale.x * rate, originalScale.y, originalScale.z);
+            }
         }
     }
 }
