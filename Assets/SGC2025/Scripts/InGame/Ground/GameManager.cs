@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TechC;
 using SGC2025.Player;
 using SGC2025.Audio;
 
@@ -141,7 +140,7 @@ namespace SGC2025.Manager
                 }
                 
                 OnGameTimeUp?.Invoke();
-                Invoke(nameof(LoadGameOverScene), gameOverDelay);
+                Invoke(nameof(LoadResultScene), gameOverDelay);
             }
         }
 
@@ -154,13 +153,15 @@ namespace SGC2025.Manager
                 AudioManager.I.StopBGM(true);
             
             OnGameOver?.Invoke();
-            Invoke(nameof(LoadGameOverScene), gameOverDelay);
+            Invoke(nameof(LoadResultScene), gameOverDelay);
         }
 
-        private void LoadGameOverScene()
+        private void LoadResultScene()
         {
             if (SceneController.I == null) return;
+
             SceneController.I.LoadResultScene();
+            AudioManager.I.PlayBGM(BGMType.Result);
         }
 
         public void PauseGame()
