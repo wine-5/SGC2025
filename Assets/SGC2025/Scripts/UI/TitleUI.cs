@@ -1,7 +1,7 @@
 using UnityEngine;
 using SGC2025.Audio;
 
-namespace SGC2025
+namespace SGC2025.UI
 {
     /// <summary>
     /// タイトル画面UI

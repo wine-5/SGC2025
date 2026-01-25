@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SGC2025
+namespace SGC2025.UI
 {
     /// <summary>
     /// ゲームを再開するボタン

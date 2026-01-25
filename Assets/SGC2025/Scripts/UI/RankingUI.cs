@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-namespace SGC2025
+namespace SGC2025.UI
 {
     /// <summary>
     /// ランキング表示UI

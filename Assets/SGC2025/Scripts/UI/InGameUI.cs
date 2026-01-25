@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using SGC2025.Events;
 
-namespace SGC2025 
+namespace SGC2025.UI 
 {
     /// <summary>
     /// インゲーム中のUI表示を管理
