@@ -1,10 +1,10 @@
-using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using System.IO;
 using System.Linq;
 
-public class SceneSelectorWithShortcut : EditorWindow
+namespace SGC2025.Editor
+{
+    public class SceneSelectorWithShortcut : EditorWindow
 {
     [MenuItem("Tools/Scene Selector %&s")] // Ctrl + Alt + Sで開く
     public static void ShowWindow()
