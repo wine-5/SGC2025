@@ -1,6 +1,6 @@
 using UnityEngine.SceneManagement;
 
-namespace SGC2025
+namespace SGC2025.Manager
 {
     /// <summary>
     /// ゲーム内のシーン名を定義するenum

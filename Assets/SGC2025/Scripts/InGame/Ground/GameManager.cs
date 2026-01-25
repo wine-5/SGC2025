@@ -4,7 +4,7 @@ using TechC;
 using SGC2025.Player;
 using SGC2025.Audio;
 
-namespace SGC2025
+namespace SGC2025.Manager
 {
     /// <summary>
     /// ゲーム全体の状態管理を行うマネージャー

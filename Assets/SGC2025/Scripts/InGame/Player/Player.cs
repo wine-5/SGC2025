@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using SGC2025.Player.Bullet;
 using SGC2025.Audio;
+using SGC2025.Manager;
 
 namespace SGC2025.Player
 {

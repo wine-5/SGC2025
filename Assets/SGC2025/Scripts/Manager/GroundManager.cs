@@ -2,7 +2,7 @@ using UnityEngine;
 using SGC2025.Events;
 using SGC2025.Audio;
 
-namespace SGC2025
+namespace SGC2025.Manager
 {
     /// <summary>
     /// 地面システムの管理クラス

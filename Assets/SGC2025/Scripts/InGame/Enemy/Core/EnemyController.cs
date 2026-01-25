@@ -1,5 +1,6 @@
 using UnityEngine;
 using SGC2025.Events;
+using SGC2025.Manager;
 
 namespace SGC2025.Enemy
 {
@@ -71,7 +72,7 @@ namespace SGC2025.Enemy
         private void HandleDeath()
         {   
             OnDeath?.Invoke();
-            int score = SGC2025.ScoreManager.I.EnemyKillPoint;
+            int score = ScoreManager.I.EnemyKillPoint;
             EnemyEvents.TriggerEnemyDestroyed(transform.position, score);
             DeactivateEnemy();
         }

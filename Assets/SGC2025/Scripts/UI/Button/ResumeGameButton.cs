@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using SGC2025.Manager;
 
 namespace SGC2025.UI
 {

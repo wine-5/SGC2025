@@ -1,5 +1,6 @@
 using UnityEngine;
 using SGC2025.Enemy;
+using SGC2025.Manager;
 
 namespace SGC2025.Enemy
 {
@@ -83,7 +84,7 @@ namespace SGC2025.Enemy
             if (!isSpawning) return;
 
             // カウントダウン中はスポーンしない
-            if (SGC2025.GameManager.I != null && SGC2025.GameManager.I.IsCountingDown)
+            if (GameManager.I != null && GameManager.I.IsCountingDown)
                 return;
 
             if (Time.time >= nextSpawnTime)

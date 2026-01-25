@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using SGC2025.Manager;
 
 namespace SGC2025.Enemy
 {
@@ -44,9 +45,9 @@ namespace SGC2025.Enemy
         /// </summary>
         private Vector2 GetGameAreaMaxFromGroundManager()
         {
-            if (SGC2025.GroundManager.I != null && SGC2025.GroundManager.I.MapData != null)
+            if (GroundManager.I != null && GroundManager.I.MapData != null)
             {
-                var maxWorldPos = SGC2025.GroundManager.I.MapData.MapMaxWorldPosition;
+                var maxWorldPos = GroundManager.I.MapData.MapMaxWorldPosition;
                 return maxWorldPos;
             }
             

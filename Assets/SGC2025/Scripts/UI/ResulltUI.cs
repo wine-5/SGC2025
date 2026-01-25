@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using SGC2025.Manager;
 
 namespace SGC2025.UI
 {

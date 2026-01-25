@@ -1,7 +1,7 @@
 using UnityEngine;
 using SGC2025.Events;
 
-namespace SGC2025
+namespace SGC2025.Manager
 {
     /// <summary>
     /// スコア管理を行うマネージャー

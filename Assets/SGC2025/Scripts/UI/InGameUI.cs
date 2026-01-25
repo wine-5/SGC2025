@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using SGC2025.Events;
+using SGC2025.Manager;
 
 namespace SGC2025.UI 
 {

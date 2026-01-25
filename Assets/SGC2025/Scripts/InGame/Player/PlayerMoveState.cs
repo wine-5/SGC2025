@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025.Manager;
 
 namespace SGC2025.Player
 {
@@ -32,13 +33,13 @@ namespace SGC2025.Player
             return;
         }
         
-        if (SGC2025.GroundManager.I == null || SGC2025.GroundManager.I.MapData == null)
+        if (GroundManager.I == null || GroundManager.I.MapData == null)
         {
             player.SetVelocity(player.moveInput.x, player.moveInput.y);
             return;
         }
 
-        var mapData = SGC2025.GroundManager.I.MapData;
+        var mapData = GroundManager.I.MapData;
         Vector2 limitHigh = new Vector2(
             mapData.MapMaxWorldPosition.x - BOUNDARY_MARGIN,
             mapData.MapMaxWorldPosition.y - BOUNDARY_MARGIN
