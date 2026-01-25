@@ -32,6 +32,7 @@ namespace SGC2025
         private float nowMutekiTime;
 
         public static event System.Action OnPlayerDeath;
+        public static event System.Action<float> OnPlayerDamaged; // HP率を渡す
         #endregion
 
         #region Unityライフサイクル
@@ -158,6 +159,10 @@ namespace SGC2025
             if (nowMutekiTime > 0f) return;
             TakeDamage(damage);
             nowMutekiTime = mutekiTime;
+            
+            // ダメージイベントを発火（HP率を渡す）
+            float hpRate = currentHealth / maxHealth;
+            OnPlayerDamaged?.Invoke(hpRate);
         }
 
         /// <summary>ダメージを受ける</summary>
