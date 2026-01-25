@@ -178,7 +178,7 @@ namespace SGC2025.Item
             //         ItemType.ScoreMultiplier => EffectType.ScoreBoostEffect,
             //         _ => throw new System.NotImplementedException()
             //     };
-            //     effect.effectInstance = EffectFactory.I.CreateEffect(effectType, player.transform.position, player.transform);
+            //     effect.effectInstance = EffectFactory.I.CreateEffect(effectType, player.transform.position, itemData.Duration, player.transform);
             // }
         }
         

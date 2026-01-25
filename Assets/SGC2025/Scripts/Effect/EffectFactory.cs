@@ -72,9 +72,10 @@ namespace SGC2025.Effect
         /// </summary>
         /// <param name="effectType">生成するエフェクトの種類</param>
         /// <param name="position">生成位置</param>
+        /// <param name="duration">エフェクトの持続時間</param>
         /// <param name="followTarget">追従対象（nullの場合は追従しない）</param>
         /// <returns>生成されたエフェクトオブジェクト</returns>
-        public GameObject CreateEffect(EffectType effectType, Vector3 position, Transform followTarget = null)
+        public GameObject CreateEffect(EffectType effectType, Vector3 position, float duration, Transform followTarget = null)
         {
             if (effectDataDictionary == null || effectDataDictionary.Count == 0)
             {
@@ -116,7 +117,7 @@ namespace SGC2025.Effect
                 var controller = result.GetComponent<EffectController>();
                 if (controller != null)
                 {
-                    controller.Initialize(followTarget, data.Duration);
+                    controller.Initialize(followTarget, duration);
                 }
             }
             
@@ -181,22 +182,6 @@ namespace SGC2025.Effect
         public bool IsEffectAvailable(EffectType effectType)
         {
             return effectDataDictionary != null && effectDataDictionary.ContainsKey(effectType);
-        }
-        
-        /// <summary>
-        /// 指定したエフェクトタイプの継続時間を取得
-        /// </summary>
-        /// <param name="effectType">取得するエフェクトタイプ</param>
-        /// <returns>継続時間、エフェクトが見つからない場合は0f</returns>
-        public float GetEffectDuration(EffectType effectType)
-        {
-            if (effectDataDictionary.TryGetValue(effectType, out EffectData data))
-            {
-                return data.Duration;
-            }
-            
-            Debug.LogWarning($"[EffectFactory] EffectType '{effectType}' のデータが見つかりません");
-            return 0f;
         }
     }
 }

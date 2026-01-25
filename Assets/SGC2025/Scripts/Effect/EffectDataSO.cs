@@ -10,11 +10,9 @@ namespace SGC2025.Effect
     {
         [SerializeField] private EffectType effectType;
         [SerializeField] private GameObject effectPrefab;
-        [SerializeField] private float duration = 1.0f;
         
         public EffectType EffectType => effectType;
         public GameObject EffectPrefab => effectPrefab;
-        public float Duration => duration;
     }
 
     /// <summary>
