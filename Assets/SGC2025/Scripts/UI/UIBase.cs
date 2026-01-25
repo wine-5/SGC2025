@@ -1,12 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
-using UnityEngine.Animations;
 using System.Collections.Generic;
-using UnityEngine.UIElements;
 using UnityEngine.EventSystems;
+using SGC2025.Audio;
 
-namespace SGC2025
+namespace SGC2025.UI
 {
     public class UIBase : MonoBehaviour
     {

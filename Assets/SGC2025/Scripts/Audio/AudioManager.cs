@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace SGC2025
+namespace SGC2025.Audio
 {
+    /// <summary>
+    /// オーディオ再生を管理するマネージャー
+    /// </summary>
     public class AudioManager : Singleton<AudioManager>
     {
         [Header("音量設定")]
@@ -77,10 +80,7 @@ namespace SGC2025
         private void BuildAudioDataDictionaries()
         {
             if (audioData == null)
-            {
-                Debug.LogError("[AudioManager] AudioDataSO is not assigned!");
-                return;
-            }
+                throw new System.NullReferenceException("[AudioManager] AudioDataSO is not assigned!");
 
             foreach (var seData in audioData.SEAudioDataList)
             {

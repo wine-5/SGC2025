@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 namespace SGC2025.Editor
 {
     public class MissingComponentFinderWindow : EditorWindow

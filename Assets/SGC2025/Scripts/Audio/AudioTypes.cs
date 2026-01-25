@@ -1,4 +1,4 @@
-namespace SGC2025
+namespace SGC2025.Audio
 {
     /// <summary>
     /// SEの種類
@@ -9,7 +9,8 @@ namespace SGC2025
         PlayerShoot,        // 弾を発射したとき
         Grass,          // 地面が緑いろになったとき
         TimeUp,            // TimeOverの音
-        ButtonClick        // ボタンをクリックしたときの音
+        ButtonClick,        // ボタンをクリックしたときの音
+        PlayerDamage,       // プレイヤーがダメージを受けたとき
     }
 
     /// <summary>

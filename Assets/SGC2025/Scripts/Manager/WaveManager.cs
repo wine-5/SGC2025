@@ -3,7 +3,7 @@ using TechC;
 using SGC2025.Enemy;
 using System;
 
-namespace SGC2025
+namespace SGC2025.Manager
 {
     /// <summary>
     /// Waveシステムを管理するマネージャー

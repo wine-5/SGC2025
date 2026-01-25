@@ -1,9 +1,9 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
+using SGC2025.Manager;
 
 
-namespace SGC2025
+namespace SGC2025.UI
 {
     /// <summary>
     /// ハイスコア達成時の名前入力UI

@@ -227,5 +227,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.HPBarController
   entity: {fileID: 0}
-  rate: 0
-  isPlayer: 0
+  rate: 1
+  isPlayer: 1

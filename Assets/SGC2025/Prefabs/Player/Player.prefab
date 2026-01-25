@@ -125,7 +125,6 @@ GameObject:
   - component: {fileID: 2395800231365955594}
   - component: {fileID: 1333771880581410669}
   - component: {fileID: 3218769305520244158}
-  - component: {fileID: 3161732890538178457}
   - component: {fileID: 72755281759421920}
   - component: {fileID: 4240489747714345096}
   m_Layer: 6
@@ -164,10 +163,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   maxHealth: 100
+  damage: 10
   currentHealth: 0
   moveSpeed: 8
-  positionLimitHigh: {x: 10, y: 10}
-  positionLimitLow: {x: -10, y: -10}
   mutekiTime: 3
 --- !u!54 &1333771880581410669
 Rigidbody:
@@ -217,21 +215,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5148746, y: 0.5653467, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3161732890538178457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5695510518103672783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4dd3686e3cf2564790b7e6ccdb7555d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageEffect
-  blinkInterval: 0.1
-  minAlpha: 0.3
-  useVisibilityBlink: 0
 --- !u!114 &72755281759421920
 MonoBehaviour:
   m_ObjectHideFlags: 0

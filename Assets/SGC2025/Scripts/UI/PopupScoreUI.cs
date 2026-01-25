@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-namespace SGC2025
+namespace SGC2025.UI
 {
     /// <summary>
     /// スコアポップアップUIの表示とアニメーション管理

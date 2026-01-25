@@ -2,9 +2,11 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.UI;
 using SGC2025.Events;
+using SGC2025.Manager;
 
-namespace SGC2025 
+namespace SGC2025.UI 
 {
     /// <summary>
     /// インゲーム中のUI表示を管理
@@ -13,9 +15,16 @@ namespace SGC2025
     {
         private const int MAX_POPUP_COUNT = 5;
         private const int INSPECTOR_MAX_POPUP_COUNT = 3;
+        private const float GAUGE_ANIMATION_SPEED = 2f;
         
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
+
+        [Header("領地ゲージ設定")]
+        [SerializeField] private Image territoryGaugeImage;
+        [SerializeField] private TextMeshProUGUI territoryPercentageText;
+        [SerializeField] private Color lowTerritoryColor = new Color(0.6f, 1f, 0.6f);
+        [SerializeField] private Color highTerritoryColor = new Color(0.2f, 0.8f, 0.2f);
 
         [Header("スコアアニメーション設定")]
         [SerializeField] private float scorePulseScale = 1.2f;
@@ -34,6 +43,7 @@ namespace SGC2025
         private Color originalScoreColor;
         private Vector3 originalScoreScale;
         private Coroutine currentScoreAnimation;
+        private float targetGaugeFillAmount = 0f;
 
         private void Awake()
         {
@@ -60,6 +70,7 @@ namespace SGC2025
         private void Start()
         {
             InitializeScoreDisplay();
+            InitializeTerritoryGauge();
         }
 
         private void OnEnable()
@@ -84,9 +95,14 @@ namespace SGC2025
         {
             UpdateScoreText(points);
             ShowScorePopupAtInspectorPosition(points);
+            UpdateTerritoryGauge();
         }
 
-        private void Update() => UpdateTimeText();
+        private void Update()
+        {
+            UpdateTimeText();
+            AnimateTerritoryGauge();
+        }
 
         /// <summary>
         /// スコア表示を初期化（0から開始）
@@ -232,6 +248,58 @@ namespace SGC2025
         {
             if (timeText == null) return;
             timeText.text = GameManager.I.RemainingGameTime.ToString("F1");
+        }
+
+        /// <summary>
+        /// 領地ゲージを初期化
+        /// </summary>
+        private void InitializeTerritoryGauge()
+        {
+            if (territoryGaugeImage != null)
+            {
+                territoryGaugeImage.fillAmount = 0f;
+                territoryGaugeImage.type = Image.Type.Filled;
+                territoryGaugeImage.fillMethod = Image.FillMethod.Radial360;
+                territoryGaugeImage.fillOrigin = (int)Image.Origin360.Top;
+                territoryGaugeImage.fillClockwise = true;
+            }
+            
+            UpdateTerritoryGauge();
+        }
+
+        /// <summary>
+        /// 領地ゲージを更新
+        /// </summary>
+        private void UpdateTerritoryGauge()
+        {
+            if (GroundManager.I == null) return;
+            
+            float rate = GroundManager.I.GetGreenificationRate();
+            targetGaugeFillAmount = rate;
+            
+            if (territoryPercentageText != null)
+                territoryPercentageText.text = $"{rate * 100f:F1}%";
+        }
+
+        /// <summary>
+        /// ゲージをスムーズにアニメーション
+        /// </summary>
+        private void AnimateTerritoryGauge()
+        {
+            if (territoryGaugeImage == null) return;
+            
+            float currentFill = territoryGaugeImage.fillAmount;
+            if (Mathf.Abs(currentFill - targetGaugeFillAmount) > 0.001f)
+            {
+                territoryGaugeImage.fillAmount = Mathf.Lerp(
+                    currentFill,
+                    targetGaugeFillAmount,
+                    Time.deltaTime * GAUGE_ANIMATION_SPEED
+                );
+                
+                Color gaugeColor = Color.Lerp(lowTerritoryColor, highTerritoryColor, territoryGaugeImage.fillAmount);
+                territoryGaugeImage.color = gaugeColor;
+            }
         }
     }
 }

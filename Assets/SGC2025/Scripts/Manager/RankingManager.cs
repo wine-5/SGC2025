@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace SGC2025
+namespace SGC2025.Manager
 {
 
     [Serializable]

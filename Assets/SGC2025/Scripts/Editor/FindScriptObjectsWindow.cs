@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Electrigger
+namespace SGC2025.Editor
 {
     /// <summary>
     /// シーン内のMissing Scriptを持つGameObjectを検索して一覧表示するツール

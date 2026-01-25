@@ -1,6 +1,7 @@
 using UnityEngine;
+using SGC2025.Manager;
 
-namespace SGC2025
+namespace SGC2025.UI
 {
     /// <summary>
     /// ButtonのOnClickからシーンを変更するためのラッパークラス
