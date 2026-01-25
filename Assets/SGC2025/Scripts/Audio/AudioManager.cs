@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace SGC2025
+namespace SGC2025.Audio
 {
     /// <summary>
     /// オーディオ再生を管理するマネージャー

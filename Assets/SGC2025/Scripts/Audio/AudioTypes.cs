@@ -1,4 +1,4 @@
-namespace SGC2025
+namespace SGC2025.Audio
 {
     /// <summary>
     /// SEの種類

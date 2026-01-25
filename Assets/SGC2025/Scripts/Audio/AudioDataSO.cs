@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025
+namespace SGC2025.Audio
 {
     /// <summary>
     /// SE用のオーディオデータ

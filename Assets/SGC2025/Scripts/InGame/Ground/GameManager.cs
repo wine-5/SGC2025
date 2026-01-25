@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TechC;
 using SGC2025.Player;
+using SGC2025.Audio;
 
 namespace SGC2025
 {

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using SGC2025.Events;
+using SGC2025.Audio;
 
 namespace SGC2025.Player.Bullet
 {
