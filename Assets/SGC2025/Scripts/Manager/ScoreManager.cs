@@ -1,5 +1,6 @@
 using UnityEngine;
 using SGC2025.Events;
+using SGC2025.Item;
 
 namespace SGC2025.Manager
 {
@@ -56,12 +57,30 @@ namespace SGC2025.Manager
 
         private void OnEnemyDestroyedWithScore(int score, Vector3 position)
         {
-            scoreEnemy += score;
+            // スコア倍率を適用
+            float multiplier = GetScoreMultiplier();
+            int finalScore = Mathf.RoundToInt(score * multiplier);
+            scoreEnemy += finalScore;
         }
 
         private void OnGroundGreenified(Vector3 position, int points)
         {
-            scoreGreen += points;
+            // スコア倍率を適用
+            float multiplier = GetScoreMultiplier();
+            int finalPoints = Mathf.RoundToInt(points * multiplier);
+            scoreGreen += finalPoints;
+        }
+        
+        /// <summary>
+        /// 現在のスコア倍率を取得
+        /// </summary>
+        private float GetScoreMultiplier()
+        {
+            if (ItemManager.I != null && ItemManager.I.IsEffectActive(ItemType.ScoreMultiplier))
+            {
+                return ItemManager.I.GetEffectValue(ItemType.ScoreMultiplier);
+            }
+            return 1f;
         }
 
         public int GetEnemyScore() => scoreEnemy;

@@ -30,10 +30,11 @@ namespace SGC2025.Effect
             duration = effectDuration;
             startTime = Time.time;
             
-            // 追従対象が設定されている場合、初期位置を設定
+            // 追従対象が設定されている場合、位置を完全に一致させる
             if (followTarget != null)
             {
                 transform.position = followTarget.position + followOffset;
+                transform.rotation = followTarget.rotation;
             }
         }
         

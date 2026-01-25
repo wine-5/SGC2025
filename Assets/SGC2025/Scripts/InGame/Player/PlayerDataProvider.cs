@@ -36,7 +36,6 @@ namespace SGC2025.Player
             }
             
             playerTransform = player;
-            Debug.Log($"[PlayerDataProvider] Player registered: {player.name}");
         }
         
         /// <summary>

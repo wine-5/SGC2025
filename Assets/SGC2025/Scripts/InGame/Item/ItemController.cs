@@ -79,7 +79,6 @@ namespace SGC2025.Item
             if (ItemManager.I != null)
             {
                 ItemManager.I.CollectItem(itemData);
-                Debug.Log($"[ItemController] Collected: {itemData.ItemName}");
             }
             else
             {

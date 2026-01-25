@@ -146,8 +146,6 @@ namespace SGC2025.Item
             
             // 効果を適用
             ApplyEffect(itemData);
-            
-            Debug.Log($"[ItemManager] Collected: {itemData.ItemName}");
         }
         
         /// <summary>
@@ -223,8 +221,6 @@ namespace SGC2025.Item
             
             // イベント通知
             OnItemEffectExpired?.Invoke(itemType);
-            
-            Debug.Log($"[ItemManager] Effect expired: {itemType}");
         }
         
         /// <summary>
