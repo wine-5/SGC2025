@@ -119,6 +119,55 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &263448080
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 263448081}
+  - component: {fileID: 263448082}
+  m_Layer: 0
+  m_Name: ItemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &263448081
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263448080}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.02853, y: 0, z: -0.68481}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1447157306}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &263448082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263448080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e7e59bad98503d43a951f3695810fb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Item.ItemManager
+  spawnSelector:
+    itemDataSO: {fileID: 11400000, guid: 46809566707b3ef43a9cb5f3c7d3d4c0, type: 2}
+  spawnInterval: 1
+  spawnHeightOffset: 0.5
+  autoSpawn: 1
 --- !u!1 &293066959 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6169577160033252297, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
@@ -202,6 +251,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: InGame
       objectReference: {fileID: 0}
+    - target: {fileID: 6565634178138567960, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -245,6 +298,9 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      insertIndex: 6
+      addedObject: {fileID: 263448081}
     - targetCorrespondingSourceObject: {fileID: 5866037184074103115, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1632901243}
@@ -256,6 +312,11 @@ PrefabInstance:
 --- !u!4 &1189758862 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5866037184074103115, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 1189758861}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1447157306 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
   m_PrefabInstance: {fileID: 1189758861}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1632901242
@@ -320,13 +381,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TechC.ObjectPool
   poolItems:
   - name: SpeedUpItem
-    prefab: {fileID: 829385116}
-    parent: {fileID: 5706087732011277661, guid: e3f8c96c7b82e12439eac413ddc1ad97, type: 3}
-    initialSize: 0
+    prefab: {fileID: 5706087732011277661, guid: e3f8c96c7b82e12439eac413ddc1ad97, type: 3}
+    parent: {fileID: 829385116}
+    initialSize: 5
   - name: ScoreUpItem
-    prefab: {fileID: 493730150}
-    parent: {fileID: 8577232092810221527, guid: f5dda0cf525685b4fa2292c8413e37e9, type: 3}
-    initialSize: 0
+    prefab: {fileID: 8577232092810221527, guid: f5dda0cf525685b4fa2292c8413e37e9, type: 3}
+    parent: {fileID: 493730150}
+    initialSize: 5
   autoExpand: 1
   expandSize: 5
 --- !u!1 &1775774968
@@ -422,7 +483,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.GameManager
   gameOverDelay: 0
   startCountDownTime: 0
-  gameTimeLimit: 10
+  gameTimeLimit: 300
   pausePanel: {fileID: 293066959}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
