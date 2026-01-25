@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using SGC2025.Player;
 
-namespace SGC2025
+namespace SGC2025.Effects
 {
     /// <summary>
     /// Playerがダメージを受けた時の画面フラッシュ演出

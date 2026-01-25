@@ -1,7 +1,7 @@
 using UnityEngine;
 using SGC2025.Player;
 
-namespace SGC2025
+namespace SGC2025.Effects
 {
     /// <summary>
     /// 無敵時間中のスプライト点滅演出
