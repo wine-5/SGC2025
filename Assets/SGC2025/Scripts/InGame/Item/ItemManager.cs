@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using SGC2025.Manager;
+// using SGC2025.Effect;
 
 namespace SGC2025.Item
 {
@@ -166,10 +167,18 @@ namespace SGC2025.Item
             // イベント通知
             OnItemEffectActivated?.Invoke(itemData.ItemType, itemData.EffectValue, itemData.Duration);
             
-            // TODO: エフェクトの生成（ObjectPool、EffectFactoryを使用）
-            // if (itemData.EffectPrefab != null)
+            // TODO: VFXエフェクト作成後に有効化
+            // エフェクト生成（Playerに追従）
+            // var player = SGC2025.Player.PlayerCharacter.I;
+            // if (player != null)
             // {
-            //     effect.effectInstance = Instantiate(itemData.EffectPrefab);
+            //     EffectType effectType = itemData.ItemType switch
+            //     {
+            //         ItemType.SpeedBoost => EffectType.SpeedBoostEffect,
+            //         ItemType.ScoreMultiplier => EffectType.ScoreBoostEffect,
+            //         _ => throw new System.NotImplementedException()
+            //     };
+            //     effect.effectInstance = EffectFactory.I.CreateEffect(effectType, player.transform.position, player.transform);
             // }
         }
         

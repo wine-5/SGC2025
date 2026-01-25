@@ -27,10 +27,6 @@ namespace SGC2025.Item
         [SerializeField, Tooltip("効果の強さ（移動速度の倍率 or スコアの倍率）")]
         private float effectValue = 1.5f;
         
-        [Header("エフェクト設定")]
-        [SerializeField, Tooltip("アイテム適用中に表示されるエフェクトのPrefab")]
-        private GameObject effectPrefab;
-        
         [Header("生成設定")]
         [SerializeField, Tooltip("アイテムのPrefab")]
         private GameObject itemPrefab;
@@ -44,7 +40,6 @@ namespace SGC2025.Item
         public string Description => description;
         public float Duration => duration;
         public float EffectValue => effectValue;
-        public GameObject EffectPrefab => effectPrefab;
         public GameObject ItemPrefab => itemPrefab;
         public int SpawnWeight => spawnWeight;
     }
