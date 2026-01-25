@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f179556cc64c77c448dcb85f7dacc16a, type: 3}
   m_Name: WeaponUpgradeData
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Player.Bullet.WeaponUpgradeDataSO
-  enemiesPerUpgrade: 30
+  enemiesPerUpgrade: 300
   minFireInterval: 0.1
   levelData:
   - level: 1
     bulletDirections: 4
-    fireInterval: 1
+    fireInterval: 100
   - level: 2
     bulletDirections: 6
     fireInterval: 0.8
