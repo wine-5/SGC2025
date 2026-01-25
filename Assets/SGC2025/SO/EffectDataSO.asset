@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d22df84125716e6498eb7eee9e307fa8, type: 3}
   m_Name: EffectDataSO
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Effect.EffectDataSO
-  effectDataList: []
+  effectDataList:
+  - effectType: 0
+    effectPrefab: {fileID: 2007498717295523718, guid: e268268d6e57e1f41b7a2b599b866667, type: 3}
+  - effectType: 1
+    effectPrefab: {fileID: 4093752641805609384, guid: 8f1dd1b9b2ee70949838aa2c2f114018, type: 3}
