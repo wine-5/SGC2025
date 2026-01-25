@@ -1,0 +1,757 @@
+/* セクションスタイル */
+
+.section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    position: relative;
+}
+
+.container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* ヒーローセクション */
+.hero-section {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #2d5016 0%, #5a8a2b 50%, #3a6e1f 100%);
+    position: relative;
+    overflow: hidden;
+    margin-top: 60px;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.butterfly-particle {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    opacity: 0.1;
+    animation: float linear infinite;
+    animation-duration: var(--duration, 10s);
+    animation-delay: var(--delay, 0s);
+}
+
+@keyframes float {
+    0% {
+        transform: translateX(0) translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateX(100px) translateY(-100px) rotate(180deg);
+    }
+    100% {
+        transform: translateX(0) translateY(-200px) rotate(360deg);
+    }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+}
+
+.game-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 0.5rem 1.5rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.main-title {
+    font-size: 4rem;
+    font-weight: 900;
+    margin: 1rem 0;
+    line-height: 1.2;
+}
+
+.title-kanji {
+    display: block;
+    font-size: 5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.title-sub {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 300;
+    letter-spacing: 3px;
+}
+
+.hero-tagline {
+    font-size: 1.3rem;
+    margin: 2rem 0;
+    font-weight: 300;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.hero-team {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.team-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.team-name {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    font-weight: 700;
+    backdrop-filter: blur(10px);
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    animation: bounce 2s infinite;
+}
+
+.scroll-indicator span {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.scroll-arrow {
+    width: 2px;
+    height: 20px;
+    background: white;
+    border-radius: 1px;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    50% {
+        transform: translateX(-50%) translateY(10px);
+    }
+}
+
+/* セクションヘッダー */
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #2d5016;
+    margin: 0;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #2d5016 0%, #6ba82d 100%);
+    border-radius: 2px;
+}
+
+/* 札幌ゲームキャンプセクション */
+.sapporo-section {
+    background: linear-gradient(to bottom, #f5f9f0 0%, #ffffff 100%);
+}
+
+.sapporo-content {
+    display: grid;
+    gap: 2rem;
+}
+
+.sapporo-info {
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.8;
+}
+
+.event-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detail-label {
+    font-weight: 700;
+    color: #2d5016;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.detail-value {
+    color: #555;
+    font-size: 1rem;
+}
+
+.sapporo-footer {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.official-link {
+    display: inline-block;
+    margin-top: 1rem;
+    background: linear-gradient(135deg, #2d5016 0%, #6ba82d 100%);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.3s ease;
+}
+
+.official-link:hover {
+    transform: translateY(-3px);
+}
+
+/* テーマセクション */
+.theme-team-section {
+    background: linear-gradient(to bottom, #ffffff 0%, #f5f9f0 100%);
+}
+
+.theme-content {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.theme-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.theme-main {
+    font-size: 2rem;
+    color: #2d5016;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.theme-word {
+    background: linear-gradient(135deg, #2d5016 0%, #6ba82d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.theme-explanation {
+    padding: 1.5rem 0;
+}
+
+.theme-concept {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+}
+
+.theme-kanji-reveal {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e0e0e0;
+}
+
+.kanji-large {
+    display: block;
+    font-size: 3rem;
+    font-weight: 900;
+    color: #2d5016;
+    letter-spacing: 2px;
+}
+
+.team-explanation {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.team-title {
+    font-size: 1.5rem;
+    color: #2d5016;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.team-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.team-info-item {
+    padding: 1.5rem;
+    background: #f5f9f0;
+    border-radius: 8px;
+    border-left: 4px solid #6ba82d;
+}
+
+.team-label-text {
+    display: block;
+    color: #2d5016;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.team-info-item p {
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ダウンロードセクション */
+.download-section {
+    background: linear-gradient(135deg, #6ba82d 0%, #2d5016 100%);
+    color: white;
+}
+
+.download-section .section-title {
+    color: white;
+}
+
+.download-section .section-title::after {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.download-content {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.download-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.status-badge.active {
+    background: rgba(76, 175, 80, 0.3);
+    color: #90EE90;
+    border: 1px solid #90EE90;
+}
+
+.download-description {
+    margin: 1rem 0;
+    font-size: 1.1rem;
+}
+
+.download-button {
+    display: inline-block;
+    background: white;
+    color: #2d5016;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.download-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ゲーム概要セクション */
+.game-overview-section {
+    background: linear-gradient(to bottom, #f5f9f0 0%, #ffffff 100%);
+}
+
+.overview-content {
+    display: grid;
+    gap: 2rem;
+}
+
+.overview-description {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.overview-description p {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.8;
+    margin: 0;
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.overview-item {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.overview-item h4 {
+    color: #2d5016;
+    font-size: 1.3rem;
+    margin: 0 0 1rem 0;
+}
+
+.game-flow-placeholder,
+.ranking-placeholder {
+    background: linear-gradient(135deg, #f0f4eb 0%, #e8eee2 100%);
+    padding: 3rem;
+    border-radius: 8px;
+    text-align: center;
+    border: 2px dashed #6ba82d;
+}
+
+.placeholder-icon {
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.game-flow-placeholder p,
+.ranking-placeholder p {
+    color: #777;
+    margin: 0;
+}
+
+/* 操作方法セクション */
+.controls-section {
+    background: linear-gradient(to bottom, #ffffff 0%, #f5f9f0 100%);
+}
+
+.controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.control-method {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.control-title {
+    color: #2d5016;
+    font-size: 1.3rem;
+    margin: 0 0 1.5rem 0;
+}
+
+.keyboard-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.key-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.key-row {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.key {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #2d5016 0%, #6ba82d 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.controller-layout {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.controller-visual {
+    font-size: 3rem;
+}
+
+.control-description {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.control-tip {
+    background: linear-gradient(135deg, #f0f4eb 0%, #e8eee2 100%);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 4px solid #6ba82d;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.tip-icon {
+    font-size: 1.5rem;
+}
+
+.control-tip p {
+    color: #333;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* 開発者セクション */
+.developers-section {
+    background: linear-gradient(to bottom, #f5f9f0 0%, #ffffff 100%);
+}
+
+.developers-content {
+    display: grid;
+    gap: 2rem;
+}
+
+.developers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.developer-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.developer-card:hover {
+    transform: translateY(-5px);
+}
+
+.developer-avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.avatar-icon {
+    font-size: 3rem;
+    display: block;
+}
+
+.developer-name {
+    color: #2d5016;
+    font-size: 1.3rem;
+    margin: 0.5rem 0;
+    font-weight: 700;
+}
+
+.developer-role {
+    color: #6ba82d;
+    font-size: 0.9rem;
+    margin: 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.developer-responsibility {
+    color: #555;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+    line-height: 1.6;
+}
+
+.developer-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.dev-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #f0f4eb 0%, #e8eee2 100%);
+    border-radius: 50%;
+    color: #2d5016;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.dev-link:hover {
+    background: linear-gradient(135deg, #2d5016 0%, #6ba82d 100%);
+    color: white;
+}
+
+.dev-link svg {
+    width: 20px;
+    height: 20px;
+}
+
+.additional-developers {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.additional-developers p {
+    color: #555;
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* フッター */
+.footer {
+    background: #2d5016;
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+}
+
+.footer-event,
+.footer-team,
+.footer-copyright {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+    .section {
+        padding: 3rem 1rem;
+        min-height: auto;
+    }
+
+    .main-title {
+        font-size: 2.5rem;
+    }
+
+    .title-kanji {
+        font-size: 3rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+
+    .event-details,
+    .team-info-grid,
+    .overview-grid,
+    .controls-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .developers-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-team {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .hero-tagline {
+        font-size: 1rem;
+    }
+
+    .kanji-large {
+        font-size: 2rem;
+    }
+}

@@ -13,12 +13,56 @@
     
     <!-- スタイルシート -->
     <link rel="stylesheet" href="web/css/style.css">
+    <link rel="stylesheet" href="web/css/header.css">
+    <link rel="stylesheet" href="web/css/sections.css">
     <link rel="stylesheet" href="web/css/animations.css">
     <link rel="stylesheet" href="web/css/responsive.css">
 </head>
 <body>
-    <!-- ヒーローセクション -->
-    <section class="hero" id="hero">
+    <!-- ヘッダー -->
+    <header class="header" id="header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-text">蝶々反乱</span>
+            </div>
+            
+            <nav class="navigation" id="navigation">
+                <ul class="nav-list">
+                    <li><a href="#home" class="nav-link" data-section="home">ホーム</a></li>
+                    <li><a href="#sapporo-camp" class="nav-link" data-section="sapporo-camp">札幌ゲームキャンプ</a></li>
+                    <li><a href="#download" class="nav-link" data-section="download">ダウンロード</a></li>
+                    <li><a href="#game-overview" class="nav-link" data-section="game-overview">ゲーム概要</a></li>
+                    <li><a href="#controls" class="nav-link" data-section="controls">操作方法</a></li>
+                    <li><a href="#developers" class="nav-link" data-section="developers">開発者</a></li>
+                </ul>
+            </nav>
+            
+            <div class="header-controls">
+                <button class="language-toggle" id="language-toggle" aria-label="言語切り替え">
+                    <span class="lang-indicator">日本語</span>
+                </button>
+                <button class="hamburger" id="hamburger" aria-label="メニュー">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- モバイルナビゲーション -->
+    <nav class="mobile-nav" id="mobile-nav">
+        <ul class="mobile-nav-list">
+            <li><a href="#home" class="mobile-nav-link">ホーム</a></li>
+            <li><a href="#sapporo-camp" class="mobile-nav-link">札幌ゲームキャンプ</a></li>
+            <li><a href="#download" class="mobile-nav-link">ダウンロード</a></li>
+            <li><a href="#game-overview" class="mobile-nav-link">ゲーム概要</a></li>
+            <li><a href="#controls" class="mobile-nav-link">操作方法</a></li>
+            <li><a href="#developers" class="mobile-nav-link">開発者</a></li>
+        </ul>
+    </nav>
+    <!-- セクション0: ホーム（ヒーロー） -->
+    <section class="section hero-section" id="home">
         <div class="hero-background">
             <div class="butterfly-particle" style="--delay: 0s; --duration: 15s;"></div>
             <div class="butterfly-particle" style="--delay: 3s; --duration: 12s;"></div>
@@ -29,40 +73,134 @@
         <div class="hero-content">
             <div class="game-badge">札幌ゲームキャンプ2025</div>
             <h1 class="main-title">
-                <span class="title-kanji">蝶々反乱</span>
-                <span class="title-sub">BUTTERFLY REBELLION</span>
+                <span class="title-kanji" data-i18n="hero.title_kanji">蝶々反乱</span>
+                <span class="title-sub" data-i18n="hero.title_sub">BUTTERFLY REBELLION</span>
             </h1>
-            <p class="hero-tagline">角をもつ蝶々が、奪われた自然を取り戻す</p>
+            <p class="hero-tagline" data-i18n="hero.tagline">角をもつ蝶々が、奪われた自然を取り戻す</p>
             <div class="hero-team">
                 <span class="team-label">制作チーム</span>
-                <span class="team-name">アルティメット革命軍</span>
+                <span class="team-name" data-i18n="hero.team">アルティメット革命軍</span>
             </div>
             <div class="scroll-indicator">
-                <span>SCROLL DOWN</span>
+                <span>スクロール</span>
                 <div class="scroll-arrow"></div>
             </div>
         </div>
     </section>
 
-    <!-- テーマセクション -->
-    <section class="section theme-section" id="theme">
+    <!-- セクション1: 札幌ゲームキャンプ説明 -->
+    <section class="section sapporo-section" id="sapporo-camp">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">
-                    <span class="title-en">THEME</span>
-                    <span class="title-ja">テーマ</span>
-                </h2>
+                <h2 class="section-title" data-i18n="sapporo_camp.section_title">札幌ゲームキャンプ2025</h2>
+            </div>
+            
+            <div class="sapporo-content">
+                <div class="sapporo-info">
+                    <p data-i18n="sapporo_camp.description">札幌を拠点とするゲーム会社が合同で開催するイベントです。プロのゲームクリエイターによる講座やゲームジャムなど、ゲーム開発に関する様々なイベントが開催されました。</p>
+                </div>
+                
+                <div class="event-details">
+                    <div class="detail-item">
+                        <span class="detail-label">開催日</span>
+                        <span class="detail-value" data-i18n="sapporo_camp.event_date">開催日：2025年10月17日(金)・18日(土)・19日(日)</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">会場</span>
+                        <span class="detail-value" data-i18n="sapporo_camp.event_venue">開催場所：サッポロファクトリー</span>
+                    </div>
+                </div>
+                
+                <div class="sapporo-footer">
+                    <p data-i18n="sapporo_camp.attendance">延べ1,900人が来場した道内最大級のゲームイベント</p>
+                    <a href="https://sapporo-game-camp.com/2025/" target="_blank" rel="noopener noreferrer" class="official-link" data-i18n="sapporo_camp.official_website">公式Webサイト</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- セクション1.5: テーマとチーム説明 -->
+    <section class="section theme-team-section" id="theme">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="theme.section_title">テーマ</h2>
             </div>
             
             <div class="theme-content">
                 <div class="theme-card">
                     <div class="theme-main">
-                        <span class="theme-word">「かくちょう」</span>
+                        <span class="theme-word" data-i18n="theme.main">「かくちょう」</span>
                     </div>
                     <div class="theme-explanation">
-                        <p class="theme-concept">角（ツノ）をもつ蝶々が人間に奪われた自然を取り戻す！</p>
+                        <p class="theme-concept" data-i18n="theme.concept">角（ツノ）をもつ蝶々が人間に奪われた自然を取り戻す！</p>
                         <div class="theme-kanji-reveal">
                             <span class="kanji-large">角蝶</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- チーム説明 -->
+            <div class="team-explanation">
+                <h3 class="team-title">チーム情報</h3>
+                <div class="team-info-grid">
+                    <div class="team-info-item">
+                        <span class="team-label-text" data-i18n="theme.team_number">チーム番号：1</span>
+                        <p data-i18n="theme.team_description">テーマ『かくちょう』の意味を『角蝶』として解釈し、チーム全員で決定しました。</p>
+                    </div>
+                    <div class="team-info-item">
+                        <span class="team-label-text">ゲームコンセプト</span>
+                        <p data-i18n="theme.game_concept">プレイヤーが蝶の角を発射して、敵や破壊物に当てることで自然を取り返していくゲーム</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- セクション2: ダウンロード -->
+    <section class="section download-section" id="download">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="download.section_title">ダウンロード</h2>
+            </div>
+            
+            <div class="download-content">
+                <div class="download-card">
+                    <div class="download-status">
+                        <span class="status-badge active" data-i18n="download.status">プレイ可能</span>
+                    </div>
+                    <p class="download-description" data-i18n="download.description">UnityRoomでゲームをプレイできます</p>
+                    <a href="https://unityroom.com/settings/games" target="_blank" rel="noopener noreferrer" class="download-button" data-i18n="download.button">UnityRoomでプレイ</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- セクション3: ゲーム概要 -->
+    <section class="section game-overview-section" id="game-overview">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="game_overview.section_title">ゲーム概要</h2>
+            </div>
+            
+            <div class="overview-content">
+                <div class="overview-description">
+                    <p data-i18n="game_overview.description">敵を撃破することで、失われた自然が徐々に回復していきます。制限時間内に敵を倒してスコアを競い、ランキングに載ることを目指そう！</p>
+                </div>
+
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <h4 data-i18n="game_overview.game_flow">ゲームフロー</h4>
+                        <div class="game-flow-placeholder">
+                            <span class="placeholder-icon">🎮</span>
+                            <p>ゲーム画面のスクリーンショット</p>
+                        </div>
+                    </div>
+                    <div class="overview-item">
+                        <h4 data-i18n="game_overview.ranking">ランキング</h4>
+                        <div class="ranking-placeholder">
+                            <span class="placeholder-icon">🏆</span>
+                            <p data-i18n="game_overview.ranking">ランキングに掲載されるチャンス</p>
                         </div>
                     </div>
                 </div>
@@ -70,89 +208,16 @@
         </div>
     </section>
 
-    <!-- キャラクターセクション -->
-    <section class="section characters-section" id="characters">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <span class="title-en">CHARACTERS</span>
-                    <span class="title-ja">登場キャラクター</span>
-                </h2>
-            </div>
-            
-            <div class="characters-grid">
-                <div class="character-card">
-                    <div class="character-image">
-                        <div class="placeholder-image">🦋</div>
-                    </div>
-                    <div class="character-info">
-                        <h3 class="character-name">蝶々</h3>
-                        <p class="character-subtitle">カクチョウ</p>
-                        <p class="character-description">角を持つ特別な蝶々。人間に奪われた自然を取り戻すために立ち上がった勇敢な戦士。</p>
-                    </div>
-                </div>
-                
-                <div class="character-card">
-                    <div class="character-image">
-                        <div class="placeholder-image">🏭</div>
-                    </div>
-                    <div class="character-info">
-                        <h3 class="character-name">人間</h3>
-                        <p class="character-subtitle">敵キャラクター</p>
-                        <p class="character-description">自然を破壊し、環境を汚染する存在。蝶々たちの住処を奪った張本人。</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Game Overview Section -->
-    <section class="section gameplay-section" id="gameplay">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <span class="title-en">GAME OVERVIEW</span>
-                    <span class="title-ja">ゲーム概要</span>
-                </h2>
-            </div>
-            
-            <div class="gameplay-grid">
-                <div class="gameplay-card">
-                    <div class="card-number">01</div>
-                    <div class="card-icon">🎯</div>
-                    <h3 class="card-title">敵を倒して自然を増やそう!</h3>
-                    <p class="card-description">敵を撃破することで、失われた自然が徐々に回復していきます。緑豊かな世界を取り戻せ!</p>
-                </div>
-                
-                <div class="gameplay-card">
-                    <div class="card-number">02</div>
-                    <div class="card-icon">⏱️</div>
-                    <h3 class="card-title">制限時間内に敵を倒しまくれ!!</h3>
-                    <p class="card-description">時間との戦い!限られた時間の中で、できるだけ多くの敵を倒してスコアを競おう。</p>
-                </div>
-                
-                <div class="gameplay-card">
-                    <div class="card-number">03</div>
-                    <div class="card-icon">❤️</div>
-                    <h3 class="card-title">HPが無くなればGAME OVER</h3>
-                    <p class="card-description">敵の攻撃をかわしながら戦おう。体力管理が勝利への鍵となる!</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 操作方法セクション -->
+    <!-- セクション4: 操作方法 -->
     <section class="section controls-section" id="controls">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">
-                    <span class="title-en">CONTROLS</span>
-                    <span class="title-ja">操作方法</span>
-                </h2>
+                <h2 class="section-title" data-i18n="controls.section_title">操作方法</h2>
             </div>
             
-            <div class="controls-content">
-                <div class="controls-visual">
+            <div class="controls-grid">
+                <div class="control-method">
+                    <h3 class="control-title" data-i18n="controls.keyboard">キーボード</h3>
                     <div class="keyboard-layout">
                         <div class="key-group">
                             <div class="key-row">
@@ -164,70 +229,41 @@
                                 <div class="key">D</div>
                             </div>
                         </div>
-                        <div class="key-description">
-                            <p><strong>WASD</strong> - 移動</p>
-                            <p>キャラクターを上下左右に移動させます</p>
+                    </div>
+                    <p class="control-description" data-i18n="controls.keyboard_desc">WASD - 移動 | キャラクターを上下左右に移動させます</p>
+                </div>
+
+                <div class="control-method">
+                    <h3 class="control-title" data-i18n="controls.controller">ゲームコントローラー</h3>
+                    <div class="controller-layout">
+                        <div class="controller-visual">
+                            <span class="controller-icon">🎮</span>
                         </div>
                     </div>
-                    
-                    <div class="control-tip">
-                        <span class="tip-icon">💡</span>
-                        <p>敵の攻撃パターンを見極めて、素早く回避しよう!</p>
-                    </div>
+                    <p class="control-description" data-i18n="controls.controller_desc">左スティック / 十字キー - 移動 | コントローラーでも同様に移動できます</p>
                 </div>
+            </div>
+
+            <div class="control-tip">
+                <span class="tip-icon">💡</span>
+                <p data-i18n="controls.tip">敵の攻撃パターンを見極めて、素早く回避しよう!</p>
             </div>
         </div>
     </section>
 
-    <!-- ダウンロードセクション -->
-    <section class="section download-section" id="download">
+    <!-- セクション5: 開発者 -->
+    <section class="section developers-section" id="developers">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">
-                    <span class="title-en">DOWNLOAD</span>
-                    <span class="title-ja">ダウンロード</span>
-                </h2>
+                <h2 class="section-title" data-i18n="developers.section_title">開発者一覧</h2>
             </div>
             
-            <div class="download-content">
-                <div class="download-card">
-                    <div class="download-status">
-                        <span class="status-badge coming-soon">近日公開予定</span>
-                    </div>
-                    <h3>ゲームのリリースをお待ちください</h3>
-                    <p>現在、最終調整を行っています。リリース情報は後日お知らせいたします。</p>
+            <div class="developers-content">
+                <div class="developers-grid" id="developers-grid">
+                    <!-- JSONから動的に生成 -->
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 開発者セクション -->
-    <section class="section developer-section" id="developer">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <span class="title-en">DEVELOPER</span>
-                    <span class="title-ja">開発者情報</span>
-                </h2>
-            </div>
-            
-            <div class="developer-content">
-                <div class="developer-card">
-                    <div class="developer-avatar">
-                        <span class="avatar-icon">👨‍💻</span>
-                    </div>
-                    <div class="developer-info">
-                        <h3 class="developer-name">wine-5</h3>
-                        <p class="developer-role">Game Developer</p>
-                        <a href="https://github.com/wine-5" class="github-link" target="_blank" rel="noopener noreferrer">
-                            <span class="github-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                                </svg>
-                            </span>
-                            <span>GitHub</span>
-                        </a>
-                    </div>
+                <div class="additional-developers">
+                    <p data-i18n="developers.additional_designers">その他、デザイナー2名が参加しています</p>
                 </div>
             </div>
         </div>
@@ -237,17 +273,19 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-title">蝶々反乱</div>
-                <p class="footer-event">札幌ゲームキャンプ2025 - ゲームジャム作品</p>
-                <p class="footer-team">制作: アルティメット革命軍</p>
-                <p class="footer-copyright">&copy; 2025 wine-5. All rights reserved.</p>
+                <div class="footer-title" data-i18n="footer.title">蝶々反乱</div>
+                <p class="footer-event" data-i18n="footer.event">札幌ゲームキャンプ2025 - ゲームジャム作品</p>
+                <p class="footer-team" data-i18n="footer.team">制作: アルティメット革命軍</p>
+                <p class="footer-copyright" data-i18n="footer.copyright">&copy; 2025 wine-5. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <!-- JavaScript ファイル -->
+    <script src="web/js/i18n.js"></script>
+    <script src="web/js/navigation.js"></script>
+    <script src="web/js/developers.js"></script>
     <script src="web/js/main.js"></script>
-    <script src="web/js/animation-controller.js"></script>
     <script src="web/js/scroll-effects.js"></script>
 </body>
 </html>
