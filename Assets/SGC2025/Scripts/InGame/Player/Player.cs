@@ -84,6 +84,12 @@ namespace SGC2025.Player
             baseMovSpeed = moveSpeed;
             if (GroundManager.I != null)
                 transform.position = GroundManager.I.GetPlayerSpawnPosition();
+            
+            // PlayerDataProviderに登録
+            if (PlayerDataProvider.I != null)
+            {
+                PlayerDataProvider.I.RegisterPlayer(transform);
+            }
         }
 
         private void Update()
