@@ -1,5 +1,4 @@
 using UnityEngine;
-using SGC2025.Player;
 
 namespace SGC2025.Player
 {
