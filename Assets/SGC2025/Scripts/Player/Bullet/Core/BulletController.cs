@@ -8,7 +8,6 @@ namespace SGC2025.Player.Bullet
     /// 弾の動作とライフサイクルを管理するコントローラー
     /// ObjectPoolパターンによる効率的な再利用をサポート
     /// </summary>
-    [RequireComponent(typeof(Rigidbody), typeof(Collider))]
     public class BulletController : MonoBehaviour
     {
         #region 定数
@@ -33,7 +32,7 @@ namespace SGC2025.Player.Bullet
         
         
         // キャッシュされたコンポーネント
-        private Rigidbody cachedRigidbody;
+        private Rigidbody2D cachedRigidbody;
         private SpriteRenderer cachedSpriteRenderer;
         private BulletRotationEffect rotationEffect;
         
@@ -126,8 +125,8 @@ namespace SGC2025.Player.Bullet
             
             if (cachedRigidbody != null)
             {
-                cachedRigidbody.linearVelocity = Vector3.zero;
-                cachedRigidbody.angularVelocity = Vector3.zero;
+                cachedRigidbody.linearVelocity = Vector2.zero;
+                cachedRigidbody.angularVelocity = 0f;
             }
             
             transform.rotation = Quaternion.identity;
@@ -138,7 +137,7 @@ namespace SGC2025.Player.Bullet
 
         #region 衝突処理
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerEnter2D(Collider2D other)
         {
             if (!isActive) return;
             
@@ -154,7 +153,7 @@ namespace SGC2025.Player.Bullet
 
         private void CacheComponents()
         {
-            cachedRigidbody = GetComponent<Rigidbody>();
+            cachedRigidbody = GetComponent<Rigidbody2D>();
             cachedSpriteRenderer = GetComponent<SpriteRenderer>();
             rotationEffect = GetComponent<BulletRotationEffect>();
         }
@@ -163,11 +162,11 @@ namespace SGC2025.Player.Bullet
         {
             if (cachedRigidbody != null)
             {
-                cachedRigidbody.useGravity = false;
+                cachedRigidbody.gravityScale = 0f;
                 cachedRigidbody.linearDamping = 0f;
             }
 
-            var collider = GetComponent<Collider>();
+            var collider = GetComponent<Collider2D>();
             if (collider != null)
             {
                 collider.isTrigger = true;
@@ -195,7 +194,7 @@ namespace SGC2025.Player.Bullet
         {
             if (cachedRigidbody != null && bulletData != null)
             {
-                Vector3 velocity = direction.normalized * bulletData.MoveSpeed;
+                Vector2 velocity = direction.normalized * bulletData.MoveSpeed;
                 cachedRigidbody.linearVelocity = velocity;
             }
         }
@@ -204,7 +203,7 @@ namespace SGC2025.Player.Bullet
         {
             if (cachedRigidbody != null)
             {
-                cachedRigidbody.linearVelocity = Vector3.zero;
+                cachedRigidbody.linearVelocity = Vector2.zero;
             }
         }
 
@@ -282,7 +281,7 @@ namespace SGC2025.Player.Bullet
 
         #region プライベートメソッド - 衝突ハンドリング
 
-        private void HandleEnemyCollision(Collider other)
+        private void HandleEnemyCollision(Collider2D other)
         {
             // プレイヤーオブジェクトは除外（Layer 6はPlayer）
             if (other.name.Contains("Player") || other.gameObject.layer == 6)

@@ -11,7 +11,7 @@ public abstract class EntityState
     protected string animBoolName;
 
     protected Animator anim;
-    protected Rigidbody rb;
+    protected Rigidbody2D rb;
     protected PlayerInputSet input;
 
     public EntityState(SGC2025.PlayerCharacter player, StateMachine stateMachine, string animBoolName)

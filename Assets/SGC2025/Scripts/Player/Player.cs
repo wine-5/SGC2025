@@ -9,14 +9,9 @@ namespace SGC2025
     /// </summary>
     public class PlayerCharacter : MonoBehaviour
     {
-        #region 定数
-        private const float DEFAULT_MAX_HEALTH = 100f;
-        private const float DEFAULT_DAMAGE = 10f;
-        #endregion
-
         #region プロパティ
         public Animator anim { get; private set; }
-        public Rigidbody rb { get; private set; }
+        public Rigidbody2D rb { get; private set; }
         public PlayerInputSet input;
         public StateMachine stateMachine { get; private set; }
         public PlayerIdleState idleState { get; private set; }
@@ -29,7 +24,8 @@ namespace SGC2025
         private PlayerWeaponSystem weaponSystem;
 
         [Header("ステータス")]
-        [SerializeField] private float maxHealth = DEFAULT_MAX_HEALTH;
+        [SerializeField] private float maxHealth = 100;
+        [SerializeField] private float damage = 10;
         [SerializeField] private float currentHealth;
         public float moveSpeed;
         [SerializeField] private float mutekiTime;
@@ -42,7 +38,7 @@ namespace SGC2025
         private void Awake()
         {
             anim = GetComponentInChildren<Animator>();
-            rb = GetComponent<Rigidbody>();
+            rb = GetComponent<Rigidbody2D>();
             weaponSystem = GetComponent<PlayerWeaponSystem>();
             stateMachine = new StateMachine();
             input = new PlayerInputSet();
@@ -86,7 +82,7 @@ namespace SGC2025
             HandlePauseInput();
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                 Damage();
@@ -160,7 +156,7 @@ namespace SGC2025
         public void Damage()
         {
             if (nowMutekiTime > 0f) return;
-            TakeDamage(DEFAULT_DAMAGE);
+            TakeDamage(damage);
             nowMutekiTime = mutekiTime;
         }
 
