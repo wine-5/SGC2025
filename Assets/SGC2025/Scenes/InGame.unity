@@ -124,40 +124,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6169577160033252297, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
   m_PrefabInstance: {fileID: 1189758861}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &483889726 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6385992789826873755, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-  m_PrefabInstance: {fileID: 1189758861}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &483889728 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3061321673851043945, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-  m_PrefabInstance: {fileID: 1189758861}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 483889726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9d8996df4b982f4692394811f588a20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.CameraMove
---- !u!114 &483889732
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 483889726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6a1e47ebcf904f4fa0ec4365bf58e56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.CameraManager
-  cameraMove: {fileID: 483889728}
-  shakeSettings:
-    duration: 0.3
-    magnitude: 0.2
-    lowHpMultiplier: 2
-    lowHpThreshold: 0.3
 --- !u!1001 &1189758861
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -211,13 +177,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 5445627234178319117, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6385992789826873755, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 483889732}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
 --- !u!1 &1945701715
 GameObject:

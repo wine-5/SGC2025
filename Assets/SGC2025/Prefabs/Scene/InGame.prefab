@@ -636,6 +636,98 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &3337615450922802726
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8364579140231300811}
+  - component: {fileID: 4606892016002921684}
+  - component: {fileID: 543798161983519976}
+  - component: {fileID: 6525734171408762485}
+  m_Layer: 5
+  m_Name: DamageFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8364579140231300811
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3337615450922802726}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2528560888479792971}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &4606892016002921684
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3337615450922802726}
+  m_CullTransparentMesh: 1
+--- !u!114 &543798161983519976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3337615450922802726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6525734171408762485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3337615450922802726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30baeb9957724b94b92092bb631093c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.ScreenFlashEffect
+  flashDuration: 0.12
+  normalFlashColor: {r: 1, g: 0.3679245, b: 0.3679245, a: 0.3}
+  lowHpFlashColor: {r: 1, g: 0, b: 0, a: 0.6}
+  lowHpThreshold: 0.3
 --- !u!1 &3918604213726646951
 GameObject:
   m_ObjectHideFlags: 0
@@ -1363,37 +1455,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &5445627234178319117
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2511372844363423496}
-  m_Layer: 0
-  m_Name: Player
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2511372844363423496
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5445627234178319117}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.72362, y: 0, z: 97.3114}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6900073775319507052}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5485042787687540399
 GameObject:
   m_ObjectHideFlags: 0
@@ -1429,7 +1490,6 @@ Transform:
   - {fileID: 3790934630922290371}
   - {fileID: 6805557713837787223}
   - {fileID: 7398606369332570691}
-  - {fileID: 2511372844363423496}
   - {fileID: 6771261281989170649}
   - {fileID: 2528560888479792971}
   - {fileID: 6553813152698670916}
@@ -1593,6 +1653,7 @@ GameObject:
   - component: {fileID: 505955615212632723}
   - component: {fileID: 6568764261463162374}
   - component: {fileID: 3061321673851043945}
+  - component: {fileID: 4477582449839869296}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1734,6 +1795,24 @@ MonoBehaviour:
   offset: {x: 0, y: 5, z: -10}
   smoothSpeed: 5
   orthographicSize: 8
+--- !u!114 &4477582449839869296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6385992789826873755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6a1e47ebcf904f4fa0ec4365bf58e56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.CameraManager
+  cameraMove: {fileID: 3061321673851043945}
+  shakeSettings:
+    duration: 0.3
+    magnitude: 0.4
+    lowHpMultiplier: 2
+    lowHpThreshold: 0.3
 --- !u!1 &6528859321063284872
 GameObject:
   m_ObjectHideFlags: 0
@@ -2624,6 +2703,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2343378516607040469, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 203072323499626274}
+    - targetCorrespondingSourceObject: {fileID: 2343378516607040469, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8364579140231300811}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
 --- !u!223 &336211271028442502 stripped
@@ -4060,6 +4142,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5695510518103672783, guid: 704587f4269e5a744879351244ad2d79, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5396103672403638712}
+    - targetCorrespondingSourceObject: {fileID: 5510145243689765196, guid: 704587f4269e5a744879351244ad2d79, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1538685838024290320}
   m_SourcePrefab: {fileID: 100100000, guid: 704587f4269e5a744879351244ad2d79, type: 3}
 --- !u!1 &3464963292798661274 stripped
 GameObject:
@@ -4159,6 +4244,25 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 0.88684887}
   m_EdgeRadius: 0
+--- !u!1 &3705185435735424025 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5510145243689765196, guid: 704587f4269e5a744879351244ad2d79, type: 3}
+  m_PrefabInstance: {fileID: 9159338001901958485}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1538685838024290320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3705185435735424025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4f8933a336516e4ea6def456f3976c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.SpriteBlinkEffect
+  blinkInterval: 0.1
+  blinkAlpha: 0.3
 --- !u!4 &8003218262421739174 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1156763169151722483, guid: 704587f4269e5a744879351244ad2d79, type: 3}
