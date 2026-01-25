@@ -8,7 +8,9 @@ namespace SGC2025.Item
     /// </summary>
     public class ItemController : MonoBehaviour
     {
-        private const string PLAYER_TAG = "Player";
+        [Header("判定設定")]
+        [SerializeField, Tooltip("プレイヤーのレイヤー")]
+        private LayerMask playerLayer;
         
         [Header("動作設定")]
         [SerializeField, Tooltip("アイテムの回転速度")]
@@ -52,7 +54,8 @@ namespace SGC2025.Item
         /// </summary>
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (!collision.CompareTag(PLAYER_TAG)) return;
+            // Layerで判定
+            if (((1 << collision.gameObject.layer) & playerLayer) == 0) return;
             
             // アイテム取得処理
             OnItemCollected();

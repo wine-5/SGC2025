@@ -128,11 +128,6 @@ namespace SGC2025.Item
             }
             
             GameObject itemObj = ItemFactory.I.SpawnItem(itemData, position);
-            
-            if (itemObj != null)
-            {
-                Debug.Log($"[ItemManager] Spawned: {itemData.ItemName} at {position}");
-            }
         }
         
         /// <summary>

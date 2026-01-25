@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using SGC2025.Player.Bullet;
 using SGC2025.Audio;
 using SGC2025.Manager;
+using SGC2025.Item;
 
 namespace SGC2025.Player
 {
@@ -29,6 +30,7 @@ namespace SGC2025.Player
         [SerializeField] private float maxHealth = 100;
         [SerializeField] private float damage = 10;
         [SerializeField] private float currentHealth;
+        private float baseMovSpeed;
         public float moveSpeed;
         [SerializeField] private float mutekiTime;
         private float nowMutekiTime;
@@ -57,6 +59,10 @@ namespace SGC2025.Player
             input.Player.Movement.performed += OnMovementPerformed;
             input.Player.Movement.canceled += OnMovementCanceled;
             input.Player.Shot.performed += OnShotPerformed;
+            
+            // アイテム効果イベントの購読
+            ItemManager.OnItemEffectActivated += OnItemEffectActivated;
+            ItemManager.OnItemEffectExpired += OnItemEffectExpired;
         }
 
         private void OnDisable()
@@ -65,12 +71,17 @@ namespace SGC2025.Player
             input.Player.Movement.canceled -= OnMovementCanceled;
             input.Player.Shot.performed -= OnShotPerformed;
             input.Disable();
+            
+            // アイテム効果イベントの購読解除
+            ItemManager.OnItemEffectActivated -= OnItemEffectActivated;
+            ItemManager.OnItemEffectExpired -= OnItemEffectExpired;
         }
 
         private void Start()
         {
             stateMachine.Initialize(idleState);
             currentHealth = maxHealth;
+            baseMovSpeed = moveSpeed;
             if (GroundManager.I != null)
                 transform.position = GroundManager.I.GetPlayerSpawnPosition();
         }
@@ -166,11 +177,66 @@ namespace SGC2025.Player
         {
             if (damage <= 0f) return;
             currentHealth = Mathf.Max(0f, currentHealth - damage);
+            
+            // ダメージイベント発火 (HP割合を渡す)
+            float hpRate = maxHealth > 0f ? currentHealth / maxHealth : 0f;
+            OnPlayerDamaged?.Invoke(hpRate);
+            
             if (currentHealth <= 0f)
                 OnPlayerDeath?.Invoke();
         }
 
         private void DecreaseMutekiTime() => nowMutekiTime -= Time.deltaTime;
+        #endregion
+
+        #region アイテム効果
+        /// <summary>
+        /// アイテム効果が適用された時の処理
+        /// </summary>
+        private void OnItemEffectActivated(ItemType itemType, float effectValue, float duration)
+        {
+            switch (itemType)
+            {
+                case ItemType.SpeedBoost:
+                    ApplySpeedBoost(effectValue);
+                    break;
+                case ItemType.ScoreMultiplier:
+                    // ScoreManagerで処理されるため、ここでは何もしない
+                    break;
+            }
+        }
+        
+        /// <summary>
+        /// アイテム効果が切れた時の処理
+        /// </summary>
+        private void OnItemEffectExpired(ItemType itemType)
+        {
+            switch (itemType)
+            {
+                case ItemType.SpeedBoost:
+                    ResetSpeed();
+                    break;
+                case ItemType.ScoreMultiplier:
+                    // ScoreManagerで処理されるため、ここでは何もしない
+                    break;
+            }
+        }
+        
+        /// <summary>
+        /// 移動速度上昇を適用
+        /// </summary>
+        private void ApplySpeedBoost(float multiplier)
+        {
+            moveSpeed = baseMovSpeed * multiplier;
+        }
+        
+        /// <summary>
+        /// 移動速度を元に戻す
+        /// </summary>
+        private void ResetSpeed()
+        {
+            moveSpeed = baseMovSpeed;
+        }
         #endregion
     }
 }

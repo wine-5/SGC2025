@@ -104,6 +104,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f79c8af8c080248ae9772d808f6f9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Item.ItemController
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
   rotationSpeed: 50
   lifeTime: 30
 --- !u!58 &6423034586531685633
