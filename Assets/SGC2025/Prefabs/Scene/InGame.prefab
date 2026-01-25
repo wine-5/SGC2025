@@ -1032,12 +1032,12 @@ Transform:
   m_GameObject: {fileID: 4395238179010556949}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.63139, y: 0.11567, z: -1.8685899}
+  m_LocalPosition: {x: -1426.8606, y: 0.11567, z: -4153.265}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1061174531285907392}
-  m_Father: {fileID: 6900073775319507052}
+  m_Father: {fileID: 5866037184074103115}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6455854541159092923
 MonoBehaviour:
@@ -1073,6 +1073,38 @@ MonoBehaviour:
   objectPool: {fileID: 6455854541159092923}
   defaultBulletData: {fileID: 11400000, guid: da7a7f36ffadcad439df4f325a0c719a, type: 2}
   bulletPoolName: Bullet
+--- !u!1 &4445918080475096661
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5866037184074103115}
+  m_Layer: 0
+  m_Name: ObjectPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5866037184074103115
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4445918080475096661}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1427.492, y: 0, z: 4151.3965}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7398606369332570691}
+  m_Father: {fileID: 6900073775319507052}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4737507970144483797
 GameObject:
   m_ObjectHideFlags: 0
@@ -1488,10 +1520,10 @@ Transform:
   - {fileID: 9129542173336566347}
   - {fileID: 8960482015314000207}
   - {fileID: 3790934630922290371}
-  - {fileID: 6805557713837787223}
-  - {fileID: 7398606369332570691}
-  - {fileID: 6771261281989170649}
   - {fileID: 2528560888479792971}
+  - {fileID: 6805557713837787223}
+  - {fileID: 6771261281989170649}
+  - {fileID: 5866037184074103115}
   - {fileID: 6553813152698670916}
   - {fileID: 8855822355361470937}
   m_Father: {fileID: 0}
