@@ -54,7 +54,7 @@ namespace SGC2025
             if (isPlayer)
             {
                 if (cachedPlayer != null)
-                    currentHealth = cachedPlayer.GetPlayerCurrentHalth();
+                    currentHealth = cachedPlayer.GetPlayerCurrentHealth();
             }
             else
             {

@@ -45,37 +45,26 @@ namespace SGC2025
 
         private void Update()
         {
-            if (flashTimer > 0)
+            if (flashTimer > 0f)
             {
-                // フラッシュの透明度を時間経過で減少
-                float alpha = Mathf.Lerp(0f, currentFlashColor.a, flashTimer / flashDuration);
+                float t = flashTimer / flashDuration;
+                float alpha = currentFlashColor.a * t;
                 Color color = currentFlashColor;
                 color.a = alpha;
                 flashImage.color = color;
                 
                 flashTimer -= Time.deltaTime;
             }
-            else if (flashImage.color.a > 0)
-            {
-                // フラッシュ終了時に完全に透明にする
+            else if (flashImage.color.a > 0f)
                 flashImage.color = Color.clear;
-            }
         }
 
-        /// <summary>
-        /// Playerがダメージを受けた時の処理
-        /// </summary>
-        private void HandlePlayerDamaged(float hpRate)
-        {
-            TriggerFlash(hpRate);
-        }
+        /// <summary>Playerがダメージを受けた時の処理</summary>
+        private void HandlePlayerDamaged(float hpRate) => TriggerFlash(hpRate);
 
-        /// <summary>
-        /// フラッシュ演出をトリガー
-        /// </summary>
+        /// <summary>フラッシュ演出をトリガー</summary>
         public void TriggerFlash(float hpRate)
         {
-            // HP率に応じてフラッシュ色を決定
             currentFlashColor = hpRate <= lowHpThreshold ? lowHpFlashColor : normalFlashColor;
             flashTimer = flashDuration;
         }

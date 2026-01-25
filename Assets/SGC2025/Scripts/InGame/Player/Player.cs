@@ -31,8 +31,10 @@ namespace SGC2025
         [SerializeField] private float mutekiTime;
         private float nowMutekiTime;
 
+        public bool IsInvincible => nowMutekiTime > 0f;
+
         public static event System.Action OnPlayerDeath;
-        public static event System.Action<float> OnPlayerDamaged; // HP率を渡す
+        public static event System.Action<float> OnPlayerDamaged;
         #endregion
 
         #region Unityライフサイクル
@@ -73,9 +75,7 @@ namespace SGC2025
 
         private void Update()
         {
-            // カウントダウン中は処理をスキップ
-            if (GameManager.I != null && GameManager.I.IsCountingDown)
-                return;
+            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
             
             stateMachine.UpdateActiveState();
             DecreaseMutekiTime();
@@ -105,28 +105,21 @@ namespace SGC2025
 
         private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            // カウントダウン中は入力を無視
-            if (GameManager.I != null && GameManager.I.IsCountingDown)
-                return;
+            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
             
             moveInput = context.ReadValue<Vector2>();
         }
 
         private void OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            // カウントダウン中は入力を無視
-            if (GameManager.I != null && GameManager.I.IsCountingDown)
-                return;
+            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
             
             moveInput = Vector2.zero;
         }
 
         private void OnShotPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            // カウントダウン中は射撃を無視
-            if (GameManager.I != null && GameManager.I.IsCountingDown)
-                return;
-            
+            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
             if (weaponSystem == null) return;
             
             weaponSystem.Fire();
@@ -152,7 +145,7 @@ namespace SGC2025
         public float GetPlayerMaxHealth() => maxHealth;
 
         /// <summary>現在HP取得</summary>
-        public float GetPlayerCurrentHalth() => currentHealth;
+        public float GetPlayerCurrentHealth() => currentHealth;
 
         public void Damage()
         {
@@ -160,9 +153,10 @@ namespace SGC2025
             TakeDamage(damage);
             nowMutekiTime = mutekiTime;
             
-            // ダメージイベントを発火（HP率を渡す）
             float hpRate = currentHealth / maxHealth;
             OnPlayerDamaged?.Invoke(hpRate);
+            
+            AudioManager.I?.PlaySE(SEType.PlayerDamage);
         }
 
         /// <summary>ダメージを受ける</summary>

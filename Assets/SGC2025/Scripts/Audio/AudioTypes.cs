@@ -7,6 +7,7 @@ namespace SGC2025
     {
         None,
         PlayerShoot,        // 弾を発射したとき
+        PlayerDamage,       // プレイヤーがダメージを受けたとき
         Grass,          // 地面が緑いろになったとき
         TimeUp,            // TimeOverの音
         ButtonClick        // ボタンをクリックしたときの音

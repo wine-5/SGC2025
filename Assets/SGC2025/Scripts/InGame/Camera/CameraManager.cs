@@ -16,7 +16,7 @@ namespace SGC2025
         
         private float shakeTimer;
         private Vector3 currentShakeOffset;
-        private float currentShakeMagnitude; // 現在のシェイク強度
+        private float currentShakeMagnitude;
 
         private void Awake()
         {
@@ -36,15 +36,13 @@ namespace SGC2025
 
         private void LateUpdate()
         {
-            // シェイク処理（CameraMoveのLateUpdateの後に実行される）
-            if (shakeTimer > 0)
+            if (shakeTimer > 0f)
             {
                 // CameraMoveが計算した位置を保存
                 Vector3 targetPosition = transform.position;
                 
-                // ランダムなシェイクオフセットを生成
                 currentShakeOffset = Random.insideUnitSphere * currentShakeMagnitude;
-                currentShakeOffset.z = 0; // Z軸は固定（2Dゲームのため）
+                currentShakeOffset.z = 0f;
                 
                 // シェイクオフセットを適用
                 transform.position = targetPosition + currentShakeOffset;
@@ -58,20 +56,12 @@ namespace SGC2025
             }
         }
 
-        /// <summary>
-        /// Playerがダメージを受けた時の処理
-        /// </summary>
-        private void HandlePlayerDamaged(float hpRate)
-        {
-            TriggerShake(hpRate);
-        }
+        /// <summary>Playerがダメージを受けた時の処理</summary>
+        private void HandlePlayerDamaged(float hpRate) => TriggerShake(hpRate);
 
-        /// <summary>
-        /// カメラシェイクをトリガー
-        /// </summary>
+        /// <summary>カメラシェイクをトリガー</summary>
         public void TriggerShake(float hpRate)
         {
-            // HP率に応じてシェイクの強さを調整
             currentShakeMagnitude = shakeSettings.GetMagnitudeByHpRate(hpRate);
             shakeTimer = shakeSettings.Duration;
         }
