@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using SGC2025.Player;
 using SGC2025.Audio;
 
@@ -22,6 +23,7 @@ namespace SGC2025.Manager
         private float gameTimeLimit = 600f;
         [Header("ポーズ設定")]
         [SerializeField] private GameObject pausePanel;
+        [SerializeField] private GameObject firstPauseButton; // ポーズ時に最初に選択されるボタン
 
         private bool isGameOver;
         private bool isPaused;
@@ -177,6 +179,13 @@ namespace SGC2025.Manager
             isPaused = true;
             pausePanel.SetActive(true);
             Time.timeScale = 0f;
+            
+            // ポーズ時に最初のボタンを選択状態にする
+            if (firstPauseButton != null && EventSystem.current != null)
+            {
+                EventSystem.current.SetSelectedGameObject(firstPauseButton);
+            }
+            
             OnGamePause?.Invoke();
         }
 
@@ -186,6 +195,13 @@ namespace SGC2025.Manager
             isPaused = false;
             pausePanel.SetActive(false);
             Time.timeScale = 1f;
+            
+            // 選択状態をクリア
+            if (EventSystem.current != null)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+            }
+            
             OnGameResume?.Invoke();
         }
 
