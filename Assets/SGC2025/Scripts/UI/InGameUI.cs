@@ -276,7 +276,11 @@ namespace SGC2025.UI
         private void UpdateTimeText()
         {
             if (timeText == null) return;
-            timeText.text = GameManager.I.RemainingGameTime.ToString("F1");
+            if (GameManager.I != null)
+            {
+                Debug.Log($"[InGameUI] UpdateTimeText - GameManager Instance: {GameManager.I.GetInstanceID()}, RemainingGameTime: {GameManager.I.RemainingGameTime:F1}");
+                timeText.text = GameManager.I.RemainingGameTime.ToString("F1");
+            }
         }
 
         /// <summary>

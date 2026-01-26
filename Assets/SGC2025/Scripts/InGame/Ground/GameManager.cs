@@ -44,18 +44,19 @@ namespace SGC2025.Manager
         public float CurrentGameTime => countGameTimer;
         public float RemainingGameTime => gameTimeLimit - countGameTimer;
         public float CountDownTimer => currentCountDownTimer;
-        protected override bool UseDontDestroyOnLoad => true;
+        protected override bool UseDontDestroyOnLoad => false;
 
 
         protected override void Init()
         {
             base.Init();
+            Debug.Log($"[GameManager] Init called - Instance: {GetInstanceID()}");
             PlayerCharacter.OnPlayerDeath += HandlePlayerDeath;
-            SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         private void Start()
         {
+            Debug.Log($"[GameManager] Start called - Instance: {GetInstanceID()}");
             InitializeGameState();
             
             if (pausePanel != null)
@@ -67,26 +68,23 @@ namespace SGC2025.Manager
 
         protected override void OnDestroy()
         {
+            Debug.Log($"[GameManager] OnDestroy called - Instance: {GetInstanceID()}");
+            
             PlayerCharacter.OnPlayerDeath -= HandlePlayerDeath;
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-
+            
+            // Time.timeScaleを確実にリセット（ポーズ中に破棄された場合に備えて）
+            Time.timeScale = 1f;
+            
+            // static eventsをクリア（リスナーが残らないように）
+            OnGameOver = null;
+            OnGamePause = null;
+            OnGameResume = null;
+            OnCountDownFinished = null;
+            OnGameTimeUp = null;
+            
+            Debug.Log($"[GameManager] OnDestroy completed");
+            
             base.OnDestroy();
-        }
-
-        /// <summary>
-        /// シーンがロードされたときの処理
-        /// </summary>
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            if (scene.name != SceneName.InGame.ToString()) return;
-            
-            InitializeGameState();
-            
-            if (pausePanel != null)
-                pausePanel.SetActive(false);
-                
-            if (AudioManager.I != null)
-                AudioManager.I.PlayBGM(BGMType.InGame);
         }
 
         /// <summary>
@@ -94,12 +92,16 @@ namespace SGC2025.Manager
         /// </summary>
         private void InitializeGameState()
         {
+            Debug.Log($"[GameManager] InitializeGameState called - Instance: {GetInstanceID()}");
+            
             isGameOver = false;
             isPaused = false;
             isCountDown = true;
             currentCountDownTimer = startCountDownTime;
             countGameTimer = 0f;
             Time.timeScale = 1f;
+            
+            Debug.Log($"[GameManager] countGameTimer reset to: {countGameTimer}, Time.timeScale: {Time.timeScale}");
             
             if (ScoreManager.I != null)
                 ScoreManager.I.ResetScore();
@@ -159,6 +161,9 @@ namespace SGC2025.Manager
 
         private void LoadResultScene()
         {
+            // ポーズ中にゲームオーバーになった場合に備えてTime.timeScaleをリセット
+            Time.timeScale = 1f;
+            
             if (SceneController.I == null) return;
 
             if (GroundManager.I != null && ScoreManager.I != null)
@@ -175,7 +180,10 @@ namespace SGC2025.Manager
         {
             if (isPaused || isGameOver) return;
             isPaused = true;
-            pausePanel.SetActive(true);
+            
+            if (pausePanel != null)
+                pausePanel.SetActive(true);
+            
             Time.timeScale = 0f;
             
             if (firstPauseButton != null && EventSystem.current != null)
@@ -188,7 +196,10 @@ namespace SGC2025.Manager
         {
             if (!isPaused || isGameOver) return;
             isPaused = false;
-            pausePanel.SetActive(false);
+            
+            if (pausePanel != null)
+                pausePanel.SetActive(false);
+            
             Time.timeScale = 1f;
             
             if (EventSystem.current != null)
