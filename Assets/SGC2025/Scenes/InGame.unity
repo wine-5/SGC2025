@@ -235,6 +235,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1699553515}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7598834064868492910, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2044317792}
     - targetCorrespondingSourceObject: {fileID: 8731708449829125272, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1775774971}
@@ -382,8 +385,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.GameManager
   gameOverDelay: 0
   startCountDownTime: 0
-  gameTimeLimit: 300
+  gameTimeLimit: 10
   pausePanel: {fileID: 293066959}
+--- !u!1 &2044317790 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7598834064868492910, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 1189758861}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2044317792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044317790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a06db55acb7eb5c47ac52bb649737a12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Player.PlayerDataProvider
 --- !u!1001 &1910432702733946833
 PrefabInstance:
   m_ObjectHideFlags: 0

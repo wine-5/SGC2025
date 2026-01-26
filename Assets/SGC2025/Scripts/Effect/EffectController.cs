@@ -73,7 +73,8 @@ namespace SGC2025.Effect
             }
             else
             {
-                Destroy(gameObject);
+                Debug.LogError("[EffectController] EffectFactory is not available! Cannot return effect to pool.");
+                gameObject.SetActive(false);
             }
         }
         

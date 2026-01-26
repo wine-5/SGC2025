@@ -37,7 +37,7 @@ namespace SGC2025.Item
             // 自動消滅チェック
             if (lifeTime > 0f && Time.time - spawnTime >= lifeTime)
             {
-                Destroy(gameObject);
+                ReturnToPool();
             }
         }
         
@@ -97,8 +97,8 @@ namespace SGC2025.Item
             }
             else
             {
-                // Factoryがない場合は通常の削除
-                Destroy(gameObject);
+                Debug.LogError("[ItemController] ItemFactory is not available! Cannot return item to pool.");
+                gameObject.SetActive(false);
             }
         }
     }

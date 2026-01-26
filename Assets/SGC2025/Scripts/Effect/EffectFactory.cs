@@ -134,8 +134,8 @@ namespace SGC2025.Effect
             
             if (objectPool == null)
             {
-                Debug.LogError("[EffectFactory] ObjectPool が利用できません！エフェクトを直接破棄します");
-                Destroy(effectObject);
+                Debug.LogError("[EffectFactory] ObjectPool is not available! Cannot return effect to pool.");
+                effectObject.SetActive(false);
                 return;
             }
             
