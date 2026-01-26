@@ -2,7 +2,6 @@ using UnityEngine;
 using SGC2025.Events;
 using SGC2025.Audio;
 using SGC2025.Effect;
-using System.Collections;
 
 namespace SGC2025.Manager
 {
@@ -103,12 +102,8 @@ namespace SGC2025.Manager
             // 緑化エフェクトを生成（地面タイルの中心、少し上に表示）
             if (EffectFactory.I != null)
             {
-                Vector3 effectPos = pos + Vector3.up * GRASS_EFFECT_Y_OFFSET; // Y軸を少し上に調整
-                GameObject grassEffect = EffectFactory.I.CreateEffect(EffectType.GrassRestorationEffect, effectPos, GRASS_EFFECT_DURATION);
-                
-                // エフェクト持続時間後にPool返却処理
-                if (grassEffect != null)
-                    StartCoroutine(ReturnEffectToPoolAfterDelay(grassEffect, GRASS_EFFECT_DURATION));
+                Vector3 effectPos = pos + Vector3.up * GRASS_EFFECT_Y_OFFSET;
+                EffectFactory.I.CreateEffect(EffectType.GrassRestorationEffect, effectPos, GRASS_EFFECT_DURATION);
             }
             
             if (AudioManager.I != null)
@@ -243,19 +238,6 @@ namespace SGC2025.Manager
                 return;
             }
 
-        }
-        
-        /// <summary>
-        /// 指定時間後にエフェクトをPoolに返却するCoroutine
-        /// </summary>
-        private System.Collections.IEnumerator ReturnEffectToPoolAfterDelay(GameObject effect, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            
-            if (effect != null && EffectFactory.I != null)
-            {
-                EffectFactory.I.ReturnEffect(effect);
-            }
         }
     }
 }
