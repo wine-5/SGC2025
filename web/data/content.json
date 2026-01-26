@@ -41,9 +41,9 @@
     "controls": {
       "section_title": "操作方法",
       "keyboard": "キーボード",
-      "keyboard_desc": "Wキー：上 Aキー：左 Sキー：下 Dキー：右 で移動",
+      "keyboard_desc": "Wキー：上 Aキー：左 Sキー：下 Dキー：右 で移動\nスペースキー：弾を発射",
       "controller": "ゲームコントローラー",
-      "controller_desc": "左スティック / 十字キー で移動 | コントローラーでも同様に移動できます",
+      "controller_desc": "左スティック / 十字キー で移動\n○ボタン（右のボタン）、もしくは△ボタン（上のボタン）で撃てる",
       "tip": "敵の攻撃パターンを見極めて、素早く回避しよう!"
     },
     "developers": {
@@ -147,9 +147,9 @@
     "controls": {
       "section_title": "Controls",
       "keyboard": "Keyboard",
-      "keyboard_desc": "WASD - Move | Move the character up, down, left, and right",
+      "keyboard_desc": "W Key: Up, A Key: Left, S Key: Down, D Key: Right to move\nSpace Key: Fire bullet",
       "controller": "Game Controller",
-      "controller_desc": "Left Stick / D-Pad - Move | You can also move with a controller",
+      "controller_desc": "Left Stick / D-Pad to move\nCircle Button (right button) or Triangle Button (top button) to fire bullet",
       "tip": "Observe enemy attack patterns and dodge quickly!"
     },
     "developers": {

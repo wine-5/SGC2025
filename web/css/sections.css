@@ -294,7 +294,7 @@
 .theme-concept {
     font-size: 1.2rem;
     color: #555;
-    margin-bottom: 1.5rem;
+    margin: 1rem 0 0 0;
     line-height: 1.8;
 }
 
@@ -302,6 +302,9 @@
     margin-top: 2rem;
     padding-top: 2rem;
     border-top: 2px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .kanji-large {
@@ -310,6 +313,7 @@
     font-weight: 900;
     color: #2d5016;
     letter-spacing: 2px;
+    margin-bottom: 0.5rem;
 }
 
 .team-explanation {
