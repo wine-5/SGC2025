@@ -28,9 +28,9 @@ namespace SGC2025.UI
         {
             Init,
             Start,
+            GreeningRate, // 緑化度（％）
             EnemyKillScore,
             GreeningScore,
-            GreeningRate, // 緑化度（％）
             TotalScore,
             HighScore,
             End
@@ -70,20 +70,20 @@ namespace SGC2025.UI
                 case ResultPhase.Start:
                     break;
 
-                case ResultPhase.EnemyKillScore:
-                    enemyScoreText.SetText("0");
-                    break;
-
-                case ResultPhase.GreeningScore:
-                    greeningScoreText.SetText("0");
-                    break;
-
                 case ResultPhase.GreeningRate:
                     if (greeningRateText != null)
                     {
                         float rate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * 100f : 0f;
                         greeningRateText.SetText($"{rate:F1}%");
                     }
+                    break;
+
+                case ResultPhase.EnemyKillScore:
+                    enemyScoreText.SetText("0");
+                    break;
+
+                case ResultPhase.GreeningScore:
+                    greeningScoreText.SetText("0");
                     break;
 
                 case ResultPhase.TotalScore:
@@ -122,16 +122,16 @@ namespace SGC2025.UI
                 case ResultPhase.Start:
                     break;
 
+                case ResultPhase.GreeningRate:
+                    // 緑化度は固定表示なのでカウントアップ不要
+                    break;
+
                 case ResultPhase.EnemyKillScore:
                     enemyScoreText.SetText(ScoreCountUp(waitTime, ScoreManager.I.GetEnemyScore(), SCORE_COUNT_UP_TIME).ToString());
                     break;
 
                 case ResultPhase.GreeningScore:
                     greeningScoreText.SetText(ScoreCountUp(waitTime, ScoreManager.I.GetGreenScore(), SCORE_COUNT_UP_TIME).ToString());
-                    break;
-                
-                case ResultPhase.GreeningRate:
-                    // 緑化度は固定表示なのでカウントアップ不要
                     break;
                     
                 case ResultPhase.HighScore:
