@@ -181,19 +181,7 @@ namespace SGC2025.UI
                 EventSystem.current.SetSelectedGameObject(firstButtonAfterInput);
         }
 
-        override protected void DestoryChild(UIBase uIBase)
-        {
-            NameInputUI nameInput = uIBase as NameInputUI;
-            if (nameInput != null)
-            {
-                if (rankingUI != null)
-                {
-                    rankingUI.UpdateScore();
-                }
-                
-                ShowEndButtons();
-            }
-        }
+
 
     }
 }

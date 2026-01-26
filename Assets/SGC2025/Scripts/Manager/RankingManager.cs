@@ -5,7 +5,9 @@ using UnityEngine;
 
 namespace SGC2025.Manager
 {
-
+    /// <summary>
+    /// スコアデータの構造体
+    /// </summary>
     [Serializable]
     public struct ScoreData
     {
@@ -21,12 +23,18 @@ namespace SGC2025.Manager
         }
     }
 
+    /// <summary>
+    /// ランキングデータのコンテナクラス
+    /// </summary>
     [Serializable]
     public class RankingData
     {
         public List<ScoreData> scores;
     }
 
+    /// <summary>
+    /// ランキングデータの保存と取得を管理するクラス
+    /// </summary>
     public class RankingManager : Singleton<RankingManager>
     {
         private string filePath;
@@ -94,6 +102,7 @@ namespace SGC2025.Manager
         /// 現在のランキングを取得
         /// </summary>
         public List<ScoreData> GetRanking() => ranking.scores;
+        
         /// <summary>
         /// 新しいスコアがランキングに入ったか判定する
         /// </summary>
