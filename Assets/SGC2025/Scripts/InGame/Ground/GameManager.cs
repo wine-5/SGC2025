@@ -18,18 +18,14 @@ namespace SGC2025.Manager
         protected override void Init()
         {
             base.Init();
-            Debug.Log($"[GameManager] Init called - Instance: {GetInstanceID()}");
         }
 
         private void Start()
         {
-            Debug.Log($"[GameManager] Start called - Instance: {GetInstanceID()}");
         }
 
         protected override void OnDestroy()
         {
-            Debug.Log($"[GameManager] OnDestroy called - Instance: {GetInstanceID()}");
-            
             // Time.timeScaleを確実にリセット（ポーズ中に破棄された場合に備えて）
             Time.timeScale = 1f;
             

@@ -128,6 +128,28 @@ namespace SGC2025.Item
         }
         
         /// <summary>
+        /// 指定位置にランダムアイテムを生成（デバッグ用）
+        /// </summary>
+        public void SpawnRandomItemAt(Vector3 position)
+        {
+            if (spawnSelector.IsEmpty)
+            {
+                Debug.LogWarning("[ItemManager] ItemSpawnSelector is empty!");
+                return;
+            }
+            
+            ItemData selectedItem = spawnSelector.SelectRandom();
+            if (selectedItem == null)
+            {
+                Debug.LogWarning("[ItemManager] Failed to select random item!");
+                return;
+            }
+            
+            SpawnItem(selectedItem, position);
+            Debug.Log($"[ItemManager] Spawned {selectedItem.ItemName} at {position}");
+        }
+        
+        /// <summary>
         /// アイテムを取得して効果を適用
         /// </summary>
         public void CollectItem(ItemData itemData)

@@ -74,7 +74,6 @@ namespace SGC2025.Manager
         {
             currentWaveLevel = 1;
             UpdateCurrentWaveData();
-            Debug.Log($"[WaveManager] Wave system initialized - Starting Wave {currentWaveLevel}");
         }
         
         /// <summary>

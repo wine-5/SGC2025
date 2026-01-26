@@ -261,7 +261,6 @@ namespace SGC2025.UI
             if (timeText == null) return;
             if (InGameManager.I != null)
             {
-                Debug.Log($"[InGameUI] UpdateTimeText - InGameManager Instance: {InGameManager.I.GetInstanceID()}, RemainingGameTime: {InGameManager.I.RemainingGameTime:F1}");
                 timeText.text = InGameManager.I.RemainingGameTime.ToString("F1");
             }
         }

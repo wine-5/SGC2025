@@ -34,12 +34,10 @@ namespace SGC2025
         /// </summary>
         protected virtual void Awake()
         {
-            Debug.Log($"[Singleton<{typeof(T).Name}>] Awake - this: {(this as T)?.GetInstanceID()}, instance: {instance?.GetInstanceID()}, instance.gameObject: {(instance?.gameObject != null ? "alive" : "null")}");
             
             // 既存のインスタンスがnullまたは破棄されている場合
             if (instance == null || instance.gameObject == null)
             {
-                Debug.Log($"[Singleton<{typeof(T).Name}>] Setting new instance: {(this as T)?.GetInstanceID()}");
                 instance = this as T;
                 Init();
                 if (UseDontDestroyOnLoad) 
@@ -61,7 +59,6 @@ namespace SGC2025
                 if (!UseDontDestroyOnLoad)
                 {
                     T oldInstance = instance;
-                    Debug.Log($"[Singleton<{typeof(T).Name}>] Replacing old instance {oldInstance?.GetInstanceID()} with new instance {(this as T)?.GetInstanceID()}");
                     instance = this as T;
                     if (oldInstance != null && oldInstance.gameObject != null)
                     {
@@ -71,7 +68,6 @@ namespace SGC2025
                 }
                 else
                 {
-                    Debug.LogWarning($"[Singleton<{typeof(T).Name}>] Destroying duplicate - this: {(this as T)?.GetInstanceID()}, keeping instance: {instance?.GetInstanceID()}");
                     if (DestroyTargetGameObject)
                         Destroy(gameObject);
                     else Destroy(this);
