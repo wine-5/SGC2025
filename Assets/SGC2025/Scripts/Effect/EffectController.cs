@@ -30,7 +30,6 @@ namespace SGC2025.Effect
             duration = effectDuration;
             startTime = Time.time;
             
-            // 追従対象が設定されている場合、位置を完全に一致させる
             if (followTarget != null)
             {
                 transform.position = followTarget.position + followOffset;
@@ -40,26 +39,18 @@ namespace SGC2025.Effect
         
         private void Update()
         {
-            // 追従処理
             if (followTarget != null)
             {
                 Vector3 targetPosition = followTarget.position + followOffset;
                 
                 if (followSmooth > 0f)
-                {
                     transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * followSmooth);
-                }
                 else
-                {
                     transform.position = targetPosition;
-                }
             }
             
-            // 自動返却
             if (duration > 0f && Time.time - startTime >= duration)
-            {
                 ReturnToPool();
-            }
         }
         
         /// <summary>
@@ -68,31 +59,12 @@ namespace SGC2025.Effect
         public void ReturnToPool()
         {
             if (EffectFactory.I != null)
-            {
                 EffectFactory.I.ReturnEffect(gameObject);
-            }
             else
             {
                 Debug.LogError("[EffectController] EffectFactory is not available! Cannot return effect to pool.");
                 gameObject.SetActive(false);
             }
-        }
-        
-        /// <summary>
-        /// 追従を停止
-        /// </summary>
-        public void StopFollowing()
-        {
-            followTarget = null;
-        }
-        
-        /// <summary>
-        /// 追従対象を変更
-        /// </summary>
-        /// <param name="newTarget">新しい追従対象</param>
-        public void SetFollowTarget(Transform newTarget)
-        {
-            followTarget = newTarget;
         }
         
         private void OnDisable()

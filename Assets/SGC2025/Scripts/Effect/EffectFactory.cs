@@ -1,7 +1,6 @@
 using UnityEngine;
 using TechC;
 using System.Collections.Generic;
-using SGC2025.Manager;
 
 namespace SGC2025.Effect
 {
@@ -24,15 +23,12 @@ namespace SGC2025.Effect
         {
             base.Init();
             
-            // ObjectPoolが未設定の場合、自動検索
             if (objectPool == null)
             {
                 objectPool = FindAnyObjectByType<ObjectPool>();
                 
                 if (objectPool == null)
-                {
                     Debug.LogError("[EffectFactory] ObjectPool が見つかりません！");
-                }
             }
             
             InitializeEffectDataDictionary();
@@ -57,13 +53,9 @@ namespace SGC2025.Effect
             foreach (var effectData in effectDataSO.EffectDataList)
             {
                 if (effectData != null && effectData.EffectPrefab != null)
-                {
                     effectDataDictionary[effectData.EffectType] = effectData;
-                }
                 else if (effectData != null)
-                {
                     Debug.LogWarning($"[EffectFactory] {effectData.EffectType} のプレハブが設定されていません");
-                }
             }
         }
         
@@ -81,10 +73,7 @@ namespace SGC2025.Effect
             {
                 Debug.LogError("[EffectFactory] エフェクトデータ辞書が初期化されていません");
                 InitializeEffectDataDictionary();
-                if (effectDataDictionary == null || effectDataDictionary.Count == 0)
-                {
-                    return null;
-                }
+                if (effectDataDictionary == null || effectDataDictionary.Count == 0) return null;
             }
             
             if (!effectDataDictionary.TryGetValue(effectType, out EffectData data))
@@ -105,20 +94,15 @@ namespace SGC2025.Effect
                 return null;
             }
             
-            // プールからエフェクトオブジェクトを取得
             var result = objectPool.GetObject(data.EffectPrefab, position, Quaternion.identity);
             
             if (result != null)
             {
-                // スケールをプレハブの元の値にリセット
                 result.transform.localScale = data.EffectPrefab.transform.localScale;
                 
-                // 追従設定
                 var controller = result.GetComponent<EffectController>();
                 if (controller != null)
-                {
                     controller.Initialize(followTarget, duration);
-                }
             }
             
             return result;
@@ -172,16 +156,6 @@ namespace SGC2025.Effect
             EffectType[] types = new EffectType[effectDataDictionary.Count];
             effectDataDictionary.Keys.CopyTo(types, 0);
             return types;
-        }
-        
-        /// <summary>
-        /// 指定したエフェクトタイプが利用可能かチェック
-        /// </summary>
-        /// <param name="effectType">チェックするエフェクトタイプ</param>
-        /// <returns>利用可能な場合はtrue</returns>
-        public bool IsEffectAvailable(EffectType effectType)
-        {
-            return effectDataDictionary != null && effectDataDictionary.ContainsKey(effectType);
         }
     }
 }
