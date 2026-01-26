@@ -9,12 +9,12 @@ namespace SGC2025.Enemy
         /// <summary>
         /// 基本的な敵。虫取り網少年。
         /// </summary>
-        Boy,
+        NormalBoy,
 
         /// <summary>
         /// 赤い服の少年敵
         /// </summary>
-        RedBoy,
+        BigBoy,
 
         /// <summary>
         /// 老人敵
