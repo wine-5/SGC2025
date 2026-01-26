@@ -32,18 +32,24 @@ namespace SGC2025.Manager
         {
             base.Init();
             
-            GameManager.OnGameOver += StopWaveProgression;
-            GameManager.OnGamePause += PauseWaveProgression;
-            GameManager.OnGameResume += ResumeWaveProgression;
+            // InGameManagerからゲームオーバーイベントを購諭
+            InGameManager.OnGameOver += StopWaveProgression;
+            
+            // PauseManagerからポーズイベントを購諭
+            PauseManager.OnPause += PauseWaveProgression;
+            PauseManager.OnResume += ResumeWaveProgression;
             
             InitializeWaveSystem();
         }
         
         protected override void OnDestroy()
         {
-            GameManager.OnGameOver -= StopWaveProgression;
-            GameManager.OnGamePause -= PauseWaveProgression;
-            GameManager.OnGameResume -= ResumeWaveProgression;
+            // InGameManagerからイベントの購諭を解除
+            InGameManager.OnGameOver -= StopWaveProgression;
+            
+            // PauseManagerからイベントの購諭を解除
+            PauseManager.OnPause -= PauseWaveProgression;
+            PauseManager.OnResume -= ResumeWaveProgression;
             
             base.OnDestroy();
         }

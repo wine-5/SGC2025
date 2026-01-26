@@ -83,7 +83,7 @@ namespace SGC2025.Enemy
             if (!isSpawning) return;
 
             // カウントダウン中はスポーンしない
-            if (GameManager.I != null && GameManager.I.IsCountingDown)
+            if (InGameManager.I != null && InGameManager.I.IsCountingDown)
                 return;
 
             if (Time.time >= nextSpawnTime)

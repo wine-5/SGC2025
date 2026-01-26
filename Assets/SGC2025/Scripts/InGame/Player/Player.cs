@@ -91,7 +91,7 @@ namespace SGC2025.Player
 
         private void Update()
         {
-            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
+            if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             
             stateMachine.UpdateActiveState();
             DecreaseMutekiTime();
@@ -108,31 +108,31 @@ namespace SGC2025.Player
         #region 入力処理
         private void OnPausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            if (GameManager.I == null) return;
+            if (PauseManager.I == null) return;
             
-            if (GameManager.I.IsPaused)
-                GameManager.I.ResumeGame();
+            if (PauseManager.I.IsPaused)
+                PauseManager.I.ResumeGame();
             else
-                GameManager.I.PauseGame();
+                PauseManager.I.PauseGame();
         }
 
         private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
+            if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             
             moveInput = context.ReadValue<Vector2>();
         }
 
         private void OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
+            if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             
             moveInput = Vector2.zero;
         }
 
         private void OnShotPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
+            if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             if (weaponSystem == null) return;
             
             weaponSystem.Fire();
