@@ -617,6 +617,31 @@
     margin-bottom: 1rem;
 }
 
+.github-avatar-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2d5016 0%, #6ba82d 100%);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: white;
+    overflow: hidden;
+}
+
+.github-avatar-link:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(45, 80, 22, 0.3);
+}
+
+.github-avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 .avatar-icon {
     font-size: 3rem;
     display: block;

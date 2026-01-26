@@ -16,17 +16,15 @@ function renderDevelopers() {
     const card = document.createElement('div');
     card.className = 'developer-card';
 
-    // ロールに応じたアイコンを設定
-    let icon = '👨‍💻';
-    if (dev.role === 'designer') {
-      icon = '🎨';
-    } else if (dev.role === 'planner') {
-      icon = '📋';
-    }
+    // GitHubのURLからユーザー名を抽出
+    const githubUsername = dev.github ? dev.github.split('/').pop() : null;
+    const avatarUrl = githubUsername ? `https://avatars.githubusercontent.com/${githubUsername}` : '';
 
     card.innerHTML = `
       <div class="developer-avatar">
-        <span class="avatar-icon">${icon}</span>
+        <a href="${dev.github || '#'}" target="_blank" rel="noopener noreferrer" class="github-avatar-link">
+          ${avatarUrl ? `<img src="${avatarUrl}" alt="${dev.name}" class="github-avatar-image" onerror="this.style.display='none'">` : ''}
+        </a>
       </div>
       <div class="developer-info">
         <h3 class="developer-name">${dev.name}</h3>
