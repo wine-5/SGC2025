@@ -181,6 +181,9 @@ namespace SGC2025.Item
             if (SGC2025.Player.PlayerDataProvider.I != null && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
             {
                 var playerTransform = SGC2025.Player.PlayerDataProvider.I.PlayerTransform;
+                Vector3 playerPos = playerTransform.position;
+                
+                Debug.Log($"[ItemManager] Creating effect at Player position: {playerPos}");
                 
                 EffectType effectType = itemData.ItemType switch
                 {
@@ -188,7 +191,7 @@ namespace SGC2025.Item
                     ItemType.ScoreMultiplier => EffectType.ScoreBoostEffect,
                     _ => throw new System.NotImplementedException()
                 };
-                effect.effectInstance = EffectFactory.I.CreateEffect(effectType, playerTransform.position, itemData.Duration, playerTransform);
+                effect.effectInstance = EffectFactory.I.CreateEffect(effectType, playerPos, itemData.Duration, playerTransform);
             }
         }
         

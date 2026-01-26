@@ -32,7 +32,12 @@ namespace SGC2025.Effect
             
             if (followTarget != null)
             {
-                transform.position = followTarget.position + followOffset;
+                Vector3 targetPos = followTarget.position;
+                Vector3 finalPos = targetPos + followOffset;
+                
+                Debug.Log($"[EffectController] Initialize - Target: {targetPos}, Offset: {followOffset}, Final: {finalPos}");
+                
+                transform.position = finalPos;
                 transform.rotation = followTarget.rotation;
             }
         }
