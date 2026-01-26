@@ -59,7 +59,6 @@ namespace SGC2025.Manager
 
         private void OnEnemyDestroyedWithScore(int score, Vector3 position)
         {
-            // スコア倍率を適用
             float multiplier = GetScoreMultiplier();
             int finalScore = Mathf.RoundToInt(score * multiplier);
             scoreEnemy += finalScore;
@@ -67,7 +66,6 @@ namespace SGC2025.Manager
 
         private void OnGroundGreenified(Vector3 position, int points)
         {
-            // スコア倍率を適用
             float multiplier = GetScoreMultiplier();
             int finalPoints = Mathf.RoundToInt(points * multiplier);
             scoreGreen += finalPoints;
@@ -79,9 +77,7 @@ namespace SGC2025.Manager
         private float GetScoreMultiplier()
         {
             if (ItemManager.I != null && ItemManager.I.IsEffectActive(ItemType.ScoreMultiplier))
-            {
                 return ItemManager.I.GetEffectValue(ItemType.ScoreMultiplier);
-            }
             return 1f;
         }
 

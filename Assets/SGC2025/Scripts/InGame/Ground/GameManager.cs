@@ -78,16 +78,15 @@ namespace SGC2025.Manager
         /// </summary>
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name == SceneName.InGame.ToString())
-            {
-                InitializeGameState();
+            if (scene.name != SceneName.InGame.ToString()) return;
+            
+            InitializeGameState();
+            
+            if (pausePanel != null)
+                pausePanel.SetActive(false);
                 
-                if (pausePanel != null)
-                    pausePanel.SetActive(false);
-                    
-                if (AudioManager.I != null)
-                    AudioManager.I.PlayBGM(BGMType.InGame);
-            }
+            if (AudioManager.I != null)
+                AudioManager.I.PlayBGM(BGMType.InGame);
         }
 
         /// <summary>
@@ -162,7 +161,6 @@ namespace SGC2025.Manager
         {
             if (SceneController.I == null) return;
 
-            // リザルトシーン遷移前に緑化度を保存
             if (GroundManager.I != null && ScoreManager.I != null)
             {
                 float greeningRate = GroundManager.I.GetGreenificationRate();
@@ -180,11 +178,8 @@ namespace SGC2025.Manager
             pausePanel.SetActive(true);
             Time.timeScale = 0f;
             
-            // ポーズ時に最初のボタンを選択状態にする
             if (firstPauseButton != null && EventSystem.current != null)
-            {
                 EventSystem.current.SetSelectedGameObject(firstPauseButton);
-            }
             
             OnGamePause?.Invoke();
         }
@@ -196,11 +191,8 @@ namespace SGC2025.Manager
             pausePanel.SetActive(false);
             Time.timeScale = 1f;
             
-            // 選択状態をクリア
             if (EventSystem.current != null)
-            {
                 EventSystem.current.SetSelectedGameObject(null);
-            }
             
             OnGameResume?.Invoke();
         }
