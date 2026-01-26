@@ -6,7 +6,8 @@ namespace SGC2025
 {
     /// <summary>
     /// Waveの設定データを定義するScriptableObject
-    /// 時間経過による敵の出現パターンとレベルスケーリングを管理
+    /// 30秒間隔で自動進行するWaveシステムの設定データ
+    /// WaveManagerによって時間ベースで自動的にWaveが変更される
     /// </summary>
     [CreateAssetMenu(fileName = "New Wave Data", menuName = "SGC2025/Wave Data")]
     public class WaveDataSO : ScriptableObject
@@ -15,14 +16,12 @@ namespace SGC2025
         public class WaveData
         {
             [Header("Wave基本設定")]
-            [Tooltip("このWaveが開始される時間（秒）")]
-            public float startTime = 0f;
-            
-            [Tooltip("Waveレベル（敵の強さに影響）")]
-            public int waveLevel = 1;
-            
             [Tooltip("Wave名（UI表示用）")]
             public string waveName = "Wave 1";
+            [Tooltip("Waveレベル（敵の強さに影響）")]
+            public int waveLevel = 1;
+            [Tooltip("このWaveの説明")]
+            public string explain;
             
             [Header("スポーン設定")]
             [Tooltip("敵のスポーン間隔（秒）")]
@@ -38,14 +37,6 @@ namespace SGC2025
             [Header("デバッグ情報")]
             [Tooltip("このWaveのデバッグログを有効にする")]
             public bool enableDebugLog = false;
-            
-            /// <summary>
-            /// 指定時間でこのWaveが開始されるかチェック
-            /// </summary>
-            public bool ShouldStartAtTime(float currentTime)
-            {
-                return currentTime >= startTime;
-            }
             
             /// <summary>
             /// このWaveが有効な敵設定を持っているかチェック
@@ -73,37 +64,6 @@ namespace SGC2025
         public List<WaveData> GetAllWaves()
         {
             return new List<WaveData>(waves);
-        }
-        
-        /// <summary>
-        /// 指定時間で開始すべきWaveを取得
-        /// </summary>
-        public WaveData GetWaveForTime(float currentTime)
-        {
-            WaveData activeWave = null;
-            
-            foreach (var wave in waves)
-            {
-                if (wave.ShouldStartAtTime(currentTime))
-                {
-                    activeWave = wave;
-                }
-                else
-                {
-                    break; // 時間順に並んでいる前提
-                }
-            }
-            
-            return activeWave;
-        }
-        
-        /// <summary>
-        /// 指定時間でのWaveレベルを取得（WaveManager用）
-        /// </summary>
-        public int GetWaveLevelAtTime(float gameTime)
-        {
-            var activeWave = GetWaveForTime(gameTime);
-            return activeWave?.waveLevel ?? 1;
         }
         
         /// <summary>
@@ -179,11 +139,22 @@ namespace SGC2025
         }
         
         /// <summary>
-        /// 最後のWave終了時間を取得
+        /// 最後のWaveの終了時間を取得（30秒間隔ベース）
         /// </summary>
         public float GetLastWaveTime()
         {
-            return waves.Count > 0 ? waves[waves.Count - 1].startTime : 0f;
+            if (waves.Count == 0) return 0f;
+            
+            // 最大waveLevelを取得
+            int maxWaveLevel = 0;
+            foreach (var wave in waves)
+            {
+                if (wave.waveLevel > maxWaveLevel)
+                    maxWaveLevel = wave.waveLevel;
+            }
+            
+            // 30秒間隔で終了時間を計算
+            return maxWaveLevel * 30f;
         }
         
         /// <summary>
@@ -191,30 +162,20 @@ namespace SGC2025
         /// </summary>
         private void OnValidate()
         {
-            // Wave開始時間の重複チェック
+            // waveLevelの重複チェック
             for (int i = 0; i < waves.Count; i++)
             {
                 for (int j = i + 1; j < waves.Count; j++)
                 {
-                    if (Mathf.Abs(waves[i].startTime - waves[j].startTime) < 0.1f)
+                    if (waves[i].waveLevel == waves[j].waveLevel)
                     {
-                        Debug.LogWarning($"[WaveConfigSO] Wave {i} と Wave {j} の開始時間が重複しています");
+                        Debug.LogWarning($"[WaveDataSO] Wave {i} と Wave {j} のwaveLevelが重複しています: {waves[i].waveLevel}");
                     }
                 }
             }
             
-            // 時間順ソート
-            waves.Sort((a, b) => a.startTime.CompareTo(b.startTime));
-            
-            // 最小間隔チェック
-            for (int i = 1; i < waves.Count; i++)
-            {
-                float interval = waves[i].startTime - waves[i - 1].startTime;
-                if (interval < minWaveInterval)
-                {
-                    Debug.LogWarning($"[WaveConfigSO] Wave間隔が短すぎます: {interval}秒 (最小: {minWaveInterval}秒)");
-                }
-            }
+            // waveLevel順ソート
+            waves.Sort((a, b) => a.waveLevel.CompareTo(b.waveLevel));
         }
     }
 }

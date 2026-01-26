@@ -9,12 +9,10 @@ namespace SGC2025.Enemy
     /// </summary>
     public class EnemySpawner : MonoBehaviour
     {
-        private const float DEFAULT_SPAWN_INTERVAL = 2f;
         private const int DEFAULT_WAVE_LEVEL = 1;
         private const float MIN_SPAWN_INTERVAL = 0.1f;
 
         [Header("生成設定")]
-        [SerializeField] private float spawnInterval = DEFAULT_SPAWN_INTERVAL;
         [SerializeField] private bool autoStart = true;
 
         [Header("生成位置管理")]
@@ -44,7 +42,7 @@ namespace SGC2025.Enemy
         {
             if (isSpawning) return;
             isSpawning = true;
-            nextSpawnTime = Time.time + spawnInterval;
+            nextSpawnTime = Time.time + GetCurrentSpawnInterval();
         }
 
         /// <summary>
@@ -56,14 +54,6 @@ namespace SGC2025.Enemy
         }
 
         /// <summary>
-        /// スポーン間隔を設定（WaveManager用）
-        /// </summary>
-        public void SetSpawnInterval(float interval)
-        {
-            spawnInterval = Mathf.Max(MIN_SPAWN_INTERVAL, interval);
-        }
-
-        /// <summary>
         /// Waveレベルを設定（WaveManager用）
         /// </summary>
         public void SetWaveLevel(int waveLevel)
@@ -71,8 +61,16 @@ namespace SGC2025.Enemy
             currentWaveLevel = Mathf.Max(DEFAULT_WAVE_LEVEL, waveLevel);
         }
 
-        /// <summary>現在のスポーン間隔を取得</summary>
-        public float GetSpawnInterval() => spawnInterval;
+        /// <summary>現在のスポーン間隔を取得（WaveManagerから）</summary>
+        public float GetCurrentSpawnInterval()
+        {
+            if (WaveManager.I != null)
+            {
+                var currentWave = WaveManager.I.CurrentWave1;
+                return currentWave != null ? currentWave.spawnInterval : 2f; // デフォルト2秒
+            }
+            return 2f; // WaveManagerがない場合のフォールバック
+        }
 
         /// <summary>現在のWaveレベルを取得</summary>
         public int GetWaveLevel() => currentWaveLevel;
@@ -89,7 +87,7 @@ namespace SGC2025.Enemy
             if (Time.time >= nextSpawnTime)
             {
                 SpawnEnemy();
-                nextSpawnTime = Time.time + spawnInterval;
+                nextSpawnTime = Time.time + GetCurrentSpawnInterval();
             }
         }
 

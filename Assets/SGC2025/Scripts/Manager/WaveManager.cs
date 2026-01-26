@@ -27,7 +27,13 @@ namespace SGC2025.Manager
         public WaveDataSO.WaveData CurrentWave => currentWave;
         public bool IsGameActive => isGameActive;
         protected override bool UseDontDestroyOnLoad => false; // シーン固有のManager
-        
+
+        /// <summary>
+        /// 現在のWaveデータを取得（EnemySpawner用）
+        /// </summary>
+        /// <returns>現在のWaveData、存在しない場合はnull</returns>
+        public WaveDataSO.WaveData CurrentWave1 => currentWave;
+
         protected override void Init()
         {
             base.Init();
@@ -128,9 +134,6 @@ namespace SGC2025.Manager
             foreach (var spawner in spawners)
             {
                 spawner.SetWaveLevel(currentWaveLevel);
-                
-                if (currentWave != null)
-                    spawner.SetSpawnInterval(currentWave.spawnInterval);
             }
         }
         

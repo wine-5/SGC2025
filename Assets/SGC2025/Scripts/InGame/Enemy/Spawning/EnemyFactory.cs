@@ -91,10 +91,10 @@ namespace SGC2025
                 return null;
             }
             
-            var selectedEnemy = spawnConfigManager.SelectRandomEnemyData(waveLevel);
+            var selectedEnemy = spawnConfigManager.SelectRandomEnemyData();
             if (selectedEnemy == null)
             {
-                Debug.LogWarning($"[EnemyFactory] ウェーブレベル {waveLevel} で選択可能な敵がいません");
+                Debug.LogWarning("[EnemyFactory] 選択可能な敵がいません");
                 return null;
             }
             

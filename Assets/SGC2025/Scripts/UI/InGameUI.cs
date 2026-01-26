@@ -87,37 +87,20 @@ namespace SGC2025.UI
 
         private void OnEnemyDestroyed(int score, Vector3 position)
         {
-            // スコア倍率を適用して表示
-            float multiplier = GetScoreMultiplier();
-            int displayScore = Mathf.RoundToInt(score * multiplier);
-            
-            UpdateScoreText(displayScore);
-            ShowScorePopupAtInspectorPosition(displayScore);
+            // ScoreManagerで既に倍率計算済みのスコアを使用
+            UpdateScoreText(score);
+            ShowScorePopupAtInspectorPosition(score);
         }
 
         private void OnGroundGreenified(Vector3 position, int points)
         {
-            // スコア倍率を適用して表示
-            float multiplier = GetScoreMultiplier();
-            int displayPoints = Mathf.RoundToInt(points * multiplier);
-            
-            UpdateScoreText(displayPoints);
-            ShowScorePopupAtInspectorPosition(displayPoints);
+            // ScoreManagerで既に倍率計算済みのポイントを使用
+            UpdateScoreText(points);
+            ShowScorePopupAtInspectorPosition(points);
             UpdateTerritoryGauge();
         }
         
-        /// <summary>
-        /// 現在のスコア倍率を取得
-        /// </summary>
-        private float GetScoreMultiplier()
-        {
-            if (SGC2025.Item.ItemManager.I != null && 
-                SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier))
-            {
-                return SGC2025.Item.ItemManager.I.GetEffectValue(SGC2025.Item.ItemType.ScoreMultiplier);
-            }
-            return 1f;
-        }
+
 
         private void Update()
         {

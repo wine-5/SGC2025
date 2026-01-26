@@ -416,7 +416,7 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      insertIndex: 0
+      insertIndex: -1
       addedObject: {fileID: 1945701716}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
@@ -605,6 +605,7 @@ GameObject:
   - component: {fileID: 1945701716}
   - component: {fileID: 1945701717}
   - component: {fileID: 1945701718}
+  - component: {fileID: 1945701719}
   m_Layer: 0
   m_Name: InGameManager
   m_TagString: Untagged
@@ -620,8 +621,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1945701715}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 189.50171, y: 380.125, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -655,6 +656,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.PauseManager
   pausePanel: {fileID: 293066959}
   firstPauseButton: {fileID: 597502947}
+--- !u!114 &1945701719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945701715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6155ebf6a0cb1f148a7319a54f15afc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.WaveManager
+  waveData: {fileID: 11400000, guid: befa0aca092698a418715716f4b590e6, type: 2}
+  waveInterval: 30
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
