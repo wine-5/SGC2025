@@ -125,37 +125,5 @@ namespace SGC2025.Effect
             
             objectPool.ReturnObject(effectObject);
         }
-        
-        /// <summary>
-        /// 一定時間後にエフェクトをプールに返却
-        /// </summary>
-        /// <param name="effectObject">返却するエフェクトオブジェクト</param>
-        /// <param name="delay">返却までの時間</param>
-        public void ReturnEffectDelayed(GameObject effectObject, float delay)
-        {
-            if (effectObject != null)
-                StartCoroutine(ReturnEffectAfterDelay(effectObject, delay));
-        }
-        
-        private System.Collections.IEnumerator ReturnEffectAfterDelay(GameObject effectObject, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            
-            if (effectObject != null)
-                ReturnEffect(effectObject);
-        }
-
-        /// <summary>
-        /// 利用可能なエフェクトタイプの一覧を取得
-        /// </summary>
-        /// <returns>利用可能なエフェクトタイプの配列</returns>
-        public EffectType[] GetAvailableEffectTypes()
-        {
-            if (effectDataDictionary == null) return new EffectType[0];
-            
-            EffectType[] types = new EffectType[effectDataDictionary.Count];
-            effectDataDictionary.Keys.CopyTo(types, 0);
-            return types;
-        }
     }
 }

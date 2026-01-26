@@ -283,35 +283,5 @@ namespace TechC
             // プールを再初期化
             InitializeAllPools();
         }
-
-        /// <summary>
-        /// 自動でプールの配列内にアイテムをセットします
-        /// </summary>
-        /// <param name="item"></param>
-        public void AddPoolItem(ObjectPoolItem item)
-        {
-            poolItems.Add(item);
-        }
-        
-        /// <summary>
-        /// 全てのプール内の非アクティブオブジェクトに任意の処理を実行します
-        /// </summary>
-        /// <param name="action">処理するアクション。GameObjectを引数に取ります</param>
-        public void ForEachInactiveInPool(System.Action<GameObject> action)
-        {
-            if (action == null) return;
-
-            foreach (var poolPair in objectPools)
-            {
-                foreach (var obj in poolPair.Value)
-                {
-                    if (obj != null && !obj.activeInHierarchy)
-                    {
-                        action(obj);
-                    }
-                }
-            }
-        }
-
     }
 }

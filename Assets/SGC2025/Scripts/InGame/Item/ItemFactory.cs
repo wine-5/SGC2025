@@ -61,14 +61,5 @@ namespace SGC2025.Item
             
             objectPool.ReturnObject(itemObj);
         }
-        
-        
-        /// <summary>
-        /// すべてのプールをクリア
-        /// </summary>
-        public void ClearAllPools()
-        {
-            objectPool.ClearAllPools();
-        }
     }
 }

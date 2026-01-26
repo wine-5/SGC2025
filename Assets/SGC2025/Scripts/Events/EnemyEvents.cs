@@ -41,17 +41,5 @@ namespace SGC2025.Events
         {
             OnEnemyReturnedToPool?.Invoke(enemy);
         }
-
-        [System.Diagnostics.Conditional("UNITY_EDITOR")]
-        public static void ClearAllEvents()
-        {
-            OnEnemyDestroyed = null;
-            OnEnemyDestroyedAtPosition = null;
-            OnEnemyDestroyedWithScore = null;
-            OnEnemyDamageTaken = null;
-            OnEnemyHealthChanged = null;
-            OnEnemySpawned = null;
-            OnEnemyReturnedToPool = null;
-        }
     }
 }
