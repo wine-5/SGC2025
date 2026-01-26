@@ -49,14 +49,18 @@ namespace SGC2025.Manager
         public void AddScore(string playerName, int score, float greeningRate)
         {
             if (ranking.scores == null)
+            {
                 ranking.scores = new List<ScoreData>();
+            }
 
             ranking.scores.Add(new ScoreData(playerName, score, greeningRate));
 
             ranking.scores.Sort((a, b) => b.score.CompareTo(a.score));
 
             if (ranking.scores.Count > MAX_RANK)
+            {
                 ranking.scores = ranking.scores.GetRange(0, MAX_RANK);
+            }
 
             SaveRanking();
         }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using TMPro;
 using SGC2025.Manager;
 
@@ -23,6 +24,12 @@ namespace SGC2025.UI
         private TextMeshProUGUI greeningRateText; // 緑化度（％）表示
         [SerializeField]
         private GameObject[] buttons;
+        [SerializeField]
+        private RankingUI rankingUI; // ランキングUI（名前入力後に更新）
+        [SerializeField]
+        private NameInputUI nameInputUI; // 名前入力UI（ハイスコア時に表示）
+        [SerializeField]
+        private GameObject firstButtonAfterInput; // 名前入力後に最初に選択されるボタン
 
         enum ResultPhase
         {
@@ -73,8 +80,7 @@ namespace SGC2025.UI
                 case ResultPhase.GreeningRate:
                     if (greeningRateText != null)
                     {
-                        float rate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * 100f : 0f;
-                        greeningRateText.SetText($"{rate:F1}%");
+                        greeningRateText.SetText("0.0%");
                     }
                     break;
 
@@ -92,21 +98,25 @@ namespace SGC2025.UI
 
                 case ResultPhase.HighScore:
                     {
-                        if (RankingManager.I.IsNewRecord(DEFAULT_RECORD_SCORE))
+                        int totalScore = ScoreManager.I != null ? ScoreManager.I.GetTotalScore() : 0;
+                        
+                        if (RankingManager.I.IsNewRecord(totalScore))
                         {
-                            CreateMenu("UI/InputFieldCanvas");
+                            if (nameInputUI != null)
+                            {
+                                nameInputUI.gameObject.SetActive(true);
+                            }
+                        }
+                        else
+                        {
+                            ShowEndButtons();
                         }
                         break;
                     }
 
                 case ResultPhase.End:
-                    {
-                        foreach (GameObject button in buttons)
-                        {
-                            button.SetActive(true);
-                        }
-                        break;
-                    }
+                    // ボタンはShowEndButtons()で既に表示済み
+                    break;
 
                 default:
                     break;
@@ -123,7 +133,12 @@ namespace SGC2025.UI
                     break;
 
                 case ResultPhase.GreeningRate:
-                    // 緑化度は固定表示なのでカウントアップ不要
+                    if (greeningRateText != null)
+                    {
+                        float maxRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * 100f : 0f;
+                        float currentRate = Mathf.Lerp(0f, maxRate, Mathf.Clamp01(waitTime / SCORE_COUNT_UP_TIME));
+                        greeningRateText.SetText($"{currentRate:F1}%");
+                    }
                     break;
 
                 case ResultPhase.EnemyKillScore:
@@ -153,23 +168,36 @@ namespace SGC2025.UI
 
         }
 
+        /// <summary>
+        /// Endボタンを表示して最初のボタンにフォーカスを当てる
+        /// </summary>
+        private void ShowEndButtons()
+        {
+            currentPhase = ResultPhase.End;
+            waitTime = ZERO_WAIT_TIME;
+            
+            foreach (GameObject button in buttons)
+            {
+                button.SetActive(true);
+            }
+            
+            if (firstButtonAfterInput != null && EventSystem.current != null)
+            {
+                EventSystem.current.SetSelectedGameObject(firstButtonAfterInput);
+            }
+        }
+
         override protected void DestoryChild(UIBase uIBase)
         {
-            if (uIBase.gameObject.name.Equals("InputFieldCanvas"))
+            NameInputUI nameInput = uIBase as NameInputUI;
+            if (nameInput != null)
             {
-                currentPhase = ResultPhase.End; // NextPhaseとかつくるべき
-                waitTime = ZERO_WAIT_TIME;
-
-                foreach (UIBase child in childrenMenu)
+                if (rankingUI != null)
                 {
-                    RankingUI ranking = child as RankingUI;
-                    if (ranking != null)
-                    {
-                        ranking.UpdateScore();
-                        break;
-                    }
-
+                    rankingUI.UpdateScore();
                 }
+                
+                ShowEndButtons();
             }
         }
 

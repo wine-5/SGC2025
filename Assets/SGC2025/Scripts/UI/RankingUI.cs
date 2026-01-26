@@ -30,6 +30,7 @@ namespace SGC2025.UI
         {
             List<ScoreData> ranking = RankingManager.I.GetRanking();
             if (ranking == null) return;
+            
             for (int i = 0; i < scoreTexts.Length; i++)
             {
                 if (i < ranking.Count)
