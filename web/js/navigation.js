@@ -1,10 +1,12 @@
-// ハンバーガーメニューとナビゲーション機能
+/**
+ * ナビゲーション機能
+ * ハンバーガーメニューとモバイルメニューの制御
+ */
 
 document.addEventListener('DOMContentLoaded', () => {
   const hamburger = document.getElementById('hamburger');
   const mobileNav = document.getElementById('mobile-nav');
   const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-  const navLinks = document.querySelectorAll('.nav-link');
 
   // ハンバーガーメニューの開閉
   if (hamburger) {
@@ -14,14 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // PC用ナビゲーションリンクのクリック
-  navLinks.forEach((link) => {
-    link.addEventListener('click', () => {
-      // PC用スクロール機能が必要な場合はここに追加
-    });
-  });
-
-  // モバイル用ナビゲーションリンクのクリック
+  // モバイル用ナビゲーションリンクのクリック処理
   mobileNavLinks.forEach((link) => {
     link.addEventListener('click', () => {
       // メニューを閉じる

@@ -1,5 +1,13 @@
-// 開発者リストを動的に生成する機能
+/**
+ * 開発者リスト表示
+ * JSONデータから開発者カードを動的に生成
+ */
 
+const DEVELOPER_DATA_CHECK_INTERVAL = 100; // コンテンツデータの確認間隔（ミリ秒）
+
+/**
+ * 開発者グリッドをレンダリング
+ */
 function renderDevelopers() {
   const developersGrid = document.getElementById('developers-grid');
   if (!developersGrid || !contentData[currentLanguage]) {
@@ -23,7 +31,7 @@ function renderDevelopers() {
     card.innerHTML = `
       <div class="developer-avatar">
         <a href="${dev.github || '#'}" target="_blank" rel="noopener noreferrer" class="github-avatar-link">
-          ${avatarUrl ? `<img src="${avatarUrl}" alt="${dev.name}" class="github-avatar-image" onerror="this.style.display='none'">` : ''}
+          ${avatarUrl ? `<img src="${avatarUrl}" alt="${dev.name}" class="github-avatar-image">` : ''}
         </a>
       </div>
       <div class="developer-info">
@@ -49,7 +57,7 @@ function renderDevelopers() {
   });
 }
 
-// DOMContentLoaded後に開発者リストを表示
+// DOMContentLoadedイベント後に開発者リストを表示
 document.addEventListener('DOMContentLoaded', () => {
   // contentDataが読み込まれるのを待つ
   const checkAndRender = setInterval(() => {
@@ -57,5 +65,5 @@ document.addEventListener('DOMContentLoaded', () => {
       renderDevelopers();
       clearInterval(checkAndRender);
     }
-  }, 100);
+  }, DEVELOPER_DATA_CHECK_INTERVAL);
 });

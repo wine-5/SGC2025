@@ -1,10 +1,17 @@
+/**
+ * 多言語対応システム
+ * JSONファイルからコンテンツを読み込み、言語切り替え機能を提供
+ */
+
 // 現在の言語を管理
 let currentLanguage = localStorage.getItem('language') || 'ja';
 
-// JSON設定データを読み込む
+// JSONコンテンツデータを格納
 let contentData = {};
 
-// JSONからコンテンツを読み込む
+/**
+ * JSONからコンテンツを読み込む
+ */
 async function loadContent() {
   try {
     const response = await fetch('web/data/content.json');
@@ -15,12 +22,16 @@ async function loadContent() {
   }
 }
 
-// データ属性を持つ要素を更新する関数
+/**
+ * UIを言語に応じて更新
+ * data-i18n属性を持つ要素のテキストを更新
+ */
 function updateUI() {
   document.querySelectorAll('[data-i18n]').forEach((element) => {
     const keys = element.getAttribute('data-i18n').split('.');
     let value = contentData[currentLanguage];
     
+    // ネストされたキーをたどってデータを取得
     for (const key of keys) {
       if (value && typeof value === 'object') {
         value = value[key];
@@ -31,17 +42,8 @@ function updateUI() {
     }
     
     if (value) {
-      if (element.tagName === 'A') {
-        // リンク要素は通常のテキスト更新
-        element.textContent = value;
-      } else if (element.tagName === 'INPUT' || element.tagName === 'BUTTON') {
-        // フォーム要素
-        element.value = value;
-        element.textContent = value;
-      } else {
-        // その他の要素
-        element.textContent = value;
-      }
+      // 要素のタグに応じた適切な方法でテキストを設定
+      element.textContent = value;
     }
   });
 
@@ -58,7 +60,9 @@ function updateUI() {
   updateNavigation();
 }
 
-// ナビゲーションメニューの言語を更新
+/**
+ * ナビゲーションメニューの言語を更新
+ */
 function updateNavigation() {
   // PC用ナビゲーション
   document.querySelectorAll('.nav-link').forEach((link) => {
@@ -82,7 +86,7 @@ function updateNavigation() {
   });
 }
 
-// 言語切り替えボタンの処理
+// 言語切り替えボタンのイベントリスナー
 document.addEventListener('DOMContentLoaded', () => {
   loadContent();
 

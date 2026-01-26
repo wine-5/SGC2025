@@ -1,12 +1,12 @@
 /**
  * メインJavaScript
- * 初期化処理とイベント管理を担当
+ * ページ初期化処理を担当
  */
 
-const ANIMATION_DELAY_MS = 100;
+const ANIMATION_DELAY_MS = 100; // ページロードアニメーション遅延時間（ミリ秒）
 
 /**
- * ページロード時のアニメーション
+ * ページロード時のアニメーション初期化
  */
 function initPageAnimation() {
     const heroContent = document.querySelector('.hero-content');
@@ -20,45 +20,18 @@ function initPageAnimation() {
 }
 
 /**
- * スムーススクロールの実装
- */
-function initSmoothScroll() {
-    const links = document.querySelectorAll('a[href^="#"]');
-    
-    links.forEach(link => {
-        link.addEventListener('click', (event) => {
-            const targetId = link.getAttribute('href');
-            
-            if (targetId === '#') {
-                return;
-            }
-            
-            const targetElement = document.querySelector(targetId);
-            
-            if (targetElement) {
-                event.preventDefault();
-                targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-}
-
-/**
  * アプリケーションの初期化
  */
 function initApp() {
     initPageAnimation();
-    initSmoothScroll();
     
+    // スクロールエフェクト初期化（scroll-effects.jsから提供）
     if (typeof initScrollEffects === 'function') {
         initScrollEffects();
     }
 }
 
-// DOMContentLoadedイベントでアプリケーションを初期化
+// DOMContentLoadedイベント、または既にロード済みの場合に初期化実行
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
 } else {
