@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using SGC2025.Player.Bullet;
 using SGC2025.Audio;
 using SGC2025.Manager;
+using SGC2025.Item;
 
 namespace SGC2025.Player
 {
@@ -29,6 +30,7 @@ namespace SGC2025.Player
         [SerializeField] private float maxHealth = 100;
         [SerializeField] private float damage = 10;
         [SerializeField] private float currentHealth;
+        private float baseMovSpeed;
         public float moveSpeed;
         [SerializeField] private float mutekiTime;
         private float nowMutekiTime;
@@ -57,6 +59,10 @@ namespace SGC2025.Player
             input.Player.Movement.performed += OnMovementPerformed;
             input.Player.Movement.canceled += OnMovementCanceled;
             input.Player.Shot.performed += OnShotPerformed;
+            input.Player.Pause.performed += OnPausePerformed;
+            
+            ItemManager.OnItemEffectActivated += OnItemEffectActivated;
+            ItemManager.OnItemEffectExpired += OnItemEffectExpired;
         }
 
         private void OnDisable()
@@ -64,25 +70,32 @@ namespace SGC2025.Player
             input.Player.Movement.performed -= OnMovementPerformed;
             input.Player.Movement.canceled -= OnMovementCanceled;
             input.Player.Shot.performed -= OnShotPerformed;
+            input.Player.Pause.performed -= OnPausePerformed;
             input.Disable();
+            
+            ItemManager.OnItemEffectActivated -= OnItemEffectActivated;
+            ItemManager.OnItemEffectExpired -= OnItemEffectExpired;
         }
 
         private void Start()
         {
             stateMachine.Initialize(idleState);
             currentHealth = maxHealth;
+            baseMovSpeed = moveSpeed;
             if (GroundManager.I != null)
                 transform.position = GroundManager.I.GetPlayerSpawnPosition();
+            
+            if (PlayerDataProvider.I != null)
+                PlayerDataProvider.I.RegisterPlayer(transform);
         }
 
         private void Update()
         {
-            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
+            if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             
             stateMachine.UpdateActiveState();
             DecreaseMutekiTime();
             PlayerRotate();
-            HandlePauseInput();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -93,35 +106,33 @@ namespace SGC2025.Player
         #endregion
 
         #region 入力処理
-        /// <summary>ポーズ入力処理</summary>
-        private void HandlePauseInput()
+        private void OnPausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            if (Keyboard.current?.escapeKey.wasPressedThisFrame != true) return;
-            if (GameManager.I == null) return;
+            if (PauseManager.I == null) return;
             
-            if (GameManager.I.IsPaused)
-                GameManager.I.ResumeGame();
+            if (PauseManager.I.IsPaused)
+                PauseManager.I.ResumeGame();
             else
-                GameManager.I.PauseGame();
+                PauseManager.I.PauseGame();
         }
 
         private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
+            if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             
             moveInput = context.ReadValue<Vector2>();
         }
 
         private void OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
+            if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             
             moveInput = Vector2.zero;
         }
 
         private void OnShotPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            if (GameManager.I != null && GameManager.I.IsCountingDown) return;
+            if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             if (weaponSystem == null) return;
             
             weaponSystem.Fire();
@@ -166,11 +177,51 @@ namespace SGC2025.Player
         {
             if (damage <= 0f) return;
             currentHealth = Mathf.Max(0f, currentHealth - damage);
+            
+            float hpRate = maxHealth > 0f ? currentHealth / maxHealth : 0f;
+            OnPlayerDamaged?.Invoke(hpRate);
+            
             if (currentHealth <= 0f)
                 OnPlayerDeath?.Invoke();
         }
 
         private void DecreaseMutekiTime() => nowMutekiTime -= Time.deltaTime;
+        #endregion
+
+        #region アイテム効果
+        /// <summary>
+        /// アイテム効果が適用された時の処理
+        /// </summary>
+        private void OnItemEffectActivated(ItemType itemType, float effectValue, float duration)
+        {
+            if (itemType == ItemType.SpeedBoost)
+                ApplySpeedBoost(effectValue);
+        }
+        
+        /// <summary>
+        /// アイテム効果が切れた時の処理
+        /// </summary>
+        private void OnItemEffectExpired(ItemType itemType)
+        {
+            if (itemType == ItemType.SpeedBoost)
+                ResetSpeed();
+        }
+        
+        /// <summary>
+        /// 移動速度上昇を適用
+        /// </summary>
+        private void ApplySpeedBoost(float multiplier)
+        {
+            moveSpeed = baseMovSpeed * multiplier;
+        }
+        
+        /// <summary>
+        /// 移動速度を元に戻す
+        /// </summary>
+        private void ResetSpeed()
+        {
+            moveSpeed = baseMovSpeed;
+        }
         #endregion
     }
 }

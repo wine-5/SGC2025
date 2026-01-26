@@ -124,6 +124,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6169577160033252297, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
   m_PrefabInstance: {fileID: 1189758861}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &597502947 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6182230565944368806, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 1189758861}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1189758861
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -132,10 +137,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3093090312424424901, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5485042787687540399, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Name
       value: InGame
@@ -185,6 +186,67 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+--- !u!1 &1481788817
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1481788820}
+  - component: {fileID: 1481788819}
+  - component: {fileID: 1481788818}
+  m_Layer: 0
+  m_Name: DontDestoryManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1481788818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481788817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cba03cd0d003dbc4abbdbbb6556295a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.GameManager
+  gameOverDelay: 2
+--- !u!114 &1481788819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481788817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d372a4db83dafdc46baffd817c56f9b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.ScoreManager
+  enemyKillPoint: 50
+  normalTilePoint: 100
+  highScoreTileMultiplier: 3
+--- !u!4 &1481788820
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481788817}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 121.46878, y: 0, z: 413.9945}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1945701715
 GameObject:
   m_ObjectHideFlags: 0
@@ -194,10 +256,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1945701716}
-  - component: {fileID: 1945701720}
+  - component: {fileID: 1945701717}
   - component: {fileID: 1945701718}
   m_Layer: 0
-  m_Name: Manager
+  m_Name: InGameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -218,6 +280,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1945701717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945701715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae585b3a39b948440b525f4169ab49d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.InGameManager
+  startCountDownTime: 3
+  gameTimeLimit: 300
 --- !u!114 &1945701718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,31 +303,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1945701715}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d372a4db83dafdc46baffd817c56f9b6, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b5478fdd4dfbc04f861126e38bb0867, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.ScoreManager
-  enemyKillPoint: 50
-  normalTilePoint: 100
-  highScoreTileMultiplier: 3
---- !u!114 &1945701720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1945701715}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cba03cd0d003dbc4abbdbbb6556295a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.GameManager
-  gameOverDelay: 0
-  startCountDownTime: 0
-  gameTimeLimit: 10
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.PauseManager
   pausePanel: {fileID: 293066959}
+  firstPauseButton: {fileID: 597502947}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1189758861}
   - {fileID: 1945701716}
+  - {fileID: 1481788820}

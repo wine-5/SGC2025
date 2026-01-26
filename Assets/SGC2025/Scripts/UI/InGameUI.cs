@@ -87,15 +87,36 @@ namespace SGC2025.UI
 
         private void OnEnemyDestroyed(int score, Vector3 position)
         {
-            UpdateScoreText(score);
-            ShowScorePopupAtInspectorPosition(score);
+            // スコア倍率を適用して表示
+            float multiplier = GetScoreMultiplier();
+            int displayScore = Mathf.RoundToInt(score * multiplier);
+            
+            UpdateScoreText(displayScore);
+            ShowScorePopupAtInspectorPosition(displayScore);
         }
 
         private void OnGroundGreenified(Vector3 position, int points)
         {
-            UpdateScoreText(points);
-            ShowScorePopupAtInspectorPosition(points);
+            // スコア倍率を適用して表示
+            float multiplier = GetScoreMultiplier();
+            int displayPoints = Mathf.RoundToInt(points * multiplier);
+            
+            UpdateScoreText(displayPoints);
+            ShowScorePopupAtInspectorPosition(displayPoints);
             UpdateTerritoryGauge();
+        }
+        
+        /// <summary>
+        /// 現在のスコア倍率を取得
+        /// </summary>
+        private float GetScoreMultiplier()
+        {
+            if (SGC2025.Item.ItemManager.I != null && 
+                SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier))
+            {
+                return SGC2025.Item.ItemManager.I.GetEffectValue(SGC2025.Item.ItemType.ScoreMultiplier);
+            }
+            return 1f;
         }
 
         private void Update()
@@ -124,7 +145,11 @@ namespace SGC2025.UI
             PopupScoreUI popup = GetFromPool();
             if (popup == null) return;
             
-            popup.Initialize(score, position, ReturnToPool);
+            // スコア倍率中かチェック
+            bool isBoostActive = SGC2025.Item.ItemManager.I != null && 
+                                 SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
+            
+            popup.Initialize(score, position, ReturnToPool, isBoostActive);
             popup.transform.SetAsLastSibling();
         }
 
@@ -148,7 +173,11 @@ namespace SGC2025.UI
             PopupScoreUI popup = GetFromPool();
             if (popup == null) return;
             
-            popup.Initialize(score, spawnPosition, ReturnToPool);
+            // スコア倍率中かチェック
+            bool isBoostActive = SGC2025.Item.ItemManager.I != null && 
+                                 SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
+            
+            popup.Initialize(score, spawnPosition, ReturnToPool, isBoostActive);
             popup.transform.SetAsLastSibling();
         }
 
@@ -247,7 +276,11 @@ namespace SGC2025.UI
         private void UpdateTimeText()
         {
             if (timeText == null) return;
-            timeText.text = GameManager.I.RemainingGameTime.ToString("F1");
+            if (InGameManager.I != null)
+            {
+                Debug.Log($"[InGameUI] UpdateTimeText - InGameManager Instance: {InGameManager.I.GetInstanceID()}, RemainingGameTime: {InGameManager.I.RemainingGameTime:F1}");
+                timeText.text = InGameManager.I.RemainingGameTime.ToString("F1");
+            }
         }
 
         /// <summary>

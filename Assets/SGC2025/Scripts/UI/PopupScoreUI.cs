@@ -15,22 +15,26 @@ namespace SGC2025.UI
         [Header("テキスト設定")]
         [SerializeField] private float fontSize = 48f;
         [SerializeField] private TextMeshProUGUI text;
+        [SerializeField] private Color normalColor = Color.white;
+        [SerializeField] private Color boostedColor = new Color(1f, 0.6f, 0f); // オレンジ
         
         private RectTransform rect;
         private float timer = 0f;
         private Vector2 startPos;
         private System.Action<PopupScoreUI> onComplete;
+        private bool isBoostActive = false;
 
-        public void Initialize(int score, Vector2 position, System.Action<PopupScoreUI> onComplete)
+        public void Initialize(int score, Vector2 position, System.Action<PopupScoreUI> onComplete, bool isBoostActive = false)
         {
             if (text == null)
                 text = GetComponent<TextMeshProUGUI>();
             if (rect == null)
                 rect = GetComponent<RectTransform>();
 
+            this.isBoostActive = isBoostActive;
+            
             text.text = $"+{score}";
-            text.color = Color.white;
-            text.fontSize = fontSize;
+            text.fontSize = isBoostActive ? fontSize * 1.2f : fontSize;
             
             rect.anchoredPosition = position;
             rect.sizeDelta = new Vector2(200, 100);
@@ -48,7 +52,7 @@ namespace SGC2025.UI
             
             rect.anchoredPosition = startPos + Vector2.up * floatSpeed * timer;
 
-            var color = Color.white;
+            var color = isBoostActive ? boostedColor : normalColor;
             color.a = Mathf.Lerp(1f, 0f, timer / lifetime);
             text.color = color;
 

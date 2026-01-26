@@ -1,84 +1,80 @@
 using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 namespace SGC2025.Editor
 {
-    /// <summary>
-    /// シーン内のMissing Scriptを持つGameObjectを検索して一覧表示するツール
-    /// </summary>
-    public class MissingScriptFinder : EditorWindow
+    public class FindScriptObjectsWindow : EditorWindow
     {
-        private Vector2 scrollPos;
-        private string result = "";
+        private MonoScript targetScript; // 検索対象のスクリプト
+        private List<GameObject> foundObjects = new List<GameObject>(); // 見つかったオブジェクトのリスト
 
-        [MenuItem("Tools/Finder/Missing Script Finder")]
-        public static void ShowWindow()
+        [MenuItem("Tools/Find Script Objects")]
+        public static void OpenWindow()
         {
-            GetWindow<MissingScriptFinder>("Missing Script Finder");
+            GetWindow<FindScriptObjectsWindow>("Find Script Objects");
         }
 
         private void OnGUI()
         {
-            if (GUILayout.Button("ツールマネージャーに戻る"))
+            GUILayout.Label("Find Objects with Script", EditorStyles.boldLabel);
+
+            // スクリプトを選択するフィールド
+            targetScript = (MonoScript)EditorGUILayout.ObjectField("Script", targetScript, typeof(MonoScript), false);
+
+            if (GUILayout.Button("Find"))
             {
-                this.Close();
-                return;
-            }
-
-            if (GUILayout.Button("Missing Scriptを検索"))
-            {
-                FindMissingScripts();
-            }
-
-            EditorGUILayout.LabelField("検索結果:", EditorStyles.boldLabel);
-
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-            EditorGUILayout.TextArea(result);
-            EditorGUILayout.EndScrollView();
-        }
-
-        private void FindMissingScripts()
-        {
-            int goCount = 0;
-            int componentsCount = 0;
-            int missingCount = 0;
-            result = "";
-
-            GameObject[] gos = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-
-            foreach (GameObject go in gos)
-            {
-                goCount++;
-                Component[] components = go.GetComponents<Component>();
-                componentsCount += components.Length;
-
-                for (int i = 0; i < components.Length; i++)
+                if (targetScript != null)
                 {
-                    if (components[i] == null)
-                    {
-                        missingCount++;
-                        string path = GetGameObjectPath(go);
-                        string log = $"Missing Script発見: {path}\n";
-                        Debug.Log(log, go);
-                        result += log;
-                    }
+                    FindObjectsWithScript();
+                }
+                else
+                {
+                    Debug.LogWarning("Please select a script to search for.");
                 }
             }
 
-            result += $"合計検索対象: {goCount}個のGameObject, {componentsCount}個のコンポーネント\n";
-            result += $"Missing Script合計: {missingCount}個\n";
+            GUILayout.Space(10);
+
+            // 検索結果のリスト表示
+            if (foundObjects.Count > 0)
+            {
+                GUILayout.Label($"Found {foundObjects.Count} objects:", EditorStyles.boldLabel);
+
+                foreach (GameObject obj in foundObjects)
+                {
+                    if (GUILayout.Button(obj.name))
+                    {
+                        Selection.activeGameObject = obj; // オブジェクトを選択
+                    }
+                }
+            }
         }
 
-        private string GetGameObjectPath(GameObject go)
+        private void FindObjectsWithScript()
         {
-            string path = go.name;
-            Transform current = go.transform.parent;
-            while (current != null)
+            foundObjects.Clear();
+
+            // スクリプトの型を取得
+            System.Type scriptType = targetScript.GetClass();
+            if (scriptType == null || !typeof(MonoBehaviour).IsAssignableFrom(scriptType))
             {
-                path = current.name + "/" + path;
-                current = current.parent;
+                Debug.LogError("Selected script is not a MonoBehaviour.");
+                return;
             }
-            return path;
+
+            // シーン内の全てのGameObjectを検索
+            GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+
+            foreach (GameObject obj in allObjects)
+            {
+                if (obj.GetComponent(scriptType) != null)
+                {
+                    foundObjects.Add(obj);
+                }
+            }
+
+            Debug.Log($"Found {foundObjects.Count} objects with the script {targetScript.name}.");
         }
     }
 }

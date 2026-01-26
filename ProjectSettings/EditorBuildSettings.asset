@@ -18,5 +18,5 @@ EditorBuildSettings:
     path: Assets/SGC2025/Scenes/Result.unity
     guid: 3ce683d8fc507ee408e35c96f5aa043c
   m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_UseUCBPForAssetBundles: 0

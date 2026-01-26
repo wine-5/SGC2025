@@ -5,26 +5,36 @@ using UnityEngine;
 
 namespace SGC2025.Manager
 {
-
+    /// <summary>
+    /// スコアデータの構造体
+    /// </summary>
     [Serializable]
     public struct ScoreData
     {
         public string playerName;
         public int score;
+        public float greeningRate; // 緑化度（独占度）
 
-        public ScoreData(string name, int s)
+        public ScoreData(string name, int s, float rate)
         {
             playerName = name;
             score = s;
+            greeningRate = rate;
         }
     }
 
+    /// <summary>
+    /// ランキングデータのコンテナクラス
+    /// </summary>
     [Serializable]
     public class RankingData
     {
         public List<ScoreData> scores;
     }
 
+    /// <summary>
+    /// ランキングデータの保存と取得を管理するクラス
+    /// </summary>
     public class RankingManager : Singleton<RankingManager>
     {
         private string filePath;
@@ -41,17 +51,24 @@ namespace SGC2025.Manager
         /// <summary>
         /// 新しいスコアを登録して保存する
         /// </summary>
-        public void AddScore(string playerName, int score)
+        /// <param name="playerName">プレイヤー名</param>
+        /// <param name="score">スコア</param>
+        /// <param name="greeningRate">緑化度（％）</param>
+        public void AddScore(string playerName, int score, float greeningRate)
         {
             if (ranking.scores == null)
+            {
                 ranking.scores = new List<ScoreData>();
+            }
 
-            ranking.scores.Add(new ScoreData(playerName, score));
+            ranking.scores.Add(new ScoreData(playerName, score, greeningRate));
 
             ranking.scores.Sort((a, b) => b.score.CompareTo(a.score));
 
             if (ranking.scores.Count > MAX_RANK)
+            {
                 ranking.scores = ranking.scores.GetRange(0, MAX_RANK);
+            }
 
             SaveRanking();
         }
@@ -85,6 +102,7 @@ namespace SGC2025.Manager
         /// 現在のランキングを取得
         /// </summary>
         public List<ScoreData> GetRanking() => ranking.scores;
+        
         /// <summary>
         /// 新しいスコアがランキングに入ったか判定する
         /// </summary>

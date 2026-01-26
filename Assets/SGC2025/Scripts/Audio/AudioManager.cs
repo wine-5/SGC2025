@@ -50,7 +50,10 @@ namespace SGC2025.Audio
         {
             base.Awake();
             InitializeAudioSources();
-            BuildAudioDataDictionaries();
+            if (audioData != null)
+                BuildAudioDataDictionaries();
+            else
+                Debug.LogWarning("[AudioManager] AudioDataSO is not assigned. Audio will not be available.");
         }
 
         private void InitializeAudioSources()

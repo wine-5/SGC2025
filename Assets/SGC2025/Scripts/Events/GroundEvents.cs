@@ -20,14 +20,5 @@ namespace SGC2025.Events
         {
             OnGroundGreenified?.Invoke(position, points);
         }
-        
-        /// <summary>
-        /// すべてのイベントリスナーをクリア（デバッグ用）
-        /// </summary>
-        [System.Diagnostics.Conditional("UNITY_EDITOR")]
-        public static void ClearAllEvents()
-        {
-            OnGroundGreenified = null;
-        }
     }
 }

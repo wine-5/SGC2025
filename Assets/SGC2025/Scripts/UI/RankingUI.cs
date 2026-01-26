@@ -14,6 +14,8 @@ namespace SGC2025.UI
         private TextMeshProUGUI[] scoreTexts;
         [SerializeField]
         private TextMeshProUGUI[] nameTexts;
+        [SerializeField]
+        private TextMeshProUGUI[] greeningRateTexts;
         
         override public void Start()
         {
@@ -28,6 +30,7 @@ namespace SGC2025.UI
         {
             List<ScoreData> ranking = RankingManager.I.GetRanking();
             if (ranking == null) return;
+            
             for (int i = 0; i < scoreTexts.Length; i++)
             {
                 if (i < ranking.Count)
@@ -35,11 +38,17 @@ namespace SGC2025.UI
                     var data = ranking[i];
                     nameTexts[i].text = $"{data.playerName}";
                     scoreTexts[i].text = $" {data.score}";
+                    
+                    if (greeningRateTexts != null && i < greeningRateTexts.Length)
+                        greeningRateTexts[i].text = $"{data.greeningRate:F1}%";
                 }
                 else
                 {
                     nameTexts[i].text = $"---";
                     scoreTexts[i].text = $"---";
+                    
+                    if (greeningRateTexts != null && i < greeningRateTexts.Length)
+                        greeningRateTexts[i].text = $"---";
                 }
             }
         }

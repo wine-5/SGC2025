@@ -26,8 +26,8 @@ namespace SGC2025.UI
 
         private void OnButtonClick()
         {
-            if (GameManager.I != null)
-                GameManager.I.ResumeGame();
+            if (PauseManager.I != null)
+                PauseManager.I.ResumeGame();
         }
     }
 }
