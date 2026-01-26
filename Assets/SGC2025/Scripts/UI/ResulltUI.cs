@@ -41,9 +41,6 @@ namespace SGC2025.UI
         override public void Start()
         {
             base.Start();
-
-            CreateMenu("UI/RankingCanvas");
-
         }
 
         override public void Update()
@@ -84,7 +81,7 @@ namespace SGC2025.UI
                 case ResultPhase.GreeningRate:
                     if (greeningRateText != null)
                     {
-                        float rate = GroundManager.I != null ? GroundManager.I.GetGreenificationRate() * 100f : 0f;
+                        float rate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * 100f : 0f;
                         greeningRateText.SetText($"{rate:F1}%");
                     }
                     break;

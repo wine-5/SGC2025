@@ -27,6 +27,7 @@ namespace SGC2025.Manager
 
         private int scoreEnemy;
         private int scoreGreen;
+        private float greeningRate; // 緑化度（0.0～1.0）
 
         protected override void Awake()
         {
@@ -41,6 +42,7 @@ namespace SGC2025.Manager
         {
             scoreEnemy = 0;
             scoreGreen = 0;
+            greeningRate = 0f;
         }
 
         private void OnEnable()
@@ -86,5 +88,18 @@ namespace SGC2025.Manager
         public int GetEnemyScore() => scoreEnemy;
         public int GetGreenScore() => scoreGreen;
         public int GetTotalScore() => scoreEnemy + scoreGreen;
+        
+        /// <summary>
+        /// 緑化度を保存（InGameシーンから呼ばれる）
+        /// </summary>
+        public void SaveGreeningRate(float rate)
+        {
+            greeningRate = rate;
+        }
+        
+        /// <summary>
+        /// 保存された緑化度を取得（0.0～1.0）
+        /// </summary>
+        public float GetGreeningRate() => greeningRate;
     }
 }

@@ -11,8 +11,6 @@ namespace SGC2025.UI
         override public void Start()
         {
             base.Start();
-
-            CreateMenu("UI/RankingCanvas");
             
             if (AudioManager.I != null)
                 AudioManager.I.PlayBGM(BGMType.Title);

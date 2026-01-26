@@ -160,6 +160,13 @@ namespace SGC2025.Manager
         {
             if (SceneController.I == null) return;
 
+            // リザルトシーン遷移前に緑化度を保存
+            if (GroundManager.I != null && ScoreManager.I != null)
+            {
+                float greeningRate = GroundManager.I.GetGreenificationRate();
+                ScoreManager.I.SaveGreeningRate(greeningRate);
+            }
+
             SceneController.I.LoadResultScene();
             AudioManager.I.PlayBGM(BGMType.Result);
         }

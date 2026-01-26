@@ -30,7 +30,7 @@ namespace SGC2025.UI
 
             // スコアと緑化度を取得して登録
             int totalScore = ScoreManager.I.GetTotalScore();
-            float greeningRate = GroundManager.I != null ? GroundManager.I.GetGreenificationRate() * 100f : 0f;
+            float greeningRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * 100f : 0f;
             
             RankingManager.I.AddScore(name, totalScore, greeningRate);
             this.gameObject.SetActive(false);
