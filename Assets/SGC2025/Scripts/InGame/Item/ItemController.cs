@@ -34,11 +34,8 @@ namespace SGC2025.Item
             // 回転アニメーション
             transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
             
-            // 自動消滅チェック
             if (lifeTime > 0f && Time.time - spawnTime >= lifeTime)
-            {
                 ReturnToPool();
-            }
         }
         
         /// <summary>
@@ -75,15 +72,10 @@ namespace SGC2025.Item
                 return;
             }
             
-            // ItemManagerにアイテム取得を通知
             if (ItemManager.I != null)
-            {
                 ItemManager.I.CollectItem(itemData);
-            }
             else
-            {
                 Debug.LogWarning("[ItemController] ItemManager instance is null!");
-            }
         }
         
         /// <summary>

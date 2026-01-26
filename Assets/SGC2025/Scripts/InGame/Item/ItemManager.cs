@@ -11,6 +11,7 @@ namespace SGC2025.Item
     public class ItemManager : Singleton<ItemManager>
     {
         private const float MIN_SPAWN_INTERVAL = 3f;
+        private const float DEFAULT_SPAWN_RANGE = 10f;
         
         [Header("アイテム抽選設定")]
         [SerializeField, Tooltip("アイテムの抽選を行うセレクター")]
@@ -30,8 +31,8 @@ namespace SGC2025.Item
         private Dictionary<ItemType, ItemEffect> activeEffects = new Dictionary<ItemType, ItemEffect>();
         
         // イベント
-        public static event System.Action<ItemType, float, float> OnItemEffectActivated; // (種類, 効果値, 持続時間)
-        public static event System.Action<ItemType> OnItemEffectExpired; // (種類)
+        public static event System.Action<ItemType, float, float> OnItemEffectActivated;
+        public static event System.Action<ItemType> OnItemEffectExpired;
         
         protected override bool UseDontDestroyOnLoad => false;
         
@@ -50,9 +51,7 @@ namespace SGC2025.Item
             base.Init();
             
             if (autoSpawn)
-            {
                 nextSpawnTime = Time.time + spawnInterval;
-            }
         }
         
         private void Update()
@@ -79,7 +78,6 @@ namespace SGC2025.Item
                 return;
             }
             
-            // 重み付き抽選
             ItemData selectedItem = spawnSelector.SelectRandom();
             if (selectedItem == null) return;
             
@@ -90,12 +88,12 @@ namespace SGC2025.Item
             SpawnItem(selectedItem, spawnPosition);
         }
         
+        
         /// <summary>
         /// ランダムな生成位置を取得
         /// </summary>
         private Vector3 GetRandomSpawnPosition()
         {
-            // GroundManagerからマップのサイズを取得
             if (GroundManager.I != null && GroundManager.I.MapData != null)
             {
                 var mapData = GroundManager.I.MapData;
@@ -108,11 +106,9 @@ namespace SGC2025.Item
                 return new Vector3(randomX, randomY, 0f) + new Vector3(0f, spawnHeightOffset, 0f);
             }
             
-            // マップ情報が取得できない場合のフォールバック
-            Debug.LogWarning("[ItemManager] GroundManager or MapData is null. Using default spawn position.");
             return new Vector3(
-                Random.Range(-10f, 10f),
-                Random.Range(-10f, 10f) + spawnHeightOffset,
+                Random.Range(-DEFAULT_SPAWN_RANGE, DEFAULT_SPAWN_RANGE),
+                Random.Range(-DEFAULT_SPAWN_RANGE, DEFAULT_SPAWN_RANGE) + spawnHeightOffset,
                 0f
             );
         }
@@ -138,13 +134,9 @@ namespace SGC2025.Item
         {
             if (itemData == null) return;
             
-            // 既に同じ種類の効果が有効な場合は上書き
             if (activeEffects.ContainsKey(itemData.ItemType))
-            {
                 RemoveEffect(itemData.ItemType);
-            }
             
-            // 効果を適用
             ApplyEffect(itemData);
         }
         
@@ -157,15 +149,13 @@ namespace SGC2025.Item
             {
                 data = itemData,
                 startTime = Time.time,
-                effectInstance = null // TODO: エフェクト生成処理を後で追加
+                effectInstance = null
             };
             
             activeEffects[itemData.ItemType] = effect;
             
-            // イベント通知
             OnItemEffectActivated?.Invoke(itemData.ItemType, itemData.EffectValue, itemData.Duration);
             
-            // エフェクト生成（Playerに追従）
             if (SGC2025.Player.PlayerDataProvider.I != null && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
             {
                 var playerTransform = SGC2025.Player.PlayerDataProvider.I.PlayerTransform;
@@ -211,25 +201,20 @@ namespace SGC2025.Item
             
             var effect = activeEffects[itemType];
             
-            // エフェクトを削除
-            if (effect.effectInstance != null)
+            if (effect.effectInstance != null && EffectFactory.I != null)
             {
-                Destroy(effect.effectInstance);
+                EffectFactory.I.ReturnEffect(effect.effectInstance);
             }
             
             activeEffects.Remove(itemType);
             
-            // イベント通知
             OnItemEffectExpired?.Invoke(itemType);
         }
         
         /// <summary>
         /// 指定した種類のアイテムが有効か確認
         /// </summary>
-        public bool IsEffectActive(ItemType itemType)
-        {
-            return activeEffects.ContainsKey(itemType);
-        }
+        public bool IsEffectActive(ItemType itemType) => activeEffects.ContainsKey(itemType);
         
         /// <summary>
         /// 指定した種類のアイテムの残り時間を取得
@@ -259,18 +244,6 @@ namespace SGC2025.Item
         public void SetSpawnInterval(float interval)
         {
             spawnInterval = Mathf.Max(interval, MIN_SPAWN_INTERVAL);
-        }
-        
-        /// <summary>
-        /// 自動生成の有効/無効を切り替え
-        /// </summary>
-        public void SetAutoSpawn(bool enabled)
-        {
-            autoSpawn = enabled;
-            if (enabled)
-            {
-                nextSpawnTime = Time.time + spawnInterval;
-            }
         }
     }
 }
