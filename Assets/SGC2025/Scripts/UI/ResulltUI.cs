@@ -79,9 +79,7 @@ namespace SGC2025.UI
 
                 case ResultPhase.GreeningRate:
                     if (greeningRateText != null)
-                    {
                         greeningRateText.SetText("0.0%");
-                    }
                     break;
 
                 case ResultPhase.EnemyKillScore:
@@ -177,14 +175,10 @@ namespace SGC2025.UI
             waitTime = ZERO_WAIT_TIME;
             
             foreach (GameObject button in buttons)
-            {
                 button.SetActive(true);
-            }
             
             if (firstButtonAfterInput != null && EventSystem.current != null)
-            {
                 EventSystem.current.SetSelectedGameObject(firstButtonAfterInput);
-            }
         }
 
         override protected void DestoryChild(UIBase uIBase)

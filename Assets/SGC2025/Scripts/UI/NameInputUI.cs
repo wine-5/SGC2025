@@ -23,7 +23,6 @@ namespace SGC2025.UI
             nameInputField.onValueChanged.AddListener(OnInputValueChanged);
             nameInputField.characterLimit = MAX_NAME_LENGTH;
             
-            // 初期状態でボタンを無効化
             UpdateSubmitButtonState();
             
             base.Start();
@@ -44,7 +43,6 @@ namespace SGC2025.UI
         {
             if (submitButton != null)
             {
-                // 入力が空でなければボタンを有効化
                 bool hasInput = !string.IsNullOrWhiteSpace(nameInputField.text);
                 submitButton.interactable = hasInput;
             }

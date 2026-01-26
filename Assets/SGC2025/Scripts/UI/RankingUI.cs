@@ -40,9 +40,7 @@ namespace SGC2025.UI
                     scoreTexts[i].text = $" {data.score}";
                     
                     if (greeningRateTexts != null && i < greeningRateTexts.Length)
-                    {
                         greeningRateTexts[i].text = $"{data.greeningRate:F1}%";
-                    }
                 }
                 else
                 {
@@ -50,9 +48,7 @@ namespace SGC2025.UI
                     scoreTexts[i].text = $"---";
                     
                     if (greeningRateTexts != null && i < greeningRateTexts.Length)
-                    {
                         greeningRateTexts[i].text = $"---";
-                    }
                 }
             }
         }
