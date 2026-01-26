@@ -10,14 +10,12 @@ namespace SGC2025.Player.Bullet
     {
         [Header("強化設定")]
         [SerializeField] private int enemiesPerUpgrade = 5; // 何体倒すごとに強化するか
-        [SerializeField] private float minFireInterval = 0.1f; // 発射間隔の下限
         
         [Header("レベル別設定")]
         [SerializeField] private WeaponLevelData[] levelData;
         
         // プロパティ
         public int EnemiesPerUpgrade => enemiesPerUpgrade;
-        public float MinFireInterval => minFireInterval;
         
         /// <summary>
         /// 指定レベルの武器データを取得
@@ -53,7 +51,6 @@ namespace SGC2025.Player.Bullet
         private void OnValidate()
         {
             enemiesPerUpgrade = Mathf.Max(1, enemiesPerUpgrade);
-            minFireInterval = Mathf.Max(0.01f, minFireInterval);
         }
     }
     
@@ -68,7 +65,6 @@ namespace SGC2025.Player.Bullet
         
         [Header("発射設定")]
         public int bulletDirections; // 弾の発射方向数（4, 8, 12, 16...）
-        public float fireInterval;   // 発射間隔（秒）
         
         /// <summary>
         /// デフォルトコンストラクタ（レベル1の設定）
@@ -77,7 +73,6 @@ namespace SGC2025.Player.Bullet
         {
             level = defaultLevel;
             bulletDirections = 4;
-            fireInterval = 1f;
         }
     }
 }
