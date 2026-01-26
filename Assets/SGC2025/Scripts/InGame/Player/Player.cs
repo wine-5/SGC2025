@@ -59,6 +59,7 @@ namespace SGC2025.Player
             input.Player.Movement.performed += OnMovementPerformed;
             input.Player.Movement.canceled += OnMovementCanceled;
             input.Player.Shot.performed += OnShotPerformed;
+            input.Player.Pause.performed += OnPausePerformed;
             
             // アイテム効果イベントの購読
             ItemManager.OnItemEffectActivated += OnItemEffectActivated;
@@ -70,6 +71,7 @@ namespace SGC2025.Player
             input.Player.Movement.performed -= OnMovementPerformed;
             input.Player.Movement.canceled -= OnMovementCanceled;
             input.Player.Shot.performed -= OnShotPerformed;
+            input.Player.Pause.performed -= OnPausePerformed;
             input.Disable();
             
             // アイテム効果イベントの購読解除
@@ -99,7 +101,6 @@ namespace SGC2025.Player
             stateMachine.UpdateActiveState();
             DecreaseMutekiTime();
             PlayerRotate();
-            HandlePauseInput();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -110,10 +111,8 @@ namespace SGC2025.Player
         #endregion
 
         #region 入力処理
-        /// <summary>ポーズ入力処理</summary>
-        private void HandlePauseInput()
+        private void OnPausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            if (Keyboard.current?.escapeKey.wasPressedThisFrame != true) return;
             if (GameManager.I == null) return;
             
             if (GameManager.I.IsPaused)
