@@ -61,7 +61,6 @@ namespace SGC2025.Player
             input.Player.Shot.performed += OnShotPerformed;
             input.Player.Pause.performed += OnPausePerformed;
             
-            // アイテム効果イベントの購読
             ItemManager.OnItemEffectActivated += OnItemEffectActivated;
             ItemManager.OnItemEffectExpired += OnItemEffectExpired;
         }
@@ -74,7 +73,6 @@ namespace SGC2025.Player
             input.Player.Pause.performed -= OnPausePerformed;
             input.Disable();
             
-            // アイテム効果イベントの購読解除
             ItemManager.OnItemEffectActivated -= OnItemEffectActivated;
             ItemManager.OnItemEffectExpired -= OnItemEffectExpired;
         }
@@ -87,11 +85,8 @@ namespace SGC2025.Player
             if (GroundManager.I != null)
                 transform.position = GroundManager.I.GetPlayerSpawnPosition();
             
-            // PlayerDataProviderに登録
             if (PlayerDataProvider.I != null)
-            {
                 PlayerDataProvider.I.RegisterPlayer(transform);
-            }
         }
 
         private void Update()
@@ -183,7 +178,6 @@ namespace SGC2025.Player
             if (damage <= 0f) return;
             currentHealth = Mathf.Max(0f, currentHealth - damage);
             
-            // ダメージイベント発火 (HP割合を渡す)
             float hpRate = maxHealth > 0f ? currentHealth / maxHealth : 0f;
             OnPlayerDamaged?.Invoke(hpRate);
             
@@ -200,15 +194,8 @@ namespace SGC2025.Player
         /// </summary>
         private void OnItemEffectActivated(ItemType itemType, float effectValue, float duration)
         {
-            switch (itemType)
-            {
-                case ItemType.SpeedBoost:
-                    ApplySpeedBoost(effectValue);
-                    break;
-                case ItemType.ScoreMultiplier:
-                    // ScoreManagerで処理されるため、ここでは何もしない
-                    break;
-            }
+            if (itemType == ItemType.SpeedBoost)
+                ApplySpeedBoost(effectValue);
         }
         
         /// <summary>
@@ -216,15 +203,8 @@ namespace SGC2025.Player
         /// </summary>
         private void OnItemEffectExpired(ItemType itemType)
         {
-            switch (itemType)
-            {
-                case ItemType.SpeedBoost:
-                    ResetSpeed();
-                    break;
-                case ItemType.ScoreMultiplier:
-                    // ScoreManagerで処理されるため、ここでは何もしない
-                    break;
-            }
+            if (itemType == ItemType.SpeedBoost)
+                ResetSpeed();
         }
         
         /// <summary>

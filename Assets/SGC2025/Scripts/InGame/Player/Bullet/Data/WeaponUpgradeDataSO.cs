@@ -25,10 +25,9 @@ namespace SGC2025.Player.Bullet
             if (levelData == null || levelData.Length == 0)
             {
                 Debug.LogError("WeaponUpgradeDataSO: レベルデータが設定されていません");
-                return new WeaponLevelData(); // デフォルト値
+                return new WeaponLevelData();
             }
             
-            // レベルが範囲外の場合は最大レベルのデータを返す
             int index = Mathf.Min(level - 1, levelData.Length - 1);
             index = Mathf.Max(0, index);
             
@@ -66,9 +65,6 @@ namespace SGC2025.Player.Bullet
         [Header("発射設定")]
         public int bulletDirections; // 弾の発射方向数（4, 8, 12, 16...）
         
-        /// <summary>
-        /// デフォルトコンストラクタ（レベル1の設定）
-        /// </summary>
         public WeaponLevelData(int defaultLevel = 1)
         {
             level = defaultLevel;

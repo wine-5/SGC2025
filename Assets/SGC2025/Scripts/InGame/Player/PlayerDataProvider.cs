@@ -43,7 +43,6 @@ namespace SGC2025.Player
         public void UnregisterPlayer()
         {
             playerTransform = null;
-            Debug.Log("[PlayerDataProvider] Player unregistered");
         }
         
         /// <summary>

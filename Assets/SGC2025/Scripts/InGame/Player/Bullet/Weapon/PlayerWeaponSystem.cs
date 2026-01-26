@@ -36,11 +36,8 @@ namespace SGC2025.Player.Bullet
         
         private void Awake()
         {
-            // 発射位置が設定されていない場合は自分の位置を使用
             if (firePoint == null)
-            {
                 firePoint = transform;
-            }
         }
         
         private void Start()
@@ -50,13 +47,11 @@ namespace SGC2025.Player.Bullet
         
         private void OnEnable()
         {
-            // 敵撃破イベントの購読（EnemyEventsクラス経由）
             EnemyEvents.OnEnemyDestroyed += OnEnemyDestroyed;
         }
         
         private void OnDisable()
         {
-            // 敵撃破イベントの購読解除
             EnemyEvents.OnEnemyDestroyed -= OnEnemyDestroyed;
         }
         
@@ -78,7 +73,6 @@ namespace SGC2025.Player.Bullet
         {
             enemiesKilled++;
             
-            // レベルアップチェック
             int newLevel = weaponUpgradeData.CalculateLevel(enemiesKilled);
             if (newLevel > currentLevel)
             {
@@ -87,7 +81,6 @@ namespace SGC2025.Player.Bullet
                 OnWeaponLevelUp?.Invoke(currentLevel);
             }
             
-            // イベント発火
             OnEnemyKilled?.Invoke(enemiesKilled, currentLevel);
         }
         
@@ -109,13 +102,11 @@ namespace SGC2025.Player.Bullet
         {
             if (BulletFactory.I == null || firePoint == null) return;
             
-            // 円状に弾を発射
             BulletFactory.I.CreateCircularBullets(
                 firePoint.position,
                 currentBulletDirections,
                 bulletData
             );
-            // 弾発射SEを再生
             if (AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.PlayerShoot);
         }
