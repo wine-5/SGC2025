@@ -8,8 +8,8 @@ namespace SGC2025
     /// Waveの設定データを定義するScriptableObject
     /// 時間経過による敵の出現パターンとレベルスケーリングを管理
     /// </summary>
-    [CreateAssetMenu(fileName = "New Wave Config", menuName = "SGC2025/Wave Config")]
-    public class WaveConfigSO : ScriptableObject
+    [CreateAssetMenu(fileName = "New Wave Data", menuName = "SGC2025/Wave Data")]
+    public class WaveDataSO : ScriptableObject
     {
         [System.Serializable]
         public class WaveData
