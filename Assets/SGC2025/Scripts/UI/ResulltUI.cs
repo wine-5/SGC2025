@@ -20,6 +20,8 @@ namespace SGC2025.UI
         [SerializeField]
         private TextMeshProUGUI totalScoreText;
         [SerializeField]
+        private TextMeshProUGUI greeningRateText; // 緑化度（％）表示
+        [SerializeField]
         private GameObject[] buttons;
 
         enum ResultPhase
@@ -28,6 +30,7 @@ namespace SGC2025.UI
             Start,
             EnemyKillScore,
             GreeningScore,
+            GreeningRate, // 緑化度（％）
             TotalScore,
             HighScore,
             End
@@ -78,6 +81,14 @@ namespace SGC2025.UI
                     greeningScoreText.SetText("0");
                     break;
 
+                case ResultPhase.GreeningRate:
+                    if (greeningRateText != null)
+                    {
+                        float rate = GroundManager.I != null ? GroundManager.I.GetGreenificationRate() * 100f : 0f;
+                        greeningRateText.SetText($"{rate:F1}%");
+                    }
+                    break;
+
                 case ResultPhase.TotalScore:
                     totalScoreText.SetText("0");
                     break;
@@ -120,6 +131,10 @@ namespace SGC2025.UI
 
                 case ResultPhase.GreeningScore:
                     greeningScoreText.SetText(ScoreCountUp(waitTime, ScoreManager.I.GetGreenScore(), SCORE_COUNT_UP_TIME).ToString());
+                    break;
+                
+                case ResultPhase.GreeningRate:
+                    // 緑化度は固定表示なのでカウントアップ不要
                     break;
                     
                 case ResultPhase.HighScore:
