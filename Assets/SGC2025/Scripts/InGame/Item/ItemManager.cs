@@ -183,8 +183,6 @@ namespace SGC2025.Item
                 var playerTransform = SGC2025.Player.PlayerDataProvider.I.PlayerTransform;
                 Vector3 playerPos = playerTransform.position;
                 
-                Debug.Log($"[ItemManager] Creating effect at Player position: {playerPos}");
-                
                 EffectType effectType = itemData.ItemType switch
                 {
                     ItemType.SpeedBoost => EffectType.SpeedBoostEffect,

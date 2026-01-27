@@ -32,6 +32,7 @@ namespace SGC2025.UI
         [SerializeField] private Color scoreFlashColor = Color.yellow;
         [SerializeField] private Color bigScoreFlashColor = Color.cyan;
         [SerializeField] private int bigScoreThreshold = 1000;
+        [SerializeField] private Color scoreBoostColor = new Color(1f, 0.6f, 0f); // PopUpと同じオレンジ色
 
         [Header("スコアポップアップ設定")]
         [SerializeField] private RectTransform parentCanvas;
@@ -77,12 +78,20 @@ namespace SGC2025.UI
         {
             EnemyEvents.OnEnemyDestroyedWithScore += OnEnemyDestroyed;
             GroundEvents.OnGroundGreenified += OnGroundGreenified;
+            
+            // スコア倍率エフェクトの開始・終了を監視
+            SGC2025.Item.ItemManager.OnItemEffectActivated += OnItemEffectActivated;
+            SGC2025.Item.ItemManager.OnItemEffectExpired += OnItemEffectExpired;
         }
 
         private void OnDisable()
         {
             EnemyEvents.OnEnemyDestroyedWithScore -= OnEnemyDestroyed;
             GroundEvents.OnGroundGreenified -= OnGroundGreenified;
+            
+            // スコア倍率エフェクトの監視解除
+            SGC2025.Item.ItemManager.OnItemEffectActivated -= OnItemEffectActivated;
+            SGC2025.Item.ItemManager.OnItemEffectExpired -= OnItemEffectExpired;
         }
 
         private void OnEnemyDestroyed(int score, Vector3 position)
@@ -98,6 +107,36 @@ namespace SGC2025.UI
             UpdateScoreText(points);
             ShowScorePopupAtInspectorPosition(points);
             UpdateTerritoryGauge();
+        }
+        
+        /// <summary>
+        /// アイテム効果が開始された時の処理
+        /// </summary>
+        private void OnItemEffectActivated(SGC2025.Item.ItemType itemType, float effectValue, float duration)
+        {
+            if (itemType == SGC2025.Item.ItemType.ScoreMultiplier)
+            {
+                // スコア倍率開始：色をオレンジに変更
+                if (scoreText != null)
+                {
+                    scoreText.color = scoreBoostColor;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// アイテム効果が終了した時の処理
+        /// </summary>
+        private void OnItemEffectExpired(SGC2025.Item.ItemType itemType)
+        {
+            if (itemType == SGC2025.Item.ItemType.ScoreMultiplier)
+            {
+                // スコア倍率終了：色を元に戻す
+                if (scoreText != null)
+                {
+                    scoreText.color = originalScoreColor;
+                }
+            }
         }
         
 
@@ -210,7 +249,11 @@ namespace SGC2025.UI
             {
                 StopCoroutine(currentScoreAnimation);
                 scoreText.transform.localScale = originalScoreScale;
-                scoreText.color = originalScoreColor;
+                
+                // スコア倍率中かチェックして色を決定
+                bool isBoostActive = SGC2025.Item.ItemManager.I != null && 
+                                     SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
+                scoreText.color = isBoostActive ? scoreBoostColor : originalScoreColor;
             }
             
             Color flashColor = score >= bigScoreThreshold ? bigScoreFlashColor : scoreFlashColor;
@@ -245,14 +288,21 @@ namespace SGC2025.UI
                 float t = elapsed / halfDuration;
                 
                 scoreText.transform.localScale = Vector3.Lerp(originalScoreScale * scorePulseScale, originalScoreScale, t);
-                scoreText.color = Color.Lerp(flashColor, originalScoreColor, t);
+                
+                // スコア倍率中かチェックして復帰色を決定
+                bool isBoostActive = SGC2025.Item.ItemManager.I != null && 
+                                     SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
+                Color targetColor = isBoostActive ? scoreBoostColor : originalScoreColor;
+                scoreText.color = Color.Lerp(flashColor, targetColor, t);
                 
                 yield return null;
             }
 
-            // 確実に元に戻す
+            // 確実に元に戻す（倍率状態も考慮）
             scoreText.transform.localScale = originalScoreScale;
-            scoreText.color = originalScoreColor;
+            bool isFinalBoostActive = SGC2025.Item.ItemManager.I != null && 
+                                      SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
+            scoreText.color = isFinalBoostActive ? scoreBoostColor : originalScoreColor;
             currentScoreAnimation = null;
         }
 

@@ -15,6 +15,9 @@ namespace SGC2025.Effect
         [SerializeField, Tooltip("追従の滑らかさ（0で即座に追従）")]
         private float followSmooth = 0f;
         
+        [SerializeField, Tooltip("回転も追従するか")]
+        private bool followRotation = true;
+        
         private Transform followTarget;
         private float duration;
         private float startTime;
@@ -35,10 +38,13 @@ namespace SGC2025.Effect
                 Vector3 targetPos = followTarget.position;
                 Vector3 finalPos = targetPos + followOffset;
                 
-                Debug.Log($"[EffectController] Initialize - Target: {targetPos}, Offset: {followOffset}, Final: {finalPos}");
-                
                 transform.position = finalPos;
-                transform.rotation = followTarget.rotation;
+                
+                // followRotationが有効な場合のみ回転を設定
+                if (followRotation)
+                {
+                    transform.rotation = followTarget.rotation;
+                }
             }
         }
         
@@ -52,6 +58,15 @@ namespace SGC2025.Effect
                     transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * followSmooth);
                 else
                     transform.position = targetPosition;
+                
+                // 回転も追従する場合
+                if (followRotation)
+                {
+                    if (followSmooth > 0f)
+                        transform.rotation = Quaternion.Lerp(transform.rotation, followTarget.rotation, Time.deltaTime * followSmooth);
+                    else
+                        transform.rotation = followTarget.rotation;
+                }
             }
             
             if (duration > 0f && Time.time - startTime >= duration)
