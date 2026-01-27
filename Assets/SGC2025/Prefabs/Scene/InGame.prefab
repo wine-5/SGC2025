@@ -91,6 +91,82 @@ MonoBehaviour:
   m_EffectColor: {r: 0.6386533, g: 1, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!1 &431639619723886984
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3104842370822212638}
+  - component: {fileID: 5335753525405684615}
+  - component: {fileID: 3295539358614712899}
+  - component: {fileID: 2600085939445507916}
+  m_Layer: 0
+  m_Name: InGameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3104842370822212638
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431639619723886984}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6900073775319507052}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5335753525405684615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431639619723886984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae585b3a39b948440b525f4169ab49d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.InGameManager
+  startCountDownTime: 0
+  gameTimeLimit: 300
+--- !u!114 &3295539358614712899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431639619723886984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5478fdd4dfbc04f861126e38bb0867, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.PauseManager
+  pausePanel: {fileID: 6169577160033252297}
+  firstPauseButton: {fileID: 6182230565944368806}
+--- !u!114 &2600085939445507916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431639619723886984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6155ebf6a0cb1f148a7319a54f15afc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.WaveManager
+  waveData: {fileID: 11400000, guid: befa0aca092698a418715716f4b590e6, type: 2}
+  waveInterval: 30
 --- !u!1 &494232394599079435
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,6 +388,37 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2117362797416292493
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5202777153963330862}
+  m_Layer: 0
+  m_Name: GrassEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5202777153963330862
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2117362797416292493}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.12683105, y: 0, z: 3.3173828}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2589638404928800303}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2169510786128308866
 GameObject:
   m_ObjectHideFlags: 0
@@ -1291,6 +1398,7 @@ Transform:
   - {fileID: 6771261281989170649}
   - {fileID: 5866037184074103115}
   - {fileID: 6553813152698670916}
+  - {fileID: 3104842370822212638}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6169577160033252297
@@ -1679,7 +1787,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98669f52a63dcc842893f5f85f46a6a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemySpawner
-  spawnInterval: 0.05
   autoStart: 1
   positionManager:
     useCornerSpawn: 1
@@ -2156,6 +2263,7 @@ Transform:
   m_Children:
   - {fileID: 7978915019951182649}
   - {fileID: 3388061944092340065}
+  - {fileID: 5202777153963330862}
   m_Father: {fileID: 5866037184074103115}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1660309809344651477
@@ -2178,6 +2286,10 @@ MonoBehaviour:
   - name: ScoreBoostEffect
     prefab: {fileID: 4093752641805609384, guid: 8f1dd1b9b2ee70949838aa2c2f114018, type: 3}
     parent: {fileID: 6471960593088752596}
+    initialSize: 5
+  - name: GrassEffect
+    prefab: {fileID: 3775725831989561815, guid: 2d3c7b9c3fec051428fa0142b5c5e3cd, type: 3}
+    parent: {fileID: 2117362797416292493}
     initialSize: 5
   autoExpand: 1
   expandSize: 5
