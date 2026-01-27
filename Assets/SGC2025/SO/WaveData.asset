@@ -16,51 +16,42 @@ MonoBehaviour:
   - waveName: Wave1
     waveLevel: 1
     explain: "\u57FA\u672C\u7684\u306A\u6575\u3057\u304B\u51FA\u306A\u304F\u3001\u64CD\u4F5C\u306B\u306A\u308C\u308B\u305F\u3081\u306E\u30A6\u30A7\u30FC\u30D6"
-    spawnInterval: 1
+    spawnInterval: 1.2
     maxEnemyCount: 30
     enemyConfigs:
-    - {fileID: 11400000, guid: 4daf39bd2d3873e408d952df5667768f, type: 2}
+    - {fileID: 11400000, guid: 0b4e15238f06521478063a3b9575c543, type: 2}
     enableDebugLog: 0
   - waveName: Wave2
     waveLevel: 2
-    explain: 
-    spawnInterval: 0.8
-    maxEnemyCount: 60
+    explain: "\u6575\u306e\u6570\u3068\u7a2e\u985e\u304c\u5897\u3048\u308b"
+    spawnInterval: 1.0
+    maxEnemyCount: 50
     enemyConfigs:
-    - {fileID: 11400000, guid: 4daf39bd2d3873e408d952df5667768f, type: 2}
-    - {fileID: 11400000, guid: 8a6cd8c5f3696d743bfa69991f0420cc, type: 2}
+    - {fileID: 11400000, guid: 0b4e15238f06521478063a3b9575c543, type: 2}
     enableDebugLog: 0
   - waveName: Wave3
     waveLevel: 3
-    explain: 
-    spawnInterval: 0.6
-    maxEnemyCount: 180
+    explain: "\u3055\u3089\u306b\u6fc0\u3057\u3044\u6226\u95d8"
+    spawnInterval: 0.8
+    maxEnemyCount: 80
     enemyConfigs:
-    - {fileID: 11400000, guid: 4daf39bd2d3873e408d952df5667768f, type: 2}
-    - {fileID: 11400000, guid: b7fd6b985d917d94993719659386949c, type: 2}
-    - {fileID: 11400000, guid: 424c38caa5d31a149b8b83cd4ba4b269, type: 2}
+    - {fileID: 11400000, guid: 0b4e15238f06521478063a3b9575c543, type: 2}
     enableDebugLog: 0
   - waveName: Wave4
     waveLevel: 4
-    explain: 
-    spawnInterval: 0.3
-    maxEnemyCount: 1000
+    explain: "\u975e\u5e38\u306b\u5371\u967a\u306a\u30ec\u30d9\u30eb"
+    spawnInterval: 0.6
+    maxEnemyCount: 120
     enemyConfigs:
-    - {fileID: 11400000, guid: 4daf39bd2d3873e408d952df5667768f, type: 2}
-    - {fileID: 11400000, guid: b7fd6b985d917d94993719659386949c, type: 2}
-    - {fileID: 11400000, guid: 424c38caa5d31a149b8b83cd4ba4b269, type: 2}
-    - {fileID: 11400000, guid: 8a6cd8c5f3696d743bfa69991f0420cc, type: 2}
+    - {fileID: 11400000, guid: 0b4e15238f06521478063a3b9575c543, type: 2}
     enableDebugLog: 0
   - waveName: Wave5
     waveLevel: 5
-    explain: "\u6575\u306E\u7A2E\u985E\u304C3\u7A2E\u985E\u306B\u306A\u308A\u96E3\u6613\u5EA6\u3082\u4E0A\u304C\u3063\u3066\u304F\u308B\u9803"
-    spawnInterval: 0.01
-    maxEnemyCount: 1000
+    explain: "\u6700\u7d42\u30a6\u30a7\u30fc\u30d6\u3001\u751f\u304d\u6b8b\u308c\u308b\u304b\u306e\u6226\u3044"
+    spawnInterval: 0.4
+    maxEnemyCount: 200
     enemyConfigs:
-    - {fileID: 11400000, guid: 4daf39bd2d3873e408d952df5667768f, type: 2}
-    - {fileID: 11400000, guid: b7fd6b985d917d94993719659386949c, type: 2}
-    - {fileID: 11400000, guid: 424c38caa5d31a149b8b83cd4ba4b269, type: 2}
-    - {fileID: 11400000, guid: 8a6cd8c5f3696d743bfa69991f0420cc, type: 2}
+    - {fileID: 11400000, guid: 0b4e15238f06521478063a3b9575c543, type: 2}
     enableDebugLog: 0
   loopLastWave: 1
   minWaveInterval: 60

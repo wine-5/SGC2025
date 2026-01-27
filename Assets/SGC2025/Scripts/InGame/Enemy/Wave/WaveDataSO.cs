@@ -78,6 +78,19 @@ namespace SGC2025
                     return wave;
                 }
             }
+
+            // 指定レベルのWaveが存在しない場合のフォールバック
+            // loopLastWave が有効なら「最後のWave」を返して以降のWaveをループさせる
+            if (loopLastWave && waves != null && waves.Count > 0)
+            {
+                // waves は OnValidate で waveLevel 昇順に並ぶ想定
+                var lastWave = waves[waves.Count - 1];
+                if (waveLevel > lastWave.waveLevel)
+                {
+                    return lastWave;
+                }
+            }
+
             return null;
         }
         

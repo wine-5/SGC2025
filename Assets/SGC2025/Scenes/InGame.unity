@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: InGame
       objectReference: {fileID: 0}
+    - target: {fileID: 6783290750408320351, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: mutekiTime
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -179,6 +183,10 @@ PrefabInstance:
       propertyPath: 'spawnConfigManager.spawnConfigs.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 0b4e15238f06521478063a3b9575c543, type: 2}
+    - target: {fileID: 7768601169847586187, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: expandSize
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

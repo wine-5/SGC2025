@@ -229,9 +229,6 @@ namespace TechC
             }
 
             // オブジェクトをリセット（位置・回転のみ。スケールは保持）
-            Vector3 originalScale = obj.transform.localScale;
-            Debug.Log($"[ObjectPool] オブジェクト '{obj.name}' をプールに返却 - スケール: {originalScale} (保持)");
-            
             obj.transform.localPosition = Vector3.zero;
             obj.transform.localRotation = Quaternion.identity;
             // スケールはリセットしない（敵のサイズをWaveレベルに応じて維持するため）

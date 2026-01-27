@@ -123,8 +123,6 @@ namespace SGC2025.Item
                 Debug.LogWarning("[ItemManager] ItemFactory instance is null!");
                 return;
             }
-            
-            GameObject itemObj = ItemFactory.I.SpawnItem(itemData, position);
         }
         
         /// <summary>
@@ -146,7 +144,6 @@ namespace SGC2025.Item
             }
             
             SpawnItem(selectedItem, position);
-            Debug.Log($"[ItemManager] Spawned {selectedItem.ItemName} at {position}");
         }
         
         /// <summary>

@@ -42,11 +42,13 @@ namespace SGC2025.Enemy
         /// </summary>
         public EnemyParameters GetScaledParameters(int waveLevel)
         {
+            // Waveレベルに応じてパラメーターをスケーリング
+            float waveMultiplier = 1f + (0.1f * (waveLevel - 1)); // 10%ずつ上昇
             return new EnemyParameters
             {
                 enemyType = this.enemyType,
-                health = this.health,
-                moveSpeed = this.moveSpeed,
+                health = this.health * waveMultiplier,
+                moveSpeed = this.moveSpeed * Mathf.Min(waveMultiplier, 2f), // 移動速度は最大2倍まで
                 lifeTime = this.lifeTime
             };
         }

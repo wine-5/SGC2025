@@ -81,24 +81,9 @@ namespace SGC2025.Manager
             currentWaveLevel = 1;
             UpdateCurrentWaveData();
             
-            // 初期化時のログ
-            string modeText = useTestMode ? $"[テストモード] {testWaveInterval}秒間隔" : $"通常モード {waveInterval}秒間隔";
-            Debug.Log($"[WaveManager] Waveシステム初期化: {modeText}");
+            // Waveシステム初期化完了
             
-            if (enableVerboseLogging)
-            {
-                if (waveData == null)
-                {
-                    Debug.LogError("[WaveManager] WaveDataSOが設定されていません！");
-                }
-                else
-                {
-                    Debug.Log($"[WaveManager] WaveDataSOが設定されています: {waveData.name}");
-                    Debug.Log($"[WaveManager] 総 Wave数: {waveData.GetWaveCount()}");
-                }
-                
-                LogWaveDataDetails();
-            }
+
         }
         
         /// <summary>
@@ -132,13 +117,7 @@ namespace SGC2025.Manager
             
             // 基本ログ
             string modeText = useTestMode ? "[テストモード]" : "";
-            Debug.Log($"[WaveManager] {modeText} Wave changed from {previousWave} to {currentWaveLevel} at time {GameElapsedTime:F1}s");
-            
-            // 詳細ログ（WaveDataの内容確認）
-            if (enableVerboseLogging)
-            {
-                LogWaveDataDetails();
-            }
+            // Wave変更ロジック（ログなし）
             
             OnWaveChanged?.Invoke(currentWaveLevel);
             OnWaveDataChanged?.Invoke(currentWave);
@@ -178,66 +157,9 @@ namespace SGC2025.Manager
             }
         }
         
-        /// <summary>
-        /// 現在のWaveDataの詳細をログ出力
-        /// </summary>
-        private void LogWaveDataDetails()
-        {
-            if (currentWave == null)
-            {
-                Debug.LogWarning($"[WaveManager] Wave Level {currentWaveLevel}: WaveDataがnullです！");
-                return;
-            }
-            
-            Debug.Log($"[WaveManager] === Wave Details ===\n" +
-                     $"Wave Name: {currentWave.waveName}\n" +
-                     $"Wave Level: {currentWave.waveLevel}\n" +
-                     $"Spawn Interval: {currentWave.spawnInterval}s\n" +
-                     $"Max Enemy Count: {currentWave.maxEnemyCount}\n" +
-                     $"Enemy Configs Count: {currentWave.enemyConfigs?.Count ?? 0}");
-            
-            if (currentWave.enemyConfigs != null && currentWave.enemyConfigs.Count > 0)
-            {
-                for (int i = 0; i < currentWave.enemyConfigs.Count; i++)
-                {
-                    var config = currentWave.enemyConfigs[i];
-                    if (config != null)
-                    {
-                        Debug.Log($"[WaveManager] Enemy Config [{i}]: {config.name}");
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[WaveManager] Enemy Config [{i}]: NULL");
-                    }
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"[WaveManager] Enemy Configsが設定されていません！");
-            }
-            
-            Debug.Log($"[WaveManager] Has Valid Enemy Configs: {currentWave.HasValidEnemyConfigs()}");
-        }
+
         
-        /// <summary>
-        /// テスト用: 現在のWave情報をコンソールに出力
-        /// </summary>
-        [ContextMenu("Show Current Wave Info")]
-        private void ShowCurrentWaveInfo()
-        {
-            string modeText = useTestMode ? "[テストモード]" : "[通常モード]";
-            float interval = useTestMode ? testWaveInterval : waveInterval;
-            
-            Debug.Log($"[WaveManager] {modeText} \n" +
-                     $"Current Game Time: {GameElapsedTime:F1}s\n" +
-                     $"Wave Interval: {interval}s\n" +
-                     $"Current Wave Level: {currentWaveLevel}\n" +
-                     $"Next Wave at: {currentWaveLevel * interval:F1}s");
-                     
-            LogWaveDataDetails();
-        }
-        
-        private void StopWaveProgression() => isGameActive = false;
+            private void StopWaveProgression() => isGameActive = false;
         
         private void PauseWaveProgression() => isGameActive = false;
         

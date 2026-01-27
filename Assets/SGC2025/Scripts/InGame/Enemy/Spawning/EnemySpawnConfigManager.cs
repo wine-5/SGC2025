@@ -36,19 +36,9 @@ namespace SGC2025.Enemy
                 return null;
             }
 
-            Debug.Log($"[EnemySpawnConfigManager] 有効なConfig数: {validConfigs.Count}");
-            
-            // 各Configの敵数をログ（偏り検出のため）
-            foreach (var config in validConfigs)
-            {
-                Debug.Log($"  Config '{config.name}': 有効敵数={config.GetEnemyDataCount()}");
-            }
-            
             // ランダムに設定を選択してから、その設定内で敵を選択
             int configIndex = Random.Range(0, validConfigs.Count);
             var randomConfig = validConfigs[configIndex];
-            
-            Debug.Log($"[EnemySpawnConfigManager] 選択されたConfig[{configIndex}]: {randomConfig.name}");
             
             return randomConfig.SelectRandomEnemy();
         }
