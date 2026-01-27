@@ -1,0 +1,214 @@
+{
+  "ja": {
+    "navigation": {
+      "home": "ホーム",
+      "sapporo_camp": "札幌ゲームキャンプ",
+      "download": "ダウンロード",
+      "game_overview": "ゲーム概要",
+      "controls": "操作方法",
+      "developers": "開発者",
+      "language": "言語"
+    },
+    "hero": {
+      "title_kanji": "蝶々反乱",
+      "title_sub": "バタフライリベリオン",
+      "tagline": "角をもつ蝶々が、奪われた自然を取り戻す",
+      "team": "アルティメット革命軍"
+    },
+    "sapporo_camp": {
+      "section_title": "札幌ゲームキャンプ2025",
+      "description": "札幌を拠点とするゲーム会社が合同で開催するイベントです。プロのゲームクリエイターによる講座やゲームジャムなど、ゲーム開発に関する様々なイベントが開催されました。",
+      "event_date": "開催日：2025年10月17日(金)・18日(土)・19日(日)",
+      "event_venue": "開催場所：サッポロファクトリー",
+      "official_website": "公式Webサイト",
+      "attendance": "延べ1,900人が来場した道内最大級のゲームイベント"
+    },
+    "theme": {
+      "section_title": "テーマ",
+      "main": "「かくちょう」",
+      "concept": "角（ツノ）をもつ蝶々が人間に奪われた自然を取り戻す！",
+      "team_name": "角蝶",
+      "team_number": "チーム番号：1",
+      "team_description": "テーマ『かくちょう』の意味を『角蝶』として解釈し、チーム全員で決定しました。",
+      "game_concept": "プレイヤーが蝶の角を発射して、敵や破壊物に当てることで自然を取り返していくゲーム"
+    },
+    "game_overview": {
+      "section_title": "ゲーム概要",
+      "description": "敵を撃破することで、失われた自然が徐々に回復していきます。制限時間内に敵を倒してスコアを競い、ランキングに載ることを目指そう！",
+      "game_flow": "ゲームフロー",
+      "ranking": "ランキングに掲載されるチャンス"
+    },
+    "controls": {
+      "section_title": "操作方法",
+      "keyboard": "キーボード",
+      "keyboard_desc": "Wキー：上 Aキー：左 Sキー：下 Dキー：右 で移動\nスペースキー：弾を発射",
+      "controller": "ゲームコントローラー",
+      "controller_desc": "左スティック / 十字キー で移動\n○ボタン（右のボタン）、もしくは△ボタン（上のボタン）で撃てる",
+      "tip": "敵の攻撃パターンを見極めて、素早く回避しよう!"
+    },
+    "developers": {
+      "section_title": "開発者一覧",
+      "roles": {
+        "planner": "プランナー",
+        "programmer": "プログラマー",
+        "designer": "デザイナー"
+      },
+      "team": [
+        {
+          "name": "tanakashouzou",
+          "role": "planner",
+          "github": "https://github.com/tanakashouzou",
+          "x": null,
+          "responsibility": "プロジェクトのリーダー、進行状況の管理、ゲーム概要の定義"
+        },
+        {
+          "name": "wine-5",
+          "role": "programmer",
+          "github": "https://github.com/wine-5",
+          "x": "https://x.com/wine_program",
+          "responsibility": "敵の実装、音の実装、弾の実装、Webサイトの作成"
+        },
+        {
+          "name": "akaniwas0202",
+          "role": "programmer",
+          "github": "https://github.com/akaniwas0202",
+          "x": null,
+          "responsibility": "プレイヤー実装"
+        },
+        {
+          "name": "GDkikuchi",
+          "role": "programmer",
+          "github": "https://github.com/GDkikuchi",
+          "x": null,
+          "responsibility": "ゲーム全体の制御、UI関連、ランキングの実装、地面のタイルの実装"
+        },
+        {
+          "name": "25d12-kei",
+          "role": "designer",
+          "github": "https://github.com/25d12-kei",
+          "x": null,
+          "responsibility": "ゲームデザイン"
+        }
+      ],
+      "additional_designers": "その他、デザイナー2名が参加しています"
+    },
+    "download": {
+      "section_title": "ダウンロード",
+      "status": "プレイ可能",
+      "description": "UnityRoomでゲームをプレイできます",
+      "button": "UnityRoomでプレイ"
+    },
+    "footer": {
+      "title": "蝶々反乱",
+      "event": "札幌ゲームキャンプ2025 - ゲームジャム作品",
+      "team": "制作: アルティメット革命軍",
+      "copyright": "&copy; 2025 wine-5. All rights reserved."
+    }
+  },
+  "en": {
+    "navigation": {
+      "home": "Home",
+      "sapporo_camp": "Sapporo Game Camp",
+      "download": "Download",
+      "game_overview": "Game Overview",
+      "controls": "Controls",
+      "developers": "Developers",
+      "language": "Language"
+    },
+    "hero": {
+      "title_kanji": "蝶々反乱",
+      "title_sub": "BUTTERFLY REBELLION",
+      "tagline": "Horned butterflies take back nature stolen by humans",
+      "team": "Ultimate Revolutionary Army"
+    },
+    "sapporo_camp": {
+      "section_title": "Sapporo Game Camp 2025",
+      "description": "A collaborative event held by game companies based in Sapporo. Various events related to game development, including lectures by professional game creators and game jams, were held.",
+      "event_date": "Event Date: October 17-19, 2025 (Fri-Sun)",
+      "event_venue": "Venue: Sapporo Factory",
+      "official_website": "Official Website",
+      "attendance": "A major game event in Hokkaido with 1,900+ visitors"
+    },
+    "theme": {
+      "section_title": "Theme",
+      "main": "\"Kakucho\" (角蝶)",
+      "concept": "Horned butterflies take back the nature stolen by humans!",
+      "team_name": "Kakucho",
+      "team_number": "Team Number: 1",
+      "team_description": "We interpreted the theme 'Kakucho' as 'Horned Butterflies' and decided on it as a team.",
+      "game_concept": "A game where players shoot butterfly horns at enemies and destructible objects to recover nature"
+    },
+    "game_overview": {
+      "section_title": "Game Overview",
+      "description": "As you defeat enemies, lost nature gradually recovers. Defeat as many enemies as possible within the time limit and compete on the leaderboard!",
+      "game_flow": "Game Flow",
+      "ranking": "Chance to be listed on the ranking"
+    },
+    "controls": {
+      "section_title": "Controls",
+      "keyboard": "Keyboard",
+      "keyboard_desc": "W Key: Up, A Key: Left, S Key: Down, D Key: Right to move\nSpace Key: Fire bullet",
+      "controller": "Game Controller",
+      "controller_desc": "Left Stick / D-Pad to move\nCircle Button (right button) or Triangle Button (top button) to fire bullet",
+      "tip": "Observe enemy attack patterns and dodge quickly!"
+    },
+    "developers": {
+      "section_title": "Developer Team",
+      "roles": {
+        "planner": "Planner",
+        "programmer": "Programmer",
+        "designer": "Designer"
+      },
+      "team": [
+        {
+          "name": "tanakashouzou",
+          "role": "planner",
+          "github": "https://github.com/tanakashouzou",
+          "x": null,
+          "responsibility": "Project Leader, Progress Management, Game Overview Definition"
+        },
+        {
+          "name": "wine-5",
+          "role": "programmer",
+          "github": "https://github.com/wine-5",
+          "x": "https://x.com/wine_program",
+          "responsibility": "Enemy Implementation, Sound Implementation, Bullet Implementation, Website Creation"
+        },
+        {
+          "name": "akaniwas0202",
+          "role": "programmer",
+          "github": "https://github.com/akaniwas0202",
+          "x": null,
+          "responsibility": "Player Implementation"
+        },
+        {
+          "name": "GDkikuchi",
+          "role": "programmer",
+          "github": "https://github.com/GDkikuchi",
+          "x": null,
+          "responsibility": "Overall Game Control, UI, Ranking Implementation, Ground Tile Implementation"
+        },
+        {
+          "name": "25d12-kei",
+          "role": "designer",
+          "github": "https://github.com/25d12-kei",
+          "x": null,
+          "responsibility": "Game Design"
+        }
+      ],
+      "additional_designers": "Additionally, 2 designers participated in the project"
+    },
+    "download": {
+      "section_title": "Download",
+      "status": "Playable",
+      "description": "Play the game on UnityRoom",
+      "button": "Play on UnityRoom"
+    },
+    "footer": {
+      "title": "Butterfly Rebellion",
+      "event": "Sapporo Game Camp 2025 - Game Jam Work",
+      "team": "Created by: Ultimate Revolutionary Army",
+      "copyright": "&copy; 2025 wine-5. All rights reserved."
+    }
+  }
+}
