@@ -11,7 +11,7 @@ namespace SGC2025.Effect
         SpeedBoostEffect,
         
         /// <summary>
-        /// スコア上昇エフェクト
+        /// スコアアップエフェクト
         /// </summary>
         ScoreBoostEffect,
         

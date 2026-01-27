@@ -183,13 +183,22 @@ namespace SGC2025.Item
                 var playerTransform = SGC2025.Player.PlayerDataProvider.I.PlayerTransform;
                 Vector3 playerPos = playerTransform.position;
                 
-                EffectType effectType = itemData.ItemType switch
+                // アイテムタイプに応じてエフェクト生成を判定
+                switch (itemData.ItemType)
                 {
-                    ItemType.SpeedBoost => EffectType.SpeedBoostEffect,
-                    ItemType.ScoreMultiplier => EffectType.ScoreBoostEffect,
-                    _ => throw new System.NotImplementedException()
-                };
-                effect.effectInstance = EffectFactory.I.CreateEffect(effectType, playerPos, itemData.Duration, playerTransform);
+                    case ItemType.SpeedBoost:
+                        // SpeedBoostは視覚エフェクトを生成
+                        effect.effectInstance = EffectFactory.I.CreateEffect(EffectType.SpeedBoostEffect, playerPos, itemData.Duration, playerTransform);
+                        break;
+                        
+                    case ItemType.ScoreMultiplier:
+                        // ScoreMultiplierは視覚エフェクトなし（UIテキスト変更のみ）
+                        effect.effectInstance = null;
+                        break;
+                        
+                    default:
+                        throw new System.NotImplementedException($"ItemType {itemData.ItemType} is not implemented yet");
+                }
             }
         }
         

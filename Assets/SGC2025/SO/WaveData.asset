@@ -28,44 +28,39 @@ MonoBehaviour:
     maxEnemyCount: 60
     enemyConfigs:
     - {fileID: 11400000, guid: 4daf39bd2d3873e408d952df5667768f, type: 2}
+    - {fileID: 11400000, guid: 8a6cd8c5f3696d743bfa69991f0420cc, type: 2}
     enableDebugLog: 0
   - waveName: Wave3
     waveLevel: 3
-    explain: "\u6575\u306E\u7A2E\u985E\u304C\u521D\u3081\u3066\u5897\u3048\u308B\u30A6\u30A7\u30FC\u30D6"
+    explain: 
     spawnInterval: 0.6
-    maxEnemyCount: 60
+    maxEnemyCount: 180
     enemyConfigs:
     - {fileID: 11400000, guid: 4daf39bd2d3873e408d952df5667768f, type: 2}
     - {fileID: 11400000, guid: b7fd6b985d917d94993719659386949c, type: 2}
+    - {fileID: 11400000, guid: 424c38caa5d31a149b8b83cd4ba4b269, type: 2}
     enableDebugLog: 0
   - waveName: Wave4
     waveLevel: 4
     explain: 
-    spawnInterval: 0.5
-    maxEnemyCount: 340
+    spawnInterval: 0.3
+    maxEnemyCount: 1000
     enemyConfigs:
     - {fileID: 11400000, guid: 4daf39bd2d3873e408d952df5667768f, type: 2}
     - {fileID: 11400000, guid: b7fd6b985d917d94993719659386949c, type: 2}
+    - {fileID: 11400000, guid: 424c38caa5d31a149b8b83cd4ba4b269, type: 2}
+    - {fileID: 11400000, guid: 8a6cd8c5f3696d743bfa69991f0420cc, type: 2}
     enableDebugLog: 0
   - waveName: Wave5
     waveLevel: 5
     explain: "\u6575\u306E\u7A2E\u985E\u304C3\u7A2E\u985E\u306B\u306A\u308A\u96E3\u6613\u5EA6\u3082\u4E0A\u304C\u3063\u3066\u304F\u308B\u9803"
-    spawnInterval: 0.5
-    maxEnemyCount: 300
+    spawnInterval: 0.01
+    maxEnemyCount: 1000
     enemyConfigs:
     - {fileID: 11400000, guid: 4daf39bd2d3873e408d952df5667768f, type: 2}
     - {fileID: 11400000, guid: b7fd6b985d917d94993719659386949c, type: 2}
     - {fileID: 11400000, guid: 424c38caa5d31a149b8b83cd4ba4b269, type: 2}
-    enableDebugLog: 0
-  - waveName: Wave6
-    waveLevel: 6
-    explain: "\u6575\u306E\u7A2E\u985E\u304C3\u7A2E\u985E\u306B\u306A\u308A\u96E3\u6613\u5EA6\u3082\u4E0A\u304C\u3063\u3066\u304F\u308B\u9803"
-    spawnInterval: 0.5
-    maxEnemyCount: 300
-    enemyConfigs:
-    - {fileID: 11400000, guid: 4daf39bd2d3873e408d952df5667768f, type: 2}
-    - {fileID: 11400000, guid: b7fd6b985d917d94993719659386949c, type: 2}
-    - {fileID: 11400000, guid: 424c38caa5d31a149b8b83cd4ba4b269, type: 2}
+    - {fileID: 11400000, guid: 8a6cd8c5f3696d743bfa69991f0420cc, type: 2}
     enableDebugLog: 0
   loopLastWave: 1
-  minWaveInterval: 30
+  minWaveInterval: 60

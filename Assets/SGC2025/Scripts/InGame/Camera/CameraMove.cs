@@ -8,13 +8,12 @@ namespace SGC2025.Camera
     public class CameraMove : MonoBehaviour
     {
         [SerializeField] private Transform target;
-        [SerializeField] private Vector3 offset = new Vector3(0, 5, -10);
         [SerializeField] private float smoothSpeed = 5f;
         
         [Header("カメラサイズ設定")]
         [SerializeField]
-        [Tooltip("カメラの視野の大きさ（Orthographicカメラの場合）")]
-        private float orthographicSize = 8f;
+        [Tooltip("カメラの視野の大きさ（Orthographicカメラの場合）値が大きいほど引きの画面")]
+        private float orthographicSize = 12f;
 
         private UnityEngine.Camera cam;
 

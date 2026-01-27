@@ -15,5 +15,5 @@ MonoBehaviour:
   enemyType: 2
   movementType: 2
   health: 1
-  moveSpeed: 9
-  lifeTime: 10
+  moveSpeed: 7
+  lifeTime: 50

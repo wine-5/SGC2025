@@ -16,4 +16,4 @@ MonoBehaviour:
   movementType: 3
   health: 1
   moveSpeed: 6
-  lifeTime: 20
+  lifeTime: 50
