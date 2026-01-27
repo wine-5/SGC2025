@@ -58,7 +58,16 @@ namespace SGC2025.Enemy
             float totalWeight = GetTotalWeight(validEnemies);
             float randomValue = Random.Range(0f, totalWeight);
             
-            return FindEnemyByWeight(validEnemies, randomValue);
+            Debug.Log($"[EnemySpawnConfigSO] {name} - 敵選択: 有効敵数={validEnemies.Count}, 総重み={totalWeight:F2}, ランダム値={randomValue:F2}");
+            
+            var selectedEnemy = FindEnemyByWeight(validEnemies, randomValue);
+            
+            if (selectedEnemy != null)
+            {
+                Debug.Log($"[EnemySpawnConfigSO] 選択された敵: {selectedEnemy.EnemyType}");
+            }
+            
+            return selectedEnemy;
         }
         
         /// <summary>
@@ -79,13 +88,17 @@ namespace SGC2025.Enemy
             foreach (var enemy in enemies)
             {
                 currentWeight += enemy.spawnWeight;
+                Debug.Log($"[EnemySpawnConfigSO] 重みチェック: {enemy.enemyData?.EnemyType} - 重み={enemy.spawnWeight}, 累積={currentWeight:F2}, ランダム={randomValue:F2}");
+                
                 if (randomValue <= currentWeight)
                 {
+                    Debug.Log($"[EnemySpawnConfigSO] 敵決定: {enemy.enemyData?.EnemyType}");
                     return enemy.enemyData;
                 }
             }
             
             // フォールバック：最初の敵を返す
+            Debug.LogWarning($"[EnemySpawnConfigSO] フォールバック: {enemies[0].enemyData?.EnemyType}");
             return enemies[0].enemyData;
         }
         
