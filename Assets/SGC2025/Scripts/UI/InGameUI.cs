@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using SGC2025.Events;
 using SGC2025.Manager;
 
-namespace SGC2025.UI 
+namespace SGC2025.UI
 {
     /// <summary>
     /// インゲーム中のUI表示を管理
@@ -16,9 +16,23 @@ namespace SGC2025.UI
         private const int MAX_POPUP_COUNT = 5;
         private const int INSPECTOR_MAX_POPUP_COUNT = 3;
         private const float GAUGE_ANIMATION_SPEED = 2f;
-        
+        private const string START_TEXT = "START!";
+        private const float START_DISPLAY_DURATION = 0.5f;
+
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
+
+        [Header("カウントダウン設定")]
+        [SerializeField, Tooltip("カウントダウン表示用テキスト")]
+        private TextMeshProUGUI countdownText;
+        [SerializeField, Tooltip("カウントダウンアニメーションの拡大率")]
+        private float countdownPulseScale = 1.5f;
+        [SerializeField, Tooltip("カウントダウンアニメーションの時間（秒）")]
+        private float countdownPulseDuration = 0.3f;
+        [SerializeField, Tooltip("カウントダウン色")]
+        private Color countdownColor = Color.white;
+        [SerializeField, Tooltip("START表示色")]
+        private Color startColor = Color.green;
 
         [Header("領地ゲージ設定")]
         [SerializeField] private Image territoryGaugeImage;
@@ -72,13 +86,21 @@ namespace SGC2025.UI
         {
             InitializeScoreDisplay();
             InitializeTerritoryGauge();
+            InitializeCountdownDisplay();
+        }
+
+        private void Update()
+        {
+            UpdateCountdownDisplay();
+            UpdateTimeText();
+            AnimateTerritoryGauge();
         }
 
         private void OnEnable()
         {
             EnemyEvents.OnEnemyDestroyedWithScore += OnEnemyDestroyed;
             GroundEvents.OnGroundGreenified += OnGroundGreenified;
-            
+
             // スコア倍率エフェクトの開始・終了を監視
             SGC2025.Item.ItemManager.OnItemEffectActivated += OnItemEffectActivated;
             SGC2025.Item.ItemManager.OnItemEffectExpired += OnItemEffectExpired;
@@ -88,7 +110,7 @@ namespace SGC2025.UI
         {
             EnemyEvents.OnEnemyDestroyedWithScore -= OnEnemyDestroyed;
             GroundEvents.OnGroundGreenified -= OnGroundGreenified;
-            
+
             // スコア倍率エフェクトの監視解除
             SGC2025.Item.ItemManager.OnItemEffectActivated -= OnItemEffectActivated;
             SGC2025.Item.ItemManager.OnItemEffectExpired -= OnItemEffectExpired;
@@ -108,7 +130,7 @@ namespace SGC2025.UI
             ShowScorePopupAtInspectorPosition(points);
             UpdateTerritoryGauge();
         }
-        
+
         /// <summary>
         /// アイテム効果が開始された時の処理
         /// </summary>
@@ -123,7 +145,7 @@ namespace SGC2025.UI
                 }
             }
         }
-        
+
         /// <summary>
         /// アイテム効果が終了した時の処理
         /// </summary>
@@ -137,14 +159,6 @@ namespace SGC2025.UI
                     scoreText.color = originalScoreColor;
                 }
             }
-        }
-        
-
-
-        private void Update()
-        {
-            UpdateTimeText();
-            AnimateTerritoryGauge();
         }
 
         /// <summary>
@@ -163,14 +177,14 @@ namespace SGC2025.UI
         {
             int activeCount = parentCanvas.childCount - popupPool.Count;
             if (activeCount >= MAX_POPUP_COUNT) return;
-            
+
             PopupScoreUI popup = GetFromPool();
             if (popup == null) return;
-            
+
             // スコア倍率中かチェック
-            bool isBoostActive = SGC2025.Item.ItemManager.I != null && 
+            bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
                                  SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
-            
+
             popup.Initialize(score, position, ReturnToPool, isBoostActive);
             popup.transform.SetAsLastSibling();
         }
@@ -187,18 +201,18 @@ namespace SGC2025.UI
                 if (child.gameObject.activeSelf && child.GetComponent<PopupScoreUI>() != null)
                     activeCount++;
             }
-            
+
             if (activeCount >= INSPECTOR_MAX_POPUP_COUNT) return;
 
             Vector2 spawnPosition = GetSpawnPosition();
-            
+
             PopupScoreUI popup = GetFromPool();
             if (popup == null) return;
-            
+
             // スコア倍率中かチェック
-            bool isBoostActive = SGC2025.Item.ItemManager.I != null && 
+            bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
                                  SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
-            
+
             popup.Initialize(score, spawnPosition, ReturnToPool, isBoostActive);
             popup.transform.SetAsLastSibling();
         }
@@ -208,7 +222,7 @@ namespace SGC2025.UI
         private PopupScoreUI GetFromPool()
         {
             PopupScoreUI popup;
-            
+
             if (popupPool.Count > 0)
             {
                 popup = popupPool.Dequeue();
@@ -216,19 +230,19 @@ namespace SGC2025.UI
             else
             {
                 if (popupPrefab == null) return null;
-                
+
                 var obj = Instantiate(popupPrefab, parentCanvas);
                 popup = obj.GetComponent<PopupScoreUI>();
-                
+
                 if (popup == null)
                 {
                     Destroy(obj);
                     return null;
                 }
-                
+
                 obj.SetActive(false);
             }
-            
+
             return popup;
         }
 
@@ -241,21 +255,21 @@ namespace SGC2025.UI
         private void UpdateScoreText(int score)
         {
             if (scoreText == null) return;
-            
+
             int totalScore = ScoreManager.I.GetTotalScore();
             scoreText.text = totalScore.ToString();
-            
+
             if (currentScoreAnimation != null)
             {
                 StopCoroutine(currentScoreAnimation);
                 scoreText.transform.localScale = originalScoreScale;
-                
+
                 // スコア倍率中かチェックして色を決定
-                bool isBoostActive = SGC2025.Item.ItemManager.I != null && 
+                bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
                                      SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
                 scoreText.color = isBoostActive ? scoreBoostColor : originalScoreColor;
             }
-            
+
             Color flashColor = score >= bigScoreThreshold ? bigScoreFlashColor : scoreFlashColor;
             currentScoreAnimation = StartCoroutine(ScoreUpdateAnimation(flashColor));
         }
@@ -272,10 +286,10 @@ namespace SGC2025.UI
             {
                 elapsed += Time.deltaTime;
                 float t = elapsed / halfDuration;
-                
+
                 scoreText.transform.localScale = Vector3.Lerp(originalScoreScale, originalScoreScale * scorePulseScale, t);
                 scoreText.color = Color.Lerp(originalScoreColor, flashColor, t);
-                
+
                 yield return null;
             }
 
@@ -286,21 +300,21 @@ namespace SGC2025.UI
             {
                 elapsed += Time.deltaTime;
                 float t = elapsed / halfDuration;
-                
+
                 scoreText.transform.localScale = Vector3.Lerp(originalScoreScale * scorePulseScale, originalScoreScale, t);
-                
+
                 // スコア倍率中かチェックして復帰色を決定
-                bool isBoostActive = SGC2025.Item.ItemManager.I != null && 
+                bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
                                      SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
                 Color targetColor = isBoostActive ? scoreBoostColor : originalScoreColor;
                 scoreText.color = Color.Lerp(flashColor, targetColor, t);
-                
+
                 yield return null;
             }
 
             // 確実に元に戻す（倍率状態も考慮）
             scoreText.transform.localScale = originalScoreScale;
-            bool isFinalBoostActive = SGC2025.Item.ItemManager.I != null && 
+            bool isFinalBoostActive = SGC2025.Item.ItemManager.I != null &&
                                       SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
             scoreText.color = isFinalBoostActive ? scoreBoostColor : originalScoreColor;
             currentScoreAnimation = null;
@@ -328,7 +342,7 @@ namespace SGC2025.UI
                 territoryGaugeImage.fillOrigin = (int)Image.Origin360.Top;
                 territoryGaugeImage.fillClockwise = true;
             }
-            
+
             UpdateTerritoryGauge();
         }
 
@@ -338,10 +352,10 @@ namespace SGC2025.UI
         private void UpdateTerritoryGauge()
         {
             if (GroundManager.I == null) return;
-            
+
             float rate = GroundManager.I.GetGreenificationRate();
             targetGaugeFillAmount = rate;
-            
+
             if (territoryPercentageText != null)
                 territoryPercentageText.text = $"{rate * 100f:F1}%";
         }
@@ -352,7 +366,7 @@ namespace SGC2025.UI
         private void AnimateTerritoryGauge()
         {
             if (territoryGaugeImage == null) return;
-            
+
             float currentFill = territoryGaugeImage.fillAmount;
             if (Mathf.Abs(currentFill - targetGaugeFillAmount) > 0.001f)
             {
@@ -361,9 +375,88 @@ namespace SGC2025.UI
                     targetGaugeFillAmount,
                     Time.deltaTime * GAUGE_ANIMATION_SPEED
                 );
-                
+
                 Color gaugeColor = Color.Lerp(lowTerritoryColor, highTerritoryColor, territoryGaugeImage.fillAmount);
                 territoryGaugeImage.color = gaugeColor;
+            }
+        }
+
+        // ===== カウントダウン関連 =====
+
+        /// <summary>
+        /// カウントダウン表示を初期化
+        /// </summary>
+        private void InitializeCountdownDisplay()
+        {
+            if (countdownText != null)
+            {
+                countdownText.gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// カウントダウン表示を更新
+        /// </summary>
+        private void UpdateCountdownDisplay()
+        {
+            if (InGameManager.I == null || countdownText == null) return;
+
+            if (InGameManager.I.IsCountingDown)
+            {
+                if (!countdownText.gameObject.activeSelf)
+                    countdownText.gameObject.SetActive(true);
+
+                float timer = InGameManager.I.CountDownTimer;
+
+                if (timer > 1f)  // >= から > に変更
+                {
+                    // 1秒より大きい：数字を表示
+                    int countNumber = Mathf.FloorToInt(timer);  // CeilToInt から FloorToInt に変更
+
+                    if (countNumber >= 1 && countNumber <= 3)  // 条件を変更
+                    {
+                        countdownText.text = countNumber.ToString();
+                        countdownText.color = countdownColor;
+                    }
+                    else
+                    {
+                        countdownText.gameObject.SetActive(false);
+                    }
+                }
+                else
+                {
+                    // 1秒未満：START!を表示
+                    countdownText.text = START_TEXT;
+                    countdownText.color = startColor;
+                }
+
+                // パルスアニメーション（シンプルなsin波）
+                if (countdownText.gameObject.activeSelf)
+                {
+                    float normalizedTime = 1f - (timer % 1f);
+                    float scale = Mathf.Lerp(1f, countdownPulseScale, Mathf.Sin(normalizedTime * Mathf.PI));
+                    countdownText.transform.localScale = Vector3.one * scale;
+                }
+            }
+            else
+            {
+                // カウントダウン終了後、START!を少し表示してから非表示にする
+                if (countdownText.gameObject.activeSelf && countdownText.text == START_TEXT)
+                {
+                    StartCoroutine(HideCountdownAfterDelay(START_DISPLAY_DURATION));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 遅延してカウントダウンテキストを非表示にする
+        /// </summary>
+        private IEnumerator HideCountdownAfterDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            if (countdownText != null && countdownText.gameObject.activeSelf)
+            {
+                countdownText.gameObject.SetActive(false);
             }
         }
     }

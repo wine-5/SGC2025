@@ -12,7 +12,7 @@ namespace SGC2025.Manager
     {
         [Header("時間設定")]
         [SerializeField, Tooltip("ゲーム開始前のカウントダウン時間（秒）")]
-        private float startCountDownTime = 3f;
+        private float startCountDownTime = 4f;
 
         [SerializeField, Tooltip("ゲームの制限時間（秒）")]
         private float gameTimeLimit = 300f;
