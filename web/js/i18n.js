@@ -77,7 +77,7 @@ function updateNavigation() {
 
   // モバイル用ナビゲーション
   const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-  const sections = ['home', 'sapporo_camp', 'download', 'game_overview', 'controls', 'developers'];
+  const sections = ['home', 'sapporo_camp', 'download', 'game_overview', 'items', 'controls', 'developers'];
   mobileNavLinks.forEach((link, index) => {
     const sectionKey = sections[index];
     if (contentData[currentLanguage] && contentData[currentLanguage].navigation && contentData[currentLanguage].navigation[sectionKey]) {

@@ -5,6 +5,7 @@
       "sapporo_camp": "札幌ゲームキャンプ",
       "download": "ダウンロード",
       "game_overview": "ゲーム概要",
+      "items": "ゲームアイテム",
       "controls": "操作方法",
       "developers": "開発者",
       "language": "言語"
@@ -38,7 +39,16 @@
       "game_flow": "ゲームフロー",
       "ranking": "ランキングに掲載されるチャンス"
     },
-    "controls": {
+    "items": {
+      "section_title": "ゲームアイテム",
+      "description": "プレイ中に出現するアイテムを集めることでゲームを有利に進められます",
+      "item1_name": "緑化ブースト",
+      "item1_effect": "緑化の面積が上昇",
+      "item2_name": "スピードアップ",
+      "item2_effect": "プレイヤーの移動速度が上昇",
+      "item3_name": "スコアブースト",
+      "item3_effect": "スコアの獲得量が上昇"
+    },
       "section_title": "操作方法",
       "keyboard": "キーボード",
       "keyboard_desc": "Wキー：上 Aキー：左 Sキー：下 Dキー：右 で移動\nスペースキー：弾を発射",
@@ -111,6 +121,7 @@
       "sapporo_camp": "Sapporo Game Camp",
       "download": "Download",
       "game_overview": "Game Overview",
+      "items": "Game Items",
       "controls": "Controls",
       "developers": "Developers",
       "language": "Language"
@@ -144,7 +155,16 @@
       "game_flow": "Game Flow",
       "ranking": "Chance to be listed on the ranking"
     },
-    "controls": {
+    "items": {
+      "section_title": "Game Items",
+      "description": "Collect items that appear during play to gain an advantage in the game",
+      "item1_name": "Greening Boost",
+      "item1_effect": "Increases the area of greening",
+      "item2_name": "Speed Up",
+      "item2_effect": "Increases player movement speed",
+      "item3_name": "Score Boost",
+      "item3_effect": "Increases score acquisition amount"
+    },
       "section_title": "Controls",
       "keyboard": "Keyboard",
       "keyboard_desc": "W Key: Up, A Key: Left, S Key: Down, D Key: Right to move\nSpace Key: Fire bullet",

@@ -486,6 +486,74 @@
     margin: 0;
 }
 
+/* ゲームアイテムセクション */
+.items-section {
+    background: linear-gradient(to bottom, #ffffff 0%, #f5f9f0 100%);
+}
+
+.items-content {
+    display: grid;
+    gap: 2rem;
+}
+
+.items-description {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #555;
+    margin: 0 0 2rem 0;
+    line-height: 1.8;
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.item-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.item-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(45, 80, 22, 0.15);
+}
+
+.item-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, #f0f4eb 0%, #e8eee2 100%);
+    border-radius: 15px;
+}
+
+.item-icon {
+    font-size: 3rem;
+    display: block;
+}
+
+.item-name {
+    color: #2d5016;
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+}
+
+.item-effect {
+    color: #555;
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.6;
+}
+
 /* 操作方法セクション */
 .controls-section {
     background: linear-gradient(to bottom, #ffffff 0%, #f5f9f0 100%);
