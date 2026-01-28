@@ -51,10 +51,7 @@ namespace SGC2025.UI
             {
                 bool hasInput = !string.IsNullOrWhiteSpace(nameInputField.text);
                 submitButton.interactable = hasInput;
-
-                // 「入力が終わったらボタンが出る」挙動に合わせて表示も切り替える
-                if (submitButton.gameObject != null)
-                    submitButton.gameObject.SetActive(hasInput);
+                submitButton.gameObject.SetActive(hasInput);
             }
         }
 
