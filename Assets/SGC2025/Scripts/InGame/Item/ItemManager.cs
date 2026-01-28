@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using SGC2025.Manager;
 using SGC2025.Effect;
+using SGC2025.Events;
 
 namespace SGC2025.Item
 {
@@ -52,6 +53,27 @@ namespace SGC2025.Item
             
             if (autoSpawn)
                 nextSpawnTime = Time.time + spawnInterval;
+            
+            // 敵撃破イベントを購読して広範囲緑化効果を適用
+            EnemyEvents.OnEnemyDestroyedAtPosition += OnEnemyDestroyed;
+        }
+        
+        protected override void OnDestroy()
+        {
+            EnemyEvents.OnEnemyDestroyedAtPosition -= OnEnemyDestroyed;
+            base.OnDestroy();
+        }
+        
+        /// <summary>
+        /// 敵撃破時の処理（AreaGreenify効果が有効な場合は広範囲緑化）
+        /// </summary>
+        private void OnEnemyDestroyed(Vector3 enemyPosition)
+        {
+            if (IsEffectActive(ItemType.AreaGreenify) && GroundManager.I != null)
+            {
+                // 広範囲緑化効果が有効な場合、9マス緑化
+                GroundManager.I.DrawGroundArea(enemyPosition);
+            }
         }
         
         private void Update()
@@ -123,6 +145,12 @@ namespace SGC2025.Item
                 Debug.LogWarning("[ItemManager] ItemFactory instance is null!");
                 return;
             }
+            
+            GameObject item = ItemFactory.I.SpawnItem(itemData, position);
+            if (item == null)
+            {
+                Debug.LogWarning($"[ItemManager] Failed to spawn item: {itemData?.ItemName}");
+            }
         }
         
         /// <summary>
@@ -191,6 +219,11 @@ namespace SGC2025.Item
                     case ItemType.ScoreMultiplier:
                         // ScoreMultiplierは視覚エフェクトなし（UIテキスト変更のみ）
                         effect.effectInstance = null;
+                        break;
+                        
+                    case ItemType.AreaGreenify:
+                        // 広範囲緑化アイテムは持続効果（一定時間、敵撃破時に9マス緑化）＋エフェクト生成
+                        effect.effectInstance = EffectFactory.I.CreateEffect(EffectType.AreaGreenifyEffect, playerPos, itemData.Duration, playerTransform);
                         break;
                         
                     default:

@@ -9,6 +9,9 @@ namespace SGC2025.Item
         SpeedBoost,
         
         /// <summary>スコア獲得量アップアイテム</summary>
-        ScoreMultiplier
+        ScoreMultiplier,
+        
+        /// <summary>広範囲緑化アイテム（一定時間、敵撃破時に3x3範囲を緑化）</summary>
+        AreaGreenify
     }
 }

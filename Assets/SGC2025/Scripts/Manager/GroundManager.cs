@@ -66,7 +66,7 @@ namespace SGC2025.Manager
         
         private void OnEnemyDestroyed(Vector3 enemyPosition) => DrawGround(enemyPosition);
 
-        /// <summary>指定位置の地面を緑化</summary>
+        /// <summary>指定位置の地面を緑化（1マス）</summary>
         public bool DrawGround(Vector3 enemyPosition)
         {
             if (currentGroundArray == null) return false;
@@ -78,36 +78,106 @@ namespace SGC2025.Manager
             
             if (currentGroundArray[cellPosition.x, cellPosition.y].isDrawn) return false;
             
+            bool drawn = DrawSingleTile(cellPosition.x, cellPosition.y);
+            
+            if (drawn)
+            {
+                Vector3 pos = currentGroundArray[cellPosition.x, cellPosition.y].worldPos;
+                
+                if (EffectFactory.I != null)
+                {
+                    Vector3 effectPos = pos + Vector3.up * GRASS_EFFECT_Y_OFFSET;
+                    EffectFactory.I.CreateEffect(EffectType.GrassRestorationEffect, effectPos, GRASS_EFFECT_DURATION);
+                }
+                
+                if (AudioManager.I != null)
+                    AudioManager.I.PlaySE(SEType.Grass);
+            }
+            
+            return drawn;
+        }
+
+        /// <summary>指定位置の地面を広範囲緑化（3x3範囲＝9マス）</summary>
+        public bool DrawGroundArea(Vector3 enemyPosition)
+        {
+            if (currentGroundArray == null) return false;
+            
+            Vector2Int centerCell = SearchCellIndex(enemyPosition);
+            
+            if (centerCell.x < 0 || centerCell.x >= groundData.columns ||
+                centerCell.y < 0 || centerCell.y >= groundData.rows) return false;
+            
+            bool anyDrawn = false;
+            
+            // 3x3範囲で緑化
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    int x = centerCell.x + dx;
+                    int y = centerCell.y + dy;
+                    
+                    // 範囲チェック
+                    if (x < 0 || x >= groundData.columns || y < 0 || y >= groundData.rows)
+                        continue;
+                    
+                    // 既に緑化済みならスキップ
+                    if (currentGroundArray[x, y].isDrawn)
+                        continue;
+                    
+                    if (DrawSingleTile(x, y))
+                        anyDrawn = true;
+                }
+            }
+            
+            // 中心位置にエフェクトと音を生成（1回だけ）
+            if (anyDrawn)
+            {
+                Vector3 centerPos = currentGroundArray[centerCell.x, centerCell.y].worldPos;
+                
+                if (EffectFactory.I != null)
+                {
+                    Vector3 effectPos = centerPos + Vector3.up * GRASS_EFFECT_Y_OFFSET;
+                    GameObject effect = EffectFactory.I.CreateEffect(EffectType.GrassRestorationEffect, effectPos, GRASS_EFFECT_DURATION);
+                    
+                    // 3x3緑化時はエフェクトのScaleをx,yのみ2倍に
+                    if (effect != null)
+                    {
+                        Vector3 scale = effect.transform.localScale;
+                        effect.transform.localScale = new Vector3(scale.x * 2f, scale.y * 2f, scale.z);
+                    }
+                }
+                
+                if (AudioManager.I != null)
+                    AudioManager.I.PlaySE(SEType.Grass);
+            }
+            
+            return anyDrawn;
+        }
+
+        /// <summary>単一タイルを緑化</summary>
+        private bool DrawSingleTile(int x, int y)
+        {
             if (groundData.grassTilePrefab == null) return false;
             
-            if (tileObjects != null && tileObjects[cellPosition.x, cellPosition.y] != null)
-                Destroy(tileObjects[cellPosition.x, cellPosition.y]);
+            if (tileObjects != null && tileObjects[x, y] != null)
+                Destroy(tileObjects[x, y]);
             
-            Vector3 pos = currentGroundArray[cellPosition.x, cellPosition.y].worldPos;
+            Vector3 pos = currentGroundArray[x, y].worldPos;
             GameObject grassTile = Instantiate(groundData.grassTilePrefab, pos, Quaternion.identity, transform);
-            grassTile.name = $"GrassTile_{cellPosition.x}_{cellPosition.y}";
+            grassTile.name = $"GrassTile_{x}_{y}";
             
             AdjustTileScale(grassTile, groundData.ActualCellWidth, groundData.ActualCellHeight);
             
             if (tileObjects != null)
-                tileObjects[cellPosition.x, cellPosition.y] = grassTile;
+                tileObjects[x, y] = grassTile;
             
             Renderer newRenderer = grassTile.GetComponent<Renderer>();
-            currentGroundArray[cellPosition.x, cellPosition.y].renderer = newRenderer;
-            currentGroundArray[cellPosition.x, cellPosition.y].isDrawn = true;
+            currentGroundArray[x, y].renderer = newRenderer;
+            currentGroundArray[x, y].isDrawn = true;
 
-            int points = currentGroundArray[cellPosition.x, cellPosition.y].point;
+            int points = currentGroundArray[x, y].point;
             GroundEvents.TriggerGroundGreenified(pos, points);
-            
-            // 緑化エフェクトを生成（地面タイルの中心、少し上に表示）
-            if (EffectFactory.I != null)
-            {
-                Vector3 effectPos = pos + Vector3.up * GRASS_EFFECT_Y_OFFSET;
-                EffectFactory.I.CreateEffect(EffectType.GrassRestorationEffect, effectPos, GRASS_EFFECT_DURATION);
-            }
-            
-            if (AudioManager.I != null)
-                AudioManager.I.PlaySE(SEType.Grass);
             
             return true;
         }
