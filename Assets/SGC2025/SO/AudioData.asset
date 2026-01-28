@@ -31,6 +31,9 @@ MonoBehaviour:
   - seType: 5
     audioClip: {fileID: 8300000, guid: 0e5ebd07b07a49d4bb7a95b3bf5ce389, type: 3}
     volumeMultiplier: 0.8
+  - seType: 6
+    audioClip: {fileID: 8300000, guid: 7e1c8bfb42ec9a7408b7bd16867e7438, type: 3}
+    volumeMultiplier: 0.6
   bgmAudioDataList:
   - bgmType: 1
     audioClip: {fileID: 8300000, guid: 7a74a42255a083049a4702bc9108cd96, type: 3}

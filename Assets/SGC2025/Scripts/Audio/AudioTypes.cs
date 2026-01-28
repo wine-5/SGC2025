@@ -11,6 +11,7 @@ namespace SGC2025.Audio
         TimeUp,            // TimeOverの音
         ButtonClick,        // ボタンをクリックしたときの音
         PlayerDamage,       // プレイヤーがダメージを受けたとき
+        GetItem,
     }
 
     /// <summary>
