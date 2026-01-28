@@ -1710,11 +1710,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TechC.ObjectPool
   poolItems:
-  - name: Boy
+  - name: NormalBoy
     prefab: {fileID: 4656762607192535733, guid: 9bb544251b5731249a2dc2d07c544c42, type: 3}
     parent: {fileID: 4234407522856795665}
     initialSize: 10
-  - name: RedBoy
+  - name: BigBoy
     prefab: {fileID: 6462408165022326274, guid: 5e5eaf98864ef0942aa3631c714d5027, type: 3}
     parent: {fileID: 8455613011829971440}
     initialSize: 10

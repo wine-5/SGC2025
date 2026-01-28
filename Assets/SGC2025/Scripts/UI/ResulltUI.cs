@@ -48,6 +48,26 @@ namespace SGC2025.UI
         override public void Start()
         {
             base.Start();
+
+            if (nameInputUI != null)
+            {
+                nameInputUI.Submitted -= HandleNameSubmitted;
+                nameInputUI.Submitted += HandleNameSubmitted;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (nameInputUI != null)
+                nameInputUI.Submitted -= HandleNameSubmitted;
+        }
+
+        private void HandleNameSubmitted()
+        {
+            if (rankingUI != null)
+                rankingUI.UpdateScore();
+
+            ShowEndButtons();
         }
 
         override public void Update()
@@ -97,12 +117,17 @@ namespace SGC2025.UI
                 case ResultPhase.HighScore:
                     {
                         int totalScore = ScoreManager.I != null ? ScoreManager.I.GetTotalScore() : 0;
-                        
-                        if (RankingManager.I.IsNewRecord(totalScore))
+
+                        var rankingManager = RankingManager.I;
+                        if (rankingManager != null && rankingManager.IsNewRecord(totalScore))
                         {
                             if (nameInputUI != null)
                             {
                                 nameInputUI.gameObject.SetActive(true);
+                            }
+                            else
+                            {
+                                ShowEndButtons();
                             }
                         }
                         else

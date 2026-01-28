@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using SGC2025.Manager;
+using System;
 
 
 namespace SGC2025.UI
@@ -17,11 +18,16 @@ namespace SGC2025.UI
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private Button submitButton; // 決定ボタン
 
+        public event Action Submitted;
+
         override public void Start()
         {
-            nameInputField.onSelect.AddListener(OnInputFocus);
-            nameInputField.onValueChanged.AddListener(OnInputValueChanged);
-            nameInputField.characterLimit = MAX_NAME_LENGTH;
+            if (nameInputField != null)
+            {
+                nameInputField.onSelect.AddListener(OnInputFocus);
+                nameInputField.onValueChanged.AddListener(OnInputValueChanged);
+                nameInputField.characterLimit = MAX_NAME_LENGTH;
+            }
             
             UpdateSubmitButtonState();
             
@@ -41,15 +47,21 @@ namespace SGC2025.UI
         /// </summary>
         private void UpdateSubmitButtonState()
         {
-            if (submitButton != null)
+            if (submitButton != null && nameInputField != null)
             {
                 bool hasInput = !string.IsNullOrWhiteSpace(nameInputField.text);
                 submitButton.interactable = hasInput;
+
+                // 「入力が終わったらボタンが出る」挙動に合わせて表示も切り替える
+                if (submitButton.gameObject != null)
+                    submitButton.gameObject.SetActive(hasInput);
             }
         }
 
         public void OnSubmit()
         {
+            if (nameInputField == null) return;
+
             string name = nameInputField.text.Trim();
             if (string.IsNullOrEmpty(name))
                 name = DEFAULT_NAME;
@@ -58,13 +70,16 @@ namespace SGC2025.UI
             float greeningRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * 100f : 0f;
             
             RankingManager.I.AddScore(name, totalScore, greeningRate);
+
+            Submitted?.Invoke();
             
             this.gameObject.SetActive(false);
         }
 
         public void OnInputFocus(string text)
         {
-            nameInputField.ActivateInputField();
+            if (nameInputField != null)
+                nameInputField.ActivateInputField();
         }
     }
 }

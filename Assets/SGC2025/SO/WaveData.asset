@@ -16,42 +16,42 @@ MonoBehaviour:
   - waveName: Wave1
     waveLevel: 1
     explain: "\u57FA\u672C\u7684\u306A\u6575\u3057\u304B\u51FA\u306A\u304F\u3001\u64CD\u4F5C\u306B\u306A\u308C\u308B\u305F\u3081\u306E\u30A6\u30A7\u30FC\u30D6"
-    spawnInterval: 1.2
-    maxEnemyCount: 30
+    spawnInterval: 0.8
+    maxEnemyCount: 1000
     enemyConfigs:
     - {fileID: 11400000, guid: 0b4e15238f06521478063a3b9575c543, type: 2}
     enableDebugLog: 0
   - waveName: Wave2
     waveLevel: 2
-    explain: "\u6575\u306e\u6570\u3068\u7a2e\u985e\u304c\u5897\u3048\u308b"
-    spawnInterval: 1.0
-    maxEnemyCount: 50
+    explain: "\u6575\u306E\u6570\u3068\u7A2E\u985E\u304C\u5897\u3048\u308B"
+    spawnInterval: 0.6
+    maxEnemyCount: 1000
     enemyConfigs:
     - {fileID: 11400000, guid: 0b4e15238f06521478063a3b9575c543, type: 2}
     enableDebugLog: 0
   - waveName: Wave3
     waveLevel: 3
-    explain: "\u3055\u3089\u306b\u6fc0\u3057\u3044\u6226\u95d8"
-    spawnInterval: 0.8
-    maxEnemyCount: 80
+    explain: "\u3055\u3089\u306B\u6FC0\u3057\u3044\u6226\u95D8"
+    spawnInterval: 0.4
+    maxEnemyCount: 1000
     enemyConfigs:
     - {fileID: 11400000, guid: 0b4e15238f06521478063a3b9575c543, type: 2}
     enableDebugLog: 0
   - waveName: Wave4
     waveLevel: 4
-    explain: "\u975e\u5e38\u306b\u5371\u967a\u306a\u30ec\u30d9\u30eb"
-    spawnInterval: 0.6
-    maxEnemyCount: 120
+    explain: "\u975E\u5E38\u306B\u5371\u967A\u306A\u30EC\u30D9\u30EB"
+    spawnInterval: 0.1
+    maxEnemyCount: 1000
     enemyConfigs:
     - {fileID: 11400000, guid: 0b4e15238f06521478063a3b9575c543, type: 2}
     enableDebugLog: 0
   - waveName: Wave5
     waveLevel: 5
-    explain: "\u6700\u7d42\u30a6\u30a7\u30fc\u30d6\u3001\u751f\u304d\u6b8b\u308c\u308b\u304b\u306e\u6226\u3044"
-    spawnInterval: 0.4
-    maxEnemyCount: 200
+    explain: "\u6700\u7D42\u30A6\u30A7\u30FC\u30D6\u3001\u751F\u304D\u6B8B\u308C\u308B\u304B\u306E\u6226\u3044"
+    spawnInterval: 0.05
+    maxEnemyCount: 1000
     enemyConfigs:
     - {fileID: 11400000, guid: 0b4e15238f06521478063a3b9575c543, type: 2}
     enableDebugLog: 0
   loopLastWave: 1
-  minWaveInterval: 60
+  minWaveInterval: 30
