@@ -117,9 +117,10 @@ namespace SGC2025.UI
                 case ResultPhase.HighScore:
                     {
                         int totalScore = ScoreManager.I != null ? ScoreManager.I.GetTotalScore() : 0;
+                        float greeningRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() : 0f;
 
                         var rankingManager = RankingManager.I;
-                        if (rankingManager != null && rankingManager.IsNewRecord(totalScore))
+                        if (rankingManager != null && rankingManager.IsNewRecord(totalScore, greeningRate))
                         {
                             if (nameInputUI != null)
                             {
