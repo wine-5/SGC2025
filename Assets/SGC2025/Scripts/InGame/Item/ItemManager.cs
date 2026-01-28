@@ -19,7 +19,7 @@ namespace SGC2025.Item
         private ItemSpawnSelector spawnSelector = new ItemSpawnSelector();
         
         [Header("生成設定")]
-        [SerializeField, Tooltip("アイテム生成間隔（秒）")]
+        [SerializeField, Range(1f, 60f), Tooltip("アイテム生成間隔（秒）")]
         private float spawnInterval = 10f;
         
         [SerializeField, Tooltip("生成する高さのオフセット")]

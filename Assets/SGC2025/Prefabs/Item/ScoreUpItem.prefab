@@ -112,7 +112,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   rotationSpeed: 50
-  lifeTime: 30
+  lifeTime: 180
 --- !u!58 &-3453601686603088461
 CircleCollider2D:
   m_ObjectHideFlags: 0

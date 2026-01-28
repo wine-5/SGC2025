@@ -222,6 +222,10 @@ PrefabInstance:
       propertyPath: poolItems.Array.data[2].initialSize
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 2347185575079331102, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: spawnInterval
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2600085939445507916, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: useTestMode
       value: 0
@@ -232,7 +236,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5335753525405684615, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: gameTimeLimit
-      value: 60
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 5485042787687540399, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Name
