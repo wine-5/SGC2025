@@ -9,15 +9,14 @@ namespace SGC2025.Effect
         /// 速度上昇エフェクト
         /// </summary>
         SpeedBoostEffect,
-        
-        /// <summary>
-        /// スコア上昇エフェクト
-        /// </summary>
-        ScoreBoostEffect,
-        
         /// <summary>
         /// 緑化回復エフェクト（草が生える）
         /// </summary>
         GrassRestorationEffect,
+        
+        /// <summary>
+        /// 広範囲緑化エフェクト
+        /// </summary>
+        AreaGreenifyEffect,
     }
 }

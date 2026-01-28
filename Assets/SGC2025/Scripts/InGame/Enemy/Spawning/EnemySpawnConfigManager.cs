@@ -26,9 +26,8 @@ namespace SGC2025.Enemy
         /// <summary>
         /// ランダムに敵データを選択
         /// </summary>
-        /// <param name="waveLevel">ウェーブレベル</param>
         /// <returns>選択された敵データ</returns>
-        public EnemyDataSO SelectRandomEnemyData(int waveLevel = 1)
+        public EnemyDataSO SelectRandomEnemyData()
         {
             var validConfigs = GetValidConfigs();
             if (validConfigs.Count == 0)
@@ -37,18 +36,11 @@ namespace SGC2025.Enemy
                 return null;
             }
 
-            // 全ての設定から利用可能な敵を収集
-            var allAvailableEnemies = CollectAllAvailableEnemies(validConfigs, waveLevel);
-            if (allAvailableEnemies.Count == 0)
-            {
-                Debug.LogWarning($"EnemySpawnConfigManager: ウェーブレベル {waveLevel} で出現可能な敵がいません");
-                return null;
-            }
-
-            // 重み付きランダムで選択
-            var selectedData = SelectByWeight(allAvailableEnemies);
-
-            return selectedData;
+            // ランダムに設定を選択してから、その設定内で敵を選択
+            int configIndex = Random.Range(0, validConfigs.Count);
+            var randomConfig = validConfigs[configIndex];
+            
+            return randomConfig.SelectRandomEnemy();
         }
 
         /// <summary>
@@ -62,9 +54,7 @@ namespace SGC2025.Enemy
             {
                 var enemyData = config.GetEnemyData(enemyType);
                 if (enemyData != null)
-                {
                     return enemyData;
-                }
             }
 
             Debug.LogWarning($"EnemySpawnConfigManager: EnemyType {enemyType} のデータが見つかりません");
@@ -74,49 +64,6 @@ namespace SGC2025.Enemy
         /// <summary>
         /// 有効な設定のリストを取得
         /// </summary>
-        private List<EnemySpawnConfigSO> GetValidConfigs()
-        {
-            return spawnConfigs.Where(config => config != null).ToList();
-        }
-
-        /// <summary>
-        /// すべての設定から利用可能な敵を収集
-        /// </summary>
-        private List<EnemySpawnConfigSO.EnemySpawnData> CollectAllAvailableEnemies(
-            List<EnemySpawnConfigSO> configs, int waveLevel)
-        {
-            var allEnemies = new List<EnemySpawnConfigSO.EnemySpawnData>();
-
-            foreach (var config in configs)
-            {
-                var availableEnemies = config.GetAvailableEnemiesForWave(waveLevel);
-                allEnemies.AddRange(availableEnemies);
-            }
-
-            return allEnemies;
-        }
-
-        /// <summary>
-        /// 重み付きランダムで選択
-        /// </summary>
-        private EnemyDataSO SelectByWeight(List<EnemySpawnConfigSO.EnemySpawnData> enemies)
-        {
-            float totalWeight = enemies.Sum(enemy => enemy.spawnWeight);
-            float randomValue = Random.Range(0f, totalWeight);
-
-            float currentWeight = 0f;
-            foreach (var enemy in enemies)
-            {
-                currentWeight += enemy.spawnWeight;
-                if (randomValue <= currentWeight)
-                {
-                    return enemy.enemyData;
-                }
-            }
-
-            // フォールバック：最初の敵を返す
-            return enemies[0].enemyData;
-        }
-
+        private List<EnemySpawnConfigSO> GetValidConfigs() => spawnConfigs.Where(config => config != null && config.HasValidEnemies()).ToList();
     }
 }

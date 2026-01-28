@@ -26,24 +26,40 @@ namespace SGC2025.Enemy
         [Header("生存時間設定")]
         [SerializeField] private float lifeTime = DEFAULT_LIFE_TIME;
         
+        [Header("スケール設定")]
+        [SerializeField] private Vector3 baseScale = Vector3.one;
+        [SerializeField] private float scaleGrowthRate = 0.05f; // Waveごとのスケール上昇率
+        
         
         // 基本プロパティ
         public EnemyType EnemyType => enemyType;
         public MovementType MovementType => movementType;
         public float LifeTime => lifeTime;
+        public Vector3 BaseScale => baseScale;
         
         /// <summary>
-        /// ウェーブレベルに応じてスケーリングされたパラメーターを取得
+        /// Waveレベルに応じてスケーリングされたパラメーターを取得
         /// </summary>
         public EnemyParameters GetScaledParameters(int waveLevel)
         {
+            // Waveレベルに応じてパラメーターをスケーリング
+            float waveMultiplier = 1f + (0.1f * (waveLevel - 1)); // 10%ずつ上昇
             return new EnemyParameters
             {
                 enemyType = this.enemyType,
-                health = this.health,
-                moveSpeed = this.moveSpeed,
+                health = this.health * waveMultiplier,
+                moveSpeed = this.moveSpeed * Mathf.Min(waveMultiplier, 2f), // 移動速度は最大2倍まで
                 lifeTime = this.lifeTime
             };
+        }
+        
+        /// <summary>
+        /// Waveレベルに応じたスケールを取得
+        /// </summary>
+        public Vector3 GetScale(int waveLevel = DEFAULT_WAVE_LEVEL)
+        {
+            float scaleMultiplier = 1f + (scaleGrowthRate * (waveLevel - 1));
+            return baseScale * scaleMultiplier;
         }
         
         /// <summary>

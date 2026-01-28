@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using SGC2025.Manager;
 using SGC2025.Effect;
+using SGC2025.Events;
 
 namespace SGC2025.Item
 {
@@ -18,7 +19,7 @@ namespace SGC2025.Item
         private ItemSpawnSelector spawnSelector = new ItemSpawnSelector();
         
         [Header("生成設定")]
-        [SerializeField, Tooltip("アイテム生成間隔（秒）")]
+        [SerializeField, Range(1f, 60f), Tooltip("アイテム生成間隔（秒）")]
         private float spawnInterval = 10f;
         
         [SerializeField, Tooltip("生成する高さのオフセット")]
@@ -52,18 +53,37 @@ namespace SGC2025.Item
             
             if (autoSpawn)
                 nextSpawnTime = Time.time + spawnInterval;
+            
+            // 敵撃破イベントを購読して広範囲緑化効果を適用
+            EnemyEvents.OnEnemyDestroyedAtPosition += OnEnemyDestroyed;
+        }
+        
+        protected override void OnDestroy()
+        {
+            EnemyEvents.OnEnemyDestroyedAtPosition -= OnEnemyDestroyed;
+            base.OnDestroy();
+        }
+        
+        /// <summary>
+        /// 敵撃破時の処理（AreaGreenify効果が有効な場合は広範囲緑化）
+        /// </summary>
+        private void OnEnemyDestroyed(Vector3 enemyPosition)
+        {
+            if (IsEffectActive(ItemType.AreaGreenify) && GroundManager.I != null)
+            {
+                // 広範囲緑化効果が有効な場合、9マス緑化
+                GroundManager.I.DrawGroundArea(enemyPosition);
+            }
         }
         
         private void Update()
         {
-            // 自動生成
             if (autoSpawn && Time.time >= nextSpawnTime)
             {
                 SpawnRandomItem();
                 nextSpawnTime = Time.time + Mathf.Max(spawnInterval, MIN_SPAWN_INTERVAL);
             }
             
-            // 効果時間のチェック
             CheckEffectExpiration();
         }
         
@@ -72,11 +92,7 @@ namespace SGC2025.Item
         /// </summary>
         public void SpawnRandomItem()
         {
-            if (spawnSelector.IsEmpty)
-            {
-                Debug.LogWarning("[ItemManager] ItemSpawnSelector is empty!");
-                return;
-            }
+            if (spawnSelector.IsEmpty) return;
             
             ItemData selectedItem = spawnSelector.SelectRandom();
             if (selectedItem == null) return;
@@ -118,13 +134,22 @@ namespace SGC2025.Item
         /// </summary>
         private void SpawnItem(ItemData itemData, Vector3 position)
         {
-            if (ItemFactory.I == null)
-            {
-                Debug.LogWarning("[ItemManager] ItemFactory instance is null!");
-                return;
-            }
+            if (ItemFactory.I == null) return;
             
-            GameObject itemObj = ItemFactory.I.SpawnItem(itemData, position);
+            GameObject item = ItemFactory.I.SpawnItem(itemData, position);
+        }
+        
+        /// <summary>
+        /// 指定位置にランダムアイテムを生成（デバッグ用）
+        /// </summary>
+        public void SpawnRandomItemAt(Vector3 position)
+        {
+            if (spawnSelector.IsEmpty) return;
+            
+            ItemData selectedItem = spawnSelector.SelectRandom();
+            if (selectedItem == null) return;
+            
+            SpawnItem(selectedItem, position);
         }
         
         /// <summary>
@@ -159,14 +184,29 @@ namespace SGC2025.Item
             if (SGC2025.Player.PlayerDataProvider.I != null && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
             {
                 var playerTransform = SGC2025.Player.PlayerDataProvider.I.PlayerTransform;
+                Vector3 playerPos = playerTransform.position;
                 
-                EffectType effectType = itemData.ItemType switch
+                // アイテムタイプに応じてエフェクト生成を判定
+                switch (itemData.ItemType)
                 {
-                    ItemType.SpeedBoost => EffectType.SpeedBoostEffect,
-                    ItemType.ScoreMultiplier => EffectType.ScoreBoostEffect,
-                    _ => throw new System.NotImplementedException()
-                };
-                effect.effectInstance = EffectFactory.I.CreateEffect(effectType, playerTransform.position, itemData.Duration, playerTransform);
+                    case ItemType.SpeedBoost:
+                        // SpeedBoostは視覚エフェクトを生成
+                        effect.effectInstance = EffectFactory.I.CreateEffect(EffectType.SpeedBoostEffect, playerPos, itemData.Duration, playerTransform);
+                        break;
+                        
+                    case ItemType.ScoreMultiplier:
+                        // ScoreMultiplierは視覚エフェクトなし（UIテキスト変更のみ）
+                        effect.effectInstance = null;
+                        break;
+                        
+                    case ItemType.AreaGreenify:
+                        // 広範囲緑化アイテムは持続効果（一定時間、敵撃破時に9マス緑化）＋エフェクト生成
+                        effect.effectInstance = EffectFactory.I.CreateEffect(EffectType.AreaGreenifyEffect, playerPos, itemData.Duration, playerTransform);
+                        break;
+                        
+                    default:
+                        throw new System.NotImplementedException($"ItemType {itemData.ItemType} is not implemented yet");
+                }
             }
         }
         

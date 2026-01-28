@@ -228,10 +228,10 @@ namespace TechC
                 return;
             }
 
-            // オブジェクトをリセット（位置・回転・スケール）
+            // オブジェクトをリセット（位置・回転のみ。スケールは保持）
             obj.transform.localPosition = Vector3.zero;
             obj.transform.localRotation = Quaternion.identity;
-            obj.transform.localScale = Vector3.one;
+            // スケールはリセットしない（敵のサイズをWaveレベルに応じて維持するため）
 
             obj.SetActive(false);
 

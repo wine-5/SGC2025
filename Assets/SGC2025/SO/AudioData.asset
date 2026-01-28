@@ -15,7 +15,7 @@ MonoBehaviour:
   seAudioDataList:
   - seType: 1
     audioClip: {fileID: 8300000, guid: dd2f139668efba547a8f30196023c863, type: 3}
-    volumeMultiplier: 1
+    volumeMultiplier: 0.8
   - seType: 2
     audioClip: {fileID: 8300000, guid: a56a071257410b7449243303de2592d9, type: 3}
     volumeMultiplier: 0.2
@@ -30,7 +30,13 @@ MonoBehaviour:
     volumeMultiplier: 0.4
   - seType: 5
     audioClip: {fileID: 8300000, guid: 0e5ebd07b07a49d4bb7a95b3bf5ce389, type: 3}
-    volumeMultiplier: 0.5
+    volumeMultiplier: 0.8
+  - seType: 6
+    audioClip: {fileID: 8300000, guid: 7e1c8bfb42ec9a7408b7bd16867e7438, type: 3}
+    volumeMultiplier: 0.6
+  - seType: 7
+    audioClip: {fileID: 8300000, guid: 86d50c3a7e59d874aa30975654fd9ac4, type: 3}
+    volumeMultiplier: 0.6
   bgmAudioDataList:
   - bgmType: 1
     audioClip: {fileID: 8300000, guid: 7a74a42255a083049a4702bc9108cd96, type: 3}
@@ -42,7 +48,7 @@ MonoBehaviour:
     fadeOutDuration: 0
   - bgmType: 2
     audioClip: {fileID: 8300000, guid: 6876902a92de1364dbb9475ab78ed323, type: 3}
-    volumeMultiplier: 0.2
+    volumeMultiplier: 0.3
     loop: 1
     useFadeIn: 1
     fadeInDuration: 2

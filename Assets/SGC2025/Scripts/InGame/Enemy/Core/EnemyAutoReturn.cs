@@ -33,7 +33,6 @@ namespace SGC2025.Enemy
                 return;
             }
             
-            Debug.LogError($"EnemyAutoReturn: EnemyDataSOが設定されていません - {gameObject.name}");
             currentLifeTime = IMMEDIATE_RETURN_TIME;
         }
         

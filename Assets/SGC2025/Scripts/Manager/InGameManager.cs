@@ -12,7 +12,7 @@ namespace SGC2025.Manager
     {
         [Header("時間設定")]
         [SerializeField, Tooltip("ゲーム開始前のカウントダウン時間（秒）")]
-        private float startCountDownTime = 3f;
+        private float startCountDownTime = 4f;
 
         [SerializeField, Tooltip("ゲームの制限時間（秒）")]
         private float gameTimeLimit = 300f;
@@ -37,23 +37,18 @@ namespace SGC2025.Manager
         protected override void Init()
         {
             base.Init();
-            Debug.Log($"[InGameManager] Init called - Instance: {GetInstanceID()}");
             PlayerCharacter.OnPlayerDeath += HandlePlayerDeath;
             InitializeGameState();
         }
 
         private void Start()
         {
-            Debug.Log($"[InGameManager] Start called - Instance: {GetInstanceID()}");
-            
             if (AudioManager.I != null)
                 AudioManager.I.PlayBGM(BGMType.InGame);
         }
 
         protected override void OnDestroy()
         {
-            Debug.Log($"[InGameManager] OnDestroy called - Instance: {GetInstanceID()}");
-            
             PlayerCharacter.OnPlayerDeath -= HandlePlayerDeath;
             
             // Time.timeScaleを確実にリセット（ポーズ中に破棄された場合に備えて）
@@ -72,15 +67,11 @@ namespace SGC2025.Manager
         /// </summary>
         private void InitializeGameState()
         {
-            Debug.Log($"[InGameManager] InitializeGameState called - Instance: {GetInstanceID()}");
-            
             isGameOver = false;
             isCountDown = true;
             currentCountDownTimer = startCountDownTime;
             countGameTimer = 0f;
             Time.timeScale = 1f;
-            
-            Debug.Log($"[InGameManager] countGameTimer reset to: {countGameTimer}, Time.timeScale: {Time.timeScale}");
             
             if (ScoreManager.I != null)
                 ScoreManager.I.ResetScore();

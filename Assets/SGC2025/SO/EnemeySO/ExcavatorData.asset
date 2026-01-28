@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemyDataSO
   enemyType: 3
   movementType: 4
-  health: 1
+  health: 10
   moveSpeed: 3
-  attackPower: 10
-  lifeTime: 10
+  lifeTime: 120
+  baseScale: {x: 1, y: 1, z: 1}
+  scaleGrowthRate: 0.05

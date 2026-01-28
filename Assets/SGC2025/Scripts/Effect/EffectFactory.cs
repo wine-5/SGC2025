@@ -94,7 +94,7 @@ namespace SGC2025.Effect
                 return null;
             }
             
-            var result = objectPool.GetObject(data.EffectPrefab, position, Quaternion.identity);
+            var result = objectPool.GetObject(data.EffectPrefab, position, data.EffectPrefab.transform.rotation);
             
             if (result != null)
             {

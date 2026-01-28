@@ -12,22 +12,28 @@ namespace SGC2025.Manager
     public class WaveManager : Singleton<WaveManager>
     {
         [Header("Wave設定")]
-        [SerializeField] private WaveConfigSO waveConfig;
-        [SerializeField] private float gameStartTime = 0f;
+        [SerializeField] private WaveDataSO waveData;
+        [SerializeField] private float waveInterval = 30f; // 30秒間隔でWave変化
+        
+        [Header("テスト設定")]
+        [Tooltip("テスト用の高速Wave切り替え (デバッグ用)")]
+        [SerializeField] private bool useTestMode = true;
+        [SerializeField] private float testWaveInterval = 10f; // テスト用10秒間隔
+        [SerializeField] private bool enableVerboseLogging = true; // 詳細ログ
         
         private int currentWaveLevel = 1;
-        private float gameElapsedTime = 0f;
         private bool isGameActive = true;
-        private WaveConfigSO.WaveData currentWave;
+        private WaveDataSO.WaveData currentWave;
         
         public static event Action<int> OnWaveChanged;
-        public static event Action<WaveConfigSO.WaveData> OnWaveDataChanged;
+        public static event Action<WaveDataSO.WaveData> OnWaveDataChanged;
         
         public int CurrentWaveLevel => currentWaveLevel;
-        public float GameElapsedTime => gameElapsedTime;
-        public WaveConfigSO.WaveData CurrentWave => currentWave;
+        public float GameElapsedTime => InGameManager.I != null ? InGameManager.I.CurrentGameTime : 0f;
+        public WaveDataSO.WaveData CurrentWave => currentWave;
         public bool IsGameActive => isGameActive;
-        
+        protected override bool UseDontDestroyOnLoad => false; // シーン固有のManager
+
         protected override void Init()
         {
             base.Init();
@@ -58,7 +64,6 @@ namespace SGC2025.Manager
         {
             if (!isGameActive) return;
             
-            UpdateGameTime();
             CheckWaveProgression();
         }
         
@@ -67,29 +72,28 @@ namespace SGC2025.Manager
         /// </summary>
         private void InitializeWaveSystem()
         {
-            if (waveConfig == null)
-            {
-                Debug.LogError("[WaveManager] WaveConfigSO is not assigned!");
-                return;
-            }
-            
-            gameElapsedTime = gameStartTime;
             currentWaveLevel = 1;
             UpdateCurrentWaveData();
         }
         
-        private void UpdateGameTime() => gameElapsedTime += Time.deltaTime;
-        
         /// <summary>
-        /// Wave進行をチェック
+        /// Wave進行をチェック（設定間隔で計算）
         /// </summary>
         private void CheckWaveProgression()
         {
-            if (waveConfig == null) return;
+            if (InGameManager.I == null) return;
             
-            int newWaveLevel = waveConfig.GetWaveLevelAtTime(gameElapsedTime);
-            if (newWaveLevel != currentWaveLevel)
-                ChangeWave(newWaveLevel);
+            float currentGameTime = InGameManager.I.CurrentGameTime;
+            float interval = useTestMode ? testWaveInterval : waveInterval;
+            int expectedWaveLevel = Mathf.FloorToInt(currentGameTime / interval) + 1;
+            
+            // 最大10Waveまで
+            expectedWaveLevel = Mathf.Clamp(expectedWaveLevel, 1, 10);
+            
+            if (expectedWaveLevel != currentWaveLevel)
+            {
+                ChangeWave(expectedWaveLevel);
+            }
         }
         
         /// <summary>
@@ -97,8 +101,12 @@ namespace SGC2025.Manager
         /// </summary>
         private void ChangeWave(int newWaveLevel)
         {
+            int previousWave = currentWaveLevel;
             currentWaveLevel = newWaveLevel;
             UpdateCurrentWaveData();
+            
+            // 基本ログ
+            string modeText = useTestMode ? "[テストモード]" : "";
             
             OnWaveChanged?.Invoke(currentWaveLevel);
             OnWaveDataChanged?.Invoke(currentWave);
@@ -111,9 +119,18 @@ namespace SGC2025.Manager
         /// </summary>
         private void UpdateCurrentWaveData()
         {
-            if (waveConfig == null) return;
+            if (waveData == null)
+            {
+                Debug.LogWarning("[WaveManager] WaveData is null - cannot update wave data");
+                return;
+            }
             
-            currentWave = waveConfig.GetWaveDataAtLevel(currentWaveLevel);
+            currentWave = waveData.GetWaveDataAtLevel(currentWaveLevel);
+            
+            if (enableVerboseLogging && currentWave == null)
+            {
+                Debug.LogWarning($"[WaveManager] Wave Level {currentWaveLevel}に対応するWaveDataが見つかりません");
+            }
         }
         
         /// <summary>
@@ -126,13 +143,12 @@ namespace SGC2025.Manager
             foreach (var spawner in spawners)
             {
                 spawner.SetWaveLevel(currentWaveLevel);
-                
-                if (currentWave != null)
-                    spawner.SetSpawnInterval(currentWave.spawnInterval);
             }
         }
         
-        private void StopWaveProgression() => isGameActive = false;
+
+        
+            private void StopWaveProgression() => isGameActive = false;
         
         private void PauseWaveProgression() => isGameActive = false;
         

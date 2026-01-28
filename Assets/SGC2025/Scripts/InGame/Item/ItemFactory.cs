@@ -40,13 +40,7 @@ namespace SGC2025.Item
             // ItemControllerの初期化
             ItemController controller = itemObj.GetComponent<ItemController>();
             if (controller != null)
-            {
                 controller.Initialize(itemData);
-            }
-            else
-            {
-                Debug.LogWarning($"[ItemFactory] ItemController not found on {itemData.ItemName}");
-            }
             
             return itemObj;
         }

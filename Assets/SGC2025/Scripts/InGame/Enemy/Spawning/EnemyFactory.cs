@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TechC;
 using SGC2025.Enemy;
@@ -10,12 +12,16 @@ namespace SGC2025
     public class EnemyFactory : Singleton<EnemyFactory>
     {
         private const int DEFAULT_WAVE_LEVEL = 1;
+        private const float SCALE_INCREMENT_PER_WAVE = 0.05f;
 
         [Header("プール設定")]
         [SerializeField] private ObjectPool objectPool;
         
         [Header("敵選択設定")]
         [SerializeField] private EnemySpawnConfigManager spawnConfigManager = new EnemySpawnConfigManager();
+        
+        // 各敵タイプのオリジナルスケールを保存
+        private Dictionary<EnemyType, Vector3> originalScales = new Dictionary<EnemyType, Vector3>();
         
         protected override void Init()
         {
@@ -47,12 +53,27 @@ namespace SGC2025
             
             if (enemyObj == null) return null;
             
+            // オリジナルスケールを保存（初回のみ）
+            if (!originalScales.ContainsKey(enemyData.EnemyType))
+            {
+                originalScales[enemyData.EnemyType] = enemyObj.transform.localScale;
+            }
+            
+            // Waveレベルに応じてオリジナルスケールをスケーリング
+            float scaleMultiplier = 1f + (SCALE_INCREMENT_PER_WAVE * (waveLevel - 1));
+            Vector3 correctScale = originalScales[enemyData.EnemyType] * scaleMultiplier;
+            enemyObj.transform.localScale = correctScale;
+            
             enemyObj.transform.position = position;
             enemyObj.transform.rotation = Quaternion.identity;
             
             var controller = enemyObj.GetComponent<EnemyController>();
             if (controller != null)
+            {
                 enemyData.InitializeController(controller, waveLevel);
+                
+
+            }
             else
                 Debug.LogError($"[EnemyFactory] {enemyData.EnemyType}にEnemyControllerが見つかりません");
             
@@ -91,15 +112,22 @@ namespace SGC2025
                 return null;
             }
             
-            var selectedEnemy = spawnConfigManager.SelectRandomEnemyData(waveLevel);
+
+            var selectedEnemy = spawnConfigManager.SelectRandomEnemyData();
             if (selectedEnemy == null)
             {
-                Debug.LogWarning($"[EnemyFactory] ウェーブレベル {waveLevel} で選択可能な敵がいません");
+                Debug.LogWarning("[EnemyFactory] 選択可能な敵がいません");
                 return null;
             }
             
+
+
             return CreateEnemy(selectedEnemy, position, waveLevel);
         }
+        
+
+        
+
         
         /// <summary>
         /// 敵をプールに返却

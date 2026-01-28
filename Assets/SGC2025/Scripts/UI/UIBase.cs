@@ -5,6 +5,9 @@ using SGC2025.Audio;
 
 namespace SGC2025.UI
 {
+    /// <summary>
+    /// UI画面の基底クラス
+    /// </summary>
     public class UIBase : MonoBehaviour
     {
         [SerializeField]

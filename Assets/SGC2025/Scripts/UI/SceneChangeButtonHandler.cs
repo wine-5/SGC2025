@@ -12,11 +12,7 @@ namespace SGC2025.UI
 
         public void ChangeScene()
         {
-            if (SceneController.I == null)
-            {
-                Debug.LogWarning("SceneController instance not found!");
-                return;
-            }
+            if (SceneController.I == null) return;
             
             SceneController.I.LoadScene(targetScene);
         }

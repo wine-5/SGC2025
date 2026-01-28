@@ -56,6 +56,11 @@ namespace SGC2025.Manager
         /// <param name="greeningRate">緑化度（％）</param>
         public void AddScore(string playerName, int score, float greeningRate)
         {
+            if (ranking == null)
+            {
+                ranking = new RankingData();
+            }
+
             if (ranking.scores == null)
             {
                 ranking.scores = new List<ScoreData>();
@@ -63,7 +68,14 @@ namespace SGC2025.Manager
 
             ranking.scores.Add(new ScoreData(playerName, score, greeningRate));
 
-            ranking.scores.Sort((a, b) => b.score.CompareTo(a.score));
+            // 緑化度を優先してソート（降順）、同率ならスコアで判定（降順）
+            ranking.scores.Sort((a, b) =>
+            {
+                int greeningComparison = b.greeningRate.CompareTo(a.greeningRate);
+                if (greeningComparison != 0)
+                    return greeningComparison;
+                return b.score.CompareTo(a.score);
+            });
 
             if (ranking.scores.Count > MAX_RANK)
             {
@@ -91,6 +103,16 @@ namespace SGC2025.Manager
             {
                 string json = File.ReadAllText(filePath);
                 ranking = JsonUtility.FromJson<RankingData>(json);
+
+                if (ranking == null)
+                {
+                    ranking = new RankingData();
+                }
+
+                if (ranking.scores == null)
+                {
+                    ranking.scores = new List<ScoreData>();
+                }
             }
             else
             {
@@ -101,18 +123,36 @@ namespace SGC2025.Manager
         /// <summary>
         /// 現在のランキングを取得
         /// </summary>
-        public List<ScoreData> GetRanking() => ranking.scores;
+        public List<ScoreData> GetRanking()
+        {
+            if (ranking == null)
+            {
+                ranking = new RankingData();
+            }
+
+            if (ranking.scores == null)
+            {
+                ranking.scores = new List<ScoreData>();
+            }
+
+            return ranking.scores;
+        }
         
         /// <summary>
         /// 新しいスコアがランキングに入ったか判定する
         /// </summary>
-        public bool IsNewRecord(int score)
+        public bool IsNewRecord(int score, float greeningRate)
         {
             List<ScoreData> rankingList = GetRanking();
-            if (rankingList.Count == 0) return true;
+            if (rankingList == null || rankingList.Count == 0) return true;
+            if (rankingList.Count < MAX_RANK) return true;
 
-            int lowestScore = rankingList[Mathf.Min(rankingList.Count, MAX_RANK) - 1].score;
-            return score > lowestScore || rankingList.Count < MAX_RANK;
+            // 最下位のデータと比較（緑化度優先）
+            ScoreData lowestRank = rankingList[MAX_RANK - 1];
+            if (greeningRate > lowestRank.greeningRate) return true;
+            if (greeningRate == lowestRank.greeningRate && score > lowestRank.score) return true;
+            
+            return false;
         }
     }
 }
