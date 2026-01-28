@@ -16,8 +16,11 @@ namespace SGC2025.UI
         private const int MAX_POPUP_COUNT = 5;
         private const int INSPECTOR_MAX_POPUP_COUNT = 3;
         private const float GAUGE_ANIMATION_SPEED = 2f;
-        private const string START_TEXT = "START!";
+        private const string START_TEXT = "開始！";
         private const float START_DISPLAY_DURATION = 0.5f;
+        private const float COUNTDOWN_DISPLAY_THRESHOLD = 1f;
+        private const int COUNTDOWN_MIN_NUMBER = 1;
+        private const int COUNTDOWN_MAX_NUMBER = 3;
 
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
@@ -59,6 +62,9 @@ namespace SGC2025.UI
         private Vector3 originalScoreScale;
         private Coroutine currentScoreAnimation;
         private float targetGaugeFillAmount = 0f;
+        private TMP_FontAsset startTextFont;
+        private TMP_FontAsset numberFont;
+        private int lastCountdownNumber = -1;
 
         private void Awake()
         {
@@ -390,6 +396,7 @@ namespace SGC2025.UI
         {
             if (countdownText != null)
             {
+                startTextFont = countdownText.font;
                 countdownText.gameObject.SetActive(false);
             }
         }
@@ -408,15 +415,29 @@ namespace SGC2025.UI
 
                 float timer = InGameManager.I.CountDownTimer;
 
-                if (timer > 1f)  // >= から > に変更
+                if (timer > COUNTDOWN_DISPLAY_THRESHOLD)
                 {
-                    // 1秒より大きい：数字を表示
-                    int countNumber = Mathf.FloorToInt(timer);  // CeilToInt から FloorToInt に変更
+                    int countNumber = Mathf.FloorToInt(timer);
 
-                    if (countNumber >= 1 && countNumber <= 3)  // 条件を変更
+                    if (countNumber >= COUNTDOWN_MIN_NUMBER && countNumber <= COUNTDOWN_MAX_NUMBER)
                     {
                         countdownText.text = countNumber.ToString();
                         countdownText.color = countdownColor;
+                        
+                        // 最初の数字表示時に現在のフォントを数字用として保存
+                        if (numberFont == null)
+                            numberFont = countdownText.font;
+                        
+                        // 数字表示時は数字用フォントを使用
+                        if (countdownText.font != numberFont && numberFont != null)
+                            countdownText.font = numberFont;
+                        
+                        if (countNumber != lastCountdownNumber)
+                        {
+                            lastCountdownNumber = countNumber;
+                            if (SGC2025.Audio.AudioManager.I != null)
+                                SGC2025.Audio.AudioManager.I.PlaySE(SGC2025.Audio.SEType.CountDown);
+                        }
                     }
                     else
                     {
@@ -425,9 +446,19 @@ namespace SGC2025.UI
                 }
                 else
                 {
-                    // 1秒未満：START!を表示
                     countdownText.text = START_TEXT;
                     countdownText.color = startColor;
+                    
+                    // START表示時は元のフォント（START用）に戻す
+                    if (countdownText.font != startTextFont && startTextFont != null)
+                        countdownText.font = startTextFont;
+                    
+                    if (lastCountdownNumber != 0)
+                    {
+                        lastCountdownNumber = 0;
+                        if (SGC2025.Audio.AudioManager.I != null)
+                            SGC2025.Audio.AudioManager.I.PlaySE(SGC2025.Audio.SEType.CountDown);
+                    }
                 }
 
                 // パルスアニメーション（シンプルなsin波）
@@ -444,6 +475,7 @@ namespace SGC2025.UI
                 if (countdownText.gameObject.activeSelf && countdownText.text == START_TEXT)
                 {
                     StartCoroutine(HideCountdownAfterDelay(START_DISPLAY_DURATION));
+                    lastCountdownNumber = -1; // リセット
                 }
             }
         }

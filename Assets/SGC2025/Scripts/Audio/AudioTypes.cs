@@ -12,6 +12,7 @@ namespace SGC2025.Audio
         ButtonClick,        // ボタンをクリックしたときの音
         PlayerDamage,       // プレイヤーがダメージを受けたとき
         GetItem,
+        CountDown,
     }
 
     /// <summary>
