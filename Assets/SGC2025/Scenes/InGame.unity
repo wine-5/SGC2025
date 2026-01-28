@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &324142965 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3464963292798661274, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 1189758861}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1189758861
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -199,6 +204,10 @@ PrefabInstance:
       propertyPath: expandSize
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 8196197523387410722, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: entity
+      value: 
+      objectReference: {fileID: 324142965}
     - target: {fileID: 8455613011829971440, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Name
       value: BigBoy

@@ -16,7 +16,7 @@ namespace SGC2025
 
         private float maxHealth;
         private float currentHealth;
-        private Vector3 originalPos;
+        private Vector3 offsetFromPlayer; // Playerからの相対オフセット（固定）
         private Vector3 originalScale;
         private PlayerCharacter cachedPlayer;
         private EnemyController cachedEnemy;
@@ -25,11 +25,23 @@ namespace SGC2025
 
         void Start()
         {
+            // isPlayerの場合、シーン再読み込みでentity参照が切れている可能性があるため、PlayerDataProviderから取得
+            if (isPlayer && (entity == null || !entity.activeInHierarchy))
+            {
+                if (PlayerDataProvider.I != null && PlayerDataProvider.I.IsPlayerRegistered)
+                {
+                    entity = PlayerDataProvider.I.PlayerTransform.gameObject;
+                }
+            }
+
             if (entity == null) return;
+            
             parentTransform = transform.parent;
             entityTransform = entity.transform;
-            originalPos = parentTransform.position - entityTransform.position;
             originalScale = transform.localScale;
+            
+            // HPBarの初期位置を相対オフセットとして保存（Inspectorで設定された値）
+            offsetFromPlayer = parentTransform.position;
 
             if (isPlayer)
             {
@@ -48,8 +60,10 @@ namespace SGC2025
         void Update()
         {
             if (entity == null) return;
-            Vector3 newPos = entityTransform.position + originalPos;
-            newPos.x = entityTransform.position.x + originalPos.x;
+            if (entityTransform == null) return;
+            
+            // Playerの位置 + 固定オフセット
+            Vector3 newPos = entityTransform.position + offsetFromPlayer;
             parentTransform.position = newPos;
 
             if (isPlayer)
