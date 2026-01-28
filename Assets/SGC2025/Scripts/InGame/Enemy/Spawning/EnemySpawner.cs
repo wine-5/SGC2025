@@ -10,7 +10,7 @@ namespace SGC2025.Enemy
     public class EnemySpawner : MonoBehaviour
     {
         private const int DEFAULT_WAVE_LEVEL = 1;
-        private const float MIN_SPAWN_INTERVAL = 0.1f;
+        private const float DEFAULT_SPAWN_INTERVAL = 2f;
 
         [Header("生成設定")]
         [SerializeField] private bool autoStart = true;
@@ -66,10 +66,10 @@ namespace SGC2025.Enemy
         {
             if (WaveManager.I != null)
             {
-                var currentWave = WaveManager.I.CurrentWave1;
-                return currentWave != null ? currentWave.spawnInterval : 2f; // デフォルト2秒
+                var currentWave = WaveManager.I.CurrentWave;
+                return currentWave != null ? currentWave.spawnInterval : DEFAULT_SPAWN_INTERVAL;
             }
-            return 2f; // WaveManagerがない場合のフォールバック
+            return DEFAULT_SPAWN_INTERVAL;
         }
 
         /// <summary>現在のWaveレベルを取得</summary>

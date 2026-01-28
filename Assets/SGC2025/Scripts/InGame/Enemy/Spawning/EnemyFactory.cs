@@ -12,6 +12,7 @@ namespace SGC2025
     public class EnemyFactory : Singleton<EnemyFactory>
     {
         private const int DEFAULT_WAVE_LEVEL = 1;
+        private const float SCALE_INCREMENT_PER_WAVE = 0.05f;
 
         [Header("プール設定")]
         [SerializeField] private ObjectPool objectPool;
@@ -52,19 +53,14 @@ namespace SGC2025
             
             if (enemyObj == null) return null;
             
-            // スケールの現在値をログ
-            Vector3 currentScale = enemyObj.transform.localScale;
-            
             // オリジナルスケールを保存（初回のみ）
             if (!originalScales.ContainsKey(enemyData.EnemyType))
             {
-                // プレファブのオリジナルスケールを保存（実際のプレファブのスケールを使用）
-                originalScales[enemyData.EnemyType] = currentScale;
+                originalScales[enemyData.EnemyType] = enemyObj.transform.localScale;
             }
-
             
             // Waveレベルに応じてオリジナルスケールをスケーリング
-            float scaleMultiplier = 1f + (0.05f * (waveLevel - 1));
+            float scaleMultiplier = 1f + (SCALE_INCREMENT_PER_WAVE * (waveLevel - 1));
             Vector3 correctScale = originalScales[enemyData.EnemyType] * scaleMultiplier;
             enemyObj.transform.localScale = correctScale;
             
