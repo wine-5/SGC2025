@@ -166,8 +166,7 @@ namespace SGC2025
                     maxWaveLevel = wave.waveLevel;
             }
             
-            // 30秒間隔で終了時間を計算
-            return maxWaveLevel * 30f;
+            return maxWaveLevel * minWaveInterval;
         }
         
         /// <summary>

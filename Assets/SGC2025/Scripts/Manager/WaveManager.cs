@@ -34,12 +34,6 @@ namespace SGC2025.Manager
         public bool IsGameActive => isGameActive;
         protected override bool UseDontDestroyOnLoad => false; // シーン固有のManager
 
-        /// <summary>
-        /// 現在のWaveデータを取得（EnemySpawner用）
-        /// </summary>
-        /// <returns>現在のWaveData、存在しない場合はnull</returns>
-        public WaveDataSO.WaveData CurrentWave1 => currentWave;
-
         protected override void Init()
         {
             base.Init();
@@ -80,10 +74,6 @@ namespace SGC2025.Manager
         {
             currentWaveLevel = 1;
             UpdateCurrentWaveData();
-            
-            // Waveシステム初期化完了
-            
-
         }
         
         /// <summary>
@@ -117,7 +107,6 @@ namespace SGC2025.Manager
             
             // 基本ログ
             string modeText = useTestMode ? "[テストモード]" : "";
-            // Wave変更ロジック（ログなし）
             
             OnWaveChanged?.Invoke(currentWaveLevel);
             OnWaveDataChanged?.Invoke(currentWave);
