@@ -122,8 +122,9 @@ namespace SGC2025.UI
 
         private void OnEnable()
         {
-            EnemyEvents.OnEnemyDestroyedWithScore += OnEnemyDestroyed;
-            GroundEvents.OnGroundGreenified += OnGroundGreenified;
+            // 倍率適用後のスコアイベントを購読（UI表示用）
+            EnemyEvents.OnEnemyScoreAdded += OnEnemyDestroyed;
+            GroundEvents.OnGreenScoreAdded += OnGroundGreenified;
 
             // スコア倍率エフェクトの開始・終了を監視
             SGC2025.Item.ItemManager.OnItemEffectActivated += OnItemEffectActivated;
@@ -135,8 +136,9 @@ namespace SGC2025.UI
 
         private void OnDisable()
         {
-            EnemyEvents.OnEnemyDestroyedWithScore -= OnEnemyDestroyed;
-            GroundEvents.OnGroundGreenified -= OnGroundGreenified;
+            // 倍率適用後のスコアイベントの購読解除
+            EnemyEvents.OnEnemyScoreAdded -= OnEnemyDestroyed;
+            GroundEvents.OnGreenScoreAdded -= OnGroundGreenified;
 
             // スコア倍率エフェクトの監視解除
             SGC2025.Item.ItemManager.OnItemEffectActivated -= OnItemEffectActivated;
@@ -146,18 +148,18 @@ namespace SGC2025.UI
             WaveManager.OnWaveChanged -= OnWaveChanged;
         }
 
-        private void OnEnemyDestroyed(int score, Vector3 position)
+        private void OnEnemyDestroyed(int finalScore, Vector3 position)
         {
-            // ScoreManagerで既に倍率計算済みのスコアを使用
-            UpdateScoreText(score);
-            ShowScorePopupAtInspectorPosition(score);
+            // ScoreManagerで既に倍率適用済みの最終スコアを受け取る
+            UpdateScoreText(finalScore);
+            ShowScorePopupAtInspectorPosition(finalScore);
         }
 
-        private void OnGroundGreenified(Vector3 position, int points)
+        private void OnGroundGreenified(Vector3 position, int finalPoints)
         {
-            // ScoreManagerで既に倍率計算済みのポイントを使用
-            UpdateScoreText(points);
-            ShowScorePopupAtInspectorPosition(points);
+            // ScoreManagerで既に倍率適用済みの最終ポイントを受け取る
+            UpdateScoreText(finalPoints);
+            ShowScorePopupAtInspectorPosition(finalPoints);
             UpdateTerritoryGauge();
         }
 

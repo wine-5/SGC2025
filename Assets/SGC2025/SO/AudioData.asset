@@ -48,7 +48,7 @@ MonoBehaviour:
     fadeOutDuration: 0
   - bgmType: 2
     audioClip: {fileID: 8300000, guid: 6876902a92de1364dbb9475ab78ed323, type: 3}
-    volumeMultiplier: 0.3
+    volumeMultiplier: 0.4
     loop: 1
     useFadeIn: 1
     fadeInDuration: 2
