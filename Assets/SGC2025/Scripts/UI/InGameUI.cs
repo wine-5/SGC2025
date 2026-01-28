@@ -21,6 +21,8 @@ namespace SGC2025.UI
         private const float COUNTDOWN_DISPLAY_THRESHOLD = 1f;
         private const int COUNTDOWN_MIN_NUMBER = 1;
         private const int COUNTDOWN_MAX_NUMBER = 3;
+        private const float TIME_WARNING_THRESHOLD = 10f;
+        private const float TIME_BLINK_SPEED = 3f;
 
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
@@ -65,6 +67,8 @@ namespace SGC2025.UI
         private TMP_FontAsset startTextFont;
         private TMP_FontAsset numberFont;
         private int lastCountdownNumber = -1;
+        private Color originalTimeColor;
+        private Color timeWarningColor = Color.red;
 
         private void Awake()
         {
@@ -77,6 +81,11 @@ namespace SGC2025.UI
             {
                 originalScoreColor = scoreText.color;
                 originalScoreScale = scoreText.transform.localScale;
+            }
+            
+            if (timeText != null)
+            {
+                originalTimeColor = timeText.color;
             }
 
             for (int i = 0; i < initialPoolSize; i++)
@@ -331,7 +340,21 @@ namespace SGC2025.UI
             if (timeText == null) return;
             if (InGameManager.I != null)
             {
-                timeText.text = InGameManager.I.RemainingGameTime.ToString("F1");
+                float remainingTime = InGameManager.I.RemainingGameTime;
+                timeText.text = remainingTime.ToString("F1");
+                
+                // 残り10秒以内で赤色点滅
+                if (remainingTime <= TIME_WARNING_THRESHOLD)
+                {
+                    float blinkValue = Mathf.PingPong(Time.time * TIME_BLINK_SPEED, 1f);
+                    timeText.color = Color.Lerp(timeWarningColor, originalTimeColor, blinkValue);
+                }
+                else
+                {
+                    // 通常状態は元の色
+                    if (timeText.color != originalTimeColor)
+                        timeText.color = originalTimeColor;
+                }
             }
         }
 
