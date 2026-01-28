@@ -14,6 +14,7 @@ namespace SGC2025.Manager
         private const float TILE_Z_POSITION = 0f;
         private const float GRASS_EFFECT_DURATION = 2f;
         private const float GRASS_EFFECT_Y_OFFSET = 0.1f;
+        private const float AREA_EFFECT_SCALE_MULTIPLIER = 2f; // 3x3緑化時のエフェクトスケール倍率
         
         [Header("地面データ設定")]
         [SerializeField]
@@ -144,7 +145,10 @@ namespace SGC2025.Manager
                     if (effect != null)
                     {
                         Vector3 scale = effect.transform.localScale;
-                        effect.transform.localScale = new Vector3(scale.x * 2f, scale.y * 2f, scale.z);
+                        effect.transform.localScale = new Vector3(
+                            scale.x * AREA_EFFECT_SCALE_MULTIPLIER, 
+                            scale.y * AREA_EFFECT_SCALE_MULTIPLIER, 
+                            scale.z);
                     }
                 }
                 
