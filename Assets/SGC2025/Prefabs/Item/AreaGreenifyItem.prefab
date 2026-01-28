@@ -104,7 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f79c8af8c080248ae9772d808f6f9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Item.ItemController
-  enableDebugSpawn: 1
+  enableDebugSpawn: 0
   debugSpawnKey: 105
   debugSpawnDistance: 2
   testItemObj: {fileID: 8577232092810221527}
