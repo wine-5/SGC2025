@@ -26,6 +26,7 @@ namespace SGC2025.UI
 
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
+        [SerializeField] private TextMeshProUGUI waveText;
 
         [Header("カウントダウン設定")]
         [SerializeField, Tooltip("カウントダウン表示用テキスト")]
@@ -53,6 +54,11 @@ namespace SGC2025.UI
         [SerializeField] private int bigScoreThreshold = 1000;
         [SerializeField] private Color scoreBoostColor = new Color(1f, 0.6f, 0f); // PopUpと同じオレンジ色
 
+        [Header("Waveアニメーション設定")]
+        [SerializeField] private float wavePulseScale = 1.3f;
+        [SerializeField] private float wavePulseDuration = 0.5f;
+        [SerializeField] private Color waveChangeColor = new Color(1f, 0.8f, 0f); // ゴールド
+
         [Header("スコアポップアップ設定")]
         [SerializeField] private RectTransform parentCanvas;
         [SerializeField] private GameObject popupPrefab;
@@ -69,6 +75,8 @@ namespace SGC2025.UI
         private int lastCountdownNumber = -1;
         private Color originalTimeColor;
         private Color timeWarningColor = Color.red;
+        private Color originalWaveColor;
+        private Vector3 originalWaveScale;
 
         private void Awake()
         {
@@ -102,6 +110,7 @@ namespace SGC2025.UI
             InitializeScoreDisplay();
             InitializeTerritoryGauge();
             InitializeCountdownDisplay();
+            InitializeWaveDisplay();
         }
 
         private void Update()
@@ -119,6 +128,9 @@ namespace SGC2025.UI
             // スコア倍率エフェクトの開始・終了を監視
             SGC2025.Item.ItemManager.OnItemEffectActivated += OnItemEffectActivated;
             SGC2025.Item.ItemManager.OnItemEffectExpired += OnItemEffectExpired;
+            
+            // Wave変更イベントを購読
+            WaveManager.OnWaveChanged += OnWaveChanged;
         }
 
         private void OnDisable()
@@ -129,6 +141,9 @@ namespace SGC2025.UI
             // スコア倍率エフェクトの監視解除
             SGC2025.Item.ItemManager.OnItemEffectActivated -= OnItemEffectActivated;
             SGC2025.Item.ItemManager.OnItemEffectExpired -= OnItemEffectExpired;
+            
+            // Wave変更イベントの購読解除
+            WaveManager.OnWaveChanged -= OnWaveChanged;
         }
 
         private void OnEnemyDestroyed(int score, Vector3 position)
@@ -174,6 +189,80 @@ namespace SGC2025.UI
                     scoreText.color = originalScoreColor;
                 }
             }
+        }
+
+        /// <summary>
+        /// Wave表示を初期化
+        /// </summary>
+        private void InitializeWaveDisplay()
+        {
+            if (waveText != null && WaveManager.I != null)
+            {
+                originalWaveColor = waveText.color;
+                originalWaveScale = waveText.transform.localScale;
+                UpdateWaveText(WaveManager.I.CurrentWaveLevel);
+            }
+        }
+
+        /// <summary>
+        /// Wave変更時のコールバック
+        /// </summary>
+        private void OnWaveChanged(int newWaveLevel)
+        {
+            UpdateWaveText(newWaveLevel);
+            if (waveText != null)
+            {
+                StartCoroutine(AnimateWaveChange());
+            }
+        }
+
+        /// <summary>
+        /// Waveテキストを更新
+        /// </summary>
+        private void UpdateWaveText(int waveLevel)
+        {
+            if (waveText != null)
+            {
+                waveText.text = $"ウェーブ {waveLevel}";
+            }
+        }
+
+        /// <summary>
+        /// Wave変更時のアニメーション（色変更＋パルス）
+        /// </summary>
+        private IEnumerator AnimateWaveChange()
+        {
+            float elapsed = 0f;
+            
+            // 前半：拡大＋色変更
+            while (elapsed < wavePulseDuration / 2f)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / (wavePulseDuration / 2f);
+                
+                waveText.transform.localScale = Vector3.Lerp(originalWaveScale, originalWaveScale * wavePulseScale, t);
+                waveText.color = Color.Lerp(originalWaveColor, waveChangeColor, t);
+                
+                yield return null;
+            }
+            
+            elapsed = 0f;
+            
+            // 後半：縮小＋色戻し
+            while (elapsed < wavePulseDuration / 2f)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / (wavePulseDuration / 2f);
+                
+                waveText.transform.localScale = Vector3.Lerp(originalWaveScale * wavePulseScale, originalWaveScale, t);
+                waveText.color = Color.Lerp(waveChangeColor, originalWaveColor, t);
+                
+                yield return null;
+            }
+            
+            // 完全に元に戻す
+            waveText.transform.localScale = originalWaveScale;
+            waveText.color = originalWaveColor;
         }
 
         /// <summary>
