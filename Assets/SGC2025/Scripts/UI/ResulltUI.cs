@@ -203,8 +203,7 @@ namespace SGC2025.UI
             foreach (GameObject button in buttons)
                 button.SetActive(true);
             
-            if (firstButtonAfterInput != null && EventSystem.current != null)
-                EventSystem.current.SetSelectedGameObject(firstButtonAfterInput);
+            UIFocusHelper.SetFocus(firstButtonAfterInput);
         }
 
 

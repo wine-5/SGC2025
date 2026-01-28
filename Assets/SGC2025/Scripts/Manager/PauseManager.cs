@@ -1,3 +1,4 @@
+using SGC2025.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -54,8 +55,7 @@ namespace SGC2025.Manager
             
             Time.timeScale = 0f;
             
-            if (firstPauseButton != null && EventSystem.current != null)
-                EventSystem.current.SetSelectedGameObject(firstPauseButton);
+            UIFocusHelper.SetFocus(firstPauseButton);
             
             OnPause?.Invoke();
         }
@@ -72,8 +72,7 @@ namespace SGC2025.Manager
             
             Time.timeScale = 1f;
             
-            if (EventSystem.current != null)
-                EventSystem.current.SetSelectedGameObject(null);
+            UIFocusHelper.ClearFocus();
             
             OnResume?.Invoke();
         }

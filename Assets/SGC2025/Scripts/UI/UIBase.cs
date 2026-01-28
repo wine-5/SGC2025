@@ -16,8 +16,7 @@ namespace SGC2025.UI
 
         virtual public void Start()
         {
-            if (firstSelect != null)
-                EventSystem.current.SetSelectedGameObject(firstSelect);
+            UIFocusHelper.SetFocus(firstSelect);
         }
         
         virtual public void Update()
