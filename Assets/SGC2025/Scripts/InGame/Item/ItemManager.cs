@@ -78,14 +78,12 @@ namespace SGC2025.Item
         
         private void Update()
         {
-            // 自動生成
             if (autoSpawn && Time.time >= nextSpawnTime)
             {
                 SpawnRandomItem();
                 nextSpawnTime = Time.time + Mathf.Max(spawnInterval, MIN_SPAWN_INTERVAL);
             }
             
-            // 効果時間のチェック
             CheckEffectExpiration();
         }
         
@@ -94,11 +92,7 @@ namespace SGC2025.Item
         /// </summary>
         public void SpawnRandomItem()
         {
-            if (spawnSelector.IsEmpty)
-            {
-                Debug.LogWarning("[ItemManager] ItemSpawnSelector is empty!");
-                return;
-            }
+            if (spawnSelector.IsEmpty) return;
             
             ItemData selectedItem = spawnSelector.SelectRandom();
             if (selectedItem == null) return;
@@ -140,17 +134,9 @@ namespace SGC2025.Item
         /// </summary>
         private void SpawnItem(ItemData itemData, Vector3 position)
         {
-            if (ItemFactory.I == null)
-            {
-                Debug.LogWarning("[ItemManager] ItemFactory instance is null!");
-                return;
-            }
+            if (ItemFactory.I == null) return;
             
             GameObject item = ItemFactory.I.SpawnItem(itemData, position);
-            if (item == null)
-            {
-                Debug.LogWarning($"[ItemManager] Failed to spawn item: {itemData?.ItemName}");
-            }
         }
         
         /// <summary>
@@ -158,18 +144,10 @@ namespace SGC2025.Item
         /// </summary>
         public void SpawnRandomItemAt(Vector3 position)
         {
-            if (spawnSelector.IsEmpty)
-            {
-                Debug.LogWarning("[ItemManager] ItemSpawnSelector is empty!");
-                return;
-            }
+            if (spawnSelector.IsEmpty) return;
             
             ItemData selectedItem = spawnSelector.SelectRandom();
-            if (selectedItem == null)
-            {
-                Debug.LogWarning("[ItemManager] Failed to select random item!");
-                return;
-            }
+            if (selectedItem == null) return;
             
             SpawnItem(selectedItem, position);
         }

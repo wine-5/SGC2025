@@ -1,3 +1,4 @@
+using SGC2025.Audio;
 using SGC2025.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -85,16 +86,11 @@ namespace SGC2025.Item
         /// </summary>
         private void OnItemCollected()
         {
-            if (itemData == null)
-            {
-                Debug.LogWarning("[ItemController] ItemData is null!");
-                return;
-            }
+            if (itemData == null) return;
             
+            AudioManager.I.PlaySE(SEType.GetItem);
             if (ItemManager.I != null)
                 ItemManager.I.CollectItem(itemData);
-            else
-                Debug.LogWarning("[ItemController] ItemManager instance is null!");
         }
         
         /// <summary>
