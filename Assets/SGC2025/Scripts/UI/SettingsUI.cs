@@ -166,6 +166,10 @@ namespace SGC2025.UI
         {
             if (audioPanel != null)
             {
+                // ボタンクリック音を再生
+                if (AudioManager.I != null)
+                    AudioManager.I.PlaySE(SEType.ButtonClick);
+                
                 // 現在選択されている要素を保存
                 lastSelectedBeforeOpen = UIFocusHelper.GetCurrentFocus();
                 
@@ -183,6 +187,10 @@ namespace SGC2025.UI
         {
             if (audioPanel != null)
             {
+                // ボタンクリック音を再生
+                if (AudioManager.I != null)
+                    AudioManager.I.PlaySE(SEType.ButtonClick);
+                
                 audioPanel.SetActive(false);
                 
                 // コントローラー用：元のボタンに選択を戻す
