@@ -127,10 +127,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2535283657369020128, guid: fddfa864c81163a408f40d202ab2d6b2, type: 3}
-      propertyPath: submitButton
-      value: 
-      objectReference: {fileID: 7979916767914923766}
     - target: {fileID: 5162230008805113320, guid: fddfa864c81163a408f40d202ab2d6b2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -180,17 +176,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fddfa864c81163a408f40d202ab2d6b2, type: 3}
---- !u!114 &7979916767914923766 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9012330651489854127, guid: fddfa864c81163a408f40d202ab2d6b2, type: 3}
-  m_PrefabInstance: {fileID: 7979916767914923765}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
