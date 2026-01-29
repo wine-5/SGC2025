@@ -25,7 +25,6 @@ namespace SGC2025.UI
         }
         public void OnClickRestart()
         {
-            // ボタンクリック音を再生
             if (AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.ButtonClick);
             
@@ -34,7 +33,6 @@ namespace SGC2025.UI
 
         public void OnClickBackTitle()
         {
-            // ボタンクリック音を再生
             if (AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.ButtonClick);
             
@@ -43,7 +41,6 @@ namespace SGC2025.UI
         
         public void OnClickExit()
         {
-            // ボタンクリック音を再生
             if (AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.ButtonClick);
             

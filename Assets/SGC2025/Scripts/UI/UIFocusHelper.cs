@@ -17,7 +17,7 @@ namespace SGC2025.UI
         {
             if (EventSystem.current == null || target == null) return;
             
-            EventSystem.current.SetSelectedGameObject(null); // 一度リセット
+            EventSystem.current.SetSelectedGameObject(null);
             EventSystem.current.SetSelectedGameObject(target);
         }
 

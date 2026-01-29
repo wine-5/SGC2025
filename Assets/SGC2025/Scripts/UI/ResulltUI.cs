@@ -11,8 +11,8 @@ namespace SGC2025.UI
     public class ResulltUI : UIBase
     {
         private const float SCORE_COUNT_UP_TIME = 0.7f;
-        private const int DEFAULT_RECORD_SCORE = 0;
         private const float ZERO_WAIT_TIME = 0.0f;
+        private const float PERCENT_MULTIPLIER = 100f;
 
         [SerializeField]
         private TextMeshProUGUI enemyScoreText;
@@ -115,31 +115,24 @@ namespace SGC2025.UI
                     break;
 
                 case ResultPhase.HighScore:
-                    {
-                        int totalScore = ScoreManager.I != null ? ScoreManager.I.GetTotalScore() : 0;
-                        float greeningRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * 100f : 0f;
+                    int totalScore = ScoreManager.I != null ? ScoreManager.I.GetTotalScore() : 0;
+                    float greeningRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * PERCENT_MULTIPLIER : 0f;
 
-                        var rankingManager = RankingManager.I;
-                        if (rankingManager != null && rankingManager.IsNewRecord(totalScore, greeningRate))
-                        {
-                            if (nameInputUI != null)
-                            {
-                                nameInputUI.gameObject.SetActive(true);
-                            }
-                            else
-                            {
-                                ShowEndButtons();
-                            }
-                        }
+                    var rankingManager = RankingManager.I;
+                    if (rankingManager != null && rankingManager.IsNewRecord(totalScore, greeningRate))
+                    {
+                        if (nameInputUI != null)
+                            nameInputUI.gameObject.SetActive(true);
                         else
-                        {
                             ShowEndButtons();
-                        }
-                        break;
                     }
+                    else
+                    {
+                        ShowEndButtons();
+                    }
+                    break;
 
                 case ResultPhase.End:
-                    // ボタンはShowEndButtons()で既に表示済み
                     break;
 
                 default:
@@ -159,7 +152,7 @@ namespace SGC2025.UI
                 case ResultPhase.GreeningRate:
                     if (greeningRateText != null)
                     {
-                        float maxRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * 100f : 0f;
+                        float maxRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * PERCENT_MULTIPLIER : 0f;
                         float currentRate = Mathf.Lerp(0f, maxRate, Mathf.Clamp01(waitTime / SCORE_COUNT_UP_TIME));
                         greeningRateText.SetText($"{currentRate:F1}%");
                     }

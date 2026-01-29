@@ -14,6 +14,7 @@ namespace SGC2025.UI
     {
         private const int MAX_NAME_LENGTH = 5;
         private const string DEFAULT_NAME = "ナナシ";
+        private const float PERCENT_MULTIPLIER = 100f;
 
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private Button submitButton; // 決定ボタン
@@ -64,13 +65,13 @@ namespace SGC2025.UI
                 name = DEFAULT_NAME;
 
             int totalScore = ScoreManager.I.GetTotalScore();
-            float greeningRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * 100f : 0f;
+            float greeningRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * PERCENT_MULTIPLIER : 0f;
             
             RankingManager.I.AddScore(name, totalScore, greeningRate);
 
             Submitted?.Invoke();
             
-            this.gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
 
         public void OnInputFocus(string text)
@@ -80,4 +81,3 @@ namespace SGC2025.UI
         }
     }
 }
-

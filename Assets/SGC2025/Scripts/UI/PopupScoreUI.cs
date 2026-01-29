@@ -24,6 +24,9 @@ namespace SGC2025.UI
         private System.Action<PopupScoreUI> onComplete;
         private bool isBoostActive = false;
 
+        /// <summary>
+        /// ポップアップを初期化
+        /// </summary>
         public void Initialize(int score, Vector2 position, System.Action<PopupScoreUI> onComplete, bool isBoostActive = false)
         {
             if (text == null)

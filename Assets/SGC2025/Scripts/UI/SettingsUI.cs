@@ -14,6 +14,10 @@ namespace SGC2025.UI
     /// </summary>
     public class SettingsUI : MonoBehaviour
     {
+        private const float DEFAULT_MASTER_VOLUME = 1f;
+        private const float DEFAULT_BGM_VOLUME = 0.7f;
+        private const float DEFAULT_SE_VOLUME = 1f;
+
         [Header("Volume Sliders")]
         [SerializeField] private Slider masterVolumeSlider;
         [SerializeField] private Slider bgmVolumeSlider;
@@ -65,11 +69,8 @@ namespace SGC2025.UI
         /// </summary>
         private void OnCancelPressed()
         {
-            // パネルが開いている時のみ閉じる
             if (audioPanel != null && audioPanel.activeSelf)
-            {
                 CloseSettings();
-            }
         }
 
         /// <summary>
@@ -214,13 +215,13 @@ namespace SGC2025.UI
         {
             if (AudioManager.I != null)
             {
-                AudioManager.I.SetMasterVolume(1f);
-                AudioManager.I.SetBGMVolume(0.7f);
-                AudioManager.I.SetSEVolume(1f);
+                AudioManager.I.SetMasterVolume(DEFAULT_MASTER_VOLUME);
+                AudioManager.I.SetBGMVolume(DEFAULT_BGM_VOLUME);
+                AudioManager.I.SetSEVolume(DEFAULT_SE_VOLUME);
                 
-                if (masterVolumeSlider != null) masterVolumeSlider.value = 1f;
-                if (bgmVolumeSlider != null) bgmVolumeSlider.value = 0.7f;
-                if (seVolumeSlider != null) seVolumeSlider.value = 1f;
+                if (masterVolumeSlider != null) masterVolumeSlider.value = DEFAULT_MASTER_VOLUME;
+                if (bgmVolumeSlider != null) bgmVolumeSlider.value = DEFAULT_BGM_VOLUME;
+                if (seVolumeSlider != null) seVolumeSlider.value = DEFAULT_SE_VOLUME;
             }
         }
 
