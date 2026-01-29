@@ -60,13 +60,7 @@ namespace SGC2025.Player.Bullet
             int actualEnemyLayer = LayerMask.NameToLayer("Enemy");
             
             if (actualEnemyLayer != -1)
-            {
-                enemyLayer = 1 << actualEnemyLayer;  // Layer 7 (Enemy) = 128
-            }
-            else
-            {
-                Debug.LogError("[BulletController] 'Enemy'レイヤーが見つかりません！");
-            }
+                enemyLayer = 1 << actualEnemyLayer;
             
             // 障害物レイヤーは使用しないので0に設定
             obstacleLayer = 0;
@@ -106,11 +100,7 @@ namespace SGC2025.Player.Bullet
         /// </summary>
         public void Deactivate()
         {
-            if (!isActive) 
-            {
-                return;
-            }
-            
+            if (!isActive) return;
             isActive = false;
             StopMovement();
             ReturnToPool();
@@ -293,18 +283,10 @@ namespace SGC2025.Player.Bullet
             var enemy = other.GetComponent<EnemyController>();
             if (enemy != null && enemy.IsAlive)
             {
-                if (bulletData == null)
-                {
-                    Debug.LogError("[BulletController] BulletDataSOがnullです！ダメージを与えられません");
-                    return;
-                }
+                if (bulletData == null) return;
                 
                 float damageToApply = bulletData.Damage;
-                if (damageToApply <= 0)
-                {
-                    Debug.LogWarning($"[BulletController] ダメージが0以下です: {damageToApply}");
-                    return;
-                }
+                if (damageToApply <= 0) return;
                 
                 enemy.TakeDamage(damageToApply);
                 Deactivate();
