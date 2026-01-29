@@ -175,8 +175,8 @@ namespace SGC2025.UI
                 
                 audioPanel.SetActive(true);
                 
-                // マウス操作を優先するため、自動選択はしない
-                // コントローラー使用時は手動で十字キーを押して選択してもらう
+                // コントローラー用：最初の要素にフォーカスを設定
+                UIFocusHelper.SetFocus(firstSelected);
             }
         }
 
