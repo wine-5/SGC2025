@@ -54,9 +54,7 @@ namespace SGC2025.Player
         public void UpdateInvincibleTime(float deltaTime)
         {
             if (currentInvincibleTime > 0f)
-            {
                 currentInvincibleTime -= deltaTime;
-            }
         }
         
         /// <summary>
@@ -65,21 +63,15 @@ namespace SGC2025.Player
         /// <param name="damage">ダメージ量</param>
         public void TakeDamage(float damage = 1f)
         {
-            if (!IsAlive || IsInvincible)
-            {
-                return;
-            }
+            if (!IsAlive || IsInvincible) return;
             
             float actualDamage = Mathf.Min(damage, currentHealth);
             currentHealth = Mathf.Max(0f, currentHealth - actualDamage);
             currentInvincibleTime = invincibleTime;
             
             OnDamageTaken?.Invoke(actualDamage);
-            
             if (!IsAlive)
-            {
                 OnPlayerDeath?.Invoke();
-            }
         }
         
         /// <summary>
@@ -88,11 +80,7 @@ namespace SGC2025.Player
         /// <param name="healAmount">回復量</param>
         public void Heal(float healAmount)
         {
-            if (!IsAlive)
-            {
-                return;
-            }
-            
+            if (!IsAlive) return;
             currentHealth = Mathf.Min(maxHealth, currentHealth + healAmount);
         }
     }

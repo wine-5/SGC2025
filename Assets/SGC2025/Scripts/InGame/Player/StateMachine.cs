@@ -3,29 +3,37 @@ using UnityEngine;
 namespace SGC2025.Player
 {
     /// <summary>
-    /// エンティティの状態遮移管理
+    /// エンティティの状態遷移管理
     /// </summary>
     public class StateMachine
-{
-    public EntityState currentState { get; private set; }
-    
-
-    public void Initialize(EntityState startState)
     {
-        currentState = startState;
-        currentState.Enter();
-    }
+        public EntityState CurrentState { get; private set; }
 
-    public void ChangeState(EntityState newState)
-    {
-        currentState.Exit();
-        currentState = newState;
-        currentState.Enter();
-    }
+        /// <summary>
+        /// 初期状態を設定
+        /// </summary>
+        public void Initialize(EntityState startState)
+        {
+            CurrentState = startState;
+            CurrentState.Enter();
+        }
 
-    public void UpdateActiveState()
-    {
-        currentState.Update();
-    }
+        /// <summary>
+        /// 状態を変更
+        /// </summary>
+        public void ChangeState(EntityState newState)
+        {
+            CurrentState.Exit();
+            CurrentState = newState;
+            CurrentState.Enter();
+        }
+
+        /// <summary>
+        /// アクティブ状態を更新
+        /// </summary>
+        public void UpdateActiveState()
+        {
+            CurrentState.Update();
+        }
     }
 }

@@ -32,14 +32,8 @@ namespace SGC2025.Player
         /// <param name="player">登録するPlayerのTransform</param>
         public void RegisterPlayer(Transform player)
         {
-            if (player == null)
-            {
-                Debug.LogError("[PlayerDataProvider] Cannot register null player!");
-                return;
-            }
-            
+            if (player == null) return;
             playerTransform = player;
-
             OnPlayerRegistered?.Invoke(playerTransform);
         }
         
@@ -49,7 +43,6 @@ namespace SGC2025.Player
         public void UnregisterPlayer()
         {
             playerTransform = null;
-
             OnPlayerUnregistered?.Invoke();
         }
 
@@ -70,12 +63,7 @@ namespace SGC2025.Player
         /// </summary>
         public Vector3 GetPlayerPosition()
         {
-            if (playerTransform == null)
-            {
-                Debug.LogWarning("[PlayerDataProvider] Player is not registered!");
-                return Vector3.zero;
-            }
-            
+            if (playerTransform == null) return Vector3.zero;
             return playerTransform.position;
         }
     }
