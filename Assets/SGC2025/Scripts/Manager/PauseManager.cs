@@ -43,6 +43,9 @@ namespace SGC2025.Manager
             base.OnDestroy();
         }
 
+        /// <summary>
+        /// ゲームをポーズする
+        /// </summary>
         public void PauseGame()
         {
             if (isPaused) return;
@@ -60,6 +63,9 @@ namespace SGC2025.Manager
             OnPause?.Invoke();
         }
 
+        /// <summary>
+        /// ポーズを解除する
+        /// </summary>
         public void ResumeGame()
         {
             if (!isPaused) return;
@@ -77,6 +83,9 @@ namespace SGC2025.Manager
             OnResume?.Invoke();
         }
 
+        /// <summary>
+        /// ポーズの切り替え
+        /// </summary>
         public void TogglePause()
         {
             if (isPaused)
