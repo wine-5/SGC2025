@@ -203,7 +203,7 @@ namespace SGC2025.UI
         private void UpdateWaveText(int waveLevel)
         {
             if (waveText != null)
-                waveText.text = $"Wave {waveLevel}";
+                waveText.text = $"ウェーブ {waveLevel}";
         }
 
         private IEnumerator AnimateWaveChange()
