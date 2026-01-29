@@ -12,7 +12,7 @@
     },
     "hero": {
       "title_kanji": "蝶々反乱",
-      "title_sub": "バタフライリベリオン",
+      "title_sub": "",
       "tagline": "角をもつ蝶々が、奪われた自然を取り戻す",
       "team": "アルティメット革命軍"
     },
@@ -29,14 +29,14 @@
       "main": "「かくちょう」",
       "concept": "角（ツノ）をもつ蝶々が人間に奪われた自然を取り戻す！",
       "team_name": "角蝶",
-      "team_number": "チーム番号：1",
+      "team_number": "チーム：アルティメット革命軍",
       "team_description": "テーマ『かくちょう』の意味を『角蝶』として解釈し、チーム全員で決定しました。",
-      "game_concept": "プレイヤーが蝶の角を発射して、敵や破壊物に当てることで自然を取り返していくゲーム"
+      "game_concept": "プレイヤーが蝶の角を発射して、敵などに当てることで自然を取り返していくゲーム"
     },
     "game_overview": {
       "section_title": "ゲーム概要",
       "description": "敵を撃破することで、失われた自然が徐々に回復していきます。制限時間内に敵を倒してスコアを競い、ランキングに載ることを目指そう！",
-      "game_flow": "ゲームフロー",
+      "game_flow": "ゲーム画面",
       "ranking": "ランキングに掲載されるチャンス"
     },
     "items": {
@@ -49,11 +49,13 @@
       "item3_name": "スコアブースト",
       "item3_effect": "スコアの獲得量が上昇"
     },
+    "controls": {
       "section_title": "操作方法",
       "keyboard": "キーボード",
-      "keyboard_desc": "Wキー：上 Aキー：左 Sキー：下 Dキー：右 で移動\nスペースキー：弾を発射",
+      "keyboard_desc": "・Wキー：上\n・Aキー：左\n・Sキー：下\n・Dキー：右\n・スペースキー：弾を発射",
       "controller": "ゲームコントローラー",
-      "controller_desc": "左スティック / 十字キー で移動\n○ボタン（右のボタン）、もしくは△ボタン（上のボタン）で撃てる",
+      "controller_desc": "・左スティック / 十字キー：移動\n・○ボタン（右のボタン）、または△ボタン（上のボタン）：弾を発射",
+      "pause": "ポーズ：ESCキー または Optionボタン",
       "tip": "敵の攻撃パターンを見極めて、素早く回避しよう!"
     },
     "developers": {
@@ -128,7 +130,7 @@
     },
     "hero": {
       "title_kanji": "蝶々反乱",
-      "title_sub": "BUTTERFLY REBELLION",
+      "title_sub": "",
       "tagline": "Horned butterflies take back nature stolen by humans",
       "team": "Ultimate Revolutionary Army"
     },
@@ -145,14 +147,14 @@
       "main": "\"Kakucho\" (角蝶)",
       "concept": "Horned butterflies take back the nature stolen by humans!",
       "team_name": "Kakucho",
-      "team_number": "Team Number: 1",
+      "team_number": "Team: Ultimate Revolutionary Army",
       "team_description": "We interpreted the theme 'Kakucho' as 'Horned Butterflies' and decided on it as a team.",
       "game_concept": "A game where players shoot butterfly horns at enemies and destructible objects to recover nature"
     },
     "game_overview": {
       "section_title": "Game Overview",
       "description": "As you defeat enemies, lost nature gradually recovers. Defeat as many enemies as possible within the time limit and compete on the leaderboard!",
-      "game_flow": "Game Flow",
+      "game_flow": "Game Screen",
       "ranking": "Chance to be listed on the ranking"
     },
     "items": {
@@ -165,11 +167,13 @@
       "item3_name": "Score Boost",
       "item3_effect": "Increases score acquisition amount"
     },
+    "controls": {
       "section_title": "Controls",
       "keyboard": "Keyboard",
-      "keyboard_desc": "W Key: Up, A Key: Left, S Key: Down, D Key: Right to move\nSpace Key: Fire bullet",
+      "keyboard_desc": "• W Key: Up\n• A Key: Left\n• S Key: Down\n• D Key: Right\n• Space Key: Fire bullet",
       "controller": "Game Controller",
-      "controller_desc": "Left Stick / D-Pad to move\nCircle Button (right button) or Triangle Button (top button) to fire bullet",
+      "controller_desc": "• Left Stick / D-Pad: Move\n• Circle Button (right) or Triangle Button (top): Fire bullet",
+      "pause": "Pause: ESC key or Option button",
       "tip": "Observe enemy attack patterns and dodge quickly!"
     },
     "developers": {

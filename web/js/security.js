@@ -8,7 +8,7 @@
  * DEBUG_MODE = trueの場合、全ての制限が無効になる
  */
 const SECURITY_CONFIG = {
-    DEBUG_MODE: false,                    // デバッグモード（有効化で全制限が無効）
+    DEBUG_MODE: true,                    // デバッグモード（有効化で全制限が無効）
     DISABLE_DEV_TOOLS: true,              // 開発者ツール禁止
     DISABLE_RIGHT_CLICK: true,            // 右クリック禁止
     DISABLE_F12: true,                    // F12キー禁止

@@ -18,7 +18,7 @@
 /* ヒーローセクション */
 .hero-section {
     min-height: 100vh;
-    background: linear-gradient(135deg, #2d5016 0%, #5a8a2b 50%, #3a6e1f 100%);
+    background: #000;
     position: relative;
     overflow: hidden;
     margin-top: 60px;
@@ -26,11 +26,15 @@
 
 .hero-background {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 6%;
+    left: 6%;
+    right: 6%;
+    bottom: 6%;
     z-index: 1;
+    background-image: url('../image/main-canvas.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .butterfly-particle {
@@ -642,6 +646,7 @@
     color: #555;
     font-size: 0.95rem;
     line-height: 1.6;
+    white-space: pre-line;
 }
 
 .control-tip {
