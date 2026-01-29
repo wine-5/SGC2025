@@ -35,7 +35,7 @@
     },
     "game_overview": {
       "section_title": "ゲーム概要",
-      "description": "敵を撃破することで、失われた自然が徐々に回復していきます。制限時間内に敵を倒してスコアを競い、ランキングに載ることを目指そう！",
+      "description": "敵を撃破することで、失われた自然が徐々に回復していきます。制限時間内に敵を倒してスコアを競い、自然を取り戻そう！",
       "game_flow": "ゲーム画面",
       "ranking": "ランキングに掲載されるチャンス"
     },
@@ -112,7 +112,7 @@
     },
     "footer": {
       "title": "蝶々反乱",
-      "event": "札幌ゲームキャンプ2025 - ゲームジャム作品",
+      "event": "札幌ゲームキャンプ2025",
       "team": "制作: アルティメット革命軍",
       "copyright": "&copy; 2025 wine-5. All rights reserved."
     }
@@ -153,7 +153,7 @@
     },
     "game_overview": {
       "section_title": "Game Overview",
-      "description": "As you defeat enemies, lost nature gradually recovers. Defeat as many enemies as possible within the time limit and compete on the leaderboard!",
+      "description": "As you defeat enemies, lost nature gradually recovers. Defeat as many enemies as possible within the time limit and reclaim nature!",
       "game_flow": "Game Screen",
       "ranking": "Chance to be listed on the ranking"
     },
@@ -230,7 +230,7 @@
     },
     "footer": {
       "title": "Butterfly Rebellion",
-      "event": "Sapporo Game Camp 2025 - Game Jam Work",
+      "event": "Sapporo Game Camp 2025",
       "team": "Created by: Ultimate Revolutionary Army",
       "copyright": "&copy; 2025 wine-5. All rights reserved."
     }

@@ -18,7 +18,7 @@
 /* ヒーローセクション */
 .hero-section {
     min-height: 100vh;
-    background: #000;
+    background: linear-gradient(135deg, #2d5016 0%, #5a8a2b 50%, #3a6e1f 100%);
     position: relative;
     overflow: hidden;
     margin-top: 60px;
