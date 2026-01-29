@@ -57,18 +57,13 @@ namespace SGC2025.Manager
         public void AddScore(string playerName, int score, float greeningRate)
         {
             if (ranking == null)
-            {
                 ranking = new RankingData();
-            }
 
             if (ranking.scores == null)
-            {
                 ranking.scores = new List<ScoreData>();
-            }
 
             ranking.scores.Add(new ScoreData(playerName, score, greeningRate));
 
-            // 緑化度を優先してソート（降順）、同率ならスコアで判定（降順）
             ranking.scores.Sort((a, b) =>
             {
                 int greeningComparison = b.greeningRate.CompareTo(a.greeningRate);
@@ -78,9 +73,7 @@ namespace SGC2025.Manager
             });
 
             if (ranking.scores.Count > MAX_RANK)
-            {
                 ranking.scores = ranking.scores.GetRange(0, MAX_RANK);
-            }
 
             SaveRanking();
         }
@@ -105,14 +98,10 @@ namespace SGC2025.Manager
                 ranking = JsonUtility.FromJson<RankingData>(json);
 
                 if (ranking == null)
-                {
                     ranking = new RankingData();
-                }
 
                 if (ranking.scores == null)
-                {
                     ranking.scores = new List<ScoreData>();
-                }
             }
             else
             {
@@ -126,14 +115,10 @@ namespace SGC2025.Manager
         public List<ScoreData> GetRanking()
         {
             if (ranking == null)
-            {
                 ranking = new RankingData();
-            }
 
             if (ranking.scores == null)
-            {
                 ranking.scores = new List<ScoreData>();
-            }
 
             return ranking.scores;
         }

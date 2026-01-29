@@ -1,3 +1,4 @@
+using SGC2025.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -42,6 +43,9 @@ namespace SGC2025.Manager
             base.OnDestroy();
         }
 
+        /// <summary>
+        /// ゲームをポーズする
+        /// </summary>
         public void PauseGame()
         {
             if (isPaused) return;
@@ -54,12 +58,14 @@ namespace SGC2025.Manager
             
             Time.timeScale = 0f;
             
-            if (firstPauseButton != null && EventSystem.current != null)
-                EventSystem.current.SetSelectedGameObject(firstPauseButton);
+            UIFocusHelper.SetFocus(firstPauseButton);
             
             OnPause?.Invoke();
         }
 
+        /// <summary>
+        /// ポーズを解除する
+        /// </summary>
         public void ResumeGame()
         {
             if (!isPaused) return;
@@ -72,12 +78,14 @@ namespace SGC2025.Manager
             
             Time.timeScale = 1f;
             
-            if (EventSystem.current != null)
-                EventSystem.current.SetSelectedGameObject(null);
+            UIFocusHelper.ClearFocus();
             
             OnResume?.Invoke();
         }
 
+        /// <summary>
+        /// ポーズの切り替え
+        /// </summary>
         public void TogglePause()
         {
             if (isPaused)

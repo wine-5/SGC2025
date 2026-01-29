@@ -1,8 +1,6 @@
 using UnityEngine;
-using System.Collections;
 using SGC2025.Events;
 using SGC2025.Audio;
-using SGC2025.Manager;
 
 namespace SGC2025.Player.Bullet
 {
@@ -80,7 +78,6 @@ namespace SGC2025.Player.Bullet
                 UpdateWeaponLevel();
                 OnWeaponLevelUp?.Invoke(currentLevel);
             }
-            
             OnEnemyKilled?.Invoke(enemiesKilled, currentLevel);
         }
         

@@ -22,13 +22,18 @@ namespace SGC2025.Manager
 
         public SceneName CurrentStage { get; private set; } = SceneName.Title;
 
-        /// <summary>指定されたシーンに切り替え</summary>
+        /// <summary>
+        /// 指定されたシーンに切り替え
+        /// </summary>
         public void LoadScene(SceneName sceneName)
         {
             CurrentStage = sceneName;
             SceneManager.LoadScene(sceneName.ToString());
         }
 
+        /// <summary>
+        /// Resultシーンを読み込む
+        /// </summary>
         public void LoadResultScene() => LoadScene(SceneName.Result);
     }
 }

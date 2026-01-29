@@ -119,14 +119,12 @@ namespace SGC2025.Player
         private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
-            
             moveInput = context.ReadValue<Vector2>();
         }
 
         private void OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
-            
             moveInput = Vector2.zero;
         }
 
@@ -134,7 +132,6 @@ namespace SGC2025.Player
         {
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             if (weaponSystem == null) return;
-            
             weaponSystem.Fire();
         }
         #endregion
@@ -168,7 +165,6 @@ namespace SGC2025.Player
             
             float hpRate = currentHealth / maxHealth;
             OnPlayerDamaged?.Invoke(hpRate);
-            
             AudioManager.I?.PlaySE(SEType.PlayerDamage);
         }
 
@@ -180,7 +176,6 @@ namespace SGC2025.Player
             
             float hpRate = maxHealth > 0f ? currentHealth / maxHealth : 0f;
             OnPlayerDamaged?.Invoke(hpRate);
-            
             if (currentHealth <= 0f)
                 OnPlayerDeath?.Invoke();
         }

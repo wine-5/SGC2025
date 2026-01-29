@@ -1,7 +1,7 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 using SGC2025.Events;
 using SGC2025.Manager;
@@ -13,6 +13,7 @@ namespace SGC2025.UI
     /// </summary>
     public class InGameUI : MonoBehaviour
     {
+        #region 定数
         private const int MAX_POPUP_COUNT = 5;
         private const int INSPECTOR_MAX_POPUP_COUNT = 3;
         private const float GAUGE_ANIMATION_SPEED = 2f;
@@ -23,9 +24,14 @@ namespace SGC2025.UI
         private const int COUNTDOWN_MAX_NUMBER = 3;
         private const float TIME_WARNING_THRESHOLD = 10f;
         private const float TIME_BLINK_SPEED = 3f;
+        private const float PERCENT_MULTIPLIER = 100f;
+        private const float GAUGE_FILL_THRESHOLD = 0.001f;
+        #endregion
 
+        #region シリアライズフィールド
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
+        [SerializeField] private TextMeshProUGUI waveText;
 
         [Header("カウントダウン設定")]
         [SerializeField, Tooltip("カウントダウン表示用テキスト")]
@@ -51,14 +57,21 @@ namespace SGC2025.UI
         [SerializeField] private Color scoreFlashColor = Color.yellow;
         [SerializeField] private Color bigScoreFlashColor = Color.cyan;
         [SerializeField] private int bigScoreThreshold = 1000;
-        [SerializeField] private Color scoreBoostColor = new Color(1f, 0.6f, 0f); // PopUpと同じオレンジ色
+        [SerializeField] private Color scoreBoostColor = new Color(1f, 0.6f, 0f);
+
+        [Header("Waveアニメーション設定")]
+        [SerializeField] private float wavePulseScale = 1.3f;
+        [SerializeField] private float wavePulseDuration = 0.5f;
+        [SerializeField] private Color waveChangeColor = new Color(1f, 0.8f, 0f);
 
         [Header("スコアポップアップ設定")]
         [SerializeField] private RectTransform parentCanvas;
         [SerializeField] private GameObject popupPrefab;
         [SerializeField] private int initialPoolSize = 10;
         [SerializeField] private Vector2 popupSpawnPosition = new Vector2(100, 150);
+        #endregion
 
+        #region プライベートフィールド
         private readonly Queue<PopupScoreUI> popupPool = new Queue<PopupScoreUI>();
         private Color originalScoreColor;
         private Vector3 originalScoreScale;
@@ -69,7 +82,11 @@ namespace SGC2025.UI
         private int lastCountdownNumber = -1;
         private Color originalTimeColor;
         private Color timeWarningColor = Color.red;
+        private Color originalWaveColor;
+        private Vector3 originalWaveScale;
+        #endregion
 
+        #region Unityライフサイクル
         private void Awake()
         {
             if (parentCanvas == null)
@@ -84,9 +101,7 @@ namespace SGC2025.UI
             }
             
             if (timeText != null)
-            {
                 originalTimeColor = timeText.color;
-            }
 
             for (int i = 0; i < initialPoolSize; i++)
             {
@@ -102,6 +117,7 @@ namespace SGC2025.UI
             InitializeScoreDisplay();
             InitializeTerritoryGauge();
             InitializeCountdownDisplay();
+            InitializeWaveDisplay();
         }
 
         private void Update()
@@ -113,77 +129,138 @@ namespace SGC2025.UI
 
         private void OnEnable()
         {
-            EnemyEvents.OnEnemyDestroyedWithScore += OnEnemyDestroyed;
-            GroundEvents.OnGroundGreenified += OnGroundGreenified;
-
-            // スコア倍率エフェクトの開始・終了を監視
+            EnemyEvents.OnEnemyScoreAdded += OnEnemyDestroyed;
+            GroundEvents.OnGreenScoreAdded += OnGroundGreenified;
             SGC2025.Item.ItemManager.OnItemEffectActivated += OnItemEffectActivated;
             SGC2025.Item.ItemManager.OnItemEffectExpired += OnItemEffectExpired;
+            WaveManager.OnWaveChanged += OnWaveChanged;
         }
 
         private void OnDisable()
         {
-            EnemyEvents.OnEnemyDestroyedWithScore -= OnEnemyDestroyed;
-            GroundEvents.OnGroundGreenified -= OnGroundGreenified;
-
-            // スコア倍率エフェクトの監視解除
+            EnemyEvents.OnEnemyScoreAdded -= OnEnemyDestroyed;
+            GroundEvents.OnGreenScoreAdded -= OnGroundGreenified;
             SGC2025.Item.ItemManager.OnItemEffectActivated -= OnItemEffectActivated;
             SGC2025.Item.ItemManager.OnItemEffectExpired -= OnItemEffectExpired;
+            WaveManager.OnWaveChanged -= OnWaveChanged;
+        }
+        #endregion
+
+        #region イベントハンドラー
+
+        private void OnEnemyDestroyed(int finalScore, Vector3 position)
+        {
+            // ScoreManagerで既に倍率適用済みの最終スコアを受け取る
+            UpdateScoreText(finalScore);
+            ShowScorePopupAtInspectorPosition(finalScore);
         }
 
-        private void OnEnemyDestroyed(int score, Vector3 position)
+        private void OnGroundGreenified(Vector3 position, int finalPoints)
         {
-            // ScoreManagerで既に倍率計算済みのスコアを使用
-            UpdateScoreText(score);
-            ShowScorePopupAtInspectorPosition(score);
-        }
-
-        private void OnGroundGreenified(Vector3 position, int points)
-        {
-            // ScoreManagerで既に倍率計算済みのポイントを使用
-            UpdateScoreText(points);
-            ShowScorePopupAtInspectorPosition(points);
+            // ScoreManagerで既に倍率適用済みの最終ポイントを受け取る
+            UpdateScoreText(finalPoints);
+            ShowScorePopupAtInspectorPosition(finalPoints);
             UpdateTerritoryGauge();
         }
 
-        /// <summary>
-        /// アイテム効果が開始された時の処理
-        /// </summary>
         private void OnItemEffectActivated(SGC2025.Item.ItemType itemType, float effectValue, float duration)
         {
-            if (itemType == SGC2025.Item.ItemType.ScoreMultiplier)
-            {
-                // スコア倍率開始：色をオレンジに変更
-                if (scoreText != null)
-                {
-                    scoreText.color = scoreBoostColor;
-                }
-            }
+            if (itemType == SGC2025.Item.ItemType.ScoreMultiplier && scoreText != null)
+                scoreText.color = scoreBoostColor;
         }
 
-        /// <summary>
-        /// アイテム効果が終了した時の処理
-        /// </summary>
         private void OnItemEffectExpired(SGC2025.Item.ItemType itemType)
         {
-            if (itemType == SGC2025.Item.ItemType.ScoreMultiplier)
-            {
-                // スコア倍率終了：色を元に戻す
-                if (scoreText != null)
-                {
-                    scoreText.color = originalScoreColor;
-                }
-            }
+            if (itemType == SGC2025.Item.ItemType.ScoreMultiplier && scoreText != null)
+                scoreText.color = originalScoreColor;
         }
 
-        /// <summary>
-        /// スコア表示を初期化（0から開始）
-        /// </summary>
+        private void OnWaveChanged(int newWaveLevel)
+        {
+            UpdateWaveText(newWaveLevel);
+            if (waveText != null)
+                StartCoroutine(AnimateWaveChange());
+        }
+        #endregion
+
+        #region 初期化メソッド
         private void InitializeScoreDisplay()
         {
             if (scoreText != null)
                 scoreText.text = "0";
         }
+
+        private void InitializeWaveDisplay()
+        {
+            if (waveText != null && WaveManager.I != null)
+            {
+                originalWaveColor = waveText.color;
+                originalWaveScale = waveText.transform.localScale;
+                UpdateWaveText(WaveManager.I.CurrentWaveLevel);
+            }
+        }
+
+        private void UpdateWaveText(int waveLevel)
+        {
+            if (waveText != null)
+                waveText.text = $"Wave {waveLevel}";
+        }
+
+        private IEnumerator AnimateWaveChange()
+        {
+            if (waveText == null) yield break;
+
+            float elapsed = 0f;
+            float halfDuration = wavePulseDuration * 0.5f;
+
+            while (elapsed < halfDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / halfDuration;
+                waveText.transform.localScale = Vector3.Lerp(originalWaveScale, originalWaveScale * wavePulseScale, t);
+                waveText.color = Color.Lerp(originalWaveColor, waveChangeColor, t);
+                yield return null;
+            }
+
+            elapsed = 0f;
+            while (elapsed < halfDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / halfDuration;
+                waveText.transform.localScale = Vector3.Lerp(originalWaveScale * wavePulseScale, originalWaveScale, t);
+                waveText.color = Color.Lerp(waveChangeColor, originalWaveColor, t);
+                yield return null;
+            }
+
+            waveText.transform.localScale = originalWaveScale;
+            waveText.color = originalWaveColor;
+        }
+
+        private void InitializeTerritoryGauge()
+        {
+            if (territoryGaugeImage != null)
+            {
+                territoryGaugeImage.fillAmount = 0f;
+                territoryGaugeImage.type = Image.Type.Filled;
+                territoryGaugeImage.fillMethod = Image.FillMethod.Radial360;
+                territoryGaugeImage.fillOrigin = (int)Image.Origin360.Top;
+                territoryGaugeImage.fillClockwise = true;
+            }
+
+            UpdateTerritoryGauge();
+        }
+
+        private void InitializeCountdownDisplay()
+        {
+            if (countdownText != null)
+            {
+                startTextFont = countdownText.font;
+                countdownText.gameObject.SetActive(false);
+            }
+        }
+        #endregion
+
+        #region スコアシステム
 
         /// <summary>
         /// 任意座標でスコアポップアップを表示
@@ -358,26 +435,6 @@ namespace SGC2025.UI
             }
         }
 
-        /// <summary>
-        /// 領地ゲージを初期化
-        /// </summary>
-        private void InitializeTerritoryGauge()
-        {
-            if (territoryGaugeImage != null)
-            {
-                territoryGaugeImage.fillAmount = 0f;
-                territoryGaugeImage.type = Image.Type.Filled;
-                territoryGaugeImage.fillMethod = Image.FillMethod.Radial360;
-                territoryGaugeImage.fillOrigin = (int)Image.Origin360.Top;
-                territoryGaugeImage.fillClockwise = true;
-            }
-
-            UpdateTerritoryGauge();
-        }
-
-        /// <summary>
-        /// 領地ゲージを更新
-        /// </summary>
         private void UpdateTerritoryGauge()
         {
             if (GroundManager.I == null) return;
@@ -386,18 +443,15 @@ namespace SGC2025.UI
             targetGaugeFillAmount = rate;
 
             if (territoryPercentageText != null)
-                territoryPercentageText.text = $"{rate * 100f:F1}%";
+                territoryPercentageText.text = $"{rate * PERCENT_MULTIPLIER:F1}%";
         }
 
-        /// <summary>
-        /// ゲージをスムーズにアニメーション
-        /// </summary>
         private void AnimateTerritoryGauge()
         {
             if (territoryGaugeImage == null) return;
 
             float currentFill = territoryGaugeImage.fillAmount;
-            if (Mathf.Abs(currentFill - targetGaugeFillAmount) > 0.001f)
+            if (Mathf.Abs(currentFill - targetGaugeFillAmount) > GAUGE_FILL_THRESHOLD)
             {
                 territoryGaugeImage.fillAmount = Mathf.Lerp(
                     currentFill,
@@ -407,20 +461,6 @@ namespace SGC2025.UI
 
                 Color gaugeColor = Color.Lerp(lowTerritoryColor, highTerritoryColor, territoryGaugeImage.fillAmount);
                 territoryGaugeImage.color = gaugeColor;
-            }
-        }
-
-        // ===== カウントダウン関連 =====
-
-        /// <summary>
-        /// カウントダウン表示を初期化
-        /// </summary>
-        private void InitializeCountdownDisplay()
-        {
-            if (countdownText != null)
-            {
-                startTextFont = countdownText.font;
-                countdownText.gameObject.SetActive(false);
             }
         }
 
@@ -516,3 +556,4 @@ namespace SGC2025.UI
         }
     }
 }
+#endregion

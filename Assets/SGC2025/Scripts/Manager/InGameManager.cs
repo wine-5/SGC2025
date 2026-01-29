@@ -118,7 +118,6 @@ namespace SGC2025.Manager
                 
                 OnGameTimeUp?.Invoke();
                 
-                // GameManagerに結果シーンへの遷移を依頼
                 if (GameManager.I != null)
                     GameManager.I.LoadResultScene();
             }
@@ -134,7 +133,6 @@ namespace SGC2025.Manager
             
             OnGameOver?.Invoke();
             
-            // GameManagerに結果シーンへの遷移を依頼
             if (GameManager.I != null)
                 GameManager.I.LoadResultScene();
         }

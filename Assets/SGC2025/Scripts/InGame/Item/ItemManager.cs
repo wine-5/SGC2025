@@ -113,11 +113,10 @@ namespace SGC2025.Item
             if (GroundManager.I != null && GroundManager.I.MapData != null)
             {
                 var mapData = GroundManager.I.MapData;
-                float mapWidth = mapData.columns * mapData.ActualCellWidth;
-                float mapHeight = mapData.rows * mapData.ActualCellHeight;
+                Vector2 maxWorldPos = mapData.MapMaxWorldPosition;
                 
-                float randomX = Random.Range(0f, mapWidth);
-                float randomY = Random.Range(0f, mapHeight);
+                float randomX = Random.Range(0f, maxWorldPos.x);
+                float randomY = Random.Range(0f, maxWorldPos.y);
                 
                 return new Vector3(randomX, randomY, 0f) + new Vector3(0f, spawnHeightOffset, 0f);
             }

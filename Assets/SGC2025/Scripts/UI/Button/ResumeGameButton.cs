@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using SGC2025.Manager;
+using SGC2025.Audio;
 
 namespace SGC2025.UI
 {
@@ -27,7 +28,12 @@ namespace SGC2025.UI
         private void OnButtonClick()
         {
             if (PauseManager.I != null)
+            {
+                if (AudioManager.I != null)
+                    AudioManager.I.PlaySE(SEType.ButtonClick);
+
                 PauseManager.I.ResumeGame();
+            }
         }
     }
 }

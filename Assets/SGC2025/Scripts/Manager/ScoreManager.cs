@@ -62,6 +62,9 @@ namespace SGC2025.Manager
             float multiplier = GetScoreMultiplier();
             int finalScore = Mathf.RoundToInt(score * multiplier);
             scoreEnemy += finalScore;
+            
+            // 倍率適用後のスコアをUIに通知
+            EnemyEvents.TriggerEnemyScoreAdded(finalScore, position);
         }
 
         private void OnGroundGreenified(Vector3 position, int points)
@@ -69,6 +72,9 @@ namespace SGC2025.Manager
             float multiplier = GetScoreMultiplier();
             int finalPoints = Mathf.RoundToInt(points * multiplier);
             scoreGreen += finalPoints;
+            
+            // 倍率適用後のポイントをUIに通知
+            GroundEvents.TriggerGreenScoreAdded(position, finalPoints);
         }
         
         /// <summary>

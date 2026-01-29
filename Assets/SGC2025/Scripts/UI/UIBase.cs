@@ -16,8 +16,7 @@ namespace SGC2025.UI
 
         virtual public void Start()
         {
-            if (firstSelect != null)
-                EventSystem.current.SetSelectedGameObject(firstSelect);
+            UIFocusHelper.SetFocus(firstSelect);
         }
         
         virtual public void Update()
@@ -26,7 +25,6 @@ namespace SGC2025.UI
         }
         public void OnClickRestart()
         {
-            // ボタンクリック音を再生
             if (AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.ButtonClick);
             
@@ -35,7 +33,6 @@ namespace SGC2025.UI
 
         public void OnClickBackTitle()
         {
-            // ボタンクリック音を再生
             if (AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.ButtonClick);
             
@@ -44,7 +41,6 @@ namespace SGC2025.UI
         
         public void OnClickExit()
         {
-            // ボタンクリック音を再生
             if (AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.ButtonClick);
             

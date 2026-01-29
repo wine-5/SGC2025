@@ -36,7 +36,7 @@ namespace SGC2025.UI
                 if (i < ranking.Count)
                 {
                     var data = ranking[i];
-                    nameTexts[i].text = $"{data.playerName}";
+                    nameTexts[i].text = data.playerName;
                     scoreTexts[i].text = $" {data.score}";
                     
                     if (greeningRateTexts != null && i < greeningRateTexts.Length)
@@ -44,11 +44,11 @@ namespace SGC2025.UI
                 }
                 else
                 {
-                    nameTexts[i].text = $"---";
-                    scoreTexts[i].text = $"---";
+                    nameTexts[i].text = "---";
+                    scoreTexts[i].text = "---";
                     
                     if (greeningRateTexts != null && i < greeningRateTexts.Length)
-                        greeningRateTexts[i].text = $"---";
+                        greeningRateTexts[i].text = "---";
                 }
             }
         }

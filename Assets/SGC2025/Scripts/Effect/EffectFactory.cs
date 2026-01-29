@@ -26,7 +26,6 @@ namespace SGC2025.Effect
             if (objectPool == null)
             {
                 objectPool = FindAnyObjectByType<ObjectPool>();
-                
                 if (objectPool == null)
                     Debug.LogError("[EffectFactory] ObjectPool が見つかりません！");
             }
@@ -54,8 +53,6 @@ namespace SGC2025.Effect
             {
                 if (effectData != null && effectData.EffectPrefab != null)
                     effectDataDictionary[effectData.EffectType] = effectData;
-                else if (effectData != null)
-                    Debug.LogWarning($"[EffectFactory] {effectData.EffectType} のプレハブが設定されていません");
             }
         }
         

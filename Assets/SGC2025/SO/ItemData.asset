@@ -17,9 +17,9 @@ MonoBehaviour:
     itemName: "\u79FB\u52D5\u901F\u5EA6\u4E0A\u6607"
     description: 
     duration: 10
-    effectValue: 1.5
+    effectValue: 1.2
     itemPrefab: {fileID: 5706087732011277661, guid: e3f8c96c7b82e12439eac413ddc1ad97, type: 3}
-    spawnWeight: 1
+    spawnWeight: 2
   - itemType: 1
     itemName: "\u30B9\u30B3\u30A2\u306E\u7372\u5F97\u91CF\u4E0A\u6607"
     description: 
