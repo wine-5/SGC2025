@@ -3,7 +3,7 @@
     "navigation": {
       "home": "ホーム",
       "sapporo_camp": "札幌ゲームキャンプ",
-      "download": "ダウンロード",
+      "download": "プレイ",
       "game_overview": "ゲーム概要",
       "items": "ゲームアイテム",
       "controls": "操作方法",
@@ -105,7 +105,7 @@
       "additional_designers": "その他、デザイナー2名が参加しています"
     },
     "download": {
-      "section_title": "ダウンロード",
+      "section_title": "プレイ",
       "status": "プレイ可能",
       "description": "UnityRoomでゲームをプレイできます",
       "button": "UnityRoomでプレイ"
@@ -121,7 +121,7 @@
     "navigation": {
       "home": "Home",
       "sapporo_camp": "Sapporo Game Camp",
-      "download": "Download",
+      "download": "Play",
       "game_overview": "Game Overview",
       "items": "Game Items",
       "controls": "Controls",
@@ -223,7 +223,7 @@
       "additional_designers": "Additionally, 2 designers participated in the project"
     },
     "download": {
-      "section_title": "Download",
+      "section_title": "Play",
       "status": "Playable",
       "description": "Play the game on UnityRoom",
       "button": "Play on UnityRoom"
