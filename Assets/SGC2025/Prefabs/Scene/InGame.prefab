@@ -1225,9 +1225,9 @@ MonoBehaviour:
   - name: Bullet
     prefab: {fileID: 6853058612168455334, guid: 1c1d907768f1d3440a75b72ccbf22439, type: 3}
     parent: {fileID: 5155880308864989970}
-    initialSize: 100
+    initialSize: 200
   autoExpand: 1
-  expandSize: 100
+  expandSize: 20
 --- !u!114 &2939030199755435917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2048,21 +2048,21 @@ MonoBehaviour:
   - name: NormalBoy
     prefab: {fileID: 4656762607192535733, guid: 9bb544251b5731249a2dc2d07c544c42, type: 3}
     parent: {fileID: 4234407522856795665}
-    initialSize: 10
+    initialSize: 200
   - name: BigBoy
     prefab: {fileID: 6462408165022326274, guid: 5e5eaf98864ef0942aa3631c714d5027, type: 3}
     parent: {fileID: 8455613011829971440}
-    initialSize: 10
+    initialSize: 200
   - name: OldMan
     prefab: {fileID: 2065924155820946508, guid: c093c22a5b0b13547a62201360987c95, type: 3}
     parent: {fileID: 1927371130175073066}
-    initialSize: 10
+    initialSize: 200
   - name: Excavator
     prefab: {fileID: 5222075728982253602, guid: b30b5ffe664fb4b428f1d9c356a433c1, type: 3}
     parent: {fileID: 2169510786128308866}
-    initialSize: 10
+    initialSize: 200
   autoExpand: 1
-  expandSize: 20
+  expandSize: 50
 --- !u!114 &7011597135331721051
 MonoBehaviour:
   m_ObjectHideFlags: 0
