@@ -162,9 +162,6 @@ namespace SGC2025.Player
             if (nowMutekiTime > 0f) return;
             TakeDamage(damage);
             nowMutekiTime = mutekiTime;
-            
-            float hpRate = currentHealth / maxHealth;
-            OnPlayerDamaged?.Invoke(hpRate);
             AudioManager.I?.PlaySE(SEType.PlayerDamage);
         }
 

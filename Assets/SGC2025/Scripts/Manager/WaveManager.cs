@@ -20,9 +20,9 @@ namespace SGC2025.Manager
         
         [Header("テスト設定")]
         [Tooltip("テスト用の高速Wave切り替え (デバッグ用)")]
-        [SerializeField] private bool useTestMode = true;
-        [SerializeField] private float testWaveInterval = 10f; // テスト用10秒間隔
-        [SerializeField] private bool enableVerboseLogging = true; // 詳細ログ
+        [SerializeField] private bool useTestMode = false;
+        [SerializeField] private float testWaveInterval = 10f;
+        [SerializeField] private bool enableVerboseLogging = false;
         
         private int currentWaveLevel = 1;
         private bool isGameActive = true;
