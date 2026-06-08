@@ -1,5 +1,6 @@
 using UnityEngine;
 using SGC2025.Player;
+using SGC2025.Core;
 
 namespace SGC2025.Camera
 {
@@ -26,13 +27,13 @@ namespace SGC2025.Camera
                 CameraMovement = GetComponent<CameraMovement>();
             
             // Playerのダメージイベントを購読
-            PlayerCharacter.OnPlayerDamaged += HandlePlayerDamaged;
+            EventBus.Subscribe<PlayerDamagedEvent>(OnPlayerDamagedEvent);
         }
 
         private void OnDestroy()
         {
             // イベント購読解除
-            PlayerCharacter.OnPlayerDamaged -= HandlePlayerDamaged;
+            EventBus.Unsubscribe<PlayerDamagedEvent>(OnPlayerDamagedEvent);
         }
 
         private void LateUpdate()
@@ -58,7 +59,7 @@ namespace SGC2025.Camera
         }
 
         /// <summary>Playerがダメージを受けた時の処理</summary>
-        private void HandlePlayerDamaged(float hpRate) => TriggerShake(hpRate);
+        private void OnPlayerDamagedEvent(PlayerDamagedEvent e) => TriggerShake(e.HpRate);
 
         /// <summary>カメラシェイクをトリガー</summary>
         public void TriggerShake(float hpRate)

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using SGC2025.Core;
 using SGC2025.Player.Bullet;
 using SGC2025.Audio;
 using SGC2025.Manager;
@@ -36,9 +37,6 @@ namespace SGC2025.Player
         private float nowMutekiTime;
 
         public bool IsInvincible => nowMutekiTime > 0f;
-
-        public static event System.Action OnPlayerDeath;
-        public static event System.Action<float> OnPlayerDamaged;
         #endregion
 
         #region Unityライフサイクル
@@ -61,8 +59,8 @@ namespace SGC2025.Player
             input.Player.Shot.performed += OnShotPerformed;
             input.Player.Pause.performed += OnPausePerformed;
             
-            ItemManager.OnItemEffectActivated += OnItemEffectActivated;
-            ItemManager.OnItemEffectExpired += OnItemEffectExpired;
+            EventBus.Subscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
+            EventBus.Subscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
         }
 
         private void OnDisable()
@@ -73,8 +71,8 @@ namespace SGC2025.Player
             input.Player.Pause.performed -= OnPausePerformed;
             input.Disable();
             
-            ItemManager.OnItemEffectActivated -= OnItemEffectActivated;
-            ItemManager.OnItemEffectExpired -= OnItemEffectExpired;
+            EventBus.Unsubscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
+            EventBus.Unsubscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
         }
 
         private void Start()
@@ -172,30 +170,24 @@ namespace SGC2025.Player
             currentHealth = Mathf.Max(0f, currentHealth - damage);
             
             float hpRate = maxHealth > 0f ? currentHealth / maxHealth : 0f;
-            OnPlayerDamaged?.Invoke(hpRate);
+            EventBus.Publish(new PlayerDamagedEvent(hpRate));
             if (currentHealth <= 0f)
-                OnPlayerDeath?.Invoke();
+                EventBus.Publish(new PlayerDiedEvent());
         }
 
         private void DecreaseMutekiTime() => nowMutekiTime -= Time.deltaTime;
         #endregion
 
         #region アイテム効果
-        /// <summary>
-        /// アイテム効果が適用された時の処理
-        /// </summary>
-        private void OnItemEffectActivated(ItemType itemType, float effectValue, float duration)
+        private void OnItemEffectActivatedEvent(ItemEffectActivatedEvent e)
         {
-            if (itemType == ItemType.SpeedBoost)
-                ApplySpeedBoost(effectValue);
+            if (e.ItemType == ItemType.SpeedBoost)
+                ApplySpeedBoost(e.EffectValue);
         }
-        
-        /// <summary>
-        /// アイテム効果が切れた時の処理
-        /// </summary>
-        private void OnItemEffectExpired(ItemType itemType)
+
+        private void OnItemEffectExpiredEvent(ItemEffectExpiredEvent e)
         {
-            if (itemType == ItemType.SpeedBoost)
+            if (e.ItemType == ItemType.SpeedBoost)
                 ResetSpeed();
         }
         

@@ -1,5 +1,5 @@
 using UnityEngine;
-using SGC2025.Events;
+using SGC2025.Core;
 using SGC2025.Manager;
 
 namespace SGC2025.Enemy
@@ -64,7 +64,7 @@ namespace SGC2025.Enemy
             currentHp = Mathf.Max(MIN_HEALTH, currentHp - actualDamage);
 
             OnDamageTaken?.Invoke(actualDamage);
-            EnemyEvents.TriggerEnemyDamage(gameObject, actualDamage, currentHp, MaxHealth);
+            EventBus.Publish(new EnemyDamageTakenEvent(gameObject, actualDamage, currentHp, MaxHealth));
             if (!IsAlive)
                 HandleDeath();
         }
@@ -73,7 +73,7 @@ namespace SGC2025.Enemy
         {   
             OnDeath?.Invoke();
             int score = ScoreManager.I.EnemyKillPoint;
-            EnemyEvents.TriggerEnemyDestroyed(transform.position, score);
+            EventBus.Publish(new EnemyDestroyedEvent(transform.position, score));
             DeactivateEnemy();
         }
 

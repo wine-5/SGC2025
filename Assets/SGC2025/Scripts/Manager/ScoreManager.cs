@@ -1,5 +1,5 @@
 using UnityEngine;
-using SGC2025.Events;
+using SGC2025.Core;
 using SGC2025.Item;
 
 namespace SGC2025.Manager
@@ -47,34 +47,30 @@ namespace SGC2025.Manager
 
         private void OnEnable()
         {
-            EnemyEvents.OnEnemyDestroyedWithScore += OnEnemyDestroyedWithScore;
-            GroundEvents.OnGroundGreenified += OnGroundGreenified;
+            EventBus.Subscribe<EnemyDestroyedEvent>(OnEnemyDestroyedWithScore);
+            EventBus.Subscribe<GroundGreenifiedEvent>(OnGroundGreenified);
         }
 
         private void OnDisable()
         {
-            EnemyEvents.OnEnemyDestroyedWithScore -= OnEnemyDestroyedWithScore;
-            GroundEvents.OnGroundGreenified -= OnGroundGreenified;
+            EventBus.Unsubscribe<EnemyDestroyedEvent>(OnEnemyDestroyedWithScore);
+            EventBus.Unsubscribe<GroundGreenifiedEvent>(OnGroundGreenified);
         }
 
-        private void OnEnemyDestroyedWithScore(int score, Vector3 position)
+        private void OnEnemyDestroyedWithScore(EnemyDestroyedEvent e)
         {
             float multiplier = GetScoreMultiplier();
-            int finalScore = Mathf.RoundToInt(score * multiplier);
+            int finalScore = Mathf.RoundToInt(e.Score * multiplier);
             scoreEnemy += finalScore;
-            
-            // 倍率適用後のスコアをUIに通知
-            EnemyEvents.TriggerEnemyScoreAdded(finalScore, position);
+            EventBus.Publish(new EnemyScoreAddedEvent(finalScore, e.Position));
         }
 
-        private void OnGroundGreenified(Vector3 position, int points)
+        private void OnGroundGreenified(GroundGreenifiedEvent e)
         {
             float multiplier = GetScoreMultiplier();
-            int finalPoints = Mathf.RoundToInt(points * multiplier);
+            int finalPoints = Mathf.RoundToInt(e.Points * multiplier);
             scoreGreen += finalPoints;
-            
-            // 倍率適用後のポイントをUIに通知
-            GroundEvents.TriggerGreenScoreAdded(position, finalPoints);
+            EventBus.Publish(new GreenScoreAddedEvent(e.Position, finalPoints));
         }
         
         /// <summary>

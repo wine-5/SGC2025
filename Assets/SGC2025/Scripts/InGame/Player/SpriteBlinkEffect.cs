@@ -1,5 +1,6 @@
 using UnityEngine;
 using SGC2025.Player;
+using SGC2025.Core;
 
 namespace SGC2025.Effects
 {
@@ -31,13 +32,13 @@ namespace SGC2025.Effects
                 originalColor = spriteRenderer.color;
             
             // Playerのダメージイベントを購読
-            PlayerCharacter.OnPlayerDamaged += HandlePlayerDamaged;
+            EventBus.Subscribe<PlayerDamagedEvent>(OnPlayerDamagedEvent);
         }
 
         private void OnDestroy()
         {
             // イベント購読解除
-            PlayerCharacter.OnPlayerDamaged -= HandlePlayerDamaged;
+            EventBus.Unsubscribe<PlayerDamagedEvent>(OnPlayerDamagedEvent);
         }
 
         private void Update()
@@ -66,6 +67,6 @@ namespace SGC2025.Effects
         }
 
         /// <summary>Playerがダメージを受けた時の処理</summary>
-        private void HandlePlayerDamaged(float hpRate) => blinkTimer = 0f;
+        private void OnPlayerDamagedEvent(PlayerDamagedEvent e) => blinkTimer = 0f;
     }
 }

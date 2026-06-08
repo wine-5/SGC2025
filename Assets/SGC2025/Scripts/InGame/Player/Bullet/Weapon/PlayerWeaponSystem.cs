@@ -1,5 +1,5 @@
 using UnityEngine;
-using SGC2025.Events;
+using SGC2025.Core;
 using SGC2025.Audio;
 
 namespace SGC2025.Player.Bullet
@@ -38,12 +38,12 @@ namespace SGC2025.Player.Bullet
         
         private void OnEnable()
         {
-            EnemyEvents.OnEnemyDestroyed += OnEnemyDestroyed;
+            EventBus.Subscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
         }
         
         private void OnDisable()
         {
-            EnemyEvents.OnEnemyDestroyed -= OnEnemyDestroyed;
+            EventBus.Unsubscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
         }
         
         /// <summary>
@@ -60,7 +60,7 @@ namespace SGC2025.Player.Bullet
         /// <summary>
         /// 敵撃破時の処理
         /// </summary>
-        private void OnEnemyDestroyed()
+        private void OnEnemyDestroyed(EnemyDestroyedEvent e)
         {
             enemiesKilled++;
             

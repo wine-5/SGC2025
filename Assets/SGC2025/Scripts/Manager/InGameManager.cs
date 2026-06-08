@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025.Core;
 using SGC2025.Player;
 using SGC2025.Audio;
 
@@ -37,7 +38,7 @@ namespace SGC2025.Manager
         protected override void Init()
         {
             base.Init();
-            PlayerCharacter.OnPlayerDeath += HandlePlayerDeath;
+            EventBus.Subscribe<PlayerDiedEvent>(HandlePlayerDeath);
             InitializeGameState();
         }
 
@@ -49,7 +50,7 @@ namespace SGC2025.Manager
 
         protected override void OnDestroy()
         {
-            PlayerCharacter.OnPlayerDeath -= HandlePlayerDeath;
+            EventBus.Unsubscribe<PlayerDiedEvent>(HandlePlayerDeath);
             
             // Time.timeScaleを確実にリセット（ポーズ中に破棄された場合に備えて）
             Time.timeScale = 1f;
@@ -95,6 +96,7 @@ namespace SGC2025.Manager
             if (currentCountDownTimer <= 0f)
             {
                 isCountDown = false;
+                EventBus.Publish(new CountDownFinishedEvent());
                 OnCountDownFinished?.Invoke();
             }
         }
@@ -116,6 +118,7 @@ namespace SGC2025.Manager
                     AudioManager.I.PlaySE(SEType.TimeUp);
                 }
                 
+                EventBus.Publish(new GameTimeUpEvent());
                 OnGameTimeUp?.Invoke();
                 
                 if (GameManager.I != null)
@@ -123,7 +126,7 @@ namespace SGC2025.Manager
             }
         }
 
-        private void HandlePlayerDeath()
+        private void HandlePlayerDeath(PlayerDiedEvent e)
         {
             if (isGameOver) return;
             isGameOver = true;

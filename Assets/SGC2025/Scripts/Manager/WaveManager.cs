@@ -1,5 +1,6 @@
 using UnityEngine;
 using TechC;
+using SGC2025.Core;
 using SGC2025.Enemy;
 using System;
 
@@ -41,6 +42,7 @@ namespace SGC2025.Manager
             
             // InGameManagerからゲームオーバーイベントを購諭
             InGameManager.OnGameOver += StopWaveProgression;
+            EventBus.Subscribe<GameOverEvent>(OnGameOver);
             
             // PauseManagerからポーズイベントを購諭
             PauseManager.OnPause += PauseWaveProgression;
@@ -53,6 +55,7 @@ namespace SGC2025.Manager
         {
             // InGameManagerからイベントの購諭を解除
             InGameManager.OnGameOver -= StopWaveProgression;
+            EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
             
             // PauseManagerからイベントの購諭を解除
             PauseManager.OnPause -= PauseWaveProgression;
@@ -95,6 +98,7 @@ namespace SGC2025.Manager
             
             OnWaveChanged?.Invoke(currentWaveLevel);
             OnWaveDataChanged?.Invoke(currentWave);
+            EventBus.Publish(new WaveChangedEvent(currentWaveLevel));
             
             NotifyEnemySpawners();
         }
@@ -119,6 +123,7 @@ namespace SGC2025.Manager
         }
         
         private void StopWaveProgression() => isGameActive = false;
+        private void OnGameOver(GameOverEvent e) => StopWaveProgression();
         private void PauseWaveProgression() => isGameActive = false;
         private void ResumeWaveProgression() => isGameActive = true;
     }

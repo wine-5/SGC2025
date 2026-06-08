@@ -1,5 +1,5 @@
 using UnityEngine;
-using SGC2025.Events;
+using SGC2025.Core;
 using SGC2025.Audio;
 using SGC2025.Effect;
 
@@ -56,16 +56,16 @@ namespace SGC2025.Manager
             
             SetStageObject();
             InitHighObject();
-            EnemyEvents.OnEnemyDestroyedAtPosition += OnEnemyDestroyed;
+            EventBus.Subscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
         }
         
         protected override void OnDestroy()
         {
-            EnemyEvents.OnEnemyDestroyedAtPosition -= OnEnemyDestroyed;
+            EventBus.Unsubscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
             base.OnDestroy();
         }
         
-        private void OnEnemyDestroyed(Vector3 enemyPosition) => DrawGround(enemyPosition);
+        private void OnEnemyDestroyed(EnemyDestroyedEvent e) => DrawGround(e.Position);
 
         /// <summary>指定位置の地面を緑化（1マス）</summary>
         public bool DrawGround(Vector3 enemyPosition)
@@ -181,7 +181,7 @@ namespace SGC2025.Manager
             currentGroundArray[x, y].isDrawn = true;
 
             int points = currentGroundArray[x, y].point;
-            GroundEvents.TriggerGroundGreenified(pos, points);
+            EventBus.Publish(new GroundGreenifiedEvent(pos, points));
             
             return true;
         }

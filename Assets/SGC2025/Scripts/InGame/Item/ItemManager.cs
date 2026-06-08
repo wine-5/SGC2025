@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using SGC2025.Core;
 using SGC2025.Manager;
 using SGC2025.Effect;
-using SGC2025.Events;
 
 namespace SGC2025.Item
 {
@@ -55,25 +55,22 @@ namespace SGC2025.Item
                 nextSpawnTime = Time.time + spawnInterval;
             
             // 敵撃破イベントを購読して広範囲緑化効果を適用
-            EnemyEvents.OnEnemyDestroyedAtPosition += OnEnemyDestroyed;
+            EventBus.Subscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
         }
         
         protected override void OnDestroy()
         {
-            EnemyEvents.OnEnemyDestroyedAtPosition -= OnEnemyDestroyed;
+            EventBus.Unsubscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
             base.OnDestroy();
         }
         
         /// <summary>
         /// 敵撃破時の処理（AreaGreenify効果が有効な場合は広範囲緑化）
         /// </summary>
-        private void OnEnemyDestroyed(Vector3 enemyPosition)
+        private void OnEnemyDestroyed(EnemyDestroyedEvent e)
         {
             if (IsEffectActive(ItemType.AreaGreenify) && GroundManager.I != null)
-            {
-                // 広範囲緑化効果が有効な場合、9マス緑化
-                GroundManager.I.DrawGroundArea(enemyPosition);
-            }
+                GroundManager.I.DrawGroundArea(e.Position);
         }
         
         private void Update()
@@ -179,6 +176,7 @@ namespace SGC2025.Item
             activeEffects[itemData.ItemType] = effect;
             
             OnItemEffectActivated?.Invoke(itemData.ItemType, itemData.EffectValue, itemData.Duration);
+            EventBus.Publish(new ItemEffectActivatedEvent(itemData.ItemType, itemData.EffectValue, itemData.Duration));
             
             if (SGC2025.Player.PlayerDataProvider.I != null && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
             {
@@ -248,6 +246,7 @@ namespace SGC2025.Item
             activeEffects.Remove(itemType);
             
             OnItemEffectExpired?.Invoke(itemType);
+            EventBus.Publish(new ItemEffectExpiredEvent(itemType));
         }
         
         /// <summary>

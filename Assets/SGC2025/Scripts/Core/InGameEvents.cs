@@ -1,7 +1,6 @@
 using UnityEngine;
-using SGC2025.Core;
 
-namespace SGC2025.Events
+namespace SGC2025.Core
 {
     // -------------------------------------------------------
     // Player

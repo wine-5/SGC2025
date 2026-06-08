@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using SGC2025.Events;
+using SGC2025.Core;
 using SGC2025.Manager;
 
 namespace SGC2025.UI
@@ -129,55 +129,53 @@ namespace SGC2025.UI
 
         private void OnEnable()
         {
-            EnemyEvents.OnEnemyScoreAdded += OnEnemyDestroyed;
-            GroundEvents.OnGreenScoreAdded += OnGroundGreenified;
-            SGC2025.Item.ItemManager.OnItemEffectActivated += OnItemEffectActivated;
-            SGC2025.Item.ItemManager.OnItemEffectExpired += OnItemEffectExpired;
-            WaveManager.OnWaveChanged += OnWaveChanged;
+            EventBus.Subscribe<EnemyScoreAddedEvent>(OnEnemyScoreAdded);
+            EventBus.Subscribe<GreenScoreAddedEvent>(OnGreenScoreAdded);
+            EventBus.Subscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
+            EventBus.Subscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
+            EventBus.Subscribe<WaveChangedEvent>(OnWaveChangedEvent);
         }
 
         private void OnDisable()
         {
-            EnemyEvents.OnEnemyScoreAdded -= OnEnemyDestroyed;
-            GroundEvents.OnGreenScoreAdded -= OnGroundGreenified;
-            SGC2025.Item.ItemManager.OnItemEffectActivated -= OnItemEffectActivated;
-            SGC2025.Item.ItemManager.OnItemEffectExpired -= OnItemEffectExpired;
-            WaveManager.OnWaveChanged -= OnWaveChanged;
+            EventBus.Unsubscribe<EnemyScoreAddedEvent>(OnEnemyScoreAdded);
+            EventBus.Unsubscribe<GreenScoreAddedEvent>(OnGreenScoreAdded);
+            EventBus.Unsubscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
+            EventBus.Unsubscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
+            EventBus.Unsubscribe<WaveChangedEvent>(OnWaveChangedEvent);
         }
         #endregion
 
         #region イベントハンドラー
 
-        private void OnEnemyDestroyed(int finalScore, Vector3 position)
+        private void OnEnemyScoreAdded(EnemyScoreAddedEvent e)
         {
-            // ScoreManagerで既に倍率適用済みの最終スコアを受け取る
-            UpdateScoreText(finalScore);
-            ShowScorePopupAtInspectorPosition(finalScore);
+            UpdateScoreText(e.FinalScore);
+            ShowScorePopupAtInspectorPosition(e.FinalScore);
         }
 
-        private void OnGroundGreenified(Vector3 position, int finalPoints)
+        private void OnGreenScoreAdded(GreenScoreAddedEvent e)
         {
-            // ScoreManagerで既に倍率適用済みの最終ポイントを受け取る
-            UpdateScoreText(finalPoints);
-            ShowScorePopupAtInspectorPosition(finalPoints);
+            UpdateScoreText(e.FinalPoints);
+            ShowScorePopupAtInspectorPosition(e.FinalPoints);
             UpdateTerritoryGauge();
         }
 
-        private void OnItemEffectActivated(SGC2025.Item.ItemType itemType, float effectValue, float duration)
+        private void OnItemEffectActivatedEvent(ItemEffectActivatedEvent e)
         {
-            if (itemType == SGC2025.Item.ItemType.ScoreMultiplier && scoreText != null)
+            if (e.ItemType == SGC2025.Item.ItemType.ScoreMultiplier && scoreText != null)
                 scoreText.color = scoreBoostColor;
         }
 
-        private void OnItemEffectExpired(SGC2025.Item.ItemType itemType)
+        private void OnItemEffectExpiredEvent(ItemEffectExpiredEvent e)
         {
-            if (itemType == SGC2025.Item.ItemType.ScoreMultiplier && scoreText != null)
+            if (e.ItemType == SGC2025.Item.ItemType.ScoreMultiplier && scoreText != null)
                 scoreText.color = originalScoreColor;
         }
 
-        private void OnWaveChanged(int newWaveLevel)
+        private void OnWaveChangedEvent(WaveChangedEvent e)
         {
-            UpdateWaveText(newWaveLevel);
+            UpdateWaveText(e.WaveLevel);
             if (waveText != null)
                 StartCoroutine(AnimateWaveChange());
         }
