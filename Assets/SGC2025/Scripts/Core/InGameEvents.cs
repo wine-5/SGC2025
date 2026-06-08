@@ -1,0 +1,165 @@
+using UnityEngine;
+using SGC2025.Core;
+
+namespace SGC2025.Events
+{
+    // -------------------------------------------------------
+    // Player
+    // -------------------------------------------------------
+
+    /// <summary>プレイヤーがダメージを受けた（HP割合: 0〜1）</summary>
+    public struct PlayerDamagedEvent : IGameEvent
+    {
+        public float HpRate;
+        public PlayerDamagedEvent(float hpRate) => HpRate = hpRate;
+    }
+
+    /// <summary>プレイヤーが死亡した</summary>
+    public struct PlayerDiedEvent : IGameEvent { }
+
+    // -------------------------------------------------------
+    // Enemy
+    // -------------------------------------------------------
+
+    /// <summary>敵が撃破された</summary>
+    public struct EnemyDestroyedEvent : IGameEvent
+    {
+        public Vector3 Position;
+        public int Score;
+        public EnemyDestroyedEvent(Vector3 position, int score = 0)
+        {
+            Position = position;
+            Score = score;
+        }
+    }
+
+    /// <summary>倍率適用後のスコアが確定した（UI ポップアップ用）</summary>
+    public struct EnemyScoreAddedEvent : IGameEvent
+    {
+        public int FinalScore;
+        public Vector3 Position;
+        public EnemyScoreAddedEvent(int finalScore, Vector3 position)
+        {
+            FinalScore = finalScore;
+            Position = position;
+        }
+    }
+
+    /// <summary>敵がダメージを受けた</summary>
+    public struct EnemyDamageTakenEvent : IGameEvent
+    {
+        public GameObject Enemy;
+        public float Damage;
+        public float CurrentHp;
+        public float MaxHp;
+        public EnemyDamageTakenEvent(GameObject enemy, float damage, float currentHp, float maxHp)
+        {
+            Enemy = enemy;
+            Damage = damage;
+            CurrentHp = currentHp;
+            MaxHp = maxHp;
+        }
+    }
+
+    /// <summary>敵がスポーンした</summary>
+    public struct EnemySpawnedEvent : IGameEvent
+    {
+        public GameObject Enemy;
+        public EnemySpawnedEvent(GameObject enemy) => Enemy = enemy;
+    }
+
+    /// <summary>敵がプールに返却された</summary>
+    public struct EnemyReturnedToPoolEvent : IGameEvent
+    {
+        public GameObject Enemy;
+        public EnemyReturnedToPoolEvent(GameObject enemy) => Enemy = enemy;
+    }
+
+    // -------------------------------------------------------
+    // Ground
+    // -------------------------------------------------------
+
+    /// <summary>タイルが緑化された</summary>
+    public struct GroundGreenifiedEvent : IGameEvent
+    {
+        public Vector3 Position;
+        public int Points;
+        public GroundGreenifiedEvent(Vector3 position, int points)
+        {
+            Position = position;
+            Points = points;
+        }
+    }
+
+    /// <summary>倍率適用後のポイントが確定した（UI ポップアップ用）</summary>
+    public struct GreenScoreAddedEvent : IGameEvent
+    {
+        public Vector3 Position;
+        public int FinalPoints;
+        public GreenScoreAddedEvent(Vector3 position, int finalPoints)
+        {
+            Position = position;
+            FinalPoints = finalPoints;
+        }
+    }
+
+    // -------------------------------------------------------
+    // Game Flow
+    // -------------------------------------------------------
+
+    /// <summary>ゲームオーバー（プレイヤー死亡）</summary>
+    public struct GameOverEvent : IGameEvent { }
+
+    /// <summary>カウントダウン完了・ゲーム開始</summary>
+    public struct CountDownFinishedEvent : IGameEvent { }
+
+    /// <summary>制限時間切れ</summary>
+    public struct GameTimeUpEvent : IGameEvent { }
+
+    // -------------------------------------------------------
+    // Wave
+    // -------------------------------------------------------
+
+    /// <summary>Wave レベルが変更された</summary>
+    public struct WaveChangedEvent : IGameEvent
+    {
+        public int WaveLevel;
+        public WaveChangedEvent(int waveLevel) => WaveLevel = waveLevel;
+    }
+
+    // -------------------------------------------------------
+    // Item
+    // -------------------------------------------------------
+
+    /// <summary>アイテム効果が開始した</summary>
+    public struct ItemEffectActivatedEvent : IGameEvent
+    {
+        public SGC2025.Item.ItemType ItemType;
+        public float EffectValue;
+        public float Duration;
+        public ItemEffectActivatedEvent(SGC2025.Item.ItemType itemType, float effectValue, float duration)
+        {
+            ItemType = itemType;
+            EffectValue = effectValue;
+            Duration = duration;
+        }
+    }
+
+    /// <summary>アイテム効果が終了した</summary>
+    public struct ItemEffectExpiredEvent : IGameEvent
+    {
+        public SGC2025.Item.ItemType ItemType;
+        public ItemEffectExpiredEvent(SGC2025.Item.ItemType itemType) => ItemType = itemType;
+    }
+
+    // -------------------------------------------------------
+    // Weapon
+    // -------------------------------------------------------
+
+    /// <summary>武器がレベルアップした</summary>
+    public struct WeaponLevelUpEvent : IGameEvent
+    {
+        public int NewLevel;
+        public WeaponLevelUpEvent(int newLevel) => NewLevel = newLevel;
+    }
+}
