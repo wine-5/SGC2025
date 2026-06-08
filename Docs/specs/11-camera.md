@@ -11,7 +11,7 @@
 
 ---
 
-## カメラ追従（CameraMove）
+## カメラ追従（CameraMovement）
 
 | パラメータ | 内容 |
 |-----------|------|
@@ -58,7 +58,7 @@ PlayerCharacter.OnPlayerDamaged（HP 率を渡す）
 
 ## CameraManager
 
-`CameraMove` と `CameraShake` を統合し、プレイヤーダメージイベントへの購読を担う。
+`CameraMovement` と `CameraShake` を統合し、プレイヤーダメージイベントへの購読を担う。
 
 | メソッド | 処理 |
 |---------|------|
@@ -72,7 +72,7 @@ PlayerCharacter.OnPlayerDamaged（HP 率を渡す）
 
 ```
 CameraManager
-  ├─ CameraMove（追従処理）
+  ├─ CameraMovement（追従処理）
   ├─ CameraShake（シェイク設定・強度計算）
   └─ PlayerCharacter（ダメージイベント購読）
 ```

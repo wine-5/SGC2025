@@ -11,51 +11,50 @@ namespace SGC2025.Effect
     {
         [Header("エフェクトデータ")]
         [SerializeField] private EffectDataSO effectDataSO;
-        
+
         [Header("プール設定")]
         [SerializeField] private ObjectPool objectPool;
-        
+
         private Dictionary<EffectType, EffectData> effectDataDictionary;
-        
+
         protected override bool UseDontDestroyOnLoad => false;
-        
+
         protected override void Init()
         {
             base.Init();
-            
+
             if (objectPool == null)
             {
-                objectPool = FindAnyObjectByType<ObjectPool>();
-                if (objectPool == null)
-                    Debug.LogError("[EffectFactory] ObjectPool が見つかりません！");
+                Debug.LogError("[EffectFactory] ObjectPool が見つかりません！");
+                return;
             }
-            
+
             InitializeEffectDataDictionary();
         }
-        
+
         private void InitializeEffectDataDictionary()
         {
             effectDataDictionary = new Dictionary<EffectType, EffectData>();
-            
+
             if (effectDataSO == null)
             {
                 Debug.LogError("[EffectFactory] EffectDataSOが設定されていません!");
                 return;
             }
-            
+
             if (effectDataSO.EffectDataList == null)
             {
                 Debug.LogError("[EffectFactory] EffectDataListがnullです!");
                 return;
             }
-            
+
             foreach (var effectData in effectDataSO.EffectDataList)
             {
                 if (effectData != null && effectData.EffectPrefab != null)
                     effectDataDictionary[effectData.EffectType] = effectData;
             }
         }
-        
+
         /// <summary>
         /// エフェクトを生成
         /// </summary>
@@ -72,39 +71,39 @@ namespace SGC2025.Effect
                 InitializeEffectDataDictionary();
                 if (effectDataDictionary == null || effectDataDictionary.Count == 0) return null;
             }
-            
+
             if (!effectDataDictionary.TryGetValue(effectType, out EffectData data))
             {
                 Debug.LogError($"[EffectFactory] EffectType '{effectType}' のデータが見つかりません");
                 return null;
             }
-            
+
             if (objectPool == null)
             {
                 Debug.LogError("[EffectFactory] ObjectPool が利用できません");
                 return null;
             }
-            
+
             if (data.EffectPrefab == null)
             {
                 Debug.LogError($"[EffectFactory] EffectType '{effectType}' のプレハブがnullです");
                 return null;
             }
-            
+
             var result = objectPool.GetObject(data.EffectPrefab, position, data.EffectPrefab.transform.rotation);
-            
+
             if (result != null)
             {
                 result.transform.localScale = data.EffectPrefab.transform.localScale;
-                
+
                 var controller = result.GetComponent<EffectController>();
                 if (controller != null)
                     controller.Initialize(followTarget, duration);
             }
-            
+
             return result;
         }
-        
+
         /// <summary>
         /// エフェクトをプールに返却
         /// </summary>
@@ -112,14 +111,14 @@ namespace SGC2025.Effect
         public void ReturnEffect(GameObject effectObject)
         {
             if (effectObject == null) return;
-            
+
             if (objectPool == null)
             {
                 Debug.LogError("[EffectFactory] ObjectPool is not available! Cannot return effect to pool.");
                 effectObject.SetActive(false);
                 return;
             }
-            
+
             objectPool.ReturnObject(effectObject);
         }
     }

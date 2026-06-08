@@ -5,12 +5,12 @@ namespace SGC2025.Camera
 {
     /// <summary>
     /// カメラ関連機能を統括するマネージャー
-    /// CameraMoveとCameraShakeのFacadeとして機能
+    /// CameraMovementとCameraShakeのFacadeとして機能
     /// </summary>
     public class CameraManager : MonoBehaviour
     {
         [Header("コンポーネント参照")]
-        [SerializeField] private CameraMove cameraMove;
+        [SerializeField] private CameraMovement CameraMovement;
         
         [Header("シェイク設定")]
         [SerializeField] private CameraShake shakeSettings = new CameraShake();
@@ -21,9 +21,9 @@ namespace SGC2025.Camera
 
         private void Awake()
         {
-            // CameraMoveの参照を取得
-            if (cameraMove == null)
-                cameraMove = GetComponent<CameraMove>();
+            // CameraMovementの参照を取得
+            if (CameraMovement == null)
+                CameraMovement = GetComponent<CameraMovement>();
             
             // Playerのダメージイベントを購読
             PlayerCharacter.OnPlayerDamaged += HandlePlayerDamaged;
@@ -39,7 +39,7 @@ namespace SGC2025.Camera
         {
             if (shakeTimer > 0f)
             {
-                // CameraMoveが計算した位置を保存
+                // CameraMovementが計算した位置を保存
                 Vector3 targetPosition = transform.position;
                 
                 currentShakeOffset = Random.insideUnitSphere * currentShakeMagnitude;

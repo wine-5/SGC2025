@@ -21,7 +21,7 @@ namespace SGC2025.Enemy
         private float currentHp;
         
         [Tooltip("現在のウェーブレベル（実行時のみ変更）")]
-        [ReadOnly]
+        
         [SerializeField] private int currentWaveLevel = MIN_WAVE_LEVEL;
         
         private EnemyParameters cachedParameters;
