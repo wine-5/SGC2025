@@ -12,7 +12,6 @@ namespace SGC2025.Player
         private Transform playerTransform;
 
         public static event Action<Transform> OnPlayerRegistered;
-        public static event Action OnPlayerUnregistered;
         
         /// <summary>
         /// Playerのトランスフォーム参照
@@ -37,22 +36,12 @@ namespace SGC2025.Player
             OnPlayerRegistered?.Invoke(playerTransform);
         }
         
-        /// <summary>
-        /// Player登録を解除
-        /// </summary>
-        public void UnregisterPlayer()
-        {
-            playerTransform = null;
-            OnPlayerUnregistered?.Invoke();
-        }
-
         protected override void OnDestroy()
         {
             // シーン再読み込み時に static event が残っていると多重購読の原因になるためクリア
             if (I == (this as PlayerDataProvider))
             {
                 OnPlayerRegistered = null;
-                OnPlayerUnregistered = null;
             }
 
             base.OnDestroy();

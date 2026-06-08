@@ -293,16 +293,6 @@ namespace SGC2025.Player.Bullet
             }
         }
 
-        private void HandleObstacleCollision()
-        {
-            Deactivate();
-        }
-
-        private void HandleBoundaryCollision()
-        {
-            Deactivate();
-        }
-
         #endregion
 
         #region プライベートメソッド - ユーティリティ

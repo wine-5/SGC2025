@@ -22,7 +22,7 @@ namespace SGC2025.Enemy
         private Vector3? targetPosition = null;
         private float arriveThreshold = DEFAULT_ARRIVE_THRESHOLD;
         private Vector3 lastPosition;
-        
+
         private Transform playerTransform;
         private bool playerSearchAttempted = false;
 
@@ -32,7 +32,7 @@ namespace SGC2025.Enemy
             movableTarget = controller; // IMovableとして参照
             lastPosition = transform.position;
         }
-        
+
         /// <summary>プレイヤーのTransformを取得</summary>
         private Transform GetPlayerTransform()
         {
@@ -46,13 +46,13 @@ namespace SGC2025.Enemy
                     playerTransform = playerObject.transform;
                     return playerTransform;
                 }
-                var playerWeaponSystem = FindFirstObjectByType<PlayerWeaponSystem>();
+                var playerWeaponSystem = FindAnyObjectByType<PlayerWeaponSystem>();
                 if (playerWeaponSystem != null)
                 {
                     playerTransform = playerWeaponSystem.transform;
                     return playerTransform;
                 }
-                var player = FindFirstObjectByType<PlayerCharacter>();
+                var player = FindAnyObjectByType<PlayerCharacter>();
                 if (player != null)
                 {
                     playerTransform = player.transform;
@@ -61,7 +61,7 @@ namespace SGC2025.Enemy
             }
             return null;
         }
-        
+
         /// <summary>
         /// 移動戦略を設定
         /// </summary>
@@ -70,7 +70,7 @@ namespace SGC2025.Enemy
         {
             movementStrategy = strategy;
         }
-        
+
         /// <summary>
         /// 目標位置をセット（固定位置移動用）
         /// </summary>
@@ -85,9 +85,9 @@ namespace SGC2025.Enemy
         private void Update()
         {
             if (movableTarget == null || !movableTarget.CanMove) return;
-            
+
             float speed = movableTarget.MoveSpeed;
-            
+
             if (targetPosition.HasValue)
             {
                 MoveToFixedTarget(speed);
@@ -111,7 +111,7 @@ namespace SGC2025.Enemy
                 transform.Translate(movement);
             }
         }
-        
+
         /// <summary>
         /// 固定目標位置への移動処理
         /// </summary>
@@ -119,7 +119,7 @@ namespace SGC2025.Enemy
         {
             Vector3 movement = moveDirection * speed * Time.deltaTime;
             movement.z = 0f;
-            
+
             lastPosition = transform.position;
             transform.position += movement;
 
@@ -127,31 +127,17 @@ namespace SGC2025.Enemy
             Vector3 targetPos = targetPosition.Value;
             currentPos.z = 0f;
             targetPos.z = 0f;
-            
+
             float distanceToTarget = Vector3.Distance(currentPos, targetPos);
-            
+
             Vector3 lastPos = lastPosition;
             lastPos.z = 0f;
             float lastDistance = Vector3.Distance(lastPos, targetPos);
             bool overshot = distanceToTarget > lastDistance && lastDistance < arriveThreshold * OVERSHOOT_MULTIPLIER;
-            
+
             if (distanceToTarget < arriveThreshold || overshot)
-                ReturnToPool();
-        }
-        
-        /// <summary>
-        /// プールに返却
-        /// </summary>
-        private void ReturnToPool()
-        {
-            if (SGC2025.EnemyFactory.I != null)
-            {
                 SGC2025.EnemyFactory.I.ReturnEnemy(gameObject);
-            }
-            else
-            {
-                gameObject.SetActive(false);
-            }
+                
         }
     }
 }

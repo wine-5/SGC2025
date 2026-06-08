@@ -41,15 +41,6 @@ namespace SGC2025.Player.Bullet.Effects
         
         #endregion
         
-        #region プロパティ
-        
-        /// <summary>現在回転中かどうか</summary>
-        public bool IsRotating => isRotating;
-        
-        /// <summary>現在の回転速度</summary>
-        public float CurrentRotationSpeed => currentRotationSpeed;
-        
-        #endregion
         
         #region Unityライフサイクル
         
@@ -128,15 +119,6 @@ namespace SGC2025.Player.Bullet.Effects
             {
                 currentRotationSpeed = rotationSpeed * rotationDirection;
             }
-        }
-        
-        /// <summary>
-        /// 回転軸を設定
-        /// </summary>
-        /// <param name="axis">回転軸</param>
-        public void SetRotationAxis(Vector3 axis)
-        {
-            rotationAxis = axis.normalized;
         }
         
         /// <summary>

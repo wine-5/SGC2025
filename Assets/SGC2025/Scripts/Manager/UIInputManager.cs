@@ -42,20 +42,5 @@ namespace SGC2025.Manager
             base.OnDestroy();
         }
 
-        /// <summary>
-        /// 入力を一時的に無効化
-        /// </summary>
-        public void DisableInput()
-        {
-            inputActions?.Disable();
-        }
-
-        /// <summary>
-        /// 入力を有効化
-        /// </summary>
-        public void EnableInput()
-        {
-            inputActions?.Enable();
-        }
     }
 }

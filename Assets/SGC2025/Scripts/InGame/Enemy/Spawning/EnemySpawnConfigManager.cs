@@ -13,10 +13,7 @@ namespace SGC2025.Enemy
         [Header("敵生成設定")]
         [SerializeField] private List<EnemySpawnConfigSO> spawnConfigs = new List<EnemySpawnConfigSO>();
 
-        /// <summary>
-        /// 登録されている設定の数を取得
-        /// </summary>
-        public int ConfigCount => spawnConfigs.Count(config => config != null);
+        private int ConfigCount => spawnConfigs.Count(config => config != null);
 
         /// <summary>
         /// すべての設定が有効かチェック

@@ -46,12 +46,5 @@ namespace SGC2025.Item
             return itemList[0];
         }
         
-        /// <summary>
-        /// ItemDataSOを設定
-        /// </summary>
-        public void SetItemDataSO(ItemDataSO dataSO)
-        {
-            itemDataSO = dataSO;
-        }
     }
 }

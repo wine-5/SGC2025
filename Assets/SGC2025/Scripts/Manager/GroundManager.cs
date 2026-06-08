@@ -226,13 +226,6 @@ namespace SGC2025.Manager
             return count;
         }
 
-        /// <summary>総タイル数を取得</summary>
-        public int GetTotalTileCount()
-        {
-            if (groundData == null) return 0;
-            return groundData.columns * groundData.rows;
-        }
-
         private void SetStageObject()
         {
             currentGroundArray = new GroundData[groundData.columns, groundData.rows];

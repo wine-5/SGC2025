@@ -20,18 +20,11 @@ namespace SGC2025.Player.Bullet
         [SerializeField] private int enemiesKilled = 0;
         [SerializeField] private int currentBulletDirections = 4;
         
-        // 内部状態
         private WeaponLevelData currentLevelData;
-        
-        // イベント
-        public static event System.Action<int> OnWeaponLevelUp; // レベルアップ時
-        public static event System.Action<int, int> OnEnemyKilled; // 敵撃破時（撃破数, 現在レベル）
-        
-        // プロパティ
-        public int CurrentLevel => currentLevel;
-        public int EnemiesKilled => enemiesKilled;
-        public WeaponLevelData CurrentLevelData => currentLevelData;
-        
+
+        public static event System.Action<int> OnWeaponLevelUp;
+        public static event System.Action<int, int> OnEnemyKilled;
+
         private void Awake()
         {
             if (firePoint == null)

@@ -79,25 +79,6 @@ namespace SGC2025.Enemy
 
         #endregion
 
-        /// <summary>Canvas参照モード取得</summary>
-        public bool IsCanvasReferenceMode() => useCanvasReference;
-        
-        /// <summary>
-        /// TileMap参照モードを設定
-        /// </summary>
-        public void SetTileMapReferenceMode(bool enabled, Tilemap tileMap = null, float padding = 0.5f)
-        {
-            useTileMapReference = enabled;
-            if (tileMap != null)
-                targetTileMap = tileMap;
-            tileMapPadding = padding;
-            if (enabled)
-                useCanvasReference = false;
-        }
-        
-        /// <summary>TileMap参照モード取得</summary>
-        public bool IsTileMapReferenceMode() => useTileMapReference;
-        
         /// <summary>
         /// 画面の四方向または四隅からランダムに生成位置を取得
         /// </summary>

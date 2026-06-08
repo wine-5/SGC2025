@@ -59,14 +59,6 @@ namespace SGC2025
         [SerializeField] private float minWaveInterval = 30f;
         
         /// <summary>
-        /// すべてのWaveデータを取得
-        /// </summary>
-        public List<WaveData> GetAllWaves()
-        {
-            return new List<WaveData>(waves);
-        }
-        
-        /// <summary>
         /// 指定Waveレベルのデータを取得（WaveManager用）
         /// </summary>
         public WaveData GetWaveDataAtLevel(int waveLevel)
@@ -95,78 +87,11 @@ namespace SGC2025
         }
         
         /// <summary>
-        /// 次のWaveレベルを取得（WaveManager用）
+        /// 総Wave数を取得（バリデーション用）
         /// </summary>
-        public int GetNextWaveLevel(int currentLevel)
-        {
-            var nextWave = GetNextWaveData(currentLevel);
-            return nextWave?.waveLevel ?? currentLevel;
-        }
-        
-        /// <summary>
-        /// 次のWaveデータを取得（WaveManager用）
-        /// </summary>
-        public WaveData GetNextWaveData(int currentLevel)
-        {
-            // 現在のレベルより高いレベルの最初のWaveを返す
-            foreach (var wave in waves)
-            {
-                if (wave.waveLevel > currentLevel)
-                {
-                    return wave;
-                }
-            }
-            return null;
-        }
-        
-        /// <summary>
-        /// 次のWaveを取得
-        /// </summary>
-        public WaveData GetNextWave(WaveData currentWave)
-        {
-            if (currentWave == null) return GetFirstWaveOrNull();
-            
-            int currentIndex = waves.IndexOf(currentWave);
-            if (currentIndex == -1 || currentIndex >= waves.Count - 1)
-            {
-                return loopLastWave ? waves[waves.Count - 1] : null;
-            }
-            
-            return waves[currentIndex + 1];
-        }
-        
-        /// <summary>
-        /// 最初のWaveを取得（nullの場合もある）
-        /// </summary>
-        public WaveData GetFirstWaveOrNull()
-        {
-            return waves.Count > 0 ? waves[0] : null;
-        }
-        
-        /// <summary>
-        /// 総Wave数を取得
-        /// </summary>
-        public int GetWaveCount()
+        private int GetWaveCount()
         {
             return waves.Count;
-        }
-        
-        /// <summary>
-        /// 最後のWaveの終了時間を取得（30秒間隔ベース）
-        /// </summary>
-        public float GetLastWaveTime()
-        {
-            if (waves.Count == 0) return 0f;
-            
-            // 最大waveLevelを取得
-            int maxWaveLevel = 0;
-            foreach (var wave in waves)
-            {
-                if (wave.waveLevel > maxWaveLevel)
-                    maxWaveLevel = wave.waveLevel;
-            }
-            
-            return maxWaveLevel * minWaveInterval;
         }
         
         /// <summary>

@@ -46,14 +46,6 @@ namespace SGC2025.Enemy
         }
 
         /// <summary>
-        /// 敵の生成を停止
-        /// </summary>
-        public void StopSpawning()
-        {
-            isSpawning = false;
-        }
-
-        /// <summary>
         /// Waveレベルを設定（WaveManager用）
         /// </summary>
         public void SetWaveLevel(int waveLevel)
@@ -71,10 +63,6 @@ namespace SGC2025.Enemy
             }
             return DEFAULT_SPAWN_INTERVAL;
         }
-
-        /// <summary>現在のWaveレベルを取得</summary>
-        public int GetWaveLevel() => currentWaveLevel;
-
 
         private void Update()
         {

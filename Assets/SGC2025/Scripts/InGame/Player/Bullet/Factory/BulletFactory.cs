@@ -32,8 +32,6 @@ namespace SGC2025.Player.Bullet
 
         protected override bool UseDontDestroyOnLoad => false;
 
-        public BulletDataSO DefaultBulletData => defaultBulletData;
-
         #endregion
 
         #region Singletonライフサイクル

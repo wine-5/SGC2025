@@ -54,15 +54,6 @@ namespace SGC2025.Enemy
         }
         
         /// <summary>
-        /// Waveレベルに応じたスケールを取得
-        /// </summary>
-        public Vector3 GetScale(int waveLevel = DEFAULT_WAVE_LEVEL)
-        {
-            float scaleMultiplier = 1f + (scaleGrowthRate * (waveLevel - 1));
-            return baseScale * scaleMultiplier;
-        }
-        
-        /// <summary>
         /// EnemyControllerを初期化
         /// </summary>
         public void InitializeController(EnemyController controller, int waveLevel = DEFAULT_WAVE_LEVEL)

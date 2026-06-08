@@ -32,9 +32,7 @@ namespace SGC2025.Manager
         public static event Action<WaveDataSO.WaveData> OnWaveDataChanged;
         
         public int CurrentWaveLevel => currentWaveLevel;
-        public float GameElapsedTime => InGameManager.I != null ? InGameManager.I.CurrentGameTime : 0f;
         public WaveDataSO.WaveData CurrentWave => currentWave;
-        public bool IsGameActive => isGameActive;
         protected override bool UseDontDestroyOnLoad => false; // シーン固有のManager
 
         protected override void Init()
@@ -114,7 +112,7 @@ namespace SGC2025.Manager
         
         private void NotifyEnemySpawners()
         {
-            var spawners = FindObjectsByType<EnemySpawner>(FindObjectsSortMode.None);
+            var spawners = FindObjectsByType<EnemySpawner>();
             
             foreach (var spawner in spawners)
                 spawner.SetWaveLevel(currentWaveLevel);

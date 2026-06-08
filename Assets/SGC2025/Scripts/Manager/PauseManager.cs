@@ -83,15 +83,5 @@ namespace SGC2025.Manager
             OnResume?.Invoke();
         }
 
-        /// <summary>
-        /// ポーズの切り替え
-        /// </summary>
-        public void TogglePause()
-        {
-            if (isPaused)
-                ResumeGame();
-            else
-                PauseGame();
-        }
     }
 }
