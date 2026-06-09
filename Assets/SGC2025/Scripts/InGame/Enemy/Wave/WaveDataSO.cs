@@ -55,9 +55,6 @@ namespace SGC2025
         [Tooltip("最後のWave後もゲームを継続するか")]
         [SerializeField] private bool loopLastWave = true;
         
-        [Tooltip("Wave間の最小時間間隔（秒）")]
-        [SerializeField] private float minWaveInterval = 30f;
-        
         /// <summary>
         /// 指定Waveレベルのデータを取得（WaveManager用）
         /// </summary>

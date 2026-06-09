@@ -28,7 +28,6 @@ namespace SGC2025.Enemy
         
         [Header("スケール設定")]
         [SerializeField] private Vector3 baseScale = Vector3.one;
-        [SerializeField] private float scaleGrowthRate = 0.05f; // Waveごとのスケール上昇率
         
         
         // 基本プロパティ

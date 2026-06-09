@@ -44,7 +44,7 @@ namespace SGC2025.Editor
             int missingCount = 0;
             result = "";
 
-            GameObject[] gos = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+            GameObject[] gos = GameObject.FindObjectsByType<GameObject>();
 
             foreach (GameObject go in gos)
             {

@@ -4,6 +4,10 @@ namespace SGC2025.Enemy
 {
     /// <summary>
     /// ダメージを受けることができるオブジェクトのインターフェース
+    /// <para>
+    /// 仲介者として機能し、攻撃側（BulletController 等）が被ダメージ側（EnemyController 等）に
+    /// 直接依存しないようにする。攻撃側はこのインターフェースのみを知れば十分。
+    /// </para>
     /// </summary>
     public interface IDamageable
     {

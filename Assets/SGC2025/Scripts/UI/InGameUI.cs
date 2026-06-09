@@ -38,8 +38,6 @@ namespace SGC2025.UI
         private TextMeshProUGUI countdownText;
         [SerializeField, Tooltip("カウントダウンアニメーションの拡大率")]
         private float countdownPulseScale = 1.5f;
-        [SerializeField, Tooltip("カウントダウンアニメーションの時間（秒）")]
-        private float countdownPulseDuration = 0.3f;
         [SerializeField, Tooltip("カウントダウン色")]
         private Color countdownColor = Color.white;
         [SerializeField, Tooltip("START表示色")]

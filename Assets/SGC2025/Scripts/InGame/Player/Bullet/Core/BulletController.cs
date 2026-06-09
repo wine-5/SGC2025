@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025.Core;
 using SGC2025.Enemy;
 using SGC2025.Player.Bullet.Effects;
 using SGC2025.Manager;
@@ -280,15 +281,15 @@ namespace SGC2025.Player.Bullet
                 return;
             }
             
-            var enemy = other.GetComponent<EnemyController>();
-            if (enemy != null && enemy.IsAlive)
+            var damageable = other.GetComponent<IDamageable>();
+            if (damageable != null && damageable.IsAlive)
             {
                 if (bulletData == null) return;
                 
                 float damageToApply = bulletData.Damage;
                 if (damageToApply <= 0) return;
                 
-                enemy.TakeDamage(damageToApply);
+                damageable.TakeDamage(damageToApply);
                 Deactivate();
             }
         }
