@@ -4,7 +4,7 @@ using UnityEngine;
 using TechC;
 using SGC2025.Enemy;
 
-namespace SGC2025
+namespace SGC2025.Enemy
 {
     /// <summary>
     /// 敵の生成・プール管理を行うファクトリークラス

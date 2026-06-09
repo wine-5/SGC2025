@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using SGC2025.Enemy;
 
-namespace SGC2025
+namespace SGC2025.Enemy
 {
     /// <summary>
     /// Waveの設定データを定義するScriptableObject

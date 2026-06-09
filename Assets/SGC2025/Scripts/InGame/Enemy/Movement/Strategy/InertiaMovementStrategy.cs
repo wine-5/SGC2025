@@ -1,7 +1,7 @@
 using UnityEngine;
-using SGC2025.Enemy.Interface;
+using SGC2025.Enemy;
 
-namespace SGC2025.Enemy.Strategy
+namespace SGC2025.Enemy
 {
     /// <summary>
     /// 慣性追従型の移動戦略

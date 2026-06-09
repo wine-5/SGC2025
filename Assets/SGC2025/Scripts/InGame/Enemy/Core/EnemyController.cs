@@ -9,7 +9,7 @@ namespace SGC2025.Enemy
     /// EnemyDataSOからの設定取得とウェーブレベルスケーリングをサポート
     /// 弾システムとの相互作用を含む包括的な敵制御機能
     /// </summary>
-    public class EnemyController : MonoBehaviour, IDamageable, IMovable
+    public class EnemyController : MonoBehaviour, IDamageable
     {
         private const int MIN_WAVE_LEVEL = 1;
         private const float MIN_HEALTH = 0f;

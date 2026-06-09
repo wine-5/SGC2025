@@ -1,5 +1,4 @@
 using UnityEngine;
-using SGC2025.Enemy.Interface;
 using SGC2025.Player;
 
 namespace SGC2025.Enemy
@@ -14,7 +13,6 @@ namespace SGC2025.Enemy
         private const float OVERSHOOT_MULTIPLIER = 2f;
         private const string PLAYER_TAG = "Player";
 
-        private IMovable movableTarget;
         private EnemyController controller;
         private IMovementStrategy movementStrategy;
         private Vector3 moveDirection = Vector3.down;
@@ -28,7 +26,6 @@ namespace SGC2025.Enemy
         private void Awake()
         {
             controller = GetComponent<EnemyController>();
-            movableTarget = controller; // IMovableとして参照
             lastPosition = transform.position;
         }
 
@@ -76,9 +73,9 @@ namespace SGC2025.Enemy
 
         private void Update()
         {
-            if (movableTarget == null || !movableTarget.CanMove) return;
+            if (controller == null || !controller.CanMove) return;
 
-            float speed = movableTarget.MoveSpeed;
+            float speed = controller.MoveSpeed;
 
             if (targetPosition.HasValue)
             {
@@ -128,7 +125,7 @@ namespace SGC2025.Enemy
             bool overshot = distanceToTarget > lastDistance && lastDistance < arriveThreshold * OVERSHOOT_MULTIPLIER;
 
             if (distanceToTarget < arriveThreshold || overshot)
-                SGC2025.EnemyFactory.I.ReturnEnemy(gameObject);
+                EnemyFactory.I.ReturnEnemy(gameObject);
                 
         }
     }

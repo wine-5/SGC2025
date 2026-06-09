@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Enemy.Interface
+namespace SGC2025.Enemy
 {
     /// <summary>
     /// 敵の移動戦略を定義するインターフェース
