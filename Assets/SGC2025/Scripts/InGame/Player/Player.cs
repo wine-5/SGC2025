@@ -98,7 +98,7 @@ namespace SGC2025.Player
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            if (other.gameObject.layer == GameLayers.EnemyLayer)
                 Damage();
         }
         #endregion

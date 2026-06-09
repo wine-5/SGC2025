@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025.Core;
 using SGC2025.Player;
 
 namespace SGC2025.Enemy
@@ -11,7 +12,6 @@ namespace SGC2025.Enemy
     {
         private const float DEFAULT_ARRIVE_THRESHOLD = 0.5f;
         private const float OVERSHOOT_MULTIPLIER = 2f;
-        private const string PLAYER_TAG = "Player";
 
         private EnemyController controller;
         private IMovementStrategy movementStrategy;
@@ -41,7 +41,7 @@ namespace SGC2025.Enemy
                     playerTransform = PlayerDataProvider.I.PlayerTransform;
                     return playerTransform;
                 }
-                GameObject playerObject = GameObject.FindWithTag(PLAYER_TAG);
+                GameObject playerObject = GameObject.FindWithTag(GameLayers.PlayerTag);
                 if (playerObject != null)
                 {
                     playerTransform = playerObject.transform;

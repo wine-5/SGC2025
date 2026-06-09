@@ -58,7 +58,7 @@ namespace SGC2025.Player.Bullet
             ConfigurePhysics();
             
             // 実行時にレイヤー番号を取得して正しく設定
-            int actualEnemyLayer = LayerMask.NameToLayer("Enemy");
+            int actualEnemyLayer = GameLayers.EnemyLayer;
             
             if (actualEnemyLayer != -1)
                 enemyLayer = 1 << actualEnemyLayer;
@@ -276,7 +276,7 @@ namespace SGC2025.Player.Bullet
         private void HandleEnemyCollision(Collider2D other)
         {
             // プレイヤーオブジェクトは除外（Layer 6はPlayer）
-            if (other.name.Contains("Player") || other.gameObject.layer == 6)
+            if (other.name.Contains(GameLayers.PlayerTag) || other.gameObject.layer == GameLayers.PlayerLayer)
             {
                 return;
             }
