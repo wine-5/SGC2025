@@ -60,20 +60,6 @@ namespace SGC2025.Core
         }
     }
 
-    /// <summary>敵がスポーンした</summary>
-    public struct EnemySpawnedEvent : IGameEvent
-    {
-        public GameObject Enemy;
-        public EnemySpawnedEvent(GameObject enemy) => Enemy = enemy;
-    }
-
-    /// <summary>敵がプールに返却された</summary>
-    public struct EnemyReturnedToPoolEvent : IGameEvent
-    {
-        public GameObject Enemy;
-        public EnemyReturnedToPoolEvent(GameObject enemy) => Enemy = enemy;
-    }
-
     // -------------------------------------------------------
     // Ground
     // -------------------------------------------------------
@@ -149,16 +135,5 @@ namespace SGC2025.Core
     {
         public SGC2025.Item.ItemType ItemType;
         public ItemEffectExpiredEvent(SGC2025.Item.ItemType itemType) => ItemType = itemType;
-    }
-
-    // -------------------------------------------------------
-    // Weapon
-    // -------------------------------------------------------
-
-    /// <summary>武器がレベルアップした</summary>
-    public struct WeaponLevelUpEvent : IGameEvent
-    {
-        public int NewLevel;
-        public WeaponLevelUpEvent(int newLevel) => NewLevel = newLevel;
     }
 }

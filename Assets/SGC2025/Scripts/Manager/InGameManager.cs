@@ -23,10 +23,6 @@ namespace SGC2025.Manager
         private float currentCountDownTimer;
         private float countGameTimer;
 
-        public static event System.Action OnGameOver;
-        public static event System.Action OnCountDownFinished;
-        public static event System.Action OnGameTimeUp;
-
         public bool IsGameOver => isGameOver;
         public bool IsCountingDown => isCountDown;
         public float GameTimeLimit => gameTimeLimit;
@@ -54,11 +50,6 @@ namespace SGC2025.Manager
             
             // Time.timeScaleを確実にリセット（ポーズ中に破棄された場合に備えて）
             Time.timeScale = 1f;
-            
-            // static eventsをクリア
-            OnGameOver = null;
-            OnCountDownFinished = null;
-            OnGameTimeUp = null;
             
             base.OnDestroy();
         }
@@ -97,7 +88,6 @@ namespace SGC2025.Manager
             {
                 isCountDown = false;
                 EventBus.Publish(new CountDownFinishedEvent());
-                OnCountDownFinished?.Invoke();
             }
         }
 
@@ -119,7 +109,6 @@ namespace SGC2025.Manager
                 }
                 
                 EventBus.Publish(new GameTimeUpEvent());
-                OnGameTimeUp?.Invoke();
                 
                 if (GameManager.I != null)
                     GameManager.I.LoadResultScene();
@@ -133,8 +122,6 @@ namespace SGC2025.Manager
             
             if (AudioManager.I != null)
                 AudioManager.I.StopBGM(true);
-            
-            OnGameOver?.Invoke();
             
             if (GameManager.I != null)
                 GameManager.I.LoadResultScene();

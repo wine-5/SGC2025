@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 namespace SGC2025.Player
 {
@@ -11,8 +10,6 @@ namespace SGC2025.Player
     {
         private Transform playerTransform;
 
-        public static event Action<Transform> OnPlayerRegistered;
-        
         /// <summary>
         /// Playerのトランスフォーム参照
         /// </summary>
@@ -33,17 +30,10 @@ namespace SGC2025.Player
         {
             if (player == null) return;
             playerTransform = player;
-            OnPlayerRegistered?.Invoke(playerTransform);
         }
         
         protected override void OnDestroy()
         {
-            // シーン再読み込み時に static event が残っていると多重購読の原因になるためクリア
-            if (I == (this as PlayerDataProvider))
-            {
-                OnPlayerRegistered = null;
-            }
-
             base.OnDestroy();
         }
         

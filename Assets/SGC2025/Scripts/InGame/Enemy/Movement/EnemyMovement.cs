@@ -1,6 +1,5 @@
 using UnityEngine;
 using SGC2025.Enemy.Interface;
-using SGC2025.Player.Bullet;
 using SGC2025.Player;
 
 namespace SGC2025.Enemy
@@ -40,22 +39,15 @@ namespace SGC2025.Enemy
             if (!playerSearchAttempted)
             {
                 playerSearchAttempted = true;
+                if (PlayerDataProvider.I != null && PlayerDataProvider.I.IsPlayerRegistered)
+                {
+                    playerTransform = PlayerDataProvider.I.PlayerTransform;
+                    return playerTransform;
+                }
                 GameObject playerObject = GameObject.FindWithTag(PLAYER_TAG);
                 if (playerObject != null)
                 {
                     playerTransform = playerObject.transform;
-                    return playerTransform;
-                }
-                var playerWeaponSystem = FindAnyObjectByType<PlayerWeaponSystem>();
-                if (playerWeaponSystem != null)
-                {
-                    playerTransform = playerWeaponSystem.transform;
-                    return playerTransform;
-                }
-                var player = FindAnyObjectByType<PlayerCharacter>();
-                if (player != null)
-                {
-                    playerTransform = player.transform;
                     return playerTransform;
                 }
             }

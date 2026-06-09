@@ -3,32 +3,49 @@ using UnityEngine;
 namespace SGC2025.Camera
 {
     /// <summary>
-    /// プレイヤーをスムーズに追従するカメラ制御
+    /// プレイヤーをスムーズに追従するカメラ移動設定
     /// </summary>
-    public class CameraMovement : MonoBehaviour
+    [System.Serializable]
+    public class CameraMovement
     {
         [SerializeField] private Transform target;
         [SerializeField] private float smoothSpeed = 5f;
 
         [Header("カメラサイズ設定")]
-        [SerializeField]
-        [Tooltip("カメラの視野の大きさ（Orthographicカメラの場合）値が大きいほど引きの画面")]
+        [SerializeField, Tooltip("カメラの視野の大きさ（Orthographicカメラの場合）値が大きいほど引きの画面")]
         private float orthographicSize = 12f;
 
-        [SerializeField]
-        [Tooltip("Perspectiveカメラの場合の視野角 (Field of View)。値が大きいほど引きの画面")]
+        [SerializeField, Tooltip("Perspectiveカメラの場合の視野角 (Field of View)。値が大きいほど引きの画面")]
         private float fieldOfView = 60f;
 
+        private Transform cameraTransform;
         private UnityEngine.Camera cam;
 
-        private void Awake()
+        /// <summary>
+        /// 追従対象の Transform を設定する（PlayerDataProvider 等から呼ぶ）
+        /// </summary>
+        public void SetTarget(Transform t) => target = t;
+
+        /// <summary>
+        /// カメラの Transform と Camera コンポーネントを渡して初期化
+        /// </summary>
+        public void Initialize(Transform cameraTf, UnityEngine.Camera camera)
         {
-            cam = GetComponent<UnityEngine.Camera>();
+            cameraTransform = cameraTf;
+            cam = camera;
         }
 
-        private void Start()
+        /// <summary>
+        /// Start に相当する初期配置処理
+        /// </summary>
+        public void OnStart()
         {
-            transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
+            if (target == null || cameraTransform == null) return;
+
+            cameraTransform.position = new Vector3(
+                target.position.x,
+                target.position.y,
+                cameraTransform.position.z);
 
             if (cam != null)
             {
@@ -39,13 +56,19 @@ namespace SGC2025.Camera
             }
         }
 
-        private void LateUpdate()
+        /// <summary>
+        /// LateUpdate に相当するスムーズ追従処理
+        /// </summary>
+        public void OnLateUpdate()
         {
-            if (target == null) return;
-            Vector3 newPos = new Vector3(target.position.x, target.position.y, transform.position.z);
-            transform.position = Vector3.Lerp(transform.position, newPos, smoothSpeed * Time.deltaTime);
+            if (target == null || cameraTransform == null) return;
 
-            // リアルタイムでカメラ設定を更新（Inspector変更を反映）
+            Vector3 newPos = new Vector3(
+                target.position.x,
+                target.position.y,
+                cameraTransform.position.z);
+            cameraTransform.position = Vector3.Lerp(cameraTransform.position, newPos, smoothSpeed * Time.deltaTime);
+
             if (cam != null)
             {
                 if (cam.orthographic && cam.orthographicSize != orthographicSize)

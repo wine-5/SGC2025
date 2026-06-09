@@ -31,10 +31,6 @@ namespace SGC2025.Item
         private float nextSpawnTime;
         private Dictionary<ItemType, ItemEffect> activeEffects = new Dictionary<ItemType, ItemEffect>();
         
-        // イベント
-        public static event System.Action<ItemType, float, float> OnItemEffectActivated;
-        public static event System.Action<ItemType> OnItemEffectExpired;
-        
         protected override bool UseDontDestroyOnLoad => false;
         
         /// <summary>
@@ -175,7 +171,6 @@ namespace SGC2025.Item
             
             activeEffects[itemData.ItemType] = effect;
             
-            OnItemEffectActivated?.Invoke(itemData.ItemType, itemData.EffectValue, itemData.Duration);
             EventBus.Publish(new ItemEffectActivatedEvent(itemData.ItemType, itemData.EffectValue, itemData.Duration));
             
             if (SGC2025.Player.PlayerDataProvider.I != null && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
@@ -245,7 +240,6 @@ namespace SGC2025.Item
             
             activeEffects.Remove(itemType);
             
-            OnItemEffectExpired?.Invoke(itemType);
             EventBus.Publish(new ItemEffectExpiredEvent(itemType));
         }
         

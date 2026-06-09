@@ -22,8 +22,6 @@ namespace SGC2025.Player.Bullet
         
         private WeaponLevelData currentLevelData;
 
-        public static event System.Action<int> OnWeaponLevelUp;
-        public static event System.Action<int, int> OnEnemyKilled;
 
         private void Awake()
         {
@@ -69,9 +67,7 @@ namespace SGC2025.Player.Bullet
             {
                 currentLevel = newLevel;
                 UpdateWeaponLevel();
-                OnWeaponLevelUp?.Invoke(currentLevel);
             }
-            OnEnemyKilled?.Invoke(enemiesKilled, currentLevel);
         }
         
         /// <summary>

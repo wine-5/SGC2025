@@ -2,7 +2,6 @@ using UnityEngine;
 using TechC;
 using SGC2025.Core;
 using SGC2025.Enemy;
-using System;
 
 namespace SGC2025.Manager
 {
@@ -23,14 +22,11 @@ namespace SGC2025.Manager
         [Tooltip("テスト用の高速Wave切り替え (デバッグ用)")]
         [SerializeField] private bool useTestMode = false;
         [SerializeField] private float testWaveInterval = 10f;
-        [SerializeField] private bool enableVerboseLogging = false;
+
         
         private int currentWaveLevel = 1;
         private bool isGameActive = true;
         private WaveDataSO.WaveData currentWave;
-        
-        public static event Action<int> OnWaveChanged;
-        public static event Action<WaveDataSO.WaveData> OnWaveDataChanged;
         
         public int CurrentWaveLevel => currentWaveLevel;
         public WaveDataSO.WaveData CurrentWave => currentWave;
@@ -40,10 +36,7 @@ namespace SGC2025.Manager
         {
             base.Init();
             
-            // InGameManagerからゲームオーバーイベントを購諭
-            InGameManager.OnGameOver += StopWaveProgression;
             EventBus.Subscribe<GameOverEvent>(OnGameOver);
-            
             // PauseManagerからポーズイベントを購諭
             PauseManager.OnPause += PauseWaveProgression;
             PauseManager.OnResume += ResumeWaveProgression;
@@ -53,10 +46,7 @@ namespace SGC2025.Manager
         
         protected override void OnDestroy()
         {
-            // InGameManagerからイベントの購諭を解除
-            InGameManager.OnGameOver -= StopWaveProgression;
             EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
-            
             // PauseManagerからイベントの購諭を解除
             PauseManager.OnPause -= PauseWaveProgression;
             PauseManager.OnResume -= ResumeWaveProgression;
@@ -96,8 +86,6 @@ namespace SGC2025.Manager
             currentWaveLevel = newWaveLevel;
             UpdateCurrentWaveData();
             
-            OnWaveChanged?.Invoke(currentWaveLevel);
-            OnWaveDataChanged?.Invoke(currentWave);
             EventBus.Publish(new WaveChangedEvent(currentWaveLevel));
             
             NotifyEnemySpawners();
@@ -123,7 +111,7 @@ namespace SGC2025.Manager
         }
         
         private void StopWaveProgression() => isGameActive = false;
-        private void OnGameOver(GameOverEvent e) => StopWaveProgression();
+        private void OnGameOver(GameOverEvent e) => isGameActive = false;
         private void PauseWaveProgression() => isGameActive = false;
         private void ResumeWaveProgression() => isGameActive = true;
     }

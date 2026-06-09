@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &656303495 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8003218262421739174, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 4982227612467903538}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4982227612467903538
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -127,6 +132,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4477582449839869296, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: cameraMovement.target
+      value: 
+      objectReference: {fileID: 656303495}
+    - target: {fileID: 4477582449839869296, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: cameraMovement.orthographicSize
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5485042787687540399, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Name
       value: InGame
@@ -171,7 +184,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3061321673851043945, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

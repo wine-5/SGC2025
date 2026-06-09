@@ -194,6 +194,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -290,7 +291,6 @@ MonoBehaviour:
   waveInterval: 30
   useTestMode: 0
   testWaveInterval: 10
-  enableVerboseLogging: 1
 --- !u!1 &494232394599079435
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,6 +677,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1077,6 +1078,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1380,6 +1382,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1522,6 +1525,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4603413290597132457
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1567,6 +1571,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1576,7 +1581,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &4916355474168469545
 GameObject:
@@ -1833,7 +1837,6 @@ GameObject:
   - component: {fileID: 8404949437244245253}
   - component: {fileID: 505955615212632723}
   - component: {fileID: 6568764261463162374}
-  - component: {fileID: 3061321673851043945}
   - component: {fileID: 4477582449839869296}
   m_Layer: 0
   m_Name: Main Camera
@@ -1960,22 +1963,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &3061321673851043945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6385992789826873755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9d8996df4b982f4692394811f588a20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.CameraMove
-  target: {fileID: 8003218262421739174}
-  smoothSpeed: 10
-  orthographicSize: 7
-  fieldOfView: 60
 --- !u!114 &4477582449839869296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1988,7 +1975,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6a1e47ebcf904f4fa0ec4365bf58e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.CameraManager
-  cameraMove: {fileID: 3061321673851043945}
+  cameraMovement:
+    target: {fileID: 0}
+    smoothSpeed: 5
+    orthographicSize: 12
+    fieldOfView: 60
   shakeSettings:
     duration: 0.3
     magnitude: 0.4
@@ -2180,14 +2171,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6714474145285039556}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 13
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -2232,7 +2223,7 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
-  m_ShadowRadius: 0
+  m_ShapeRadius: 0
   m_ShadowAngle: 0
   m_LightUnit: 1
   m_LuxAtDistance: 1
