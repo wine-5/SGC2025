@@ -18,6 +18,9 @@ namespace SGC2025.Manager
         [SerializeField, Tooltip("ゲームの制限時間（秒）")]
         private float gameTimeLimit = 300f;
 
+        [Header("ポーズ設定")]
+        [SerializeField] private PauseManager pauseManager;
+
         private bool isGameOver;
         private bool isCountDown;
         private float currentCountDownTimer;
@@ -29,6 +32,14 @@ namespace SGC2025.Manager
         public float CurrentGameTime => countGameTimer;
         public float RemainingGameTime => gameTimeLimit - countGameTimer;
         public float CountDownTimer => currentCountDownTimer;
+
+        /// <summary>ポーズ中か</summary>
+        public bool IsPaused => pauseManager != null && pauseManager.IsPaused;
+        /// <summary>ゲームをポーズする</summary>
+        public void Pause() => pauseManager?.PauseGame();
+        /// <summary>ポーズを解除する</summary>
+        public void Resume() => pauseManager?.ResumeGame();
+
         protected override bool UseDontDestroyOnLoad => false;
 
         protected override void Init()
@@ -74,7 +85,7 @@ namespace SGC2025.Manager
             if (isGameOver) return;
             
             // ポーズ中は時間を進めない
-            if (PauseManager.I != null && PauseManager.I.IsPaused) return;
+            if (IsPaused) return;
             
             UpdateCountDown();
             UpdateGameTimer();

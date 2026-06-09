@@ -106,12 +106,12 @@ namespace SGC2025.Player
         #region 入力処理
         private void OnPausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            if (PauseManager.I == null) return;
-            
-            if (PauseManager.I.IsPaused)
-                PauseManager.I.ResumeGame();
+            if (InGameManager.I == null) return;
+
+            if (InGameManager.I.IsPaused)
+                InGameManager.I.Resume();
             else
-                PauseManager.I.PauseGame();
+                InGameManager.I.Pause();
         }
 
         private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)

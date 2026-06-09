@@ -101,6 +101,12 @@ namespace SGC2025.Core
     /// <summary>制限時間切れ</summary>
     public struct GameTimeUpEvent : IGameEvent { }
 
+    /// <summary>ゲームがポーズされた</summary>
+    public struct PausedEvent : IGameEvent { }
+
+    /// <summary>ポーズが解除された</summary>
+    public struct ResumedEvent : IGameEvent { }
+
     // -------------------------------------------------------
     // Wave
     // -------------------------------------------------------

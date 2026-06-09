@@ -37,9 +37,8 @@ namespace SGC2025.Manager
             base.Init();
             
             EventBus.Subscribe<GameOverEvent>(OnGameOver);
-            // PauseManagerからポーズイベントを購諭
-            PauseManager.OnPause += PauseWaveProgression;
-            PauseManager.OnResume += ResumeWaveProgression;
+            EventBus.Subscribe<PausedEvent>(OnPaused);
+            EventBus.Subscribe<ResumedEvent>(OnResumed);
             
             InitializeWaveSystem();
         }
@@ -47,9 +46,8 @@ namespace SGC2025.Manager
         protected override void OnDestroy()
         {
             EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
-            // PauseManagerからイベントの購諭を解除
-            PauseManager.OnPause -= PauseWaveProgression;
-            PauseManager.OnResume -= ResumeWaveProgression;
+            EventBus.Unsubscribe<PausedEvent>(OnPaused);
+            EventBus.Unsubscribe<ResumedEvent>(OnResumed);
             
             base.OnDestroy();
         }
@@ -112,7 +110,7 @@ namespace SGC2025.Manager
         
         private void StopWaveProgression() => isGameActive = false;
         private void OnGameOver(GameOverEvent e) => isGameActive = false;
-        private void PauseWaveProgression() => isGameActive = false;
-        private void ResumeWaveProgression() => isGameActive = true;
+        private void OnPaused(PausedEvent e) => isGameActive = false;
+        private void OnResumed(ResumedEvent e) => isGameActive = true;
     }
 }
