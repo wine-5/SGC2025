@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &260880940 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8003218262421739174, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 1189758861}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1189758861
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -127,6 +132,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4477582449839869296, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: playerTarget
+      value: 
+      objectReference: {fileID: 260880940}
+    - target: {fileID: 4477582449839869296, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: cameraMovement.target
+      value: 
+      objectReference: {fileID: 260880940}
+    - target: {fileID: 4477582449839869296, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: cameraMovement.orthographicSize
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5485042787687540399, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Name
       value: InGame
@@ -176,70 +193,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
---- !u!1 &1481788817
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1481788820}
-  - component: {fileID: 1481788819}
-  - component: {fileID: 1481788818}
-  m_Layer: 0
-  m_Name: DontDestoryManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1481788818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1481788817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cba03cd0d003dbc4abbdbbb6556295a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.GameManager
-  gameOverDelay: 0
---- !u!114 &1481788819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1481788817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d372a4db83dafdc46baffd817c56f9b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.ScoreManager
-  enemyKillPoint: 50
-  normalTilePoint: 100
-  highScoreTileMultiplier: 3
---- !u!4 &1481788820
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1481788817}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 121.46878, y: 0, z: 413.9945}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1189758861}
-  - {fileID: 1481788820}

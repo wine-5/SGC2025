@@ -1,67 +1,62 @@
 using UnityEngine;
-using SGC2025.Player;
+using SGC2025.Core;
 
 namespace SGC2025.Camera
 {
     /// <summary>
     /// カメラ関連機能を統括するマネージャー
-    /// CameraMoveとCameraShakeのFacadeとして機能
+    /// CameraMovement（追従）と CameraShake（振動）を一元管理する
     /// </summary>
     public class CameraManager : MonoBehaviour
     {
-        [Header("コンポーネント参照")]
-        [SerializeField] private CameraMove cameraMove;
-        
+        [Header("追従設定")]
+        [SerializeField] private CameraMovement cameraMovement = new CameraMovement();
+
         [Header("シェイク設定")]
         [SerializeField] private CameraShake shakeSettings = new CameraShake();
-        
+
         private float shakeTimer;
         private Vector3 currentShakeOffset;
         private float currentShakeMagnitude;
 
         private void Awake()
         {
-            // CameraMoveの参照を取得
-            if (cameraMove == null)
-                cameraMove = GetComponent<CameraMove>();
-            
-            // Playerのダメージイベントを購読
-            PlayerCharacter.OnPlayerDamaged += HandlePlayerDamaged;
+            cameraMovement.Initialize(transform, GetComponent<UnityEngine.Camera>());
+            EventBus.Subscribe<PlayerDamagedEvent>(OnPlayerDamagedEvent);
+        }
+
+        private void Start()
+        {
+            cameraMovement.OnStart();
         }
 
         private void OnDestroy()
         {
-            // イベント購読解除
-            PlayerCharacter.OnPlayerDamaged -= HandlePlayerDamaged;
+            EventBus.Unsubscribe<PlayerDamagedEvent>(OnPlayerDamagedEvent);
         }
 
         private void LateUpdate()
         {
+            cameraMovement.OnLateUpdate();
+
             if (shakeTimer > 0f)
             {
-                // CameraMoveが計算した位置を保存
-                Vector3 targetPosition = transform.position;
-                
                 currentShakeOffset = Random.insideUnitSphere * currentShakeMagnitude;
                 currentShakeOffset.z = 0f;
-                
-                // シェイクオフセットを適用
-                transform.position = targetPosition + currentShakeOffset;
-                
+                transform.position += currentShakeOffset;
                 shakeTimer -= Time.deltaTime;
             }
             else if (currentShakeOffset != Vector3.zero)
             {
-                // シェイク終了時にオフセットをクリア
                 currentShakeOffset = Vector3.zero;
             }
         }
 
         /// <summary>Playerがダメージを受けた時の処理</summary>
-        private void HandlePlayerDamaged(float hpRate) => TriggerShake(hpRate);
+        private void OnPlayerDamagedEvent(PlayerDamagedEvent e) => TriggerShake(e.HpRate);
 
         /// <summary>カメラシェイクをトリガー</summary>
-        public void TriggerShake(float hpRate)
+        private void TriggerShake(float hpRate)
         {
             currentShakeMagnitude = shakeSettings.GetMagnitudeByHpRate(hpRate);
             shakeTimer = shakeSettings.Duration;

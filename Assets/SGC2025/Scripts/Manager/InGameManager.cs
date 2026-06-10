@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025.Core;
 using SGC2025.Player;
 using SGC2025.Audio;
 
@@ -17,27 +18,35 @@ namespace SGC2025.Manager
         [SerializeField, Tooltip("ゲームの制限時間（秒）")]
         private float gameTimeLimit = 300f;
 
+        [SerializeField, Tooltip("ゲームオーバーから結果シーンへの遷移遅延（秒）")]
+        private float gameOverDelay = 2f;
+
+        [Header("ポーズ設定")]
+        [SerializeField] private PauseManager pauseManager;
+
         private bool isGameOver;
         private bool isCountDown;
         private float currentCountDownTimer;
         private float countGameTimer;
 
-        public static event System.Action OnGameOver;
-        public static event System.Action OnCountDownFinished;
-        public static event System.Action OnGameTimeUp;
-
-        public bool IsGameOver => isGameOver;
         public bool IsCountingDown => isCountDown;
-        public float GameTimeLimit => gameTimeLimit;
         public float CurrentGameTime => countGameTimer;
         public float RemainingGameTime => gameTimeLimit - countGameTimer;
         public float CountDownTimer => currentCountDownTimer;
+
+        /// <summary>ポーズ中か</summary>
+        public bool IsPaused => pauseManager != null && pauseManager.IsPaused;
+        /// <summary>ゲームをポーズする</summary>
+        public void Pause() => pauseManager?.PauseGame();
+        /// <summary>ポーズを解除する</summary>
+        public void Resume() => pauseManager?.ResumeGame();
+
         protected override bool UseDontDestroyOnLoad => false;
 
         protected override void Init()
         {
             base.Init();
-            PlayerCharacter.OnPlayerDeath += HandlePlayerDeath;
+            EventBus.Subscribe<PlayerDiedEvent>(HandlePlayerDeath);
             InitializeGameState();
         }
 
@@ -49,15 +58,10 @@ namespace SGC2025.Manager
 
         protected override void OnDestroy()
         {
-            PlayerCharacter.OnPlayerDeath -= HandlePlayerDeath;
+            EventBus.Unsubscribe<PlayerDiedEvent>(HandlePlayerDeath);
             
             // Time.timeScaleを確実にリセット（ポーズ中に破棄された場合に備えて）
             Time.timeScale = 1f;
-            
-            // static eventsをクリア
-            OnGameOver = null;
-            OnCountDownFinished = null;
-            OnGameTimeUp = null;
             
             base.OnDestroy();
         }
@@ -72,9 +76,6 @@ namespace SGC2025.Manager
             currentCountDownTimer = startCountDownTime;
             countGameTimer = 0f;
             Time.timeScale = 1f;
-            
-            if (ScoreManager.I != null)
-                ScoreManager.I.ResetScore();
         }
 
         private void Update()
@@ -82,7 +83,7 @@ namespace SGC2025.Manager
             if (isGameOver) return;
             
             // ポーズ中は時間を進めない
-            if (PauseManager.I != null && PauseManager.I.IsPaused) return;
+            if (IsPaused) return;
             
             UpdateCountDown();
             UpdateGameTimer();
@@ -95,44 +96,52 @@ namespace SGC2025.Manager
             if (currentCountDownTimer <= 0f)
             {
                 isCountDown = false;
-                OnCountDownFinished?.Invoke();
+                EventBus.Publish(new CountDownFinishedEvent());
             }
         }
 
         private void UpdateGameTimer()
         {
             if (isCountDown) return;
-            
+
             countGameTimer += Time.deltaTime;
-            
+
             if (countGameTimer >= gameTimeLimit)
             {
                 if (isGameOver) return;
                 isGameOver = true;
-                
+
                 if (AudioManager.I != null)
                 {
                     AudioManager.I.StopBGM(true);
                     AudioManager.I.PlaySE(SEType.TimeUp);
                 }
-                
-                OnGameTimeUp?.Invoke();
-                
-                if (GameManager.I != null)
-                    GameManager.I.LoadResultScene();
+
+                EventBus.Publish(new GameTimeUpEvent());
+
+                RequestGameOver();
             }
         }
 
-        private void HandlePlayerDeath()
+        private void HandlePlayerDeath(PlayerDiedEvent e)
         {
             if (isGameOver) return;
             isGameOver = true;
-            
+
             if (AudioManager.I != null)
                 AudioManager.I.StopBGM(true);
-            
-            OnGameOver?.Invoke();
-            
+
+            RequestGameOver();
+        }
+
+        private void RequestGameOver()
+        {
+            if (GameManager.I != null)
+                Invoke(nameof(DoLoadResultScene), gameOverDelay);
+        }
+
+        private void DoLoadResultScene()
+        {
             if (GameManager.I != null)
                 GameManager.I.LoadResultScene();
         }

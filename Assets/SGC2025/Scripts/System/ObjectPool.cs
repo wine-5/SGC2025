@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TechC
+namespace SGC2025.Systems
 {
     public class ObjectPool : MonoBehaviour
     {
@@ -74,33 +74,6 @@ namespace TechC
                 newObject.transform.SetParent(poolItem.parent.transform);
             instanceToPoolItemMap[newObject] = poolItem;
             return newObject;
-        }
-
-        /// <summary>
-        /// プールにプレハブを追加します
-        /// </summary>
-        /// <param name="name">プール項目の名前</param>
-        /// <param name="prefab">プールするプレハブ</param>
-        /// <param name="parent">親オブジェクト</param>
-        /// <param name="initialSize">初期サイズ</param>
-        public void AddToPool(string name, GameObject prefab, GameObject parent, int initialSize)
-        {
-            if (prefab == null)
-            {
-                Debug.LogError("nullのプレハブをプールに追加できません。");
-                return;
-            }
-
-            // すでに同じプレハブがプールに存在するか確認
-            if (objectPools.ContainsKey(prefab))
-            {
-                Debug.LogWarning($"プレハブ '{prefab.name}' はすでにプールに追加されています。");
-                return;
-            }
-
-            ObjectPoolItem newItem = new ObjectPoolItem(name, prefab, parent ? parent : this.gameObject, initialSize);
-            poolItems.Add(newItem);
-            InitializePool(newItem);
         }
 
         /// <summary>
@@ -258,30 +231,6 @@ namespace TechC
                 Debug.LogWarning($"オブジェクト '{obj.name}' はプールに登録されていません。削除します。");
                 Destroy(obj);
             }
-        }
-
-        /// <summary>
-        /// すべてのプールを空にします
-        /// </summary>
-        public void ClearAllPools()
-        {
-            foreach (var pool in objectPools.Values)
-            {
-                while (pool.Count > 0)
-                {
-                    GameObject obj = pool.Dequeue();
-                    if (obj != null)
-                    {
-                        Destroy(obj);
-                    }
-                }
-            }
-
-            objectPools.Clear();
-            instanceToPoolItemMap.Clear();
-
-            // プールを再初期化
-            InitializeAllPools();
         }
     }
 }

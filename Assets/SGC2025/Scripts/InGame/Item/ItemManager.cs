@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using SGC2025.Core;
 using SGC2025.Manager;
 using SGC2025.Effect;
-using SGC2025.Events;
 
 namespace SGC2025.Item
 {
@@ -27,13 +27,12 @@ namespace SGC2025.Item
         
         [SerializeField, Tooltip("自動生成を有効にする")]
         private bool autoSpawn = true;
-        
+
+        [Header("ファクトリー参照")]
+        [SerializeField] private ItemFactory itemFactory;
+
         private float nextSpawnTime;
         private Dictionary<ItemType, ItemEffect> activeEffects = new Dictionary<ItemType, ItemEffect>();
-        
-        // イベント
-        public static event System.Action<ItemType, float, float> OnItemEffectActivated;
-        public static event System.Action<ItemType> OnItemEffectExpired;
         
         protected override bool UseDontDestroyOnLoad => false;
         
@@ -55,25 +54,22 @@ namespace SGC2025.Item
                 nextSpawnTime = Time.time + spawnInterval;
             
             // 敵撃破イベントを購読して広範囲緑化効果を適用
-            EnemyEvents.OnEnemyDestroyedAtPosition += OnEnemyDestroyed;
+            EventBus.Subscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
         }
         
         protected override void OnDestroy()
         {
-            EnemyEvents.OnEnemyDestroyedAtPosition -= OnEnemyDestroyed;
+            EventBus.Unsubscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
             base.OnDestroy();
         }
         
         /// <summary>
         /// 敵撃破時の処理（AreaGreenify効果が有効な場合は広範囲緑化）
         /// </summary>
-        private void OnEnemyDestroyed(Vector3 enemyPosition)
+        private void OnEnemyDestroyed(EnemyDestroyedEvent e)
         {
             if (IsEffectActive(ItemType.AreaGreenify) && GroundManager.I != null)
-            {
-                // 広範囲緑化効果が有効な場合、9マス緑化
-                GroundManager.I.DrawGroundArea(enemyPosition);
-            }
+                GroundManager.I.DrawGroundArea(e.Position);
         }
         
         private void Update()
@@ -90,7 +86,7 @@ namespace SGC2025.Item
         /// <summary>
         /// ランダムにアイテムを生成
         /// </summary>
-        public void SpawnRandomItem()
+        private void SpawnRandomItem()
         {
             if (spawnSelector.IsEmpty) return;
             
@@ -133,24 +129,10 @@ namespace SGC2025.Item
         /// </summary>
         private void SpawnItem(ItemData itemData, Vector3 position)
         {
-            if (ItemFactory.I == null) return;
-            
-            GameObject item = ItemFactory.I.SpawnItem(itemData, position);
+            if (itemFactory == null) return;
+            itemFactory.SpawnItem(itemData, position);
         }
-        
-        /// <summary>
-        /// 指定位置にランダムアイテムを生成（デバッグ用）
-        /// </summary>
-        public void SpawnRandomItemAt(Vector3 position)
-        {
-            if (spawnSelector.IsEmpty) return;
-            
-            ItemData selectedItem = spawnSelector.SelectRandom();
-            if (selectedItem == null) return;
-            
-            SpawnItem(selectedItem, position);
-        }
-        
+
         /// <summary>
         /// アイテムを取得して効果を適用
         /// </summary>
@@ -178,7 +160,7 @@ namespace SGC2025.Item
             
             activeEffects[itemData.ItemType] = effect;
             
-            OnItemEffectActivated?.Invoke(itemData.ItemType, itemData.EffectValue, itemData.Duration);
+            EventBus.Publish(new ItemEffectActivatedEvent(itemData.ItemType, itemData.EffectValue, itemData.Duration));
             
             if (SGC2025.Player.PlayerDataProvider.I != null && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
             {
@@ -189,13 +171,7 @@ namespace SGC2025.Item
                 switch (itemData.ItemType)
                 {
                     case ItemType.SpeedBoost:
-                        // SpeedBoostは視覚エフェクトを生成
                         effect.effectInstance = EffectFactory.I.CreateEffect(EffectType.SpeedBoostEffect, playerPos, itemData.Duration, playerTransform);
-                        break;
-                        
-                    case ItemType.ScoreMultiplier:
-                        // ScoreMultiplierは視覚エフェクトなし（UIテキスト変更のみ）
-                        effect.effectInstance = null;
                         break;
                         
                     case ItemType.AreaGreenify:
@@ -204,7 +180,8 @@ namespace SGC2025.Item
                         break;
                         
                     default:
-                        throw new System.NotImplementedException($"ItemType {itemData.ItemType} is not implemented yet");
+                        Debug.LogWarning($"[ItemManager] ItemType {itemData.ItemType} のエフェクト処理が未実装です");
+                        break;
                 }
             }
         }
@@ -247,42 +224,12 @@ namespace SGC2025.Item
             
             activeEffects.Remove(itemType);
             
-            OnItemEffectExpired?.Invoke(itemType);
+            EventBus.Publish(new ItemEffectExpiredEvent(itemType));
         }
         
         /// <summary>
         /// 指定した種類のアイテムが有効か確認
         /// </summary>
-        public bool IsEffectActive(ItemType itemType) => activeEffects.ContainsKey(itemType);
-        
-        /// <summary>
-        /// 指定した種類のアイテムの残り時間を取得
-        /// </summary>
-        public float GetRemainingTime(ItemType itemType)
-        {
-            if (!activeEffects.ContainsKey(itemType)) return 0f;
-            
-            var effect = activeEffects[itemType];
-            float elapsedTime = Time.time - effect.startTime;
-            return Mathf.Max(0f, effect.data.Duration - elapsedTime);
-        }
-        
-        /// <summary>
-        /// 指定した種類のアイテムの効果値を取得
-        /// </summary>
-        public float GetEffectValue(ItemType itemType)
-        {
-            if (!activeEffects.ContainsKey(itemType)) return 1f;
-            
-            return activeEffects[itemType].data.EffectValue;
-        }
-        
-        /// <summary>
-        /// 生成間隔を設定
-        /// </summary>
-        public void SetSpawnInterval(float interval)
-        {
-            spawnInterval = Mathf.Max(interval, MIN_SPAWN_INTERVAL);
-        }
+        private bool IsEffectActive(ItemType itemType) => activeEffects.ContainsKey(itemType);
     }
 }

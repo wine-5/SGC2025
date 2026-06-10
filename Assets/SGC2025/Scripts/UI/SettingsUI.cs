@@ -14,10 +14,6 @@ namespace SGC2025.UI
     /// </summary>
     public class SettingsUI : MonoBehaviour
     {
-        private const float DEFAULT_MASTER_VOLUME = 1f;
-        private const float DEFAULT_BGM_VOLUME = 0.7f;
-        private const float DEFAULT_SE_VOLUME = 1f;
-
         [Header("Volume Sliders")]
         [SerializeField] private Slider masterVolumeSlider;
         [SerializeField] private Slider bgmVolumeSlider;
@@ -196,32 +192,6 @@ namespace SGC2025.UI
                 
                 // コントローラー用：元のボタンに選択を戻す
                 UIFocusHelper.RestoreFocus(lastSelectedBeforeOpen);
-            }
-        }
-
-        /// <summary>
-        /// 設定パネルの表示/非表示を切り替え（ボタンから呼び出し）
-        /// </summary>
-        public void ToggleSettings()
-        {
-            if (audioPanel != null)
-                audioPanel.SetActive(!audioPanel.activeSelf);
-        }
-
-        /// <summary>
-        /// 設定をデフォルトに戻す
-        /// </summary>
-        public void ResetToDefault()
-        {
-            if (AudioManager.I != null)
-            {
-                AudioManager.I.SetMasterVolume(DEFAULT_MASTER_VOLUME);
-                AudioManager.I.SetBGMVolume(DEFAULT_BGM_VOLUME);
-                AudioManager.I.SetSEVolume(DEFAULT_SE_VOLUME);
-                
-                if (masterVolumeSlider != null) masterVolumeSlider.value = DEFAULT_MASTER_VOLUME;
-                if (bgmVolumeSlider != null) bgmVolumeSlider.value = DEFAULT_BGM_VOLUME;
-                if (seVolumeSlider != null) seVolumeSlider.value = DEFAULT_SE_VOLUME;
             }
         }
 

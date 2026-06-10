@@ -10,19 +10,7 @@ namespace SGC2025.Manager
     /// </summary>
     public class GameManager : Singleton<GameManager>
     {
-        [Header("ゲーム設定")]
-        [SerializeField] private float gameOverDelay = 2f;
-
         protected override bool UseDontDestroyOnLoad => true;
-
-        protected override void Init()
-        {
-            base.Init();
-        }
-
-        private void Start()
-        {
-        }
 
         protected override void OnDestroy()
         {
@@ -40,22 +28,7 @@ namespace SGC2025.Manager
         {
             // ポーズ中にゲームオーバーになった場合に備えてTime.timeScaleをリセット
             Time.timeScale = 1f;
-            
-            if (ScoreManager.I != null && GroundManager.I != null)
-            {
-                float greeningRate = GroundManager.I.GetGreenificationRate();
-                ScoreManager.I.SaveGreeningRate(greeningRate);
-            }
 
-            if (SceneController.I != null)
-            {
-                // 少し遅延してからシーン遷移（ゲームオーバー演出のため）
-                Invoke(nameof(DoLoadResultScene), gameOverDelay);
-            }
-        }
-
-        private void DoLoadResultScene()
-        {
             if (SceneController.I != null)
             {
                 SceneController.I.LoadResultScene();

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using SGC2025.Player;
+using SGC2025.Core;
 
 namespace SGC2025.Effects
 {
@@ -35,13 +36,13 @@ namespace SGC2025.Effects
             flashImage.color = Color.clear;
             
             // Playerのダメージイベントを購読
-            PlayerCharacter.OnPlayerDamaged += HandlePlayerDamaged;
+            EventBus.Subscribe<PlayerDamagedEvent>(OnPlayerDamagedEvent);
         }
 
         private void OnDestroy()
         {
             // イベント購読解除
-            PlayerCharacter.OnPlayerDamaged -= HandlePlayerDamaged;
+            EventBus.Unsubscribe<PlayerDamagedEvent>(OnPlayerDamagedEvent);
         }
 
         private void Update()
@@ -61,10 +62,10 @@ namespace SGC2025.Effects
         }
 
         /// <summary>Playerがダメージを受けた時の処理</summary>
-        private void HandlePlayerDamaged(float hpRate) => TriggerFlash(hpRate);
+        private void OnPlayerDamagedEvent(PlayerDamagedEvent e) => TriggerFlash(e.HpRate);
 
         /// <summary>フラッシュ演出をトリガー</summary>
-        public void TriggerFlash(float hpRate)
+        private void TriggerFlash(float hpRate)
         {
             currentFlashColor = hpRate <= lowHpThreshold ? lowHpFlashColor : normalFlashColor;
             flashTimer = flashDuration;

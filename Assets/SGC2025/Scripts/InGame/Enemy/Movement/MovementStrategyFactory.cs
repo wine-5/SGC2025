@@ -1,5 +1,4 @@
-using SGC2025.Enemy.Interface;
-using SGC2025.Enemy.Strategy;
+using SGC2025.Enemy;
 
 namespace SGC2025.Enemy
 {

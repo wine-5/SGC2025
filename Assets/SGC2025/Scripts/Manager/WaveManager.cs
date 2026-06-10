@@ -1,7 +1,6 @@
 using UnityEngine;
-using TechC;
+using SGC2025.Core;
 using SGC2025.Enemy;
-using System;
 
 namespace SGC2025.Manager
 {
@@ -20,45 +19,34 @@ namespace SGC2025.Manager
         
         [Header("テスト設定")]
         [Tooltip("テスト用の高速Wave切り替え (デバッグ用)")]
-        [SerializeField] private bool useTestMode = true;
-        [SerializeField] private float testWaveInterval = 10f; // テスト用10秒間隔
-        [SerializeField] private bool enableVerboseLogging = true; // 詳細ログ
+        [SerializeField] private bool useTestMode = false;
+        [SerializeField] private float testWaveInterval = 10f;
+
         
         private int currentWaveLevel = 1;
         private bool isGameActive = true;
         private WaveDataSO.WaveData currentWave;
         
-        public static event Action<int> OnWaveChanged;
-        public static event Action<WaveDataSO.WaveData> OnWaveDataChanged;
-        
         public int CurrentWaveLevel => currentWaveLevel;
-        public float GameElapsedTime => InGameManager.I != null ? InGameManager.I.CurrentGameTime : 0f;
         public WaveDataSO.WaveData CurrentWave => currentWave;
-        public bool IsGameActive => isGameActive;
         protected override bool UseDontDestroyOnLoad => false; // シーン固有のManager
 
         protected override void Init()
         {
             base.Init();
             
-            // InGameManagerからゲームオーバーイベントを購諭
-            InGameManager.OnGameOver += StopWaveProgression;
-            
-            // PauseManagerからポーズイベントを購諭
-            PauseManager.OnPause += PauseWaveProgression;
-            PauseManager.OnResume += ResumeWaveProgression;
+            EventBus.Subscribe<GameOverEvent>(OnGameOver);
+            EventBus.Subscribe<PausedEvent>(OnPaused);
+            EventBus.Subscribe<ResumedEvent>(OnResumed);
             
             InitializeWaveSystem();
         }
         
         protected override void OnDestroy()
         {
-            // InGameManagerからイベントの購諭を解除
-            InGameManager.OnGameOver -= StopWaveProgression;
-            
-            // PauseManagerからイベントの購諭を解除
-            PauseManager.OnPause -= PauseWaveProgression;
-            PauseManager.OnResume -= ResumeWaveProgression;
+            EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+            EventBus.Unsubscribe<PausedEvent>(OnPaused);
+            EventBus.Unsubscribe<ResumedEvent>(OnResumed);
             
             base.OnDestroy();
         }
@@ -95,10 +83,7 @@ namespace SGC2025.Manager
             currentWaveLevel = newWaveLevel;
             UpdateCurrentWaveData();
             
-            OnWaveChanged?.Invoke(currentWaveLevel);
-            OnWaveDataChanged?.Invoke(currentWave);
-            
-            NotifyEnemySpawners();
+            EventBus.Publish(new WaveChangedEvent(currentWaveLevel));
         }
         
         private void UpdateCurrentWaveData()
@@ -112,16 +97,8 @@ namespace SGC2025.Manager
             currentWave = waveData.GetWaveDataAtLevel(currentWaveLevel);
         }
         
-        private void NotifyEnemySpawners()
-        {
-            var spawners = FindObjectsByType<EnemySpawner>(FindObjectsSortMode.None);
-            
-            foreach (var spawner in spawners)
-                spawner.SetWaveLevel(currentWaveLevel);
-        }
-        
-        private void StopWaveProgression() => isGameActive = false;
-        private void PauseWaveProgression() => isGameActive = false;
-        private void ResumeWaveProgression() => isGameActive = true;
+        private void OnGameOver(GameOverEvent e) => isGameActive = false;
+        private void OnPaused(PausedEvent e) => isGameActive = false;
+        private void OnResumed(ResumedEvent e) => isGameActive = true;
     }
 }

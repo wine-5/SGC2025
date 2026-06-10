@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 using SGC2025.Manager;
+using SGC2025.Ranking;
 
 namespace SGC2025.UI
 {
@@ -14,12 +15,6 @@ namespace SGC2025.UI
         private const float ZERO_WAIT_TIME = 0.0f;
         private const float PERCENT_MULTIPLIER = 100f;
 
-        [SerializeField]
-        private TextMeshProUGUI enemyScoreText;
-        [SerializeField]
-        private TextMeshProUGUI greeningScoreText;
-        [SerializeField]
-        private TextMeshProUGUI totalScoreText;
         [SerializeField]
         private TextMeshProUGUI greeningRateText; // 緑化度（％）表示
         [SerializeField]
@@ -102,24 +97,11 @@ namespace SGC2025.UI
                         greeningRateText.SetText("0.0%");
                     break;
 
-                case ResultPhase.EnemyKillScore:
-                    enemyScoreText.SetText("0");
-                    break;
-
-                case ResultPhase.GreeningScore:
-                    greeningScoreText.SetText("0");
-                    break;
-
-                case ResultPhase.TotalScore:
-                    totalScoreText.SetText("0");
-                    break;
-
                 case ResultPhase.HighScore:
-                    int totalScore = ScoreManager.I != null ? ScoreManager.I.GetTotalScore() : 0;
-                    float greeningRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * PERCENT_MULTIPLIER : 0f;
+                    float greeningRate = GroundManager.I != null ? GroundManager.I.GetGreenificationRate() * PERCENT_MULTIPLIER : 0f;
 
                     var rankingManager = RankingManager.I;
-                    if (rankingManager != null && rankingManager.IsNewRecord(totalScore, greeningRate))
+                    if (rankingManager != null && rankingManager.IsNewRecord(greeningRate))
                     {
                         if (nameInputUI != null)
                             nameInputUI.gameObject.SetActive(true);
@@ -152,37 +134,22 @@ namespace SGC2025.UI
                 case ResultPhase.GreeningRate:
                     if (greeningRateText != null)
                     {
-                        float maxRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * PERCENT_MULTIPLIER : 0f;
+                        float maxRate = GroundManager.I != null ? GroundManager.I.GetGreenificationRate() * PERCENT_MULTIPLIER : 0f;
                         float currentRate = Mathf.Lerp(0f, maxRate, Mathf.Clamp01(waitTime / SCORE_COUNT_UP_TIME));
                         greeningRateText.SetText($"{currentRate:F1}%");
                     }
                     break;
 
-                case ResultPhase.EnemyKillScore:
-                    enemyScoreText.SetText(ScoreCountUp(waitTime, ScoreManager.I.GetEnemyScore(), SCORE_COUNT_UP_TIME).ToString());
-                    break;
-
-                case ResultPhase.GreeningScore:
-                    greeningScoreText.SetText(ScoreCountUp(waitTime, ScoreManager.I.GetGreenScore(), SCORE_COUNT_UP_TIME).ToString());
-                    break;
-                    
                 case ResultPhase.HighScore:
                     waitTime = ZERO_WAIT_TIME;
-                    break;
-
-                case ResultPhase.TotalScore:
-                    totalScoreText.SetText(ScoreCountUp(waitTime, ScoreManager.I.GetTotalScore(), SCORE_COUNT_UP_TIME).ToString());
                     break;
 
                 case ResultPhase.End:
                     break;
 
                 default:
-                    {
-                        break;
-                    }
+                    break;
             }
-
         }
 
         /// <summary>

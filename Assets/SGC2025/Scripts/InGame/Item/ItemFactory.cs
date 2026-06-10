@@ -1,18 +1,16 @@
+using SGC2025.Systems;
 using UnityEngine;
-using TechC;
 
 namespace SGC2025.Item
 {
     /// <summary>
     /// アイテムの生成・プール管理を行うファクトリークラス
-    /// ObjectPoolのラッパーとして機能
+    /// ObjectPoolのラッパーとして機能。ItemManagerが参照を持つ。
     /// </summary>
-    public class ItemFactory : Singleton<ItemFactory>
+    public class ItemFactory : MonoBehaviour
     {
         [Header("プール設定")]
         [SerializeField] private ObjectPool objectPool;
-        
-        protected override bool UseDontDestroyOnLoad => false;
         
         /// <summary>
         /// アイテムを生成
@@ -40,7 +38,7 @@ namespace SGC2025.Item
             // ItemControllerの初期化
             ItemController controller = itemObj.GetComponent<ItemController>();
             if (controller != null)
-                controller.Initialize(itemData);
+                controller.Initialize(itemData, this);
             
             return itemObj;
         }

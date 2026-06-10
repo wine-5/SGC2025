@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using SGC2025.Manager;
 
 namespace SGC2025.Enemy
@@ -9,7 +8,7 @@ namespace SGC2025.Enemy
     /// 四方向からのランダム生成位置を提供
     /// </summary>
     [System.Serializable]
-    public class EnemySpawnPositionManager : ISpawnPositionProvider
+    public class EnemySpawnPositionManager
     {
         [Header("四隅生成設定")]
         [SerializeField] private bool useCornerSpawn = false; // 四隅から生成するかどうか
@@ -22,7 +21,6 @@ namespace SGC2025.Enemy
         [Header("Canvas自動取得設定")]
         [SerializeField] private bool useCanvasReference = false;
         [SerializeField] private Canvas targetCanvas;
-        [SerializeField] private UnityEngine.Camera referenceCamera;
         
         [Header("TileMap自動取得設定")]
         [SerializeField] private bool useTileMapReference = false; // TileMapから四隅を自動計算するか
@@ -56,11 +54,6 @@ namespace SGC2025.Enemy
             return new Vector2(59, 44);
         }
         
-        #region ISpawnPositionProviderの実装
-
-        /// <summary>初期化済みかどうか</summary>
-        public bool IsInitialized => isInitialized;
-
         /// <summary>初期化処理</summary>
         public void Initialize()
         {
@@ -71,37 +64,14 @@ namespace SGC2025.Enemy
         public Vector3 GetRandomSpawnPosition()
         {
             if (!isInitialized)
-            {
                 Initialize();
-            }
             return GetRandomEdgeSpawnPosition();
         }
 
-        #endregion
-
-        /// <summary>Canvas参照モード取得</summary>
-        public bool IsCanvasReferenceMode() => useCanvasReference;
-        
-        /// <summary>
-        /// TileMap参照モードを設定
-        /// </summary>
-        public void SetTileMapReferenceMode(bool enabled, Tilemap tileMap = null, float padding = 0.5f)
-        {
-            useTileMapReference = enabled;
-            if (tileMap != null)
-                targetTileMap = tileMap;
-            tileMapPadding = padding;
-            if (enabled)
-                useCanvasReference = false;
-        }
-        
-        /// <summary>TileMap参照モード取得</summary>
-        public bool IsTileMapReferenceMode() => useTileMapReference;
-        
         /// <summary>
         /// 画面の四方向または四隅からランダムに生成位置を取得
         /// </summary>
-        public Vector3 GetRandomEdgeSpawnPosition()
+        private Vector3 GetRandomEdgeSpawnPosition()
         {
             if (useBoundarySpawn) return GetRandomBoundaryPosition();
             if (useCornerSpawn) return GetRandomCornerSpawnPosition();
@@ -113,7 +83,7 @@ namespace SGC2025.Enemy
         /// <summary>
         /// 四隅からランダムに生成位置を取得
         /// </summary>
-        public Vector3 GetRandomCornerSpawnPosition()
+        private Vector3 GetRandomCornerSpawnPosition()
         {
             int corner = Random.Range(0, 4);
             return corner switch

@@ -20,14 +20,11 @@ namespace SGC2025.Manager
     {
         protected override bool UseDontDestroyOnLoad => true;
 
-        public SceneName CurrentStage { get; private set; } = SceneName.Title;
-
         /// <summary>
         /// 指定されたシーンに切り替え
         /// </summary>
         public void LoadScene(SceneName sceneName)
         {
-            CurrentStage = sceneName;
             SceneManager.LoadScene(sceneName.ToString());
         }
 

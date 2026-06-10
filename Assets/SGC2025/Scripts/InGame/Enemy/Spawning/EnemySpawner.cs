@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025.Core;
 using SGC2025.Manager;
 
 namespace SGC2025.Enemy
@@ -17,7 +18,6 @@ namespace SGC2025.Enemy
 
         [Header("生成位置管理")]
         [SerializeField] private EnemySpawnPositionManager positionManager = new EnemySpawnPositionManager();
-        private ISpawnPositionProvider positionProvider; // インターフェース参照
 
         [Header("ウェーブ設定")]
         [SerializeField] private int currentWaveLevel = DEFAULT_WAVE_LEVEL;
@@ -27,30 +27,33 @@ namespace SGC2025.Enemy
 
         private void Start()
         {
-            // インターフェース参照を設定
-            positionProvider = positionManager;
-            positionProvider.Initialize(); // インターフェース経由で初期化
+            positionManager.Initialize();
 
             if (autoStart)
-            {
                 StartSpawning();
-            }
+        }
+
+        private void OnEnable()
+        {
+            EventBus.Subscribe<WaveChangedEvent>(OnWaveChanged);
+        }
+
+        private void OnDisable()
+        {
+            EventBus.Unsubscribe<WaveChangedEvent>(OnWaveChanged);
+        }
+
+        private void OnWaveChanged(WaveChangedEvent e)
+        {
+            SetWaveLevel(e.WaveLevel);
         }
 
         /// <summary>敵の生成を開始</summary>
-        public void StartSpawning()
+        private void StartSpawning()
         {
             if (isSpawning) return;
             isSpawning = true;
             nextSpawnTime = Time.time + GetCurrentSpawnInterval();
-        }
-
-        /// <summary>
-        /// 敵の生成を停止
-        /// </summary>
-        public void StopSpawning()
-        {
-            isSpawning = false;
         }
 
         /// <summary>
@@ -62,7 +65,7 @@ namespace SGC2025.Enemy
         }
 
         /// <summary>現在のスポーン間隔を取得（WaveManagerから）</summary>
-        public float GetCurrentSpawnInterval()
+        private float GetCurrentSpawnInterval()
         {
             if (WaveManager.I != null)
             {
@@ -71,10 +74,6 @@ namespace SGC2025.Enemy
             }
             return DEFAULT_SPAWN_INTERVAL;
         }
-
-        /// <summary>現在のWaveレベルを取得</summary>
-        public int GetWaveLevel() => currentWaveLevel;
-
 
         private void Update()
         {
@@ -97,39 +96,20 @@ namespace SGC2025.Enemy
         private void SpawnEnemy()
         {
             if (EnemyFactory.I == null) return;
-            Vector3 spawnPosition = positionProvider.GetRandomSpawnPosition();
+
+            Vector3 spawnPosition = positionManager.GetRandomSpawnPosition();
             GameObject enemy = EnemyFactory.I.CreateRandomEnemy(spawnPosition, currentWaveLevel);
             if (enemy == null) return;
-            // 移動コンポーネントを取得
-            var movement = enemy.GetComponent<EnemyMovement>();
 
-            // 敵の種類を取得（手動アタッチ前提）
             var controller = enemy.GetComponent<EnemyController>();
-            if (controller != null && controller.EnemyData != null && movement != null)
-            {
-                MovementType movementType = controller.EnemyData.MovementType;
+            if (controller == null || controller.EnemyData == null) return;
 
-                // 移動タイプに応じて移動戦略を設定
-                var strategy = MovementStrategyFactory.CreateStrategy(movementType);
-                if (strategy != null)
-                {
-                    // プレイヤー追従型
-                    movement.SetMovementStrategy(strategy);
-                }
-                else
-                {
-                    // 固定方向移動型
-                    Vector3 targetPosition = positionManager.GetOppositeEdgePosition(spawnPosition);
-                    movement.SetTargetPosition(targetPosition);
-                }
-            }
-
-            // 自動削除コンポーネントの初期化
-            var autoReturn = enemy.GetComponent<EnemyAutoReturn>();
-            if (autoReturn != null)
-            {
-                autoReturn.Initialize();
-            }
+            // 移動タイプに応じて戦略を設定
+            var strategy = MovementStrategyFactory.CreateStrategy(controller.EnemyData.MovementType);
+            if (strategy != null)
+                controller.SetMovementStrategy(strategy);
+            else
+                controller.SetTargetPosition(positionManager.GetOppositeEdgePosition(spawnPosition));
         }
     }
 }

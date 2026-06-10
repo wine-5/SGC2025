@@ -27,12 +27,12 @@ namespace SGC2025.UI
 
         private void OnButtonClick()
         {
-            if (PauseManager.I != null)
+            if (InGameManager.I != null)
             {
                 if (AudioManager.I != null)
                     AudioManager.I.PlaySE(SEType.ButtonClick);
 
-                PauseManager.I.ResumeGame();
+                InGameManager.I.Resume();
             }
         }
     }

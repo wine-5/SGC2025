@@ -1,5 +1,5 @@
 using UnityEngine;
-using SGC2025.Events;
+using SGC2025.Core;
 using SGC2025.Audio;
 using SGC2025.Effect;
 
@@ -23,11 +23,8 @@ namespace SGC2025.Manager
 
         private struct GroundData
         {
-            public Vector2Int gridPos;
             public Vector2 worldPos;
             public bool isDrawn;
-            public int point;
-            public Renderer renderer;
         }
 
         private GroundData[,] currentGroundArray;
@@ -35,10 +32,7 @@ namespace SGC2025.Manager
         private GameObject[,] tileObjects;
         
         public GroundDataSO MapData => groundData;
-        public int MapColumns => groundData?.columns ?? 0;
-        public int MapRows => groundData?.rows ?? 0;
-        public Vector2Int MapMaxIndex => new Vector2Int(MapColumns - 1, MapRows - 1);
-        
+
         /// <summary>Playerのスポーン位置を取得（マップの中心）</summary>
         public Vector3 GetPlayerSpawnPosition()
         {
@@ -46,7 +40,7 @@ namespace SGC2025.Manager
             return groundData.MapCenterPosition;
         }
 
-        public void Start()
+        private void Start()
         {
             if (groundData == null)
             {
@@ -55,17 +49,16 @@ namespace SGC2025.Manager
             }
             
             SetStageObject();
-            InitHighObject();
-            EnemyEvents.OnEnemyDestroyedAtPosition += OnEnemyDestroyed;
+            EventBus.Subscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
         }
         
         protected override void OnDestroy()
         {
-            EnemyEvents.OnEnemyDestroyedAtPosition -= OnEnemyDestroyed;
+            EventBus.Unsubscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
             base.OnDestroy();
         }
         
-        private void OnEnemyDestroyed(Vector3 enemyPosition) => DrawGround(enemyPosition);
+        private void OnEnemyDestroyed(EnemyDestroyedEvent e) => DrawGround(e.Position);
 
         /// <summary>指定位置の地面を緑化（1マス）</summary>
         public bool DrawGround(Vector3 enemyPosition)
@@ -175,13 +168,10 @@ namespace SGC2025.Manager
             
             if (tileObjects != null)
                 tileObjects[x, y] = grassTile;
-            
-            Renderer newRenderer = grassTile.GetComponent<Renderer>();
-            currentGroundArray[x, y].renderer = newRenderer;
+
             currentGroundArray[x, y].isDrawn = true;
 
-            int points = currentGroundArray[x, y].point;
-            GroundEvents.TriggerGroundGreenified(pos, points);
+            EventBus.Publish(new GroundGreenifiedEvent(pos));
             
             return true;
         }
@@ -210,7 +200,7 @@ namespace SGC2025.Manager
         }
 
         /// <summary>緑化済みタイル数を取得</summary>
-        public int CountGreenifiedTiles()
+        private int CountGreenifiedTiles()
         {
             if (currentGroundArray == null) return 0;
             
@@ -224,13 +214,6 @@ namespace SGC2025.Manager
                 }
             }
             return count;
-        }
-
-        /// <summary>総タイル数を取得</summary>
-        public int GetTotalTileCount()
-        {
-            if (groundData == null) return 0;
-            return groundData.columns * groundData.rows;
         }
 
         private void SetStageObject()
@@ -250,31 +233,12 @@ namespace SGC2025.Manager
                     tile.name = $"Tile_{x}_{y}";
                     tileObjects[x, y] = tile;
 
-                    if (ScoreManager.I == null) return;
-                    
-                    currentGroundArray[x, y].point = ScoreManager.I.NormalTilePoint;
                     currentGroundArray[x, y].isDrawn = false;
                     currentGroundArray[x, y].worldPos = pos;
-                    currentGroundArray[x, y].gridPos = new Vector2Int(x, y);
-                    currentGroundArray[x, y].renderer = tile.GetComponent<Renderer>();
                 }
             }
             
             currentOriginPosition = transform.position;
-        }
-
-        private void InitHighObject()
-        {
-            GameObject[] objects = GameObject.FindGameObjectsWithTag("HighScoreObject");
-            
-            if (ScoreManager.I == null) return;
-            
-            foreach(GameObject highScore in objects)
-            {
-                Vector2Int cellPosition = SearchCellIndex(highScore.transform.position);
-                int multiplier = ScoreManager.I.HighScoreTileMultiplier;
-                currentGroundArray[cellPosition.x, cellPosition.y].point *= multiplier;
-            }
         }
         
         /// <summary>タイルのスケールをセルサイズに合わせて調整</summary>

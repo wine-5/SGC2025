@@ -23,7 +23,6 @@ namespace SGC2025.Camera
         private float lowHpThreshold = 0.3f;
 
         public float Duration => duration;
-        public float Magnitude => magnitude;
 
         /// <summary>
         /// HP率に応じたシェイクの強さを取得

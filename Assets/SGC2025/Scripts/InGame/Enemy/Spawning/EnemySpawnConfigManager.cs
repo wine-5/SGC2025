@@ -13,10 +13,7 @@ namespace SGC2025.Enemy
         [Header("敵生成設定")]
         [SerializeField] private List<EnemySpawnConfigSO> spawnConfigs = new List<EnemySpawnConfigSO>();
 
-        /// <summary>
-        /// 登録されている設定の数を取得
-        /// </summary>
-        public int ConfigCount => spawnConfigs.Count(config => config != null);
+        private int ConfigCount => spawnConfigs.Count(config => config != null);
 
         /// <summary>
         /// すべての設定が有効かチェック
@@ -41,24 +38,6 @@ namespace SGC2025.Enemy
             var randomConfig = validConfigs[configIndex];
             
             return randomConfig.SelectRandomEnemy();
-        }
-
-        /// <summary>
-        /// 特定の敵タイプのデータを取得
-        /// </summary>
-        /// <param name="enemyType">敵タイプ</param>
-        /// <returns>該当する敵データ</returns>
-        public EnemyDataSO GetEnemyData(EnemyType enemyType)
-        {
-            foreach (var config in GetValidConfigs())
-            {
-                var enemyData = config.GetEnemyData(enemyType);
-                if (enemyData != null)
-                    return enemyData;
-            }
-
-            Debug.LogWarning($"EnemySpawnConfigManager: EnemyType {enemyType} のデータが見つかりません");
-            return null;
         }
 
         /// <summary>

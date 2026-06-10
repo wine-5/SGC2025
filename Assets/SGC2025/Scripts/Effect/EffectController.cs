@@ -11,17 +11,17 @@ namespace SGC2025.Effect
         [Header("追従設定")]
         [SerializeField, Tooltip("追従のオフセット位置")]
         private Vector3 followOffset = Vector3.zero;
-        
+
         [SerializeField, Tooltip("追従の滑らかさ（0で即座に追従）")]
         private float followSmooth = 0f;
-        
+
         [SerializeField, Tooltip("回転も追従するか")]
         private bool followRotation = true;
-        
+
         private Transform followTarget;
         private float duration;
         private float startTime;
-        
+
         /// <summary>
         /// エフェクトを初期化
         /// </summary>
@@ -32,33 +32,31 @@ namespace SGC2025.Effect
             followTarget = target;
             duration = effectDuration;
             startTime = Time.time;
-            
+
             if (followTarget != null)
             {
                 Vector3 targetPos = followTarget.position;
                 Vector3 finalPos = targetPos + followOffset;
-                
+
                 transform.position = finalPos;
-                
+
                 // followRotationが有効な場合のみ回転を設定
                 if (followRotation)
-                {
                     transform.rotation = followTarget.rotation;
-                }
             }
         }
-        
+
         private void Update()
         {
             if (followTarget != null)
             {
                 Vector3 targetPosition = followTarget.position + followOffset;
-                
+
                 if (followSmooth > 0f)
                     transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * followSmooth);
                 else
                     transform.position = targetPosition;
-                
+
                 // 回転も追従する場合
                 if (followRotation)
                 {
@@ -68,15 +66,15 @@ namespace SGC2025.Effect
                         transform.rotation = followTarget.rotation;
                 }
             }
-            
+
             if (duration > 0f && Time.time - startTime >= duration)
                 ReturnToPool();
         }
-        
+
         /// <summary>
         /// エフェクトをプールに返却
         /// </summary>
-        public void ReturnToPool()
+        private void ReturnToPool()
         {
             if (EffectFactory.I != null)
                 EffectFactory.I.ReturnEffect(gameObject);
@@ -86,7 +84,7 @@ namespace SGC2025.Effect
                 gameObject.SetActive(false);
             }
         }
-        
+
         private void OnDisable()
         {
             // リセット

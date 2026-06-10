@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using TechC;
 using SGC2025.Enemy;
+using SGC2025.Systems;
 
-namespace SGC2025
+namespace SGC2025.Enemy
 {
     /// <summary>
     /// 敵の生成・プール管理を行うファクトリークラス
@@ -19,9 +18,9 @@ namespace SGC2025
         
         [Header("敵選択設定")]
         [SerializeField] private EnemySpawnConfigManager spawnConfigManager = new EnemySpawnConfigManager();
-        
-        // 各敵タイプのオリジナルスケールを保存
-        private Dictionary<EnemyType, Vector3> originalScales = new Dictionary<EnemyType, Vector3>();
+
+        // 各インスタンスのプレハブ元スケールを保存
+        private readonly Dictionary<GameObject, Vector3> originalScales = new Dictionary<GameObject, Vector3>();
         
         protected override void Init()
         {
@@ -44,7 +43,7 @@ namespace SGC2025
         /// <summary>
         /// 敵を生成（EnemyDataSOから）
         /// </summary>
-        public GameObject CreateEnemy(EnemyDataSO enemyData, Vector3 position, int waveLevel = DEFAULT_WAVE_LEVEL)
+        private GameObject CreateEnemy(EnemyDataSO enemyData, Vector3 position, int waveLevel = DEFAULT_WAVE_LEVEL)
         {
             if (enemyData == null) return null;
             
@@ -52,53 +51,25 @@ namespace SGC2025
             GameObject enemyObj = objectPool.GetObjectByName(poolName);
             
             if (enemyObj == null) return null;
-            
-            // オリジナルスケールを保存（初回のみ）
-            if (!originalScales.ContainsKey(enemyData.EnemyType))
-            {
-                originalScales[enemyData.EnemyType] = enemyObj.transform.localScale;
-            }
-            
-            // Waveレベルに応じてオリジナルスケールをスケーリング
+
+            // インスタンスごとに元スケールを登録（初回のみ）
+            if (!originalScales.ContainsKey(enemyObj))
+                originalScales[enemyObj] = enemyObj.transform.localScale;
+
+            // Waveレベルに応じて元スケールをスケーリング
             float scaleMultiplier = 1f + (SCALE_INCREMENT_PER_WAVE * (waveLevel - 1));
-            Vector3 correctScale = originalScales[enemyData.EnemyType] * scaleMultiplier;
-            enemyObj.transform.localScale = correctScale;
+            enemyObj.transform.localScale = originalScales[enemyObj] * scaleMultiplier;
             
             enemyObj.transform.position = position;
             enemyObj.transform.rotation = Quaternion.identity;
             
             var controller = enemyObj.GetComponent<EnemyController>();
             if (controller != null)
-            {
-                enemyData.InitializeController(controller, waveLevel);
-                
-
-            }
+                controller.Initialize(enemyData, waveLevel);
             else
                 Debug.LogError($"[EnemyFactory] {enemyData.EnemyType}にEnemyControllerが見つかりません");
             
             return enemyObj;
-        }
-        
-        /// <summary>
-        /// 敵を生成（EnemyTypeから）
-        /// </summary>
-        public GameObject CreateEnemy(EnemyType enemyType, Vector3 position, int waveLevel = DEFAULT_WAVE_LEVEL)
-        {
-            if (!spawnConfigManager.HasValidConfigs)
-            {
-                Debug.LogError("[EnemyFactory] EnemySpawnConfigManagerに有効な設定がありません");
-                return null;
-            }
-            
-            var enemyData = spawnConfigManager.GetEnemyData(enemyType);
-            if (enemyData == null)
-            {
-                Debug.LogError($"[EnemyFactory] EnemyType {enemyType} のデータが見つかりません");
-                return null;
-            }
-            
-            return CreateEnemy(enemyData, position, waveLevel);
         }
         
         /// <summary>

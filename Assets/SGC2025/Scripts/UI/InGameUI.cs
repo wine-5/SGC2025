@@ -1,9 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using SGC2025.Events;
+using SGC2025.Core;
 using SGC2025.Manager;
 
 namespace SGC2025.UI
@@ -14,8 +13,6 @@ namespace SGC2025.UI
     public class InGameUI : MonoBehaviour
     {
         #region 定数
-        private const int MAX_POPUP_COUNT = 5;
-        private const int INSPECTOR_MAX_POPUP_COUNT = 3;
         private const float GAUGE_ANIMATION_SPEED = 2f;
         private const string START_TEXT = "開始！";
         private const float START_DISPLAY_DURATION = 0.5f;
@@ -29,7 +26,6 @@ namespace SGC2025.UI
         #endregion
 
         #region シリアライズフィールド
-        [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
         [SerializeField] private TextMeshProUGUI waveText;
 
@@ -38,8 +34,6 @@ namespace SGC2025.UI
         private TextMeshProUGUI countdownText;
         [SerializeField, Tooltip("カウントダウンアニメーションの拡大率")]
         private float countdownPulseScale = 1.5f;
-        [SerializeField, Tooltip("カウントダウンアニメーションの時間（秒）")]
-        private float countdownPulseDuration = 0.3f;
         [SerializeField, Tooltip("カウントダウン色")]
         private Color countdownColor = Color.white;
         [SerializeField, Tooltip("START表示色")]
@@ -51,31 +45,14 @@ namespace SGC2025.UI
         [SerializeField] private Color lowTerritoryColor = new Color(0.6f, 1f, 0.6f);
         [SerializeField] private Color highTerritoryColor = new Color(0.2f, 0.8f, 0.2f);
 
-        [Header("スコアアニメーション設定")]
-        [SerializeField] private float scorePulseScale = 1.2f;
-        [SerializeField] private float scorePulseDuration = 0.2f;
-        [SerializeField] private Color scoreFlashColor = Color.yellow;
-        [SerializeField] private Color bigScoreFlashColor = Color.cyan;
-        [SerializeField] private int bigScoreThreshold = 1000;
-        [SerializeField] private Color scoreBoostColor = new Color(1f, 0.6f, 0f);
 
         [Header("Waveアニメーション設定")]
         [SerializeField] private float wavePulseScale = 1.3f;
         [SerializeField] private float wavePulseDuration = 0.5f;
         [SerializeField] private Color waveChangeColor = new Color(1f, 0.8f, 0f);
-
-        [Header("スコアポップアップ設定")]
-        [SerializeField] private RectTransform parentCanvas;
-        [SerializeField] private GameObject popupPrefab;
-        [SerializeField] private int initialPoolSize = 10;
-        [SerializeField] private Vector2 popupSpawnPosition = new Vector2(100, 150);
         #endregion
 
         #region プライベートフィールド
-        private readonly Queue<PopupScoreUI> popupPool = new Queue<PopupScoreUI>();
-        private Color originalScoreColor;
-        private Vector3 originalScoreScale;
-        private Coroutine currentScoreAnimation;
         private float targetGaugeFillAmount = 0f;
         private TMP_FontAsset startTextFont;
         private TMP_FontAsset numberFont;
@@ -89,32 +66,12 @@ namespace SGC2025.UI
         #region Unityライフサイクル
         private void Awake()
         {
-            if (parentCanvas == null)
-                parentCanvas = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-            if (popupPrefab == null)
-                popupPrefab = Resources.Load<GameObject>("UI/PulsScore");
-
-            if (scoreText != null)
-            {
-                originalScoreColor = scoreText.color;
-                originalScoreScale = scoreText.transform.localScale;
-            }
-            
             if (timeText != null)
                 originalTimeColor = timeText.color;
-
-            for (int i = 0; i < initialPoolSize; i++)
-            {
-                var obj = Instantiate(popupPrefab, parentCanvas);
-                var popup = obj.GetComponent<PopupScoreUI>();
-                obj.SetActive(false);
-                popupPool.Enqueue(popup);
-            }
         }
 
         private void Start()
         {
-            InitializeScoreDisplay();
             InitializeTerritoryGauge();
             InitializeCountdownDisplay();
             InitializeWaveDisplay();
@@ -129,67 +86,33 @@ namespace SGC2025.UI
 
         private void OnEnable()
         {
-            EnemyEvents.OnEnemyScoreAdded += OnEnemyDestroyed;
-            GroundEvents.OnGreenScoreAdded += OnGroundGreenified;
-            SGC2025.Item.ItemManager.OnItemEffectActivated += OnItemEffectActivated;
-            SGC2025.Item.ItemManager.OnItemEffectExpired += OnItemEffectExpired;
-            WaveManager.OnWaveChanged += OnWaveChanged;
+            EventBus.Subscribe<GroundGreenifiedEvent>(OnGroundGreenified);
+            EventBus.Subscribe<WaveChangedEvent>(OnWaveChangedEvent);
         }
 
         private void OnDisable()
         {
-            EnemyEvents.OnEnemyScoreAdded -= OnEnemyDestroyed;
-            GroundEvents.OnGreenScoreAdded -= OnGroundGreenified;
-            SGC2025.Item.ItemManager.OnItemEffectActivated -= OnItemEffectActivated;
-            SGC2025.Item.ItemManager.OnItemEffectExpired -= OnItemEffectExpired;
-            WaveManager.OnWaveChanged -= OnWaveChanged;
+            EventBus.Unsubscribe<GroundGreenifiedEvent>(OnGroundGreenified);
+            EventBus.Unsubscribe<WaveChangedEvent>(OnWaveChangedEvent);
         }
         #endregion
 
         #region イベントハンドラー
 
-        private void OnEnemyDestroyed(int finalScore, Vector3 position)
+        private void OnGroundGreenified(GroundGreenifiedEvent e)
         {
-            // ScoreManagerで既に倍率適用済みの最終スコアを受け取る
-            UpdateScoreText(finalScore);
-            ShowScorePopupAtInspectorPosition(finalScore);
-        }
-
-        private void OnGroundGreenified(Vector3 position, int finalPoints)
-        {
-            // ScoreManagerで既に倍率適用済みの最終ポイントを受け取る
-            UpdateScoreText(finalPoints);
-            ShowScorePopupAtInspectorPosition(finalPoints);
             UpdateTerritoryGauge();
         }
 
-        private void OnItemEffectActivated(SGC2025.Item.ItemType itemType, float effectValue, float duration)
+        private void OnWaveChangedEvent(WaveChangedEvent e)
         {
-            if (itemType == SGC2025.Item.ItemType.ScoreMultiplier && scoreText != null)
-                scoreText.color = scoreBoostColor;
-        }
-
-        private void OnItemEffectExpired(SGC2025.Item.ItemType itemType)
-        {
-            if (itemType == SGC2025.Item.ItemType.ScoreMultiplier && scoreText != null)
-                scoreText.color = originalScoreColor;
-        }
-
-        private void OnWaveChanged(int newWaveLevel)
-        {
-            UpdateWaveText(newWaveLevel);
+            UpdateWaveText(e.WaveLevel);
             if (waveText != null)
                 StartCoroutine(AnimateWaveChange());
         }
         #endregion
 
         #region 初期化メソッド
-        private void InitializeScoreDisplay()
-        {
-            if (scoreText != null)
-                scoreText.text = "0";
-        }
-
         private void InitializeWaveDisplay()
         {
             if (waveText != null && WaveManager.I != null)
@@ -259,158 +182,6 @@ namespace SGC2025.UI
             }
         }
         #endregion
-
-        #region スコアシステム
-
-        /// <summary>
-        /// 任意座標でスコアポップアップを表示
-        /// </summary>
-        public void ShowScorePopup(int score, Vector2 position)
-        {
-            int activeCount = parentCanvas.childCount - popupPool.Count;
-            if (activeCount >= MAX_POPUP_COUNT) return;
-
-            PopupScoreUI popup = GetFromPool();
-            if (popup == null) return;
-
-            // スコア倍率中かチェック
-            bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
-                                 SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
-
-            popup.Initialize(score, position, ReturnToPool, isBoostActive);
-            popup.transform.SetAsLastSibling();
-        }
-
-        /// <summary>
-        /// Inspector設定位置でスコアポップアップを表示
-        /// </summary>
-        private void ShowScorePopupAtInspectorPosition(int score)
-        {
-            int activeCount = 0;
-            for (int i = 0; i < parentCanvas.childCount; i++)
-            {
-                var child = parentCanvas.GetChild(i);
-                if (child.gameObject.activeSelf && child.GetComponent<PopupScoreUI>() != null)
-                    activeCount++;
-            }
-
-            if (activeCount >= INSPECTOR_MAX_POPUP_COUNT) return;
-
-            Vector2 spawnPosition = GetSpawnPosition();
-
-            PopupScoreUI popup = GetFromPool();
-            if (popup == null) return;
-
-            // スコア倍率中かチェック
-            bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
-                                 SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
-
-            popup.Initialize(score, spawnPosition, ReturnToPool, isBoostActive);
-            popup.transform.SetAsLastSibling();
-        }
-
-        private Vector2 GetSpawnPosition() => popupSpawnPosition;
-
-        private PopupScoreUI GetFromPool()
-        {
-            PopupScoreUI popup;
-
-            if (popupPool.Count > 0)
-            {
-                popup = popupPool.Dequeue();
-            }
-            else
-            {
-                if (popupPrefab == null) return null;
-
-                var obj = Instantiate(popupPrefab, parentCanvas);
-                popup = obj.GetComponent<PopupScoreUI>();
-
-                if (popup == null)
-                {
-                    Destroy(obj);
-                    return null;
-                }
-
-                obj.SetActive(false);
-            }
-
-            return popup;
-        }
-
-        private void ReturnToPool(PopupScoreUI popup)
-        {
-            popup.gameObject.SetActive(false);
-            popupPool.Enqueue(popup);
-        }
-
-        private void UpdateScoreText(int score)
-        {
-            if (scoreText == null) return;
-
-            int totalScore = ScoreManager.I.GetTotalScore();
-            scoreText.text = totalScore.ToString();
-
-            if (currentScoreAnimation != null)
-            {
-                StopCoroutine(currentScoreAnimation);
-                scoreText.transform.localScale = originalScoreScale;
-
-                // スコア倍率中かチェックして色を決定
-                bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
-                                     SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
-                scoreText.color = isBoostActive ? scoreBoostColor : originalScoreColor;
-            }
-
-            Color flashColor = score >= bigScoreThreshold ? bigScoreFlashColor : scoreFlashColor;
-            currentScoreAnimation = StartCoroutine(ScoreUpdateAnimation(flashColor));
-        }
-
-        private IEnumerator ScoreUpdateAnimation(Color flashColor)
-        {
-            if (scoreText == null) yield break;
-
-            float elapsed = 0f;
-            float halfDuration = scorePulseDuration * 0.5f;
-
-            // スケールアップ + カラーフラッシュ
-            while (elapsed < halfDuration)
-            {
-                elapsed += Time.deltaTime;
-                float t = elapsed / halfDuration;
-
-                scoreText.transform.localScale = Vector3.Lerp(originalScoreScale, originalScoreScale * scorePulseScale, t);
-                scoreText.color = Color.Lerp(originalScoreColor, flashColor, t);
-
-                yield return null;
-            }
-
-            elapsed = 0f;
-
-            // スケールダウン + カラー復帰
-            while (elapsed < halfDuration)
-            {
-                elapsed += Time.deltaTime;
-                float t = elapsed / halfDuration;
-
-                scoreText.transform.localScale = Vector3.Lerp(originalScoreScale * scorePulseScale, originalScoreScale, t);
-
-                // スコア倍率中かチェックして復帰色を決定
-                bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
-                                     SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
-                Color targetColor = isBoostActive ? scoreBoostColor : originalScoreColor;
-                scoreText.color = Color.Lerp(flashColor, targetColor, t);
-
-                yield return null;
-            }
-
-            // 確実に元に戻す（倍率状態も考慮）
-            scoreText.transform.localScale = originalScoreScale;
-            bool isFinalBoostActive = SGC2025.Item.ItemManager.I != null &&
-                                      SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
-            scoreText.color = isFinalBoostActive ? scoreBoostColor : originalScoreColor;
-            currentScoreAnimation = null;
-        }
 
         private void UpdateTimeText()
         {
@@ -556,4 +327,3 @@ namespace SGC2025.UI
         }
     }
 }
-#endregion

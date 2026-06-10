@@ -1,7 +1,6 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.EventSystems;
 using SGC2025.Audio;
+using SGC2025.Manager;
 
 namespace SGC2025.UI
 {
@@ -27,16 +26,16 @@ namespace SGC2025.UI
         {
             if (AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.ButtonClick);
-            
-            SceneManager.LoadScene("InGame");
+
+            SceneController.I.LoadScene(SceneName.InGame);
         }
 
         public void OnClickBackTitle()
         {
             if (AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.ButtonClick);
-            
-            SceneManager.LoadScene("Title");
+
+            SceneController.I.LoadScene(SceneName.Title);
         }
         
         public void OnClickExit()
@@ -45,12 +44,6 @@ namespace SGC2025.UI
                 AudioManager.I.PlaySE(SEType.ButtonClick);
             
             Application.Quit();
-        }
-
-        protected int ScoreCountUp(float currentWaitTime, float scoreMaxValue, float waitMaxTime)
-        {
-            float a = Mathf.Clamp01(currentWaitTime / waitMaxTime);
-            return (int)Mathf.Lerp(0 , scoreMaxValue, a);
         }
     }
 }

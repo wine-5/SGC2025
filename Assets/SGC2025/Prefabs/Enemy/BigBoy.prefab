@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 4669896691879349253}
   - component: {fileID: 3466763648937393764}
   - component: {fileID: -661903214164330704}
-  - component: {fileID: 7797705306475142724}
-  - component: {fileID: 8005901574054368636}
   - component: {fileID: 3543620121386132034}
   - component: {fileID: 3158703857714193757}
   m_Layer: 7
@@ -39,6 +37,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3466763648937393764
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -84,6 +83,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: c8aaf23a7b06cfb4d8396362c3d20e6f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -93,7 +93,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &-661903214164330704
 MonoBehaviour:
@@ -109,30 +108,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemyController
   enemyData: {fileID: 11400000, guid: b46495d9b7926eb4b95b9e9881e6a46e, type: 2}
   currentWaveLevel: 1
---- !u!114 &7797705306475142724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6462408165022326274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50b85612b02affa4c9254ca42e215b71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemyMovement
---- !u!114 &8005901574054368636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6462408165022326274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73815b9e06d6d744f8ffdda7edbe1460, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemyAutoReturn
 --- !u!95 &3543620121386132034
 Animator:
   serializedVersion: 7

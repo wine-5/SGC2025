@@ -64,7 +64,7 @@ namespace SGC2025.Editor
             }
 
             // シーン内の全てのGameObjectを検索
-            GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+            GameObject[] allObjects = FindObjectsByType<GameObject>();
 
             foreach (GameObject obj in allObjects)
             {
