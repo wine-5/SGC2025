@@ -17,7 +17,6 @@ namespace SGC2025.Enemy
         private const float DEFAULT_HEALTH = 100f;
         private const float DEFAULT_MOVE_SPEED = 3f;
         private const float DEFAULT_LIFE_TIME = 30f;
-        private const int DEFAULT_WAVE_LEVEL = 1;
         
         [Header("基本パラメーター")]
         [SerializeField] private float health = DEFAULT_HEALTH;
@@ -52,13 +51,6 @@ namespace SGC2025.Enemy
             };
         }
         
-        /// <summary>
-        /// EnemyControllerを初期化
-        /// </summary>
-        public void InitializeController(EnemyController controller, int waveLevel = DEFAULT_WAVE_LEVEL)
-        {
-            controller.Initialize(this, waveLevel);
-        }
     }
     
     /// <summary>

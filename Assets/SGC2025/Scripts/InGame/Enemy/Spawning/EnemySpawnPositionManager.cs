@@ -8,7 +8,7 @@ namespace SGC2025.Enemy
     /// 四方向からのランダム生成位置を提供
     /// </summary>
     [System.Serializable]
-    public class EnemySpawnPositionManager : ISpawnPositionProvider
+    public class EnemySpawnPositionManager
     {
         [Header("四隅生成設定")]
         [SerializeField] private bool useCornerSpawn = false; // 四隅から生成するかどうか
@@ -55,8 +55,6 @@ namespace SGC2025.Enemy
             return new Vector2(59, 44);
         }
         
-        #region ISpawnPositionProviderの実装
-
         /// <summary>初期化済みかどうか</summary>
         public bool IsInitialized => isInitialized;
 
@@ -70,13 +68,9 @@ namespace SGC2025.Enemy
         public Vector3 GetRandomSpawnPosition()
         {
             if (!isInitialized)
-            {
                 Initialize();
-            }
             return GetRandomEdgeSpawnPosition();
         }
-
-        #endregion
 
         /// <summary>
         /// 画面の四方向または四隅からランダムに生成位置を取得

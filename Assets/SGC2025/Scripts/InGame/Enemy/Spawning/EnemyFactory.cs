@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using TechC;
 using SGC2025.Enemy;
@@ -19,9 +18,9 @@ namespace SGC2025.Enemy
         
         [Header("敵選択設定")]
         [SerializeField] private EnemySpawnConfigManager spawnConfigManager = new EnemySpawnConfigManager();
-        
-        // 各敵タイプのオリジナルスケールを保存
-        private Dictionary<EnemyType, Vector3> originalScales = new Dictionary<EnemyType, Vector3>();
+
+        // 各敵タイプのプレハブ元スケールを保存（初回取得時に登録）
+        private readonly Dictionary<EnemyType, Vector3> originalScales = new Dictionary<EnemyType, Vector3>();
         
         protected override void Init()
         {
@@ -52,28 +51,21 @@ namespace SGC2025.Enemy
             GameObject enemyObj = objectPool.GetObjectByName(poolName);
             
             if (enemyObj == null) return null;
-            
-            // オリジナルスケールを保存（初回のみ）
+
+            // プレハブの元スケールを初回のみ登録
             if (!originalScales.ContainsKey(enemyData.EnemyType))
-            {
                 originalScales[enemyData.EnemyType] = enemyObj.transform.localScale;
-            }
-            
-            // Waveレベルに応じてオリジナルスケールをスケーリング
+
+            // Waveレベルに応じて元スケールをスケーリング
             float scaleMultiplier = 1f + (SCALE_INCREMENT_PER_WAVE * (waveLevel - 1));
-            Vector3 correctScale = originalScales[enemyData.EnemyType] * scaleMultiplier;
-            enemyObj.transform.localScale = correctScale;
+            enemyObj.transform.localScale = originalScales[enemyData.EnemyType] * scaleMultiplier;
             
             enemyObj.transform.position = position;
             enemyObj.transform.rotation = Quaternion.identity;
             
             var controller = enemyObj.GetComponent<EnemyController>();
             if (controller != null)
-            {
-                enemyData.InitializeController(controller, waveLevel);
-                
-
-            }
+                controller.Initialize(enemyData, waveLevel);
             else
                 Debug.LogError($"[EnemyFactory] {enemyData.EnemyType}にEnemyControllerが見つかりません");
             
