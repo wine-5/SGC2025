@@ -34,6 +34,7 @@ namespace SGC2025.Player.Bullet
         private Rigidbody2D cachedRigidbody;
         private SpriteRenderer cachedSpriteRenderer;
         private BulletRotationEffect rotationEffect;
+        private BulletFactory factory;
         
         // 弾の状態
         private float remainingLifeTime;
@@ -78,9 +79,10 @@ namespace SGC2025.Player.Bullet
         /// </summary>
         /// <param name="data">弾データ</param>
         /// <param name="direction">発射方向</param>
-        public void Initialize(BulletDataSO data, Vector3 direction)
+        public void Initialize(BulletDataSO data, Vector3 direction, BulletFactory bulletFactory)
         {
             bulletData = data;
+            factory = bulletFactory;
             isActive = true;
             remainingLifeTime = bulletData.LifeTime;
             
@@ -253,14 +255,10 @@ namespace SGC2025.Player.Bullet
 
         private void ReturnToPool()
         {
-            if (BulletFactory.I != null)
-            {
-                BulletFactory.I.ReturnBullet(gameObject);
-            }
+            if (factory != null)
+                factory.ReturnBullet(gameObject);
             else
-            {
                 gameObject.SetActive(false);
-            }
         }
 
         #endregion

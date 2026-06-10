@@ -159,7 +159,7 @@ namespace SGC2025.Player.Bullet
                 return null;
             }
             
-            bulletController.Initialize(bulletData, direction);
+            bulletController.Initialize(bulletData, direction, this);
             
             return bulletController;
         }

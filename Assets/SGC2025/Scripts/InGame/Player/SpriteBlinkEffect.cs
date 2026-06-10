@@ -18,7 +18,7 @@ namespace SGC2025.Effects
         private float blinkAlpha = 0.3f;
         
         private SpriteRenderer spriteRenderer;
-        private PlayerCharacter player;
+        private PlayerController player;
         private float blinkTimer;
         private bool isBlinking;
         private Color originalColor;
@@ -26,7 +26,7 @@ namespace SGC2025.Effects
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
-            player = GetComponentInParent<PlayerCharacter>();
+            player = GetComponentInParent<PlayerController>();
             
             if (spriteRenderer != null)
                 originalColor = spriteRenderer.color;
