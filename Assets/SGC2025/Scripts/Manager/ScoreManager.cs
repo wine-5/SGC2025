@@ -59,28 +59,14 @@ namespace SGC2025.Manager
 
         private void OnEnemyDestroyedWithScore(EnemyDestroyedEvent e)
         {
-            float multiplier = GetScoreMultiplier();
-            int finalScore = Mathf.RoundToInt(e.Score * multiplier);
-            scoreEnemy += finalScore;
-            EventBus.Publish(new EnemyScoreAddedEvent(finalScore, e.Position));
+            scoreEnemy += e.Score;
+            EventBus.Publish(new EnemyScoreAddedEvent(e.Score, e.Position));
         }
 
         private void OnGroundGreenified(GroundGreenifiedEvent e)
         {
-            float multiplier = GetScoreMultiplier();
-            int finalPoints = Mathf.RoundToInt(e.Points * multiplier);
-            scoreGreen += finalPoints;
-            EventBus.Publish(new GreenScoreAddedEvent(e.Position, finalPoints));
-        }
-        
-        /// <summary>
-        /// 現在のスコア倍率を取得
-        /// </summary>
-        private float GetScoreMultiplier()
-        {
-            if (ItemManager.I != null && ItemManager.I.IsEffectActive(ItemType.ScoreMultiplier))
-                return ItemManager.I.GetEffectValue(ItemType.ScoreMultiplier);
-            return 1f;
+            scoreGreen += e.Points;
+            EventBus.Publish(new GreenScoreAddedEvent(e.Position, e.Points));
         }
 
         public int GetEnemyScore() => scoreEnemy;

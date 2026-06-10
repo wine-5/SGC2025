@@ -27,7 +27,10 @@ namespace SGC2025.Item
         
         [SerializeField, Tooltip("自動生成を有効にする")]
         private bool autoSpawn = true;
-        
+
+        [Header("ファクトリー参照")]
+        [SerializeField] private ItemFactory itemFactory;
+
         private float nextSpawnTime;
         private Dictionary<ItemType, ItemEffect> activeEffects = new Dictionary<ItemType, ItemEffect>();
         
@@ -126,9 +129,17 @@ namespace SGC2025.Item
         /// </summary>
         private void SpawnItem(ItemData itemData, Vector3 position)
         {
-            if (ItemFactory.I == null) return;
-            
-            GameObject item = ItemFactory.I.SpawnItem(itemData, position);
+            if (itemFactory == null) return;
+            itemFactory.SpawnItem(itemData, position);
+        }
+
+        /// <summary>
+        /// アイテムをプールに返却（ItemControllerから呼ばれる）
+        /// </summary>
+        public void ReturnItem(GameObject itemObj)
+        {
+            if (itemFactory == null) return;
+            itemFactory.ReturnItem(itemObj);
         }
         
         /// <summary>
@@ -182,13 +193,7 @@ namespace SGC2025.Item
                 switch (itemData.ItemType)
                 {
                     case ItemType.SpeedBoost:
-                        // SpeedBoostは視覚エフェクトを生成
                         effect.effectInstance = EffectFactory.I.CreateEffect(EffectType.SpeedBoostEffect, playerPos, itemData.Duration, playerTransform);
-                        break;
-                        
-                    case ItemType.ScoreMultiplier:
-                        // ScoreMultiplierは視覚エフェクトなし（UIテキスト変更のみ）
-                        effect.effectInstance = null;
                         break;
                         
                     case ItemType.AreaGreenify:
@@ -197,7 +202,8 @@ namespace SGC2025.Item
                         break;
                         
                     default:
-                        throw new System.NotImplementedException($"ItemType {itemData.ItemType} is not implemented yet");
+                        Debug.LogWarning($"[ItemManager] ItemType {itemData.ItemType} のエフェクト処理が未実装です");
+                        break;
                 }
             }
         }

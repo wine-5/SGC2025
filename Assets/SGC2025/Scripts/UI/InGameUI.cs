@@ -161,14 +161,10 @@ namespace SGC2025.UI
 
         private void OnItemEffectActivatedEvent(ItemEffectActivatedEvent e)
         {
-            if (e.ItemType == SGC2025.Item.ItemType.ScoreMultiplier && scoreText != null)
-                scoreText.color = scoreBoostColor;
         }
 
         private void OnItemEffectExpiredEvent(ItemEffectExpiredEvent e)
         {
-            if (e.ItemType == SGC2025.Item.ItemType.ScoreMultiplier && scoreText != null)
-                scoreText.color = originalScoreColor;
         }
 
         private void OnWaveChangedEvent(WaveChangedEvent e)
@@ -270,8 +266,7 @@ namespace SGC2025.UI
             if (popup == null) return;
 
             // スコア倍率中かチェック
-            bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
-                                 SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
+            bool isBoostActive = false;
 
             popup.Initialize(score, position, ReturnToPool, isBoostActive);
             popup.transform.SetAsLastSibling();
@@ -297,9 +292,7 @@ namespace SGC2025.UI
             PopupScoreUI popup = GetFromPool();
             if (popup == null) return;
 
-            // スコア倍率中かチェック
-            bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
-                                 SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
+            bool isBoostActive = false;
 
             popup.Initialize(score, spawnPosition, ReturnToPool, isBoostActive);
             popup.transform.SetAsLastSibling();
@@ -369,42 +362,28 @@ namespace SGC2025.UI
             float elapsed = 0f;
             float halfDuration = scorePulseDuration * 0.5f;
 
-            // スケールアップ + カラーフラッシュ
             while (elapsed < halfDuration)
             {
                 elapsed += Time.deltaTime;
                 float t = elapsed / halfDuration;
-
                 scoreText.transform.localScale = Vector3.Lerp(originalScoreScale, originalScoreScale * scorePulseScale, t);
                 scoreText.color = Color.Lerp(originalScoreColor, flashColor, t);
-
                 yield return null;
             }
 
             elapsed = 0f;
 
-            // スケールダウン + カラー復帰
             while (elapsed < halfDuration)
             {
                 elapsed += Time.deltaTime;
                 float t = elapsed / halfDuration;
-
                 scoreText.transform.localScale = Vector3.Lerp(originalScoreScale * scorePulseScale, originalScoreScale, t);
-
-                // スコア倍率中かチェックして復帰色を決定
-                bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
-                                     SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
-                Color targetColor = isBoostActive ? scoreBoostColor : originalScoreColor;
-                scoreText.color = Color.Lerp(flashColor, targetColor, t);
-
+                scoreText.color = Color.Lerp(flashColor, originalScoreColor, t);
                 yield return null;
             }
 
-            // 確実に元に戻す（倍率状態も考慮）
             scoreText.transform.localScale = originalScoreScale;
-            bool isFinalBoostActive = SGC2025.Item.ItemManager.I != null &&
-                                      SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
-            scoreText.color = isFinalBoostActive ? scoreBoostColor : originalScoreColor;
+            scoreText.color = originalScoreColor;
             currentScoreAnimation = null;
         }
 
