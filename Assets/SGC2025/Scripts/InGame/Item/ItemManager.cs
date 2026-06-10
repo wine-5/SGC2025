@@ -252,36 +252,6 @@ namespace SGC2025.Item
         /// <summary>
         /// 指定した種類のアイテムが有効か確認
         /// </summary>
-        public bool IsEffectActive(ItemType itemType) => activeEffects.ContainsKey(itemType);
-        
-        /// <summary>
-        /// 指定した種類のアイテムの残り時間を取得
-        /// </summary>
-        public float GetRemainingTime(ItemType itemType)
-        {
-            if (!activeEffects.ContainsKey(itemType)) return 0f;
-            
-            var effect = activeEffects[itemType];
-            float elapsedTime = Time.time - effect.startTime;
-            return Mathf.Max(0f, effect.data.Duration - elapsedTime);
-        }
-        
-        /// <summary>
-        /// 指定した種類のアイテムの効果値を取得
-        /// </summary>
-        public float GetEffectValue(ItemType itemType)
-        {
-            if (!activeEffects.ContainsKey(itemType)) return 1f;
-            
-            return activeEffects[itemType].data.EffectValue;
-        }
-        
-        /// <summary>
-        /// 生成間隔を設定
-        /// </summary>
-        public void SetSpawnInterval(float interval)
-        {
-            spawnInterval = Mathf.Max(interval, MIN_SPAWN_INTERVAL);
-        }
+        private bool IsEffectActive(ItemType itemType) => activeEffects.ContainsKey(itemType);
     }
 }

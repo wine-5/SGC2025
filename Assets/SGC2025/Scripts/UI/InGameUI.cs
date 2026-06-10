@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,8 +13,6 @@ namespace SGC2025.UI
     public class InGameUI : MonoBehaviour
     {
         #region 定数
-        private const int MAX_POPUP_COUNT = 5;
-        private const int INSPECTOR_MAX_POPUP_COUNT = 3;
         private const float GAUGE_ANIMATION_SPEED = 2f;
         private const string START_TEXT = "開始！";
         private const float START_DISPLAY_DURATION = 0.5f;
@@ -53,16 +50,9 @@ namespace SGC2025.UI
         [SerializeField] private float wavePulseScale = 1.3f;
         [SerializeField] private float wavePulseDuration = 0.5f;
         [SerializeField] private Color waveChangeColor = new Color(1f, 0.8f, 0f);
-
-        [Header("スコアポップアップ設定")]
-        [SerializeField] private RectTransform parentCanvas;
-        [SerializeField] private GameObject popupPrefab;
-        [SerializeField] private int initialPoolSize = 10;
-        [SerializeField] private Vector2 popupSpawnPosition = new Vector2(100, 150);
         #endregion
 
         #region プライベートフィールド
-        private readonly Queue<PopupScoreUI> popupPool = new Queue<PopupScoreUI>();
         private float targetGaugeFillAmount = 0f;
         private TMP_FontAsset startTextFont;
         private TMP_FontAsset numberFont;
@@ -76,21 +66,8 @@ namespace SGC2025.UI
         #region Unityライフサイクル
         private void Awake()
         {
-            if (parentCanvas == null)
-                parentCanvas = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-            if (popupPrefab == null)
-                popupPrefab = Resources.Load<GameObject>("UI/PulsScore");
-
             if (timeText != null)
                 originalTimeColor = timeText.color;
-
-            for (int i = 0; i < initialPoolSize; i++)
-            {
-                var obj = Instantiate(popupPrefab, parentCanvas);
-                var popup = obj.GetComponent<PopupScoreUI>();
-                obj.SetActive(false);
-                popupPool.Enqueue(popup);
-            }
         }
 
         private void Start()
@@ -217,84 +194,6 @@ namespace SGC2025.UI
             }
         }
         #endregion
-
-        #region スコアシステム
-
-        /// <summary>
-        /// 任意座標でスコアポップアップを表示
-        /// </summary>
-        public void ShowScorePopup(int score, Vector2 position)
-        {
-            int activeCount = parentCanvas.childCount - popupPool.Count;
-            if (activeCount >= MAX_POPUP_COUNT) return;
-
-            PopupScoreUI popup = GetFromPool();
-            if (popup == null) return;
-
-            popup.Initialize(score, position, ReturnToPool, false);
-            popup.transform.SetAsLastSibling();
-        }
-
-        /// <summary>
-        /// Inspector設定位置でスコアポップアップを表示
-        /// </summary>
-        private void ShowScorePopupAtInspectorPosition(int score)
-        {
-            int activeCount = 0;
-            for (int i = 0; i < parentCanvas.childCount; i++)
-            {
-                var child = parentCanvas.GetChild(i);
-                if (child.gameObject.activeSelf && child.GetComponent<PopupScoreUI>() != null)
-                    activeCount++;
-            }
-
-            if (activeCount >= INSPECTOR_MAX_POPUP_COUNT) return;
-
-            Vector2 spawnPosition = GetSpawnPosition();
-
-            PopupScoreUI popup = GetFromPool();
-            if (popup == null) return;
-
-            bool isBoostActive = false;
-
-            popup.Initialize(score, spawnPosition, ReturnToPool, isBoostActive);
-            popup.transform.SetAsLastSibling();
-        }
-
-        private Vector2 GetSpawnPosition() => popupSpawnPosition;
-
-        private PopupScoreUI GetFromPool()
-        {
-            PopupScoreUI popup;
-
-            if (popupPool.Count > 0)
-            {
-                popup = popupPool.Dequeue();
-            }
-            else
-            {
-                if (popupPrefab == null) return null;
-
-                var obj = Instantiate(popupPrefab, parentCanvas);
-                popup = obj.GetComponent<PopupScoreUI>();
-
-                if (popup == null)
-                {
-                    Destroy(obj);
-                    return null;
-                }
-
-                obj.SetActive(false);
-            }
-
-            return popup;
-        }
-
-        private void ReturnToPool(PopupScoreUI popup)
-        {
-            popup.gameObject.SetActive(false);
-            popupPool.Enqueue(popup);
-        }
 
         private void UpdateTimeText()
         {
