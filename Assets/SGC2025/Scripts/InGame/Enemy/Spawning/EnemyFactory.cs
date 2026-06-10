@@ -19,8 +19,8 @@ namespace SGC2025.Enemy
         [Header("敵選択設定")]
         [SerializeField] private EnemySpawnConfigManager spawnConfigManager = new EnemySpawnConfigManager();
 
-        // 各敵タイプのプレハブ元スケールを保存（初回取得時に登録）
-        private readonly Dictionary<EnemyType, Vector3> originalScales = new Dictionary<EnemyType, Vector3>();
+        // 各インスタンスのプレハブ元スケールを保存
+        private readonly Dictionary<GameObject, Vector3> originalScales = new Dictionary<GameObject, Vector3>();
         
         protected override void Init()
         {
@@ -52,13 +52,13 @@ namespace SGC2025.Enemy
             
             if (enemyObj == null) return null;
 
-            // プレハブの元スケールを初回のみ登録
-            if (!originalScales.ContainsKey(enemyData.EnemyType))
-                originalScales[enemyData.EnemyType] = enemyObj.transform.localScale;
+            // インスタンスごとに元スケールを登録（初回のみ）
+            if (!originalScales.ContainsKey(enemyObj))
+                originalScales[enemyObj] = enemyObj.transform.localScale;
 
             // Waveレベルに応じて元スケールをスケーリング
             float scaleMultiplier = 1f + (SCALE_INCREMENT_PER_WAVE * (waveLevel - 1));
-            enemyObj.transform.localScale = originalScales[enemyData.EnemyType] * scaleMultiplier;
+            enemyObj.transform.localScale = originalScales[enemyObj] * scaleMultiplier;
             
             enemyObj.transform.position = position;
             enemyObj.transform.rotation = Quaternion.identity;
