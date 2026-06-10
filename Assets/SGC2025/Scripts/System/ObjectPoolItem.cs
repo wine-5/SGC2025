@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TechC
+namespace SGC2025.Systems
 {
     /// <summary>
     /// オブジェクトプールの各アイテムを定義するクラス
