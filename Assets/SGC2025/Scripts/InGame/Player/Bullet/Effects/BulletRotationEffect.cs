@@ -124,7 +124,7 @@ namespace SGC2025.Player.Bullet.Effects
         /// <summary>
         /// ランダムな初期回転を適用
         /// </summary>
-        public void ApplyRandomInitialRotation()
+        private void ApplyRandomInitialRotation()
         {
             if (cachedTransform != null)
             {

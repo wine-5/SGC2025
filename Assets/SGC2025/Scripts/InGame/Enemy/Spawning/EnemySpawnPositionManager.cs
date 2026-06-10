@@ -21,7 +21,6 @@ namespace SGC2025.Enemy
         [Header("Canvas自動取得設定")]
         [SerializeField] private bool useCanvasReference = false;
         [SerializeField] private Canvas targetCanvas;
-        [SerializeField] private UnityEngine.Camera referenceCamera;
         
         [Header("TileMap自動取得設定")]
         [SerializeField] private bool useTileMapReference = false; // TileMapから四隅を自動計算するか
@@ -55,9 +54,6 @@ namespace SGC2025.Enemy
             return new Vector2(59, 44);
         }
         
-        /// <summary>初期化済みかどうか</summary>
-        public bool IsInitialized => isInitialized;
-
         /// <summary>初期化処理</summary>
         public void Initialize()
         {
@@ -75,7 +71,7 @@ namespace SGC2025.Enemy
         /// <summary>
         /// 画面の四方向または四隅からランダムに生成位置を取得
         /// </summary>
-        public Vector3 GetRandomEdgeSpawnPosition()
+        private Vector3 GetRandomEdgeSpawnPosition()
         {
             if (useBoundarySpawn) return GetRandomBoundaryPosition();
             if (useCornerSpawn) return GetRandomCornerSpawnPosition();
@@ -87,7 +83,7 @@ namespace SGC2025.Enemy
         /// <summary>
         /// 四隅からランダムに生成位置を取得
         /// </summary>
-        public Vector3 GetRandomCornerSpawnPosition()
+        private Vector3 GetRandomCornerSpawnPosition()
         {
             int corner = Random.Range(0, 4);
             return corner switch

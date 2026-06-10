@@ -33,7 +33,7 @@ namespace SGC2025.Enemy
         }
 
         /// <summary>敵の生成を開始</summary>
-        public void StartSpawning()
+        private void StartSpawning()
         {
             if (isSpawning) return;
             isSpawning = true;
@@ -49,7 +49,7 @@ namespace SGC2025.Enemy
         }
 
         /// <summary>現在のスポーン間隔を取得（WaveManagerから）</summary>
-        public float GetCurrentSpawnInterval()
+        private float GetCurrentSpawnInterval()
         {
             if (WaveManager.I != null)
             {

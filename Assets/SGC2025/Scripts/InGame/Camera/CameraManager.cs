@@ -56,7 +56,7 @@ namespace SGC2025.Camera
         private void OnPlayerDamagedEvent(PlayerDamagedEvent e) => TriggerShake(e.HpRate);
 
         /// <summary>カメラシェイクをトリガー</summary>
-        public void TriggerShake(float hpRate)
+        private void TriggerShake(float hpRate)
         {
             currentShakeMagnitude = shakeSettings.GetMagnitudeByHpRate(hpRate);
             shakeTimer = shakeSettings.Duration;

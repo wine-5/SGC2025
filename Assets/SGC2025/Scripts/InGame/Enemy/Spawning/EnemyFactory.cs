@@ -43,7 +43,7 @@ namespace SGC2025.Enemy
         /// <summary>
         /// 敵を生成（EnemyDataSOから）
         /// </summary>
-        public GameObject CreateEnemy(EnemyDataSO enemyData, Vector3 position, int waveLevel = DEFAULT_WAVE_LEVEL)
+        private GameObject CreateEnemy(EnemyDataSO enemyData, Vector3 position, int waveLevel = DEFAULT_WAVE_LEVEL)
         {
             if (enemyData == null) return null;
             
@@ -70,27 +70,6 @@ namespace SGC2025.Enemy
                 Debug.LogError($"[EnemyFactory] {enemyData.EnemyType}にEnemyControllerが見つかりません");
             
             return enemyObj;
-        }
-        
-        /// <summary>
-        /// 敵を生成（EnemyTypeから）
-        /// </summary>
-        public GameObject CreateEnemy(EnemyType enemyType, Vector3 position, int waveLevel = DEFAULT_WAVE_LEVEL)
-        {
-            if (!spawnConfigManager.HasValidConfigs)
-            {
-                Debug.LogError("[EnemyFactory] EnemySpawnConfigManagerに有効な設定がありません");
-                return null;
-            }
-            
-            var enemyData = spawnConfigManager.GetEnemyData(enemyType);
-            if (enemyData == null)
-            {
-                Debug.LogError($"[EnemyFactory] EnemyType {enemyType} のデータが見つかりません");
-                return null;
-            }
-            
-            return CreateEnemy(enemyData, position, waveLevel);
         }
         
         /// <summary>

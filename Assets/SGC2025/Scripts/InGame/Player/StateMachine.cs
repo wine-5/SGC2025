@@ -7,7 +7,7 @@ namespace SGC2025.Player
     /// </summary>
     public class StateMachine
     {
-        public EntityState CurrentState { get; private set; }
+        private EntityState CurrentState { get; set; }
 
         /// <summary>
         /// 初期状態を設定

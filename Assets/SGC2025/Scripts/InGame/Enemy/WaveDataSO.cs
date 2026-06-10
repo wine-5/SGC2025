@@ -20,32 +20,14 @@ namespace SGC2025.Enemy
             public string waveName = "Wave 1";
             [Tooltip("Waveレベル（敵の強さに影響）")]
             public int waveLevel = 1;
-            [Tooltip("このWaveの説明")]
-            public string explain;
-            
+
             [Header("スポーン設定")]
             [Tooltip("敵のスポーン間隔（秒）")]
             public float spawnInterval = 2f;
-            
-            [Tooltip("同時出現可能な敵の最大数")]
-            public int maxEnemyCount = 10;
-            
+
             [Header("使用する敵生成設定")]
             [Tooltip("このWaveで使用するEnemySpawnConfigSO")]
             public List<EnemySpawnConfigSO> enemyConfigs = new List<EnemySpawnConfigSO>();
-            
-            [Header("デバッグ情報")]
-            [Tooltip("このWaveのデバッグログを有効にする")]
-            public bool enableDebugLog = false;
-            
-            /// <summary>
-            /// このWaveが有効な敵設定を持っているかチェック
-            /// </summary>
-            public bool HasValidEnemyConfigs()
-            {
-                return enemyConfigs != null && enemyConfigs.Count > 0 && 
-                       enemyConfigs.Exists(config => config != null);
-            }
         }
         
         [Header("Wave設定リスト")]
@@ -81,14 +63,6 @@ namespace SGC2025.Enemy
             }
 
             return null;
-        }
-        
-        /// <summary>
-        /// 総Wave数を取得（バリデーション用）
-        /// </summary>
-        private int GetWaveCount()
-        {
-            return waves.Count;
         }
         
         /// <summary>

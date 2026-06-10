@@ -15,15 +15,6 @@ namespace SGC2025.Manager
 
         protected override bool UseDontDestroyOnLoad => true;
 
-        protected override void Init()
-        {
-            base.Init();
-        }
-
-        private void Start()
-        {
-        }
-
         protected override void OnDestroy()
         {
             // Time.timeScaleを確実にリセット（ポーズ中に破棄された場合に備えて）

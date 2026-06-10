@@ -16,9 +16,6 @@ namespace SGC2025.Item
         [SerializeField, Tooltip("アイテム名")]
         private string itemName;
 
-        [SerializeField, Tooltip("アイテムの説明")]
-        private string description;
-
         [Header("効果設定")]
         [SerializeField, Tooltip("効果の持続時間（秒）")]
         private float duration = 10f;
@@ -35,7 +32,6 @@ namespace SGC2025.Item
 
         public ItemType ItemType => itemType;
         public string ItemName => itemName;
-        public string Description => description;
         public float Duration => duration;
         public float EffectValue => effectValue;
         public GameObject ItemPrefab => itemPrefab;

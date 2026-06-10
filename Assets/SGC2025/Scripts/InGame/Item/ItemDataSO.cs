@@ -17,13 +17,5 @@ namespace SGC2025.Item
         /// アイテムリストを取得
         /// </summary>
         public List<ItemData> ItemList => itemList;
-
-        /// <summary>
-        /// 指定したタイプのアイテムを取得
-        /// </summary>
-        public ItemData GetItemByType(ItemType type)
-        {
-            return itemList.Find(item => item.ItemType == type);
-        }
     }
 }

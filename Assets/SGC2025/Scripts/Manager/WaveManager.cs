@@ -108,7 +108,6 @@ namespace SGC2025.Manager
                 spawner.SetWaveLevel(currentWaveLevel);
         }
         
-        private void StopWaveProgression() => isGameActive = false;
         private void OnGameOver(GameOverEvent e) => isGameActive = false;
         private void OnPaused(PausedEvent e) => isGameActive = false;
         private void OnResumed(ResumedEvent e) => isGameActive = true;

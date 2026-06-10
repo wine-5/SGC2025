@@ -41,24 +41,6 @@ namespace SGC2025.Enemy
         }
 
         /// <summary>
-        /// 特定の敵タイプのデータを取得
-        /// </summary>
-        /// <param name="enemyType">敵タイプ</param>
-        /// <returns>該当する敵データ</returns>
-        public EnemyDataSO GetEnemyData(EnemyType enemyType)
-        {
-            foreach (var config in GetValidConfigs())
-            {
-                var enemyData = config.GetEnemyData(enemyType);
-                if (enemyData != null)
-                    return enemyData;
-            }
-
-            Debug.LogWarning($"EnemySpawnConfigManager: EnemyType {enemyType} のデータが見つかりません");
-            return null;
-        }
-
-        /// <summary>
         /// 有効な設定のリストを取得
         /// </summary>
         private List<EnemySpawnConfigSO> GetValidConfigs() => spawnConfigs.Where(config => config != null && config.HasValidEnemies()).ToList();

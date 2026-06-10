@@ -42,11 +42,6 @@ namespace SGC2025.Player.Bullet
             return (enemiesKilled / enemiesPerUpgrade) + 1;
         }
         
-        /// <summary>
-        /// 最大レベルを取得
-        /// </summary>
-        public int MaxLevel => levelData?.Length ?? 1;
-        
         private void OnValidate()
         {
             enemiesPerUpgrade = Mathf.Max(1, enemiesPerUpgrade);
@@ -59,16 +54,7 @@ namespace SGC2025.Player.Bullet
     [System.Serializable]
     public struct WeaponLevelData
     {
-        [Header("レベル情報")]
-        public int level;
-        
         [Header("発射設定")]
         public int bulletDirections; // 弾の発射方向数（4, 8, 12, 16...）
-        
-        public WeaponLevelData(int defaultLevel = 1)
-        {
-            level = defaultLevel;
-            bulletDirections = 4;
-        }
     }
 }

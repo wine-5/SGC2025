@@ -31,10 +31,7 @@ namespace SGC2025
         
         [Tooltip("1タイルの高さ（autoCalculateSizeがfalseの場合のみ使用）")]
         public float cellHeight = 1f;
-        
-        [Tooltip("タイルのアスペクト比（幅:高さ）")]
-        public Vector2 tileAspect = new Vector2(1f, 1f);
-        
+
         /// <summary>実際のセル幅を取得（自動計算対応）</summary>
         public float ActualCellWidth
         {
@@ -61,20 +58,11 @@ namespace SGC2025
             }
         }
         
-        /// <summary>マップの最大インデックス（0ベース）を取得</summary>
-        public Vector2Int MapMaxIndex => new Vector2Int(columns - 1, rows - 1);
-        
         /// <summary>マップの中心座標（ワールド座標）を取得</summary>
         public Vector3 MapCenterPosition => new Vector3(
             (columns - 1) * ActualCellWidth * 0.5f,
             (rows - 1) * ActualCellHeight * 0.5f,
             0f
-        );
-        
-        /// <summary>マップの物理的なサイズ（ワールド単位）を取得</summary>
-        public Vector2 MapWorldSize => new Vector2(
-            columns * ActualCellWidth,
-            rows * ActualCellHeight
         );
         
         /// <summary>マップの最大座標（ワールド座標）を取得</summary>

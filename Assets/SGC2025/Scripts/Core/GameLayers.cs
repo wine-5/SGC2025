@@ -10,7 +10,6 @@ namespace SGC2025.Core
     {
         // タグ名
         public const string PlayerTag = "Player";
-        public const string EnemyTag  = "Enemy";
 
         // レイヤー名
         public const string PlayerLayerName = "Player";

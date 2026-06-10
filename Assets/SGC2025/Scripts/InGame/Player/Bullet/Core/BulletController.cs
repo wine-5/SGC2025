@@ -14,8 +14,6 @@ namespace SGC2025.Player.Bullet
     {
         #region 定数
 
-        private const int DEFAULT_ENEMY_LAYER = 7;  // Enemyレイヤー
-        private const int DEFAULT_OBSTACLE_LAYER = -1; // 使用しない（障害物レイヤーが存在しないため）
         private const int CIRCLE_SPRITE_SIZE = 64;
         private const float CIRCLE_SPRITE_CENTER_FACTOR = 0.5f;
         private const float CIRCLE_SPRITE_RADIUS_OFFSET = 1f;
@@ -30,9 +28,8 @@ namespace SGC2025.Player.Bullet
         
         [Header("衝突設定")]
         [SerializeField] private LayerMask enemyLayer = 1 << 7;  // Layer 7 (Enemy)
-        [SerializeField] private LayerMask obstacleLayer = 0;    // 使用しない
-        
-        
+
+
         // キャッシュされたコンポーネント
         private Rigidbody2D cachedRigidbody;
         private SpriteRenderer cachedSpriteRenderer;
@@ -59,12 +56,9 @@ namespace SGC2025.Player.Bullet
             
             // 実行時にレイヤー番号を取得して正しく設定
             int actualEnemyLayer = GameLayers.EnemyLayer;
-            
+
             if (actualEnemyLayer != -1)
                 enemyLayer = 1 << actualEnemyLayer;
-            
-            // 障害物レイヤーは使用しないので0に設定
-            obstacleLayer = 0;
         }
 
         private void Update()
@@ -99,7 +93,7 @@ namespace SGC2025.Player.Bullet
         /// <summary>
         /// 弾を非アクティブ化してプールに返却
         /// </summary>
-        public void Deactivate()
+        private void Deactivate()
         {
             if (!isActive) return;
             isActive = false;

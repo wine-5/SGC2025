@@ -52,7 +52,7 @@ namespace SGC2025.Player.Bullet
         /// <param name="direction">発射方向</param>
         /// <param name="bulletData">弾データ（nullの場合はデフォルト使用）</param>
         /// <returns>生成された弾のコントローラー</returns>
-        public BulletController CreateBullet(Vector3 position, Vector3 direction, BulletDataSO bulletData = null)
+        private BulletController CreateBullet(Vector3 position, Vector3 direction, BulletDataSO bulletData = null)
         {
             if (!ValidatePoolAndData()) return null;
             

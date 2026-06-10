@@ -23,10 +23,8 @@ namespace SGC2025.Manager
 
         private struct GroundData
         {
-            public Vector2Int gridPos;
             public Vector2 worldPos;
             public bool isDrawn;
-            public Renderer renderer;
         }
 
         private GroundData[,] currentGroundArray;
@@ -34,10 +32,7 @@ namespace SGC2025.Manager
         private GameObject[,] tileObjects;
         
         public GroundDataSO MapData => groundData;
-        public int MapColumns => groundData?.columns ?? 0;
-        public int MapRows => groundData?.rows ?? 0;
-        public Vector2Int MapMaxIndex => new Vector2Int(MapColumns - 1, MapRows - 1);
-        
+
         /// <summary>Playerのスポーン位置を取得（マップの中心）</summary>
         public Vector3 GetPlayerSpawnPosition()
         {
@@ -173,9 +168,7 @@ namespace SGC2025.Manager
             
             if (tileObjects != null)
                 tileObjects[x, y] = grassTile;
-            
-            Renderer newRenderer = grassTile.GetComponent<Renderer>();
-            currentGroundArray[x, y].renderer = newRenderer;
+
             currentGroundArray[x, y].isDrawn = true;
 
             EventBus.Publish(new GroundGreenifiedEvent(pos));
@@ -207,7 +200,7 @@ namespace SGC2025.Manager
         }
 
         /// <summary>緑化済みタイル数を取得</summary>
-        public int CountGreenifiedTiles()
+        private int CountGreenifiedTiles()
         {
             if (currentGroundArray == null) return 0;
             
@@ -242,8 +235,6 @@ namespace SGC2025.Manager
 
                     currentGroundArray[x, y].isDrawn = false;
                     currentGroundArray[x, y].worldPos = pos;
-                    currentGroundArray[x, y].gridPos = new Vector2Int(x, y);
-                    currentGroundArray[x, y].renderer = tile.GetComponent<Renderer>();
                 }
             }
             

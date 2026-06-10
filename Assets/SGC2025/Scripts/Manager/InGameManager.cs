@@ -26,9 +26,7 @@ namespace SGC2025.Manager
         private float currentCountDownTimer;
         private float countGameTimer;
 
-        public bool IsGameOver => isGameOver;
         public bool IsCountingDown => isCountDown;
-        public float GameTimeLimit => gameTimeLimit;
         public float CurrentGameTime => countGameTimer;
         public float RemainingGameTime => gameTimeLimit - countGameTimer;
         public float CountDownTimer => currentCountDownTimer;

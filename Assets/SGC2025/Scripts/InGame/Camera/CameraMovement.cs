@@ -22,11 +22,6 @@ namespace SGC2025.Camera
         private UnityEngine.Camera cam;
 
         /// <summary>
-        /// 追従対象の Transform を設定する（PlayerDataProvider 等から呼ぶ）
-        /// </summary>
-        public void SetTarget(Transform t) => target = t;
-
-        /// <summary>
         /// カメラの Transform と Camera コンポーネントを渡して初期化
         /// </summary>
         public void Initialize(Transform cameraTf, UnityEngine.Camera camera)

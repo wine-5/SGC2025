@@ -12,8 +12,6 @@ namespace SGC2025.Player
         protected string animBoolName;
 
         protected Animator anim;
-        protected Rigidbody2D rb;
-        protected PlayerInputSet input;
 
         protected EntityState(PlayerCharacter player, StateMachine stateMachine, string animBoolName)
         {
@@ -22,8 +20,6 @@ namespace SGC2025.Player
             this.animBoolName = animBoolName;
 
             anim = player.anim;
-            rb = player.rb;
-            input = player.input;
         }
 
         public virtual void Enter()

@@ -37,7 +37,7 @@ namespace SGC2025.Enemy
         /// <summary>
         /// 有効な敵のリストを取得
         /// </summary>
-        public List<EnemySpawnData> GetValidEnemies()
+        private List<EnemySpawnData> GetValidEnemies()
         {
             return enemySpawnDataList.Where(data => 
                 data != null && data.IsValid()).ToList();
@@ -93,22 +93,9 @@ namespace SGC2025.Enemy
         }
         
         /// <summary>
-        /// 特定の敵タイプのデータを取得
-        /// </summary>
-        public EnemyDataSO GetEnemyData(EnemyType enemyType)
-        {
-            var spawnData = enemySpawnDataList.FirstOrDefault(data => 
-                data != null && 
-                data.IsValid() && 
-                data.enemyData.EnemyType == enemyType
-            );
-            return spawnData?.enemyData;
-        }
-        
-        /// <summary>
         /// 登録されている敵データの数を取得
         /// </summary>
-        public int GetEnemyDataCount()
+        private int GetEnemyDataCount()
         {
             return GetValidEnemies().Count;
         }

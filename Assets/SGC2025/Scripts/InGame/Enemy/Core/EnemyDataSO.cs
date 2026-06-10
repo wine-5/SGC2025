@@ -24,16 +24,10 @@ namespace SGC2025.Enemy
         
         [Header("生存時間設定")]
         [SerializeField] private float lifeTime = DEFAULT_LIFE_TIME;
-        
-        [Header("スケール設定")]
-        [SerializeField] private Vector3 baseScale = Vector3.one;
-        
-        
+
         // 基本プロパティ
         public EnemyType EnemyType => enemyType;
         public MovementType MovementType => movementType;
-        public float LifeTime => lifeTime;
-        public Vector3 BaseScale => baseScale;
         
         /// <summary>
         /// Waveレベルに応じてスケーリングされたパラメーターを取得

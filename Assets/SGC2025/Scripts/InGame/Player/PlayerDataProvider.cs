@@ -31,19 +31,5 @@ namespace SGC2025.Player
             if (player == null) return;
             playerTransform = player;
         }
-        
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-        }
-        
-        /// <summary>
-        /// Playerの位置を取得
-        /// </summary>
-        public Vector3 GetPlayerPosition()
-        {
-            if (playerTransform == null) return Vector3.zero;
-            return playerTransform.position;
-        }
     }
 }

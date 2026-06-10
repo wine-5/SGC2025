@@ -74,7 +74,7 @@ namespace SGC2025.Effect
         /// <summary>
         /// エフェクトをプールに返却
         /// </summary>
-        public void ReturnToPool()
+        private void ReturnToPool()
         {
             if (EffectFactory.I != null)
                 EffectFactory.I.ReturnEffect(gameObject);

@@ -22,8 +22,6 @@ namespace SGC2025.Item
         private float spawnTime;
         private ItemFactory factory;
 
-        public ItemData ItemData => itemData;
-
         private void Start()
         {
             spawnTime = Time.time;

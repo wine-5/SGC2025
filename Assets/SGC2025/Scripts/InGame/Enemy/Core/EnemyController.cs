@@ -33,13 +33,11 @@ namespace SGC2025.Enemy
         public EnemyDataSO EnemyData => enemyData;
         public float CurrentHealth => currentHp;
         public bool IsAlive => currentHp > MIN_HEALTH && isInitialized;
-        public int CurrentWaveLevel => currentWaveLevel;
         public float MaxHealth => cachedParameters.health;
         public float MoveSpeed => cachedParameters.moveSpeed;
-        public EnemyType EnemyType => cachedParameters.enemyType;
-        public float LifeTime => cachedParameters.lifeTime;
-        public Transform Transform => transform;
         public bool CanMove => IsAlive && isInitialized;
+
+        private float LifeTime => cachedParameters.lifeTime;
 
         private void Update()
         {

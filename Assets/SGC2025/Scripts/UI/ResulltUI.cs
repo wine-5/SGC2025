@@ -15,12 +15,6 @@ namespace SGC2025.UI
         private const float PERCENT_MULTIPLIER = 100f;
 
         [SerializeField]
-        private TextMeshProUGUI enemyScoreText;
-        [SerializeField]
-        private TextMeshProUGUI greeningScoreText;
-        [SerializeField]
-        private TextMeshProUGUI totalScoreText;
-        [SerializeField]
         private TextMeshProUGUI greeningRateText; // 緑化度（％）表示
         [SerializeField]
         private GameObject[] buttons;

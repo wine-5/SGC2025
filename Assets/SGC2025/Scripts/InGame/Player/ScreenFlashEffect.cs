@@ -65,7 +65,7 @@ namespace SGC2025.Effects
         private void OnPlayerDamagedEvent(PlayerDamagedEvent e) => TriggerFlash(e.HpRate);
 
         /// <summary>フラッシュ演出をトリガー</summary>
-        public void TriggerFlash(float hpRate)
+        private void TriggerFlash(float hpRate)
         {
             currentFlashColor = hpRate <= lowHpThreshold ? lowHpFlashColor : normalFlashColor;
             flashTimer = flashDuration;

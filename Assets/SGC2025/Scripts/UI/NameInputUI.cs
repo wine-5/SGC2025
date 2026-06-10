@@ -73,7 +73,7 @@ namespace SGC2025.UI
             gameObject.SetActive(false);
         }
 
-        public void OnInputFocus(string text)
+        private void OnInputFocus(string text)
         {
             if (nameInputField != null)
                 nameInputField.ActivateInputField();

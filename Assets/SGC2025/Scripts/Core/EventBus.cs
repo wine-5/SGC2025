@@ -77,14 +77,5 @@ namespace SGC2025.Core
         }
 
         #endregion
-
-        #region Cleanup
-
-        /// <summary>
-        /// すべての購読を解除する（シーン遷移時に呼ぶ）
-        /// </summary>
-        public static void ClearAllSubscriptions() => eventHandlers.Clear();
-
-        #endregion
     }
 }

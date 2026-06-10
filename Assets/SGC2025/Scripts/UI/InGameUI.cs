@@ -87,16 +87,12 @@ namespace SGC2025.UI
         private void OnEnable()
         {
             EventBus.Subscribe<GroundGreenifiedEvent>(OnGroundGreenified);
-            EventBus.Subscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
-            EventBus.Subscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
             EventBus.Subscribe<WaveChangedEvent>(OnWaveChangedEvent);
         }
 
         private void OnDisable()
         {
             EventBus.Unsubscribe<GroundGreenifiedEvent>(OnGroundGreenified);
-            EventBus.Unsubscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
-            EventBus.Unsubscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
             EventBus.Unsubscribe<WaveChangedEvent>(OnWaveChangedEvent);
         }
         #endregion
@@ -106,14 +102,6 @@ namespace SGC2025.UI
         private void OnGroundGreenified(GroundGreenifiedEvent e)
         {
             UpdateTerritoryGauge();
-        }
-
-        private void OnItemEffectActivatedEvent(ItemEffectActivatedEvent e)
-        {
-        }
-
-        private void OnItemEffectExpiredEvent(ItemEffectExpiredEvent e)
-        {
         }
 
         private void OnWaveChangedEvent(WaveChangedEvent e)

@@ -15,9 +15,9 @@ namespace SGC2025.Player
     {
         #region プロパティ
         public Animator anim { get; private set; }
-        public Rigidbody2D rb { get; private set; }
-        public PlayerInputSet input;
-        public StateMachine stateMachine { get; private set; }
+        private Rigidbody2D rb;
+        private PlayerInputSet input;
+        private StateMachine stateMachine;
         public PlayerIdleState idleState { get; private set; }
         public PlayerMoveState moveState { get; private set; }
         public Vector2 moveInput { get; private set; }
@@ -32,7 +32,7 @@ namespace SGC2025.Player
         [SerializeField] private float damage = 10;
         [SerializeField] private float currentHealth;
         private float baseMovSpeed;
-        public float moveSpeed;
+        [SerializeField] private float moveSpeed;
         [SerializeField] private float mutekiTime;
         private float nowMutekiTime;
 
@@ -155,7 +155,7 @@ namespace SGC2025.Player
         /// <summary>現在HP取得</summary>
         public float GetPlayerCurrentHealth() => currentHealth;
 
-        public void Damage()
+        private void Damage()
         {
             if (nowMutekiTime > 0f) return;
             TakeDamage(damage);
@@ -164,7 +164,7 @@ namespace SGC2025.Player
         }
 
         /// <summary>ダメージを受ける</summary>
-        public void TakeDamage(float damage)
+        private void TakeDamage(float damage)
         {
             if (damage <= 0f) return;
             currentHealth = Mathf.Max(0f, currentHealth - damage);

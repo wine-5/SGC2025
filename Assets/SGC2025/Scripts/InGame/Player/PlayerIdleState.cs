@@ -17,11 +17,6 @@ namespace SGC2025.Player
             player.SetVelocity(0, 0);
         }
 
-        public override void Exit()
-        {
-            base.Exit();
-        }
-
         public override void Update()
         {
             base.Update();
