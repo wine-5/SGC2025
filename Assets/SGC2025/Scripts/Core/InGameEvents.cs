@@ -24,22 +24,8 @@ namespace SGC2025.Core
     public struct EnemyDestroyedEvent : IGameEvent
     {
         public Vector3 Position;
-        public int Score;
-        public EnemyDestroyedEvent(Vector3 position, int score = 0)
+        public EnemyDestroyedEvent(Vector3 position)
         {
-            Position = position;
-            Score = score;
-        }
-    }
-
-    /// <summary>倍率適用後のスコアが確定した（UI ポップアップ用）</summary>
-    public struct EnemyScoreAddedEvent : IGameEvent
-    {
-        public int FinalScore;
-        public Vector3 Position;
-        public EnemyScoreAddedEvent(int finalScore, Vector3 position)
-        {
-            FinalScore = finalScore;
             Position = position;
         }
     }
@@ -68,23 +54,9 @@ namespace SGC2025.Core
     public struct GroundGreenifiedEvent : IGameEvent
     {
         public Vector3 Position;
-        public int Points;
-        public GroundGreenifiedEvent(Vector3 position, int points)
+        public GroundGreenifiedEvent(Vector3 position)
         {
             Position = position;
-            Points = points;
-        }
-    }
-
-    /// <summary>倍率適用後のポイントが確定した（UI ポップアップ用）</summary>
-    public struct GreenScoreAddedEvent : IGameEvent
-    {
-        public Vector3 Position;
-        public int FinalPoints;
-        public GreenScoreAddedEvent(Vector3 position, int finalPoints)
-        {
-            Position = position;
-            FinalPoints = finalPoints;
         }
     }
 

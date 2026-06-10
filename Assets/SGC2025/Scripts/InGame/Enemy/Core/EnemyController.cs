@@ -121,8 +121,7 @@ namespace SGC2025.Enemy
         private void HandleDeath()
         {
             OnDeath?.Invoke();
-            int score = ScoreManager.I.EnemyKillPoint;
-            EventBus.Publish(new EnemyDestroyedEvent(transform.position, score));
+            EventBus.Publish(new EnemyDestroyedEvent(transform.position));
             ReturnToPool();
         }
 

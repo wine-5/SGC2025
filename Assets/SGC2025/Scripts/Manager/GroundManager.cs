@@ -26,7 +26,6 @@ namespace SGC2025.Manager
             public Vector2Int gridPos;
             public Vector2 worldPos;
             public bool isDrawn;
-            public int point;
             public Renderer renderer;
         }
 
@@ -55,7 +54,6 @@ namespace SGC2025.Manager
             }
             
             SetStageObject();
-            InitHighObject();
             EventBus.Subscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
         }
         
@@ -180,8 +178,7 @@ namespace SGC2025.Manager
             currentGroundArray[x, y].renderer = newRenderer;
             currentGroundArray[x, y].isDrawn = true;
 
-            int points = currentGroundArray[x, y].point;
-            EventBus.Publish(new GroundGreenifiedEvent(pos, points));
+            EventBus.Publish(new GroundGreenifiedEvent(pos));
             
             return true;
         }
@@ -243,9 +240,6 @@ namespace SGC2025.Manager
                     tile.name = $"Tile_{x}_{y}";
                     tileObjects[x, y] = tile;
 
-                    if (ScoreManager.I == null) return;
-                    
-                    currentGroundArray[x, y].point = ScoreManager.I.NormalTilePoint;
                     currentGroundArray[x, y].isDrawn = false;
                     currentGroundArray[x, y].worldPos = pos;
                     currentGroundArray[x, y].gridPos = new Vector2Int(x, y);
@@ -254,20 +248,6 @@ namespace SGC2025.Manager
             }
             
             currentOriginPosition = transform.position;
-        }
-
-        private void InitHighObject()
-        {
-            GameObject[] objects = GameObject.FindGameObjectsWithTag("HighScoreObject");
-            
-            if (ScoreManager.I == null) return;
-            
-            foreach(GameObject highScore in objects)
-            {
-                Vector2Int cellPosition = SearchCellIndex(highScore.transform.position);
-                int multiplier = ScoreManager.I.HighScoreTileMultiplier;
-                currentGroundArray[cellPosition.x, cellPosition.y].point *= multiplier;
-            }
         }
         
         /// <summary>タイルのスケールをセルサイズに合わせて調整</summary>

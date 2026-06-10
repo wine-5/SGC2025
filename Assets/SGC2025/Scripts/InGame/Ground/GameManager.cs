@@ -40,12 +40,6 @@ namespace SGC2025.Manager
         {
             // ポーズ中にゲームオーバーになった場合に備えてTime.timeScaleをリセット
             Time.timeScale = 1f;
-            
-            if (ScoreManager.I != null && GroundManager.I != null)
-            {
-                float greeningRate = GroundManager.I.GetGreenificationRate();
-                ScoreManager.I.SaveGreeningRate(greeningRate);
-            }
 
             if (SceneController.I != null)
             {

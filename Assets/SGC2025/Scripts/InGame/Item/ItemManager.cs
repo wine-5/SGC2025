@@ -86,7 +86,7 @@ namespace SGC2025.Item
         /// <summary>
         /// ランダムにアイテムを生成
         /// </summary>
-        public void SpawnRandomItem()
+        private void SpawnRandomItem()
         {
             if (spawnSelector.IsEmpty) return;
             

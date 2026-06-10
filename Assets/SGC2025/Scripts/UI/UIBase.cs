@@ -46,11 +46,5 @@ namespace SGC2025.UI
             
             Application.Quit();
         }
-
-        protected int ScoreCountUp(float currentWaitTime, float scoreMaxValue, float waitMaxTime)
-        {
-            float a = Mathf.Clamp01(currentWaitTime / waitMaxTime);
-            return (int)Mathf.Lerp(0 , scoreMaxValue, a);
-        }
     }
 }

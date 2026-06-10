@@ -29,7 +29,6 @@ namespace SGC2025.UI
         #endregion
 
         #region シリアライズフィールド
-        [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
         [SerializeField] private TextMeshProUGUI waveText;
 
@@ -49,13 +48,6 @@ namespace SGC2025.UI
         [SerializeField] private Color lowTerritoryColor = new Color(0.6f, 1f, 0.6f);
         [SerializeField] private Color highTerritoryColor = new Color(0.2f, 0.8f, 0.2f);
 
-        [Header("スコアアニメーション設定")]
-        [SerializeField] private float scorePulseScale = 1.2f;
-        [SerializeField] private float scorePulseDuration = 0.2f;
-        [SerializeField] private Color scoreFlashColor = Color.yellow;
-        [SerializeField] private Color bigScoreFlashColor = Color.cyan;
-        [SerializeField] private int bigScoreThreshold = 1000;
-        [SerializeField] private Color scoreBoostColor = new Color(1f, 0.6f, 0f);
 
         [Header("Waveアニメーション設定")]
         [SerializeField] private float wavePulseScale = 1.3f;
@@ -71,9 +63,6 @@ namespace SGC2025.UI
 
         #region プライベートフィールド
         private readonly Queue<PopupScoreUI> popupPool = new Queue<PopupScoreUI>();
-        private Color originalScoreColor;
-        private Vector3 originalScoreScale;
-        private Coroutine currentScoreAnimation;
         private float targetGaugeFillAmount = 0f;
         private TMP_FontAsset startTextFont;
         private TMP_FontAsset numberFont;
@@ -92,12 +81,6 @@ namespace SGC2025.UI
             if (popupPrefab == null)
                 popupPrefab = Resources.Load<GameObject>("UI/PulsScore");
 
-            if (scoreText != null)
-            {
-                originalScoreColor = scoreText.color;
-                originalScoreScale = scoreText.transform.localScale;
-            }
-            
             if (timeText != null)
                 originalTimeColor = timeText.color;
 
@@ -112,7 +95,6 @@ namespace SGC2025.UI
 
         private void Start()
         {
-            InitializeScoreDisplay();
             InitializeTerritoryGauge();
             InitializeCountdownDisplay();
             InitializeWaveDisplay();
@@ -127,8 +109,7 @@ namespace SGC2025.UI
 
         private void OnEnable()
         {
-            EventBus.Subscribe<EnemyScoreAddedEvent>(OnEnemyScoreAdded);
-            EventBus.Subscribe<GreenScoreAddedEvent>(OnGreenScoreAdded);
+            EventBus.Subscribe<GroundGreenifiedEvent>(OnGroundGreenified);
             EventBus.Subscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
             EventBus.Subscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
             EventBus.Subscribe<WaveChangedEvent>(OnWaveChangedEvent);
@@ -136,8 +117,7 @@ namespace SGC2025.UI
 
         private void OnDisable()
         {
-            EventBus.Unsubscribe<EnemyScoreAddedEvent>(OnEnemyScoreAdded);
-            EventBus.Unsubscribe<GreenScoreAddedEvent>(OnGreenScoreAdded);
+            EventBus.Unsubscribe<GroundGreenifiedEvent>(OnGroundGreenified);
             EventBus.Unsubscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
             EventBus.Unsubscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
             EventBus.Unsubscribe<WaveChangedEvent>(OnWaveChangedEvent);
@@ -146,16 +126,8 @@ namespace SGC2025.UI
 
         #region イベントハンドラー
 
-        private void OnEnemyScoreAdded(EnemyScoreAddedEvent e)
+        private void OnGroundGreenified(GroundGreenifiedEvent e)
         {
-            UpdateScoreText(e.FinalScore);
-            ShowScorePopupAtInspectorPosition(e.FinalScore);
-        }
-
-        private void OnGreenScoreAdded(GreenScoreAddedEvent e)
-        {
-            UpdateScoreText(e.FinalPoints);
-            ShowScorePopupAtInspectorPosition(e.FinalPoints);
             UpdateTerritoryGauge();
         }
 
@@ -176,12 +148,6 @@ namespace SGC2025.UI
         #endregion
 
         #region 初期化メソッド
-        private void InitializeScoreDisplay()
-        {
-            if (scoreText != null)
-                scoreText.text = "0";
-        }
-
         private void InitializeWaveDisplay()
         {
             if (waveText != null && WaveManager.I != null)
@@ -265,10 +231,7 @@ namespace SGC2025.UI
             PopupScoreUI popup = GetFromPool();
             if (popup == null) return;
 
-            // スコア倍率中かチェック
-            bool isBoostActive = false;
-
-            popup.Initialize(score, position, ReturnToPool, isBoostActive);
+            popup.Initialize(score, position, ReturnToPool, false);
             popup.transform.SetAsLastSibling();
         }
 
@@ -331,60 +294,6 @@ namespace SGC2025.UI
         {
             popup.gameObject.SetActive(false);
             popupPool.Enqueue(popup);
-        }
-
-        private void UpdateScoreText(int score)
-        {
-            if (scoreText == null) return;
-
-            int totalScore = ScoreManager.I.GetTotalScore();
-            scoreText.text = totalScore.ToString();
-
-            if (currentScoreAnimation != null)
-            {
-                StopCoroutine(currentScoreAnimation);
-                scoreText.transform.localScale = originalScoreScale;
-
-                // スコア倍率中かチェックして色を決定
-                bool isBoostActive = SGC2025.Item.ItemManager.I != null &&
-                                     SGC2025.Item.ItemManager.I.IsEffectActive(SGC2025.Item.ItemType.ScoreMultiplier);
-                scoreText.color = isBoostActive ? scoreBoostColor : originalScoreColor;
-            }
-
-            Color flashColor = score >= bigScoreThreshold ? bigScoreFlashColor : scoreFlashColor;
-            currentScoreAnimation = StartCoroutine(ScoreUpdateAnimation(flashColor));
-        }
-
-        private IEnumerator ScoreUpdateAnimation(Color flashColor)
-        {
-            if (scoreText == null) yield break;
-
-            float elapsed = 0f;
-            float halfDuration = scorePulseDuration * 0.5f;
-
-            while (elapsed < halfDuration)
-            {
-                elapsed += Time.deltaTime;
-                float t = elapsed / halfDuration;
-                scoreText.transform.localScale = Vector3.Lerp(originalScoreScale, originalScoreScale * scorePulseScale, t);
-                scoreText.color = Color.Lerp(originalScoreColor, flashColor, t);
-                yield return null;
-            }
-
-            elapsed = 0f;
-
-            while (elapsed < halfDuration)
-            {
-                elapsed += Time.deltaTime;
-                float t = elapsed / halfDuration;
-                scoreText.transform.localScale = Vector3.Lerp(originalScoreScale * scorePulseScale, originalScoreScale, t);
-                scoreText.color = Color.Lerp(flashColor, originalScoreColor, t);
-                yield return null;
-            }
-
-            scoreText.transform.localScale = originalScoreScale;
-            scoreText.color = originalScoreColor;
-            currentScoreAnimation = null;
         }
 
         private void UpdateTimeText()

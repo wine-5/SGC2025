@@ -64,10 +64,9 @@ namespace SGC2025.UI
             if (string.IsNullOrEmpty(name))
                 name = DEFAULT_NAME;
 
-            int totalScore = ScoreManager.I.GetTotalScore();
-            float greeningRate = ScoreManager.I != null ? ScoreManager.I.GetGreeningRate() * PERCENT_MULTIPLIER : 0f;
+            float greeningRate = GroundManager.I != null ? GroundManager.I.GetGreenificationRate() * PERCENT_MULTIPLIER : 0f;
             
-            RankingManager.I.AddScore(name, totalScore, greeningRate);
+            RankingManager.I.AddScore(name, greeningRate);
 
             Submitted?.Invoke();
             
