@@ -38,7 +38,7 @@ namespace SGC2025.Item
             // ItemControllerの初期化
             ItemController controller = itemObj.GetComponent<ItemController>();
             if (controller != null)
-                controller.Initialize(itemData);
+                controller.Initialize(itemData, this);
             
             return itemObj;
         }

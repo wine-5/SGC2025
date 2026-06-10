@@ -134,15 +134,6 @@ namespace SGC2025.Item
         }
 
         /// <summary>
-        /// アイテムをプールに返却（ItemControllerから呼ばれる）
-        /// </summary>
-        public void ReturnItem(GameObject itemObj)
-        {
-            if (itemFactory == null) return;
-            itemFactory.ReturnItem(itemObj);
-        }
-        
-        /// <summary>
         /// 指定位置にランダムアイテムを生成（デバッグ用）
         /// </summary>
         public void SpawnRandomItemAt(Vector3 position)

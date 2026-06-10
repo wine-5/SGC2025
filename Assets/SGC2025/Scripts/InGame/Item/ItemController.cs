@@ -20,6 +20,7 @@ namespace SGC2025.Item
         private ItemData itemData;
         private float lifeTime;
         private float spawnTime;
+        private ItemFactory factory;
 
         public ItemData ItemData => itemData;
 
@@ -39,9 +40,10 @@ namespace SGC2025.Item
         /// <summary>
         /// アイテムデータを設定
         /// </summary>
-        public void Initialize(ItemData data)
+        public void Initialize(ItemData data, ItemFactory itemFactory)
         {
             itemData = data;
+            factory = itemFactory;
             lifeTime = data != null ? data.Duration : 0f;
             spawnTime = Time.time;
         }
@@ -78,8 +80,8 @@ namespace SGC2025.Item
         /// </summary>
         private void ReturnToPool()
         {
-            if (ItemManager.I != null)
-                ItemManager.I.ReturnItem(gameObject);
+            if (factory != null)
+                factory.ReturnItem(gameObject);
             else
                 gameObject.SetActive(false);
         }

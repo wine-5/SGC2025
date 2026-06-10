@@ -339,4 +339,3 @@ namespace SGC2025.UI
         }
     }
 }
-#endregion

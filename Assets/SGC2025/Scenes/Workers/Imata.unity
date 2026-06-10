@@ -144,6 +144,17 @@ MonoBehaviour:
   startCountDownTime: 4
   gameTimeLimit: 180
   pauseManager: {fileID: 2002598152}
+--- !u!114 &1925472234 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6676039536516340211, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 4982227612467903538}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48b9f7998df1ba64d9631eb6b97a4b99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Item.ItemFactory
 --- !u!114 &2002598152 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3295539358614712899, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
@@ -163,6 +174,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2347185575079331102, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: itemFactory
+      value: 
+      objectReference: {fileID: 1925472234}
     - target: {fileID: 3093090312424424901, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Name
       value: InGameCanvas
@@ -224,6 +239,8 @@ PrefabInstance:
     - {fileID: 1087949510651139452, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
     m_RemovedGameObjects:
     - {fileID: 2074732942385664031, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+    - {fileID: 2643769864291814244, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+    - {fileID: 677063170544782168, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4355471097394446741, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
