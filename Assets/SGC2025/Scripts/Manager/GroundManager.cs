@@ -40,7 +40,7 @@ namespace SGC2025.Manager
             return groundData.MapCenterPosition;
         }
 
-        public void Start()
+        private void Start()
         {
             if (groundData == null)
             {

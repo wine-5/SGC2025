@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using SGC2025.Manager;
+using SGC2025.Ranking;
 
 namespace SGC2025.UI
 {

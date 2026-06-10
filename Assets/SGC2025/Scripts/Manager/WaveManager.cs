@@ -85,8 +85,6 @@ namespace SGC2025.Manager
             UpdateCurrentWaveData();
             
             EventBus.Publish(new WaveChangedEvent(currentWaveLevel));
-            
-            NotifyEnemySpawners();
         }
         
         private void UpdateCurrentWaveData()
@@ -98,14 +96,6 @@ namespace SGC2025.Manager
             }
             
             currentWave = waveData.GetWaveDataAtLevel(currentWaveLevel);
-        }
-        
-        private void NotifyEnemySpawners()
-        {
-            var spawners = FindObjectsByType<EnemySpawner>();
-            
-            foreach (var spawner in spawners)
-                spawner.SetWaveLevel(currentWaveLevel);
         }
         
         private void OnGameOver(GameOverEvent e) => isGameActive = false;

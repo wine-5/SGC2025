@@ -1,35 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace SGC2025.Manager
+namespace SGC2025.Ranking
 {
-    /// <summary>
-    /// スコアデータの構造体
-    /// </summary>
-    [Serializable]
-    public struct ScoreData
-    {
-        public string playerName;
-        public float greeningRate;
-
-        public ScoreData(string name, float rate)
-        {
-            playerName = name;
-            greeningRate = rate;
-        }
-    }
-
-    /// <summary>
-    /// ランキングデータのコンテナクラス
-    /// </summary>
-    [Serializable]
-    public class RankingData
-    {
-        public List<ScoreData> scores;
-    }
-
     /// <summary>
     /// ランキングデータの保存と取得を管理するクラス
     /// </summary>
@@ -113,7 +87,7 @@ namespace SGC2025.Manager
 
             return ranking.scores;
         }
-        
+
         /// <summary>
         /// 新しいスコアがランキングに入ったか判定する
         /// </summary>

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 using SGC2025.Manager;
+using SGC2025.Ranking;
 
 namespace SGC2025.UI
 {

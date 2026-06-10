@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025.Core;
 using SGC2025.Manager;
 
 namespace SGC2025.Enemy
@@ -30,6 +31,21 @@ namespace SGC2025.Enemy
 
             if (autoStart)
                 StartSpawning();
+        }
+
+        private void OnEnable()
+        {
+            EventBus.Subscribe<WaveChangedEvent>(OnWaveChanged);
+        }
+
+        private void OnDisable()
+        {
+            EventBus.Unsubscribe<WaveChangedEvent>(OnWaveChanged);
+        }
+
+        private void OnWaveChanged(WaveChangedEvent e)
+        {
+            SetWaveLevel(e.WaveLevel);
         }
 
         /// <summary>敵の生成を開始</summary>

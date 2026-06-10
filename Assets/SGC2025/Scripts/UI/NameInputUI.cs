@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using SGC2025.Manager;
+using SGC2025.Ranking;
 using System;
 
 
