@@ -28,8 +28,9 @@ namespace SGC2025.Player
 
         [Header("ステータス")]
         [SerializeField] private float maxHealth = 100;
-        [SerializeField] private float damage = 10;
         [SerializeField] private float currentHealth;
+
+        private const float DAMAGE = 10f;
         private float baseMovSpeed;
         [SerializeField] private float moveSpeed;
         [SerializeField] private float mutekiTime;
@@ -186,7 +187,7 @@ namespace SGC2025.Player
         private void Damage()
         {
             if (nowMutekiTime > 0f) return;
-            TakeDamage(damage);
+            TakeDamage(DAMAGE);
             nowMutekiTime = mutekiTime;
             AudioManager.I?.PlaySE(SEType.PlayerDamage);
         }

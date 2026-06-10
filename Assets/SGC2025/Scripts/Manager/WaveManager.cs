@@ -1,5 +1,4 @@
 using UnityEngine;
-using TechC;
 using SGC2025.Core;
 using SGC2025.Enemy;
 

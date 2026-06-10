@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TechC;
 using SGC2025.Enemy;
 
 namespace SGC2025.Enemy

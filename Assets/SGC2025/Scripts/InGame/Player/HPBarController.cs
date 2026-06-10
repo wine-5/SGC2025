@@ -10,9 +10,9 @@ namespace SGC2025.Player
     public class HPBarController : MonoBehaviour
     {
         [SerializeField] private GameObject entity;
-        [Range(0f, 1f)]
-        [SerializeField] private float rate;
         [SerializeField] private bool isPlayer;
+
+        private float rate;
 
         private float maxHealth;
         private float currentHealth;

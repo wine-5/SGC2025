@@ -1,5 +1,4 @@
 using UnityEngine;
-using TechC;
 
 namespace SGC2025.Item
 {

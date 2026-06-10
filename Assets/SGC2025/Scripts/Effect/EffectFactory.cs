@@ -1,5 +1,4 @@
 using UnityEngine;
-using TechC;
 using System.Collections.Generic;
 
 namespace SGC2025.Effect

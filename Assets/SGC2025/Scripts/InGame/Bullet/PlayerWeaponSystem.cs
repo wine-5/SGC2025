@@ -14,11 +14,10 @@ namespace SGC2025.Bullet
         [SerializeField] private WeaponUpgradeDataSO weaponUpgradeData;
         [SerializeField] private BulletDataSO bulletData;
         [SerializeField] private Transform firePoint; // 弾の発射位置
-        
-        [Header("デバッグ情報")]
-        [SerializeField] private int currentLevel = 1;
-        [SerializeField] private int enemiesKilled = 0;
-        [SerializeField] private int currentBulletDirections = 4;
+
+        private int currentLevel = 1;
+        private int enemiesKilled = 0;
+        private int currentBulletDirections = 4;
         
         private WeaponLevelData currentLevelData;
 

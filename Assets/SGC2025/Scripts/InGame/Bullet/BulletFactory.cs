@@ -1,5 +1,4 @@
 using UnityEngine;
-using TechC;
 using SGC2025;
 
 namespace SGC2025.Bullet
