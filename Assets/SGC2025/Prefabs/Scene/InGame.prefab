@@ -1743,6 +1743,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.InGameManager
   startCountDownTime: 4
   gameTimeLimit: 180
+  gameOverDelay: 2
+  pauseManager: {fileID: 0}
 --- !u!1 &6169577160033252297
 GameObject:
   m_ObjectHideFlags: 0
@@ -1825,6 +1827,7 @@ MonoBehaviour:
   spawnInterval: 3
   spawnHeightOffset: 0.5
   autoSpawn: 1
+  itemFactory: {fileID: 0}
 --- !u!1 &6385992789826873755
 GameObject:
   m_ObjectHideFlags: 0
@@ -1976,9 +1979,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.CameraManager
   cameraMovement:
-    target: {fileID: 0}
+    target: {fileID: 8003218262421739174}
     smoothSpeed: 5
-    orthographicSize: 12
+    orthographicSize: 8
     fieldOfView: 60
   shakeSettings:
     duration: 0.3
@@ -2090,7 +2093,6 @@ MonoBehaviour:
     boundaryOffset: 1
     useCanvasReference: 1
     targetCanvas: {fileID: 336211271028442502}
-    referenceCamera: {fileID: 8404949437244245253}
     useTileMapReference: 0
     targetTileMap: {fileID: 0}
     tileMapPadding: 0.5
@@ -3560,9 +3562,6 @@ MonoBehaviour:
   weaponUpgradeData: {fileID: 11400000, guid: 61018badaffcf914e870b3ff8361d5ed, type: 2}
   bulletData: {fileID: 11400000, guid: da7a7f36ffadcad439df4f325a0c719a, type: 2}
   firePoint: {fileID: 3446315730412740722}
-  currentLevel: 1
-  enemiesKilled: 0
-  currentBulletDirections: 4
 --- !u!50 &1378011311950653625
 Rigidbody2D:
   serializedVersion: 5
