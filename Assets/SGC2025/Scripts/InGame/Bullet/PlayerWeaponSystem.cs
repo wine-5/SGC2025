@@ -2,7 +2,7 @@ using UnityEngine;
 using SGC2025.Core;
 using SGC2025.Audio;
 
-namespace SGC2025.Player.Bullet
+namespace SGC2025.Bullet
 {
     /// <summary>
     /// プレイヤーの武器システムを管理するクラス

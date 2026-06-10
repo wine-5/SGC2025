@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using SGC2025.Core;
-using SGC2025.Player.Bullet;
+using SGC2025.Bullet;
 using SGC2025.Audio;
 using SGC2025.Manager;
 using SGC2025.Item;
@@ -11,19 +11,18 @@ namespace SGC2025.Player
     /// <summary>
     /// プレイヤーキャラクターの管理
     /// </summary>
-    public class PlayerCharacter : MonoBehaviour
+    public class PlayerController : MonoBehaviour
     {
         #region プロパティ
         public Animator anim { get; private set; }
-        private Rigidbody2D rb;
-        private PlayerInputSet input;
-        private StateMachine stateMachine;
-        public PlayerIdleState idleState { get; private set; }
-        public PlayerMoveState moveState { get; private set; }
         public Vector2 moveInput { get; private set; }
+        public PlayerInputSet PlayerInput { get; private set; }
         #endregion
 
         #region フィールド
+        private const float BOUNDARY_MARGIN = 0.5f;
+
+        private Rigidbody2D rb;
         [Header("武器システム")]
         private PlayerWeaponSystem weaponSystem;
 
@@ -45,19 +44,16 @@ namespace SGC2025.Player
             anim = GetComponentInChildren<Animator>();
             rb = GetComponent<Rigidbody2D>();
             weaponSystem = GetComponent<PlayerWeaponSystem>();
-            stateMachine = new StateMachine();
-            input = new PlayerInputSet();
-            idleState = new PlayerIdleState(this, stateMachine, "fly");
-            moveState = new PlayerMoveState(this, stateMachine, "fly");
+            PlayerInput = new PlayerInputSet();
         }
 
         private void OnEnable()
         {
-            input.Enable();
-            input.Player.Movement.performed += OnMovementPerformed;
-            input.Player.Movement.canceled += OnMovementCanceled;
-            input.Player.Shot.performed += OnShotPerformed;
-            input.Player.Pause.performed += OnPausePerformed;
+            PlayerInput.Enable();
+            PlayerInput.Player.Movement.performed += OnMovementPerformed;
+            PlayerInput.Player.Movement.canceled += OnMovementCanceled;
+            PlayerInput.Player.Shot.performed += OnShotPerformed;
+            PlayerInput.Player.Pause.performed += OnPausePerformed;
             
             EventBus.Subscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
             EventBus.Subscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
@@ -65,11 +61,11 @@ namespace SGC2025.Player
 
         private void OnDisable()
         {
-            input.Player.Movement.performed -= OnMovementPerformed;
-            input.Player.Movement.canceled -= OnMovementCanceled;
-            input.Player.Shot.performed -= OnShotPerformed;
-            input.Player.Pause.performed -= OnPausePerformed;
-            input.Disable();
+            PlayerInput.Player.Movement.performed -= OnMovementPerformed;
+            PlayerInput.Player.Movement.canceled -= OnMovementCanceled;
+            PlayerInput.Player.Shot.performed -= OnShotPerformed;
+            PlayerInput.Player.Pause.performed -= OnPausePerformed;
+            PlayerInput.Disable();
             
             EventBus.Unsubscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
             EventBus.Unsubscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
@@ -77,9 +73,9 @@ namespace SGC2025.Player
 
         private void Start()
         {
-            stateMachine.Initialize(idleState);
             currentHealth = maxHealth;
             baseMovSpeed = moveSpeed;
+            anim.SetBool("fly", true);
             if (GroundManager.I != null)
                 transform.position = GroundManager.I.GetPlayerSpawnPosition();
             
@@ -91,7 +87,7 @@ namespace SGC2025.Player
         {
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             
-            stateMachine.UpdateActiveState();
+            HandleMovement();
             DecreaseMutekiTime();
             PlayerRotate();
         }
@@ -104,7 +100,7 @@ namespace SGC2025.Player
         #endregion
 
         #region 入力処理
-        private void OnPausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
+        private void OnPausePerformed(InputAction.CallbackContext context)
         {
             if (InGameManager.I == null) return;
 
@@ -114,19 +110,19 @@ namespace SGC2025.Player
                 InGameManager.I.Pause();
         }
 
-        private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
+        private void OnMovementPerformed(InputAction.CallbackContext context)
         {
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             moveInput = context.ReadValue<Vector2>();
         }
 
-        private void OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context)
+        private void OnMovementCanceled(InputAction.CallbackContext context)
         {
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             moveInput = Vector2.zero;
         }
 
-        private void OnShotPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
+        private void OnShotPerformed(InputAction.CallbackContext context)
         {
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             if (weaponSystem == null) return;
@@ -135,10 +131,42 @@ namespace SGC2025.Player
         #endregion
 
         #region 移動処理
-        public void SetVelocity(float moveInputX, float moveInputY)
+        private void HandleMovement()
         {
-            Vector2 moveInputNormalized = new Vector2(moveInputX, moveInputY).normalized;
-            rb.linearVelocity = moveInputNormalized * moveSpeed;
+            if (moveInput == Vector2.zero)
+            {
+                rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
+            if (GroundManager.I == null || GroundManager.I.MapData == null)
+            {
+                rb.linearVelocity = moveInput.normalized * moveSpeed;
+                return;
+            }
+
+            var mapData = GroundManager.I.MapData;
+            Vector2 limitHigh = new Vector2(
+                mapData.MapMaxWorldPosition.x - BOUNDARY_MARGIN,
+                mapData.MapMaxWorldPosition.y - BOUNDARY_MARGIN
+            );
+            Vector2 limitLow = new Vector2(BOUNDARY_MARGIN, BOUNDARY_MARGIN);
+
+            Vector3 currentPos = transform.position;
+            bool isOutOfBounds = limitHigh.x < currentPos.x || limitHigh.y < currentPos.y ||
+                                 limitLow.x > currentPos.x || limitLow.y > currentPos.y;
+
+            if (isOutOfBounds)
+            {
+                transform.position = new Vector2(
+                    Mathf.Clamp(currentPos.x, limitLow.x, limitHigh.x),
+                    Mathf.Clamp(currentPos.y, limitLow.y, limitHigh.y)
+                );
+            }
+            else
+            {
+                rb.linearVelocity = moveInput.normalized * moveSpeed;
+            }
         }
 
         private void PlayerRotate()

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Player.Bullet.Effects
+namespace SGC2025.Bullet.Effects
 {
     /// <summary>
     /// 弾のスプライト回転エフェクトを管理するコンポーネント

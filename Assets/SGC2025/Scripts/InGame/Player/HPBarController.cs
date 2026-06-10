@@ -2,7 +2,7 @@ using UnityEngine;
 using SGC2025.Enemy;
 using SGC2025.Player;
 
-namespace SGC2025
+namespace SGC2025.Player
 {
     /// <summary>
     /// エンティティのHPバーを制御するコンポーネント
@@ -18,7 +18,7 @@ namespace SGC2025
         private float currentHealth;
         private Vector3 offsetFromPlayer; // Playerからの相対オフセット（固定）
         private Vector3 originalScale;
-        private PlayerCharacter cachedPlayer;
+        private PlayerController cachedPlayer;
         private EnemyController cachedEnemy;
         private Transform parentTransform;
         private Transform entityTransform;
@@ -45,7 +45,7 @@ namespace SGC2025
 
             if (isPlayer)
             {
-                cachedPlayer = entity.GetComponent<PlayerCharacter>();
+                cachedPlayer = entity.GetComponent<PlayerController>();
                 if (cachedPlayer != null)
                     maxHealth = cachedPlayer.GetPlayerMaxHealth();
             }

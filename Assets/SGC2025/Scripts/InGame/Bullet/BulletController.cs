@@ -1,10 +1,10 @@
 using UnityEngine;
 using SGC2025.Core;
 using SGC2025.Enemy;
-using SGC2025.Player.Bullet.Effects;
+using SGC2025.Bullet.Effects;
 using SGC2025.Manager;
 
-namespace SGC2025.Player.Bullet
+namespace SGC2025.Bullet
 {
     /// <summary>
     /// 弾の動作とライフサイクルを管理するコントローラー

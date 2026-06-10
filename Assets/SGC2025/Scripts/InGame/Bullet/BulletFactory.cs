@@ -2,7 +2,7 @@ using UnityEngine;
 using TechC;
 using SGC2025;
 
-namespace SGC2025.Player.Bullet
+namespace SGC2025.Bullet
 {
     /// <summary>
     /// 弾の生成・管理・プールリングを担当するファクトリークラス

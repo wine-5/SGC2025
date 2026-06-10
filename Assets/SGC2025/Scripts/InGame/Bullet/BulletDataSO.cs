@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Player.Bullet
+namespace SGC2025.Bullet
 {
     /// <summary>
     /// 弾のパラメーターを定義するScriptableObject
