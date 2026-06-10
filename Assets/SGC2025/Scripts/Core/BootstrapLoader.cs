@@ -16,25 +16,18 @@ namespace SGC2025.Core.Scene
         private static void Initialize()
         {
             if (_isBootstrapped)
-            {
-                Debug.Log("[Bootstrap] 既に初期化済みです");
                 return;
-            }
 
             _isBootstrapped = true;
 
             bool managerSceneLoaded = IsSceneLoaded(_managerSceneName);
 
             if (managerSceneLoaded)
-            {
-                Debug.Log($"[Bootstrap] {_managerSceneName}シーンは既にロードされています");
                 return;
-            }
 
             try
             {
                 SceneManager.LoadScene(_managerSceneName, LoadSceneMode.Additive);
-                Debug.Log($"[Bootstrap] {_managerSceneName}シーンをロードしました");
             }
             catch (System.Exception e)
             {

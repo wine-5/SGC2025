@@ -18,6 +18,9 @@ namespace SGC2025.Manager
         [SerializeField, Tooltip("ゲームの制限時間（秒）")]
         private float gameTimeLimit = 300f;
 
+        [SerializeField, Tooltip("ゲームオーバーから結果シーンへの遷移遅延（秒）")]
+        private float gameOverDelay = 2f;
+
         [Header("ポーズ設定")]
         [SerializeField] private PauseManager pauseManager;
 
@@ -100,24 +103,23 @@ namespace SGC2025.Manager
         private void UpdateGameTimer()
         {
             if (isCountDown) return;
-            
+
             countGameTimer += Time.deltaTime;
-            
+
             if (countGameTimer >= gameTimeLimit)
             {
                 if (isGameOver) return;
                 isGameOver = true;
-                
+
                 if (AudioManager.I != null)
                 {
                     AudioManager.I.StopBGM(true);
                     AudioManager.I.PlaySE(SEType.TimeUp);
                 }
-                
+
                 EventBus.Publish(new GameTimeUpEvent());
-                
-                if (GameManager.I != null)
-                    GameManager.I.LoadResultScene();
+
+                RequestGameOver();
             }
         }
 
@@ -125,10 +127,21 @@ namespace SGC2025.Manager
         {
             if (isGameOver) return;
             isGameOver = true;
-            
+
             if (AudioManager.I != null)
                 AudioManager.I.StopBGM(true);
-            
+
+            RequestGameOver();
+        }
+
+        private void RequestGameOver()
+        {
+            if (GameManager.I != null)
+                Invoke(nameof(DoLoadResultScene), gameOverDelay);
+        }
+
+        private void DoLoadResultScene()
+        {
             if (GameManager.I != null)
                 GameManager.I.LoadResultScene();
         }
