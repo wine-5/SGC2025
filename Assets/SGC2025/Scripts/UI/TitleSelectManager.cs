@@ -1,5 +1,6 @@
 using UnityEngine;
 using SGC2025.Manager;
+using SGC2025.Audio;
 
 namespace SGC2025.UI
 {
@@ -14,17 +15,16 @@ namespace SGC2025.UI
         private void Start()
         {
             if (UIInputManager.I != null)
-            {
                 UIInputManager.I.OnSubmitPressed += OnSubmitPressed;
-            }
+
+            if (AudioManager.I != null)
+                AudioManager.I.PlayBGM(BGMType.Title);
         }
 
         private void OnDestroy()
         {
             if (UIInputManager.I != null)
-            {
                 UIInputManager.I.OnSubmitPressed -= OnSubmitPressed;
-            }
         }
 
         private void OnSubmitPressed()

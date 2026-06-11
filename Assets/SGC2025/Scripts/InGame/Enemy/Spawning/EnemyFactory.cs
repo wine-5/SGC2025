@@ -10,6 +10,8 @@ namespace SGC2025.Enemy
     /// </summary>
     public class EnemyFactory : Singleton<EnemyFactory>
     {
+        protected override bool UseDontDestroyOnLoad => false;
+
         private const int DEFAULT_WAVE_LEVEL = 1;
         private const float SCALE_INCREMENT_PER_WAVE = 0.05f;
 

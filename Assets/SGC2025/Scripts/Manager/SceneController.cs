@@ -8,7 +8,8 @@ namespace SGC2025.Manager
     public enum SceneName
     {
         Title,
-        InGame,
+        InGame_Ranking,
+        InGame_Normal,
         Result,
     }
 
