@@ -18,5 +18,10 @@ namespace SGC2025.Effect
         /// 広範囲緑化エフェクト
         /// </summary>
         AreaGreenifyEffect,
+
+        /// <summary>
+        /// 緑化時パーティクルエフェクト
+        /// </summary>
+        GreenificationParticle,
     }
 }

@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &907499912 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2589638404928800303, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 1189758861}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1027520639 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4084128715585687077, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
@@ -142,6 +147,26 @@ PrefabInstance:
       propertyPath: countDownText
       value: 
       objectReference: {fileID: 1027520639}
+    - target: {fileID: 1660309809344651477, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: poolItems.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1660309809344651477, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: poolItems.Array.data[3].name
+      value: GreenificationParticle
+      objectReference: {fileID: 0}
+    - target: {fileID: 1660309809344651477, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: poolItems.Array.data[3].parent
+      value: 
+      objectReference: {fileID: 1539163576}
+    - target: {fileID: 1660309809344651477, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: poolItems.Array.data[3].prefab
+      value: 
+      objectReference: {fileID: 5695510518103672783, guid: 704587f4269e5a744879351244ad2d79, type: 3}
+    - target: {fileID: 1660309809344651477, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: poolItems.Array.data[3].initialSize
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 3892283319577148249, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -192,9 +217,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2589638404928800303, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1539163577}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+--- !u!1 &1539163576
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1539163577}
+  m_Layer: 0
+  m_Name: GreenificationParticle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1539163577
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1539163576}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.12683105, y: 0, z: 3.3173828}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 907499912}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

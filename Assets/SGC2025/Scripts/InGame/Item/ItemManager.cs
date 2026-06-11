@@ -64,10 +64,15 @@ namespace SGC2025.Item
         }
         
         /// <summary>
-        /// 敵撃破時の処理（AreaGreenify効果が有効な場合は広範囲緑化）
+        /// 敵撃破時の処理
         /// </summary>
         private void OnEnemyDestroyed(EnemyDestroyedEvent e)
         {
+            // 敵撃破時エフェクト生成（常に出す）
+            // if (EffectFactory.I != null)
+            //     EffectFactory.I.CreateEffect(EffectType.GreenificationParticle, e.Position, 1f);
+
+            // AreaGreenify効果が有効な場合は広範囲緑化も追加
             if (IsEffectActive(ItemType.AreaGreenify) && GroundManager.I != null)
                 GroundManager.I.DrawGroundArea(e.Position);
         }
@@ -173,12 +178,12 @@ namespace SGC2025.Item
                     case ItemType.SpeedBoost:
                         effect.effectInstance = EffectFactory.I.CreateEffect(EffectType.SpeedBoostEffect, playerPos, itemData.Duration, playerTransform);
                         break;
-                        
+
                     case ItemType.AreaGreenify:
                         // 広範囲緑化アイテムは持続効果（一定時間、敵撃破時に9マス緑化）＋エフェクト生成
                         effect.effectInstance = EffectFactory.I.CreateEffect(EffectType.AreaGreenifyEffect, playerPos, itemData.Duration, playerTransform);
                         break;
-                        
+
                     default:
                         Debug.LogWarning($"[ItemManager] ItemType {itemData.ItemType} のエフェクト処理が未実装です");
                         break;
