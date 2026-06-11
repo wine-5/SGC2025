@@ -20,8 +20,8 @@ MonoBehaviour:
     itemPrefab: {fileID: 5706087732011277661, guid: e3f8c96c7b82e12439eac413ddc1ad97, type: 3}
     spawnWeight: 2
   - itemType: 1
-    itemName: "\u30B9\u30B3\u30A2\u306E\u7372\u5F97\u91CF\u4E0A\u6607"
+    itemName: "\u7DD1\u5316\u7BC4\u56F2\u4E0A\u6607"
     duration: 20
     effectValue: 2
-    itemPrefab: {fileID: 8577232092810221527, guid: f5dda0cf525685b4fa2292c8413e37e9, type: 3}
+    itemPrefab: {fileID: 8577232092810221527, guid: 76b572ba44d64694dbc9d0eaa6adf555, type: 3}
     spawnWeight: 2

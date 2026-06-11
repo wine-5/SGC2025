@@ -67,17 +67,10 @@ namespace SGC2025.Manager
         {
             if (currentGroundArray == null) return false;
 
-            Debug.Log($"[GroundManager] Enemy destroyed at: {enemyPosition}, Origin: {currentOriginPosition}");
-
             Vector2Int cellPosition = SearchCellIndex(enemyPosition);
-            Debug.Log($"[GroundManager] Calculated cell position: ({cellPosition.x}, {cellPosition.y})");
 
             if (cellPosition.x < 0 || cellPosition.x >= groundData.columns ||
-                cellPosition.y < 0 || cellPosition.y >= groundData.rows)
-            {
-                Debug.LogWarning($"[GroundManager] Cell position out of bounds!");
-                return false;
-            }
+                cellPosition.y < 0 || cellPosition.y >= groundData.rows) return false;
             
             if (currentGroundArray[cellPosition.x, cellPosition.y].isDrawn) return false;
             
@@ -229,8 +222,6 @@ namespace SGC2025.Manager
         {
             currentGroundArray = new GroundData[groundData.columns, groundData.rows];
             tileObjects = new GameObject[groundData.columns, groundData.rows];
-
-            Debug.Log($"[GroundManager] SetStageObject called. Transform position: {transform.position}");
             
             for (int y = 0; y < groundData.rows; y++)
             {
