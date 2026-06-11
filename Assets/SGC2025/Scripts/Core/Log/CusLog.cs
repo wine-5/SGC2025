@@ -110,8 +110,20 @@ namespace Polychroma.Core.Log
             if (!includeStackTrace)
                 return "";
 
-            var stackTrace = new StackTrace(3, true);
-            return $"\n{stackTrace}";
+            var stackTrace = new StackTrace(2, true);
+            var frames = stackTrace.GetFrames();
+
+            var filteredFrames = new System.Collections.Generic.List<string>();
+            foreach (var frame in frames)
+            {
+                var method = frame.GetMethod();
+                if (method?.DeclaringType?.Namespace == "Polychroma.Core.Log")
+                    continue;
+
+                filteredFrames.Add(frame.ToString());
+            }
+
+            return filteredFrames.Count > 0 ? $"\n{string.Join("\n", filteredFrames)}" : "";
         }
 
         [Conditional("UNITY_EDITOR")]
