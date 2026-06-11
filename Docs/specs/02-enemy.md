@@ -20,6 +20,7 @@
 | `BigBoy` | `InertiaChaser` | 慣性をつけてゆっくり方向転換 |
 | `OldMan` | `PredictiveChaser` | プレイヤーの進行先を予測して追う |
 | `Excavator` | `ArcChaser` / `FixedDirection` | 円弧移動、または固定方向に直進 |
+| `Destroyer`（ボス） | `LinearChaser` | プレイヤーを直線的に追う。通った場所の緑化を破壊する |
 
 ---
 
@@ -38,6 +39,21 @@
 | `lifeTime` | `float` | 自動消滅までの時間（秒）|
 | `baseScale` | `Vector3` | 基本スケール |
 | `scaleGrowthRate` | `float` | Waveレベルごとのスケール上昇率 |
+
+### BossDataSO（ボス専用）
+
+破壊者（Destroyer）の専用パラメータを管理。
+
+| フィールド | 型 | 内容 |
+|-----------|-----|------|
+| `health` | `float` | 基本HP |
+| `moveSpeed` | `float` | プレイヤーを追う速度 |
+| `destructionRange` | `Vector2Int` | 緑化を破壊する範囲（デフォルト：3×3） |
+| `damageToPlayer` | `float` | プレイヤーへのダメージ量 |
+| `destroyColor` | `Color` | ビジュアル（赤色など） |
+| `destroyScale` | `float` | サイズ倍率（通常敵より大きい） |
+| `spawnWaveLevel` | `int` | スポーン開始ウェーブレベル（例：3） |
+| `maxCountPerStage` | `int` | ステージ内の最大出現数 |
 
 ### パラメータのWaveスケーリング
 
