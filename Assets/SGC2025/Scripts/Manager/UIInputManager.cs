@@ -16,6 +16,13 @@ namespace SGC2025.Manager
         /// SettingsUI、PauseManagerなど各UIがこれを購読
         /// </summary>
         public event Action OnCancelPressed;
+
+        /// <summary>
+        /// 決定操作が実行された時のイベント
+        /// タイトル画面など各UIがこれを購読
+        /// </summary>
+        public event Action OnSubmitPressed;
+
         protected override bool UseDontDestroyOnLoad => false;
 
         /// <summary>
@@ -27,9 +34,12 @@ namespace SGC2025.Manager
             
             inputActions = new PlayerInputSet();
             inputActions.Enable();
-            
+
             // Cancelアクションのイベント登録
             inputActions.Player.Cancel.performed += _ => OnCancelPressed?.Invoke();
+
+            // Shotアクション（決定操作）のイベント登録
+            inputActions.Player.Shot.performed += _ => OnSubmitPressed?.Invoke();
         }
 
         protected override void OnDestroy()

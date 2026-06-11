@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/SGC2025/Scenes/Title.unity
+    path: Assets/SGC2025/Scenes/TitleSelect.unity
     guid: b14daa215ac94ea469ffb5c5fa8e6571
   - enabled: 1
     path: Assets/SGC2025/Scenes/InGame.unity
