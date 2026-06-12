@@ -98,7 +98,7 @@ namespace SGC2025.UI
                     break;
 
                 case ResultPhase.HighScore:
-                    float greeningRate = GroundManager.I != null ? GroundManager.I.GetGreenificationRate() * PERCENT_MULTIPLIER : 0f;
+                    float greeningRate = GameManager.I.FinalGreeningRate * PERCENT_MULTIPLIER;
 
                     var rankingManager = RankingManager.I;
                     if (rankingManager != null && rankingManager.IsNewRecord(greeningRate))
@@ -134,7 +134,7 @@ namespace SGC2025.UI
                 case ResultPhase.GreeningRate:
                     if (greeningRateText != null)
                     {
-                        float maxRate = GroundManager.I != null ? GroundManager.I.GetGreenificationRate() * PERCENT_MULTIPLIER : 0f;
+                        float maxRate = GameManager.I.FinalGreeningRate * PERCENT_MULTIPLIER;
                         float currentRate = Mathf.Lerp(0f, maxRate, Mathf.Clamp01(waitTime / SCORE_COUNT_UP_TIME));
                         greeningRateText.SetText($"{currentRate:F1}%");
                     }

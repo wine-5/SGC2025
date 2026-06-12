@@ -6,6 +6,9 @@ namespace SGC2025
     {
         public static T I => Instance;
 
+        /// <summary>インスタンスが存在するか（自動生成せずに確認できる）</summary>
+        public static bool Exists => instance != null;
+
         private static T instance;
 
         protected virtual bool UseDontDestroyOnLoad => true;

@@ -12,11 +12,14 @@ namespace SGC2025.Manager
     {
         protected override bool UseDontDestroyOnLoad => true;
 
+        /// <summary>ゲーム終了時点の緑化率（0.0～1.0）。リザルト画面で参照する</summary>
+        public float FinalGreeningRate { get; private set; }
+
         protected override void OnDestroy()
         {
             // Time.timeScaleを確実にリセット（ポーズ中に破棄された場合に備えて）
             Time.timeScale = 1f;
-            
+
             base.OnDestroy();
         }
 
@@ -28,6 +31,10 @@ namespace SGC2025.Manager
         {
             // ポーズ中にゲームオーバーになった場合に備えてTime.timeScaleをリセット
             Time.timeScale = 1f;
+
+            // GroundManagerはInGameシーンと共に破棄されるため、遷移前に緑化率を確定させる
+            if (GroundManager.Exists)
+                FinalGreeningRate = GroundManager.I.GetGreenificationRate();
 
             if (SceneController.I != null)
             {
