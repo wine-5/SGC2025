@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using SGC2025.Core;
 using SGC2025.Enemy;
 using SGC2025.UI;
@@ -24,8 +25,9 @@ namespace SGC2025.Manager
         [SerializeField] private float testWaveInterval = 10f;
 
         [Header("View参照")]
-        [Tooltip("Wave進行度を表示するView（描画のみを担当）")]
-        [SerializeField] private WaveProgressView waveProgressView;
+        [Tooltip("Wave表示View（進行度リング・テキストの描画のみを担当）")]
+        [SerializeField, FormerlySerializedAs("waveProgressView")]
+        private WaveView waveView;
 
         
         private int currentWaveLevel = 1;
@@ -45,7 +47,9 @@ namespace SGC2025.Manager
             EventBus.Subscribe<ResumedEvent>(OnResumed);
 
             InitializeWaveSystem();
-            waveProgressView?.Initialize();
+
+            waveView?.Initialize();
+            waveView?.SetWaveLevel(currentWaveLevel);
         }
         
         protected override void OnDestroy()
@@ -68,9 +72,9 @@ namespace SGC2025.Manager
         /// <summary>現在のWave内での経過進行度（0.0～1.0）を計算してViewへ渡す</summary>
         private void UpdateProgressView()
         {
-            if (waveProgressView == null) return;
+            if (waveView == null) return;
 
-            waveProgressView.SetProgress(CalcWaveProgress());
+            waveView.SetProgress(CalcWaveProgress());
         }
 
         private float CalcWaveProgress()
@@ -108,7 +112,13 @@ namespace SGC2025.Manager
         {
             currentWaveLevel = newWaveLevel;
             UpdateCurrentWaveData();
-            
+
+            if (waveView != null)
+            {
+                waveView.SetWaveLevel(currentWaveLevel);
+                StartCoroutine(waveView.AnimateWaveChange());
+            }
+
             EventBus.Publish(new WaveChangedEvent(currentWaveLevel));
         }
         

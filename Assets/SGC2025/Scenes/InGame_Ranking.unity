@@ -191,6 +191,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 464898920}
   m_CullTransparentMesh: 1
+--- !u!114 &494055060 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8141375640669723908, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 1189758861}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!224 &669903558 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2528560888479792971, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
@@ -271,6 +282,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 727129921}
   m_CullTransparentMesh: 1
+--- !u!114 &867868350 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8094140130597887860, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 1189758861}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1184635818
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,14 +379,38 @@ PrefabInstance:
       propertyPath: territoryGaugeImage
       value: 
       objectReference: {fileID: 1213379737}
+    - target: {fileID: 260943621656836768, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: territoryGaugeView.labelText
+      value: 
+      objectReference: {fileID: 494055060}
+    - target: {fileID: 260943621656836768, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: territoryGaugeView.gaugeImage
+      value: 
+      objectReference: {fileID: 1213379737}
+    - target: {fileID: 260943621656836768, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: territoryGaugeView.percentageText
+      value: 
+      objectReference: {fileID: 1957907388}
     - target: {fileID: 779903851427366667, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: a8929ba4aa42bb449a1a5ab190b2c9b7, type: 3}
+    - target: {fileID: 1684925682066491561, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_Name
+      value: TerritoryLabelText
+      objectReference: {fileID: 0}
     - target: {fileID: 2600085939445507916, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: waveInterval
-      value: 5
+      value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 2600085939445507916, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: waveView.waveText
+      value: 
+      objectReference: {fileID: 867868350}
+    - target: {fileID: 2600085939445507916, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: waveView.progressImage
+      value: 
+      objectReference: {fileID: 1625501854}
     - target: {fileID: 2600085939445507916, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: waveProgressView.progressImage
       value: 
@@ -600,6 +646,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1816576946}
   m_CullTransparentMesh: 1
+--- !u!114 &1957907388 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4057654885302879840, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 1189758861}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1988123404
 GameObject:
   m_ObjectHideFlags: 0
