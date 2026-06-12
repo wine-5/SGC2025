@@ -1130,7 +1130,7 @@ MonoBehaviour:
     greenColor: {r: 0.3, g: 0.7, b: 0.2, a: 0.8}
   playerMarkerRect: {fileID: 2088923141}
   bossMarkerContainer: {fileID: 464898921}
-  expandRect: {fileID: 1816576947}
+  expandMapObject: {fileID: 354570882}
   expandPlayerMarkerRect: {fileID: 1523259022}
 --- !u!1 &2087296636
 GameObject:

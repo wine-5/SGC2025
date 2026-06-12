@@ -16,7 +16,8 @@ namespace SGC2025.UI
         [SerializeField] private MiniMapTextureRenderer textureRenderer;
         [SerializeField] private RectTransform playerMarkerRect;
         [SerializeField] private RectTransform bossMarkerContainer;
-        [SerializeField] private RectTransform expandRect;
+        [SerializeField, Tooltip("Shift押下中に表示する拡大マップのオブジェクト")]
+        private GameObject expandMapObject;
         [SerializeField] private RectTransform expandPlayerMarkerRect;
         private readonly List<(EnemyController enemy, RectTransform marker)> bossMarkers = new();
 
@@ -88,12 +89,12 @@ namespace SGC2025.UI
 
         private void OnMiniMapExpandStarted(MiniMapExpandStartedEvent e)
         {
-            expandRect.gameObject.SetActive(true);
+            expandMapObject.SetActive(true);
         }
 
         private void OnMiniMapExpandCanceled(MiniMapExpandCanceledEvent e)
         {
-            expandRect.gameObject.SetActive(false);
+            expandMapObject.SetActive(false);
         }
 
         private void UpdatePlayerMarker()
