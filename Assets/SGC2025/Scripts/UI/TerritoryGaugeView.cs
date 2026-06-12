@@ -19,6 +19,9 @@ namespace SGC2025.UI
         [SerializeField, Tooltip("緑化度を表示するリング画像（Filled/Radial360で描画される）")]
         private Image gaugeImage;
 
+        [SerializeField, Tooltip("パルス演出で拡大する対象（空の親GameObjectを指定すると子階層ごと拡大される）")]
+        private Transform pulseTarget;
+
         [SerializeField, Tooltip("パーセント数値テキスト")]
         private TextMeshProUGUI percentageText;
 
@@ -49,6 +52,16 @@ namespace SGC2025.UI
         private bool isPulsing = false;
         private Vector3 originalScale = Vector3.one;
 
+        /// <summary>パルス拡大の対象（未指定時はリング画像自身）</summary>
+        private Transform PulseTransform
+        {
+            get
+            {
+                if (pulseTarget != null) return pulseTarget;
+                return gaugeImage != null ? gaugeImage.transform : null;
+            }
+        }
+
         /// <summary>リング画像をFilled/Radial360構成に初期化する</summary>
         public void Initialize()
         {
@@ -59,7 +72,9 @@ namespace SGC2025.UI
             gaugeImage.fillMethod = Image.FillMethod.Radial360;
             gaugeImage.fillOrigin = (int)Image.Origin360.Top;
             gaugeImage.fillClockwise = true;
-            originalScale = gaugeImage.transform.localScale;
+
+            if (PulseTransform != null)
+                originalScale = PulseTransform.localScale;
         }
 
         /// <summary>緑化率（0.0～1.0）を描画に反映する</summary>
@@ -95,7 +110,7 @@ namespace SGC2025.UI
             if (gaugeImage == null || isPulsing) yield break;
 
             isPulsing = true;
-            Transform gaugeTransform = gaugeImage.transform;
+            Transform gaugeTransform = PulseTransform;
             Color baseColor = Color.Lerp(lowColor, highColor, targetFillAmount);
             float halfDuration = pulseDuration * 0.5f;
 
