@@ -357,9 +357,25 @@ PrefabInstance:
       propertyPath: territoryGaugeImage
       value: 
       objectReference: {fileID: 1213379737}
+    - target: {fileID: 779903851427366667, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a8929ba4aa42bb449a1a5ab190b2c9b7, type: 3}
+    - target: {fileID: 2600085939445507916, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: waveInterval
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2600085939445507916, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: waveProgressView.progressImage
+      value: 
+      objectReference: {fileID: 1625501854}
     - target: {fileID: 5485042787687540399, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Name
       value: InGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 6520136320438617880, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1333
       objectReference: {fileID: 0}
     - target: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_LocalPosition.x
@@ -400,6 +416,10 @@ PrefabInstance:
     - target: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8105031313966089109, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_Name
+      value: WaveProgressImage
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -496,6 +516,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1523259021}
   m_CullTransparentMesh: 1
+--- !u!114 &1625501854 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 779903851427366667, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+  m_PrefabInstance: {fileID: 1189758861}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &1816576946
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using UnityEngine;
 using SGC2025.Core;
 using SGC2025.Enemy;
+using SGC2025.UI;
 
 namespace SGC2025.Manager
 {
@@ -22,6 +23,10 @@ namespace SGC2025.Manager
         [SerializeField] private bool useTestMode = false;
         [SerializeField] private float testWaveInterval = 10f;
 
+        [Header("View参照")]
+        [Tooltip("Wave進行度を表示するView（描画のみを担当）")]
+        [SerializeField] private WaveProgressView waveProgressView;
+
         
         private int currentWaveLevel = 1;
         private bool isGameActive = true;
@@ -34,12 +39,13 @@ namespace SGC2025.Manager
         protected override void Init()
         {
             base.Init();
-            
+
             EventBus.Subscribe<GameOverEvent>(OnGameOver);
             EventBus.Subscribe<PausedEvent>(OnPaused);
             EventBus.Subscribe<ResumedEvent>(OnResumed);
-            
+
             InitializeWaveSystem();
+            waveProgressView?.Initialize();
         }
         
         protected override void OnDestroy()
@@ -54,8 +60,28 @@ namespace SGC2025.Manager
         private void Update()
         {
             if (!isGameActive) return;
-            
+
             CheckWaveProgression();
+            UpdateProgressView();
+        }
+
+        /// <summary>現在のWave内での経過進行度（0.0～1.0）を計算してViewへ渡す</summary>
+        private void UpdateProgressView()
+        {
+            if (waveProgressView == null) return;
+
+            waveProgressView.SetProgress(CalcWaveProgress());
+        }
+
+        private float CalcWaveProgress()
+        {
+            if (InGameManager.I == null) return 0f;
+
+            // 最大Wave到達後はそれ以上変化しないため満タン表示で固定
+            if (currentWaveLevel >= MAX_WAVE_LEVEL) return 1f;
+
+            float interval = useTestMode ? testWaveInterval : waveInterval;
+            return Mathf.Clamp01(InGameManager.I.CurrentGameTime % interval / interval);
         }
         
         private void InitializeWaveSystem()
