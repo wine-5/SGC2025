@@ -25,9 +25,13 @@ namespace SGC2025.Enemy
         [Header("生存時間設定")]
         [SerializeField] private float lifeTime = DEFAULT_LIFE_TIME;
 
+        [Header("ボス設定")]
+        [SerializeField] private bool isBoss = false;
+
         // 基本プロパティ
         public EnemyType EnemyType => enemyType;
         public MovementType MovementType => movementType;
+        public bool IsBoss => isBoss;
         
         /// <summary>
         /// Waveレベルに応じてスケーリングされたパラメーターを取得

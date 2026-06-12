@@ -75,6 +75,7 @@ namespace SGC2025.Enemy
             movement = new EnemyMovement(transform, this);
             elapsedTime = 0f;
             isInitialized = true;
+            EventBus.Publish(new EnemySpawnedEvent(this));
         }
 
         /// <summary>

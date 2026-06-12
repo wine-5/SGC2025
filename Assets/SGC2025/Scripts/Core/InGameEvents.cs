@@ -46,6 +46,13 @@ namespace SGC2025.Core
         }
     }
 
+    /// <summary>敵がスポーンされた</summary>
+    public struct EnemySpawnedEvent : IGameEvent
+    {
+        public SGC2025.Enemy.EnemyController Enemy;
+        public EnemySpawnedEvent(SGC2025.Enemy.EnemyController enemy) => Enemy = enemy;
+    }
+
     // -------------------------------------------------------
     // Ground
     // -------------------------------------------------------
@@ -78,6 +85,12 @@ namespace SGC2025.Core
 
     /// <summary>ポーズが解除された</summary>
     public struct ResumedEvent : IGameEvent { }
+
+    /// <summary>ミニマップ拡大開始</summary>
+    public struct MiniMapExpandStartedEvent : IGameEvent { }
+
+    /// <summary>ミニマップ拡大終了</summary>
+    public struct MiniMapExpandCanceledEvent : IGameEvent { }
 
     // -------------------------------------------------------
     // Wave

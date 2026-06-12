@@ -137,7 +137,6 @@ namespace Polychroma.Core.Log
             else
                 UnityEngine.Debug.Log(fullMessage);
         }
-
         #endregion
     }
 }

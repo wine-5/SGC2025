@@ -19,39 +19,21 @@ namespace SGC2025.UI
         [SerializeField] private Sprite playerMarkerSprite;
         [SerializeField] private RectTransform bossMarkerContainer;
         [SerializeField] private Sprite bossMarkerSprite;
-        [SerializeField] private RectTransform normalSizeReference;
-        [SerializeField] private RectTransform expandedSizeReference;
-        [SerializeField] private float expandAnimDuration = 0.2f;
 
-        private RectTransform panelRect;
-        private Vector2 normalSize;
-        private Vector2 expandedSize;
+        [SerializeField] private RectTransform expandRect;
         private readonly List<(EnemyController enemy, RectTransform marker)> bossMarkers = new();
         private Color bossMarkerColor = new(1f, 0.2f, 0.2f);
-        private Coroutine expandCoroutine;
-
-        private void Awake()
-        {
-            panelRect = GetComponent<RectTransform>();
-        }
 
         private void Start()
         {
-            CalculateSizes();
             textureRenderer?.Initialize();
-        }
-
-        private void CalculateSizes()
-        {
-            if (normalSizeReference != null)
-                normalSize = normalSizeReference.sizeDelta;
-
-            if (expandedSizeReference != null)
-                expandedSize = expandedSizeReference.sizeDelta;
 
             if (playerMarkerRect != null)
             {
                 Image playerImage = playerMarkerRect.GetComponent<Image>();
+                if (playerImage == null)
+                    playerImage = playerMarkerRect.gameObject.AddComponent<Image>();
+
                 if (playerImage != null && playerMarkerSprite != null)
                     playerImage.sprite = playerMarkerSprite;
             }
@@ -86,32 +68,12 @@ namespace SGC2025.UI
 
         private void OnMiniMapExpandStarted(MiniMapExpandStartedEvent e)
         {
-            if (expandCoroutine != null)
-                StopCoroutine(expandCoroutine);
-            expandCoroutine = StartCoroutine(AnimateSize(expandedSize));
+            expandRect.gameObject.SetActive(true);
         }
 
         private void OnMiniMapExpandCanceled(MiniMapExpandCanceledEvent e)
         {
-            if (expandCoroutine != null)
-                StopCoroutine(expandCoroutine);
-            expandCoroutine = StartCoroutine(AnimateSize(normalSize));
-        }
-
-        private IEnumerator AnimateSize(Vector2 targetSize)
-        {
-            float elapsed = 0f;
-            Vector2 startSize = panelRect.sizeDelta;
-
-            while (elapsed < expandAnimDuration)
-            {
-                elapsed += Time.deltaTime;
-                float t = Mathf.Clamp01(elapsed / expandAnimDuration);
-                panelRect.sizeDelta = Vector2.Lerp(startSize, targetSize, t);
-                yield return null;
-            }
-
-            panelRect.sizeDelta = targetSize;
+            expandRect.gameObject.SetActive(false);
         }
 
         private void UpdatePlayerMarker()
@@ -202,7 +164,10 @@ namespace SGC2025.UI
             float nx = Mathf.Clamp01(worldPos.x / mapMaxPos.x);
             float ny = Mathf.Clamp01(worldPos.y / mapMaxPos.y);
 
-            Vector2 rect = panelRect.sizeDelta;
+            RectTransform targetRect = expandRect.gameObject.activeSelf ? expandRect : playerMarkerRect.parent as RectTransform;
+            if (targetRect == null) return Vector2.zero;
+
+            Vector2 rect = targetRect.sizeDelta;
             return new Vector2(
                 (nx - 0.5f) * rect.x,
                 (ny - 0.5f) * rect.y

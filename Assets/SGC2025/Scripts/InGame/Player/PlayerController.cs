@@ -55,7 +55,9 @@ namespace SGC2025.Player
             PlayerInput.Player.Movement.canceled += OnMovementCanceled;
             PlayerInput.Player.Shot.performed += OnShotPerformed;
             PlayerInput.Player.Pause.performed += OnPausePerformed;
-            
+            PlayerInput.Player.MiniMapExpand.started += OnMiniMapExpandStarted;
+            PlayerInput.Player.MiniMapExpand.canceled += OnMiniMapExpandCanceled;
+
             EventBus.Subscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
             EventBus.Subscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
         }
@@ -66,8 +68,10 @@ namespace SGC2025.Player
             PlayerInput.Player.Movement.canceled -= OnMovementCanceled;
             PlayerInput.Player.Shot.performed -= OnShotPerformed;
             PlayerInput.Player.Pause.performed -= OnPausePerformed;
+            PlayerInput.Player.MiniMapExpand.started -= OnMiniMapExpandStarted;
+            PlayerInput.Player.MiniMapExpand.canceled -= OnMiniMapExpandCanceled;
             PlayerInput.Disable();
-            
+
             EventBus.Unsubscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
             EventBus.Unsubscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
         }
@@ -128,6 +132,16 @@ namespace SGC2025.Player
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             if (weaponSystem == null) return;
             weaponSystem.Fire();
+        }
+
+        private void OnMiniMapExpandStarted(InputAction.CallbackContext context)
+        {
+            EventBus.Publish(new MiniMapExpandStartedEvent());
+        }
+
+        private void OnMiniMapExpandCanceled(InputAction.CallbackContext context)
+        {
+            EventBus.Publish(new MiniMapExpandCanceledEvent());
         }
         #endregion
 
