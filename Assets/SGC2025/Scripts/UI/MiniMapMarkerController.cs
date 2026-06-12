@@ -12,30 +12,32 @@ namespace SGC2025.UI
     public class MiniMapMarkerController : MonoBehaviour
     {
         private const float BOSS_MARKER_SIZE = 20f;
-        private const float PLAYER_MARKER_LERP_SPEED = 5f;
 
         [SerializeField] private MiniMapTextureRenderer textureRenderer;
         [SerializeField] private RectTransform playerMarkerRect;
-        [SerializeField] private Sprite playerMarkerSprite;
         [SerializeField] private RectTransform bossMarkerContainer;
-        [SerializeField] private Sprite bossMarkerSprite;
-
         [SerializeField] private RectTransform expandRect;
+        [SerializeField] private RectTransform expandPlayerMarkerRect;
         private readonly List<(EnemyController enemy, RectTransform marker)> bossMarkers = new();
-        private Color bossMarkerColor = new(1f, 0.2f, 0.2f);
 
         private void Start()
         {
             textureRenderer?.Initialize();
+        }
 
-            if (playerMarkerRect != null)
+        private void InitializePlayerMarker()
+        {
+            if (playerMarkerRect == null || PlayerDataProvider.I == null || !PlayerDataProvider.I.IsPlayerRegistered)
+                return;
+
+            Vector3 playerWorldPos = PlayerDataProvider.I.PlayerTransform.position;
+            Vector2 miniMapPos = WorldToMiniMapPos(playerWorldPos);
+            playerMarkerRect.anchoredPosition = miniMapPos;
+
+            if (expandPlayerMarkerRect != null)
             {
-                Image playerImage = playerMarkerRect.GetComponent<Image>();
-                if (playerImage == null)
-                    playerImage = playerMarkerRect.gameObject.AddComponent<Image>();
-
-                if (playerImage != null && playerMarkerSprite != null)
-                    playerImage.sprite = playerMarkerSprite;
+                Vector2 expandMapPos = WorldToExpandMapPos(playerWorldPos);
+                expandPlayerMarkerRect.anchoredPosition = expandMapPos;
             }
         }
 
@@ -45,6 +47,8 @@ namespace SGC2025.UI
             EventBus.Subscribe<EnemySpawnedEvent>(OnEnemySpawned);
             EventBus.Subscribe<MiniMapExpandStartedEvent>(OnMiniMapExpandStarted);
             EventBus.Subscribe<MiniMapExpandCanceledEvent>(OnMiniMapExpandCanceled);
+
+            InitializePlayerMarker();
         }
 
         private void OnDisable()
@@ -55,9 +59,25 @@ namespace SGC2025.UI
             EventBus.Unsubscribe<MiniMapExpandCanceledEvent>(OnMiniMapExpandCanceled);
         }
 
+        private bool playerInitialized = false;
+
         private void Update()
         {
-            UpdatePlayerMarker();
+            bool hasMarker = playerMarkerRect != null;
+            bool hasProvider = PlayerDataProvider.I != null;
+            bool isRegistered = hasProvider && PlayerDataProvider.I.IsPlayerRegistered;
+
+            if (hasMarker && hasProvider && isRegistered)
+            {
+                if (!playerInitialized)
+                {
+                    InitializePlayerMarker();
+                    playerInitialized = true;
+                }
+
+                UpdatePlayerMarker();
+            }
+
             UpdateBossMarkers();
         }
 
@@ -83,14 +103,15 @@ namespace SGC2025.UI
 
             Vector3 playerWorldPos = PlayerDataProvider.I.PlayerTransform.position;
             Vector2 miniMapPos = WorldToMiniMapPos(playerWorldPos);
-
-            playerMarkerRect.anchoredPosition = Vector2.Lerp(
-                playerMarkerRect.anchoredPosition,
-                miniMapPos,
-                Time.deltaTime * PLAYER_MARKER_LERP_SPEED
-            );
-
+            playerMarkerRect.anchoredPosition = miniMapPos;
             playerMarkerRect.rotation = PlayerDataProvider.I.PlayerTransform.rotation;
+
+            if (expandPlayerMarkerRect != null)
+            {
+                Vector2 expandMapPos = WorldToExpandMapPos(playerWorldPos);
+                expandPlayerMarkerRect.anchoredPosition = expandMapPos;
+                expandPlayerMarkerRect.rotation = PlayerDataProvider.I.PlayerTransform.rotation;
+            }
         }
 
         private void OnEnemySpawned(EnemySpawnedEvent e)
@@ -110,9 +131,7 @@ namespace SGC2025.UI
             RectTransform markerRect = markerGO.AddComponent<RectTransform>();
             markerRect.sizeDelta = new Vector2(BOSS_MARKER_SIZE, BOSS_MARKER_SIZE);
 
-            Image markerImage = markerGO.AddComponent<Image>();
-            markerImage.sprite = bossMarkerSprite;
-            markerImage.color = bossMarkerColor;
+            markerGO.AddComponent<Image>();
 
             bossMarkers.Add((enemy, markerRect));
             enemy.OnDeath += () => RemoveBossMarker(enemy);
@@ -164,10 +183,30 @@ namespace SGC2025.UI
             float nx = Mathf.Clamp01(worldPos.x / mapMaxPos.x);
             float ny = Mathf.Clamp01(worldPos.y / mapMaxPos.y);
 
-            RectTransform targetRect = expandRect.gameObject.activeSelf ? expandRect : playerMarkerRect.parent as RectTransform;
-            if (targetRect == null) return Vector2.zero;
+            RectTransform parentRect = playerMarkerRect.parent as RectTransform;
+            if (parentRect == null) return Vector2.zero;
 
-            Vector2 rect = targetRect.sizeDelta;
+            Vector2 rect = parentRect.sizeDelta;
+            return new Vector2(
+                (nx - 0.5f) * rect.x,
+                (ny - 0.5f) * rect.y
+            );
+        }
+
+        private Vector2 WorldToExpandMapPos(Vector3 worldPos)
+        {
+            if (GroundManager.I?.MapData == null || expandPlayerMarkerRect == null) return Vector2.zero;
+
+            var mapData = GroundManager.I.MapData;
+            Vector2 mapMaxPos = mapData.MapMaxWorldPosition;
+
+            float nx = Mathf.Clamp01(worldPos.x / mapMaxPos.x);
+            float ny = Mathf.Clamp01(worldPos.y / mapMaxPos.y);
+
+            RectTransform parentRect = expandPlayerMarkerRect.parent as RectTransform;
+            if (parentRect == null) return Vector2.zero;
+
+            Vector2 rect = parentRect.sizeDelta;
             return new Vector2(
                 (nx - 0.5f) * rect.x,
                 (ny - 0.5f) * rect.y
