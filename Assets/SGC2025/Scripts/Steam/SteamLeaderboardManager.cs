@@ -4,6 +4,7 @@ using UnityEngine;
 using Steamworks;
 using Polychroma.Core.Log;
 using SGC2025.Core;
+using Cysharp.Threading.Tasks;
 
 namespace SGC2025.Ranking.Steam
 {
@@ -14,6 +15,7 @@ namespace SGC2025.Ranking.Steam
     {
         private const string LEADERBOARD_NAME = "GreenificationRate";
         private const int LEADERBOARD_MAX_ENTRIES = 10;
+        private const string LOG_CATEGORY = "Steam";
         private SteamLeaderboard_t leaderboardHandle;
         private bool isLeaderboardReady = false;
 
@@ -33,20 +35,25 @@ namespace SGC2025.Ranking.Steam
         /// </summary>
         protected override void Init() { }
 
-        /// <summary>
-        /// コルーチンとして実行し、1フレーム待つことで SteamManager の初期化完了を確実にする
-        /// </summary>
-        private System.Collections.IEnumerator Start()
+        private void Start()
         {
-            yield return null;
+            InitializeAsync().Forget();
+        }
 
-            CusLog.Log("[SteamLeaderboardManager] Initializing via Coroutine Start...");
+        /// <summary>
+        /// UniTask による非同期初期化処理
+        /// </summary>
+        private async UniTaskVoid InitializeAsync()
+        {
+            CusLog.Log(LOG_CATEGORY, "Initializing via UniTask Start...");
+
+            await UniTask.Yield();
 
             // Steam 初期化確認
             if (!SteamManager.Initialized)
             {
-                CusLog.Log("[SteamLeaderboardManager] Steam is NOT initialized. Test mode.");
-                yield break;
+                CusLog.Warning(LOG_CATEGORY, "Steam is NOT initialized. Test mode.");
+                return;
             }
 
             // CallResult のインスタンスを作成
@@ -62,7 +69,7 @@ namespace SGC2025.Ranking.Steam
         /// </summary>
         private void FindOrCreateLeaderboard()
         {
-            CusLog.Log($"[SteamLeaderboardManager] Finding or Creating Leaderboard: {LEADERBOARD_NAME}");
+            CusLog.Log(LOG_CATEGORY, $"Finding or Creating Leaderboard: {LEADERBOARD_NAME}");
 
             SteamAPICall_t hSteamAPICall = SteamUserStats.FindOrCreateLeaderboard(
                 LEADERBOARD_NAME,
@@ -80,13 +87,13 @@ namespace SGC2025.Ranking.Steam
         {
             if (bIOFailure || result.m_bLeaderboardFound == 0)
             {
-                CusLog.Log("[SteamLeaderboardManager] Leaderboard NOT found!");
+                CusLog.Error(LOG_CATEGORY, "Leaderboard NOT found!");
                 return;
             }
 
             leaderboardHandle = result.m_hSteamLeaderboard;
             isLeaderboardReady = true;
-            CusLog.Log("[SteamLeaderboardManager] Leaderboard found and ready.");
+            CusLog.Log(LOG_CATEGORY, "Leaderboard found and ready.");
 
             // 初期化成功時にトップ10をキャッシュしておく
             FetchLeaderboard(LEADERBOARD_MAX_ENTRIES);
@@ -97,11 +104,11 @@ namespace SGC2025.Ranking.Steam
         /// </summary>
         public void UploadScore(int score)
         {
-            CusLog.Log($"[SteamLeaderboardManager] UploadScore called: {score}");
+            CusLog.Log(LOG_CATEGORY, $"UploadScore called: {score}");
 
             if (!isLeaderboardReady)
             {
-                CusLog.Log("[SteamLeaderboardManager] Leaderboard not ready. Upload skipped.");
+                CusLog.Warning(LOG_CATEGORY, "Leaderboard not ready. Upload skipped.");
                 return;
             }
 
@@ -123,11 +130,11 @@ namespace SGC2025.Ranking.Steam
         {
             if (bIOFailure || result.m_bSuccess == 0)
             {
-                CusLog.Log("[SteamLeaderboardManager] Failed to upload score to Steam.");
+                CusLog.Error(LOG_CATEGORY, "Failed to upload score to Steam.");
                 return;
             }
 
-            CusLog.Log($"[SteamLeaderboardManager] Score {result.m_nScore} uploaded to Steam. ScoreChanged: {result.m_bScoreChanged}");
+            CusLog.Log(LOG_CATEGORY, $"Score {result.m_nScore} uploaded to Steam. ScoreChanged: {result.m_bScoreChanged}");
 
             FetchLeaderboard(LEADERBOARD_MAX_ENTRIES);
         }
@@ -139,11 +146,11 @@ namespace SGC2025.Ranking.Steam
         {
             if (!isLeaderboardReady)
             {
-                CusLog.Log("[SteamLeaderboardManager] Leaderboard not ready. Cannot fetch.");
+                CusLog.Warning(LOG_CATEGORY, "Leaderboard not ready. Cannot fetch.");
                 return;
             }
 
-            CusLog.Log($"[SteamLeaderboardManager] Fetching top {count} entries...");
+            CusLog.Log(LOG_CATEGORY, $"Fetching top {count} entries...");
 
             SteamAPICall_t hSteamAPICall = SteamUserStats.DownloadLeaderboardEntries(
                 leaderboardHandle,
@@ -162,11 +169,11 @@ namespace SGC2025.Ranking.Steam
         {
             if (bIOFailure)
             {
-                CusLog.Log("[SteamLeaderboardManager] IO Failure while fetching leaderboard entries.");
+                CusLog.Error(LOG_CATEGORY, "IO Failure while fetching leaderboard entries.");
                 return;
             }
 
-            CusLog.Log($"[SteamLeaderboardManager] Fetched {result.m_cEntryCount} entries.");
+            CusLog.Log(LOG_CATEGORY, $"Fetched {result.m_cEntryCount} entries.");
 
             CachedEntries.Clear();
 
@@ -182,7 +189,7 @@ namespace SGC2025.Ranking.Steam
                     Rank = entry.m_nGlobalRank
                 });
 
-                CusLog.Log($"[SteamLeaderboardManager] Entry {i + 1}: {CachedEntries[i].PlayerName} - {CachedEntries[i].Score} (Rank: {CachedEntries[i].Rank})");
+                CusLog.Log(LOG_CATEGORY, $"Entry {i + 1}: {CachedEntries[i].PlayerName} - {CachedEntries[i].Score} (Rank: {CachedEntries[i].Rank})");
             }
         }
     }
