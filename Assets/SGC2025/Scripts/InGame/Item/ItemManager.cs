@@ -68,9 +68,9 @@ namespace SGC2025.Item
         /// </summary>
         private void OnEnemyDestroyed(EnemyDestroyedEvent e)
         {
-            // 敵撃破時エフェクト生成（常に出す）
-            // if (EffectFactory.I != null)
-            //     EffectFactory.I.CreateEffect(EffectType.GreenificationParticle, e.Position, 1f);
+            // 敵撃破時パーティクルエフェクト生成
+            if (EffectFactory.I != null)
+                EffectFactory.I.CreateEffect(EffectType.GreeningParticle, e.Position, 1f);
 
             // AreaGreenify効果が有効な場合は広範囲緑化も追加
             if (IsEffectActive(ItemType.AreaGreenify) && GroundManager.I != null)

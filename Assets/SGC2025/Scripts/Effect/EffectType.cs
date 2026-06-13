@@ -22,6 +22,6 @@ namespace SGC2025.Effect
         /// <summary>
         /// 緑化時パーティクルエフェクト
         /// </summary>
-        GreenificationParticle,
+        GreeningParticle,
     }
 }
