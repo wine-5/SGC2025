@@ -667,7 +667,7 @@ GameObject:
   - component: {fileID: 3240532405482749601}
   m_Layer: 0
   m_Name: GreenGauge
-  m_TagString: Untagged
+  m_TagString: GreenGauge
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

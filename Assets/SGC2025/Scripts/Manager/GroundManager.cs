@@ -2,6 +2,7 @@ using UnityEngine;
 using SGC2025.Core;
 using SGC2025.Audio;
 using SGC2025.Effect;
+using SGC2025.Item;
 
 namespace SGC2025.Manager
 {
@@ -49,9 +50,12 @@ namespace SGC2025.Manager
                 Debug.LogError("[GroundManager] GroundDataSO is not assigned!");
                 return;
             }
-            
+
             SetStageObject();
             EventBus.Subscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
+
+            // ItemManagerのインスタンスを生成しておく（敵撃破イベントを受信させるため）
+            _ = ItemManager.I;
         }
         
         protected override void OnDestroy()

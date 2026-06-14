@@ -13,6 +13,8 @@ namespace SGC2025.Item
     {
         private const float MIN_SPAWN_INTERVAL = 3f;
         private const float DEFAULT_SPAWN_RANGE = 10f;
+        private const float GREENING_PARTICLE_DURATION = 1.5f;
+        private const string GAUGE_TAG = "GreenGauge";
         
         [Header("アイテム抽選設定")]
         [SerializeField, Tooltip("アイテムの抽選を行うセレクター")]
@@ -32,6 +34,7 @@ namespace SGC2025.Item
         [SerializeField] private ItemFactory itemFactory;
 
         private float nextSpawnTime;
+        private Transform gaugeTarget;
         private Dictionary<ItemType, ItemEffect> activeEffects = new Dictionary<ItemType, ItemEffect>();
         
         protected override bool UseDontDestroyOnLoad => false;
@@ -68,13 +71,25 @@ namespace SGC2025.Item
         /// </summary>
         private void OnEnemyDestroyed(EnemyDestroyedEvent e)
         {
-            // 敵撃破時パーティクルエフェクト生成
+            // 敵撃破時パーティクルエフェクトを敵の位置に生成し、緑化度ゲージへ向かって飛ばす
             if (EffectFactory.I != null)
-                EffectFactory.I.CreateEffect(EffectType.GreeningParticle, e.Position, 1f);
+                EffectFactory.I.CreateEffect(EffectType.GreeningParticle, e.Position, GREENING_PARTICLE_DURATION, GetGaugeTarget());
 
             // AreaGreenify効果が有効な場合は広範囲緑化も追加
             if (IsEffectActive(ItemType.AreaGreenify) && GroundManager.I != null)
                 GroundManager.I.DrawGroundArea(e.Position);
+        }
+
+        /// <summary>緑化度ゲージのTransformを取得（キャッシュ）</summary>
+        private Transform GetGaugeTarget()
+        {
+            if (gaugeTarget == null)
+            {
+                GameObject gaugeObject = GameObject.FindWithTag(GAUGE_TAG);
+                if (gaugeObject != null)
+                    gaugeTarget = gaugeObject.transform;
+            }
+            return gaugeTarget;
         }
         
         private void Update()

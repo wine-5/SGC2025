@@ -58,16 +58,16 @@ VisualEffect:
       m_Array:
       - m_Value: {x: -0, y: 0, z: 0}
         m_Name: TargetObject_angles
-        m_Overridden: 1
-      - m_Value: {x: -11.25, y: 3.5, z: 0}
+        m_Overridden: 0
+      - m_Value: {x: 0, y: 0, z: 0}
         m_Name: TargetObject_position
-        m_Overridden: 1
-      - m_Value: {x: 3, y: 3, z: 1}
+        m_Overridden: 0
+      - m_Value: {x: 1, y: 1, z: 1}
         m_Name: TargetObject_scale
-        m_Overridden: 1
-      - m_Value: {x: -11.25, y: 3.5, z: 0}
+        m_Overridden: 0
+      - m_Value: {x: 0, y: 0, z: 0}
         m_Name: UIPos
-        m_Overridden: 1
+        m_Overridden: 0
     m_Vector4f:
       m_Array: []
     m_Uint:
@@ -144,5 +144,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Effect.EffectController
   followOffset: {x: 0, y: 0, z: 0}
-  followSmooth: 0
+  followSmooth: 1.5
   followRotation: 1
+  sendTargetToVfx: 1
+  gaugeViewportPoint: {x: 0.08, y: 0.88}
