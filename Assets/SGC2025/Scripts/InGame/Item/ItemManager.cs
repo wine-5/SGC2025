@@ -83,6 +83,7 @@ namespace SGC2025.Item
         /// <summary>緑化度ゲージのTransformを取得（キャッシュ）</summary>
         private Transform GetGaugeTarget()
         {
+            // TODO: Findをやめて実装する
             if (gaugeTarget == null)
             {
                 GameObject gaugeObject = GameObject.FindWithTag(GAUGE_TAG);

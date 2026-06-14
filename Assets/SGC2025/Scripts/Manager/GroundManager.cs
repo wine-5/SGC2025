@@ -158,27 +158,84 @@ namespace SGC2025.Manager
             return anyDrawn;
         }
 
+        /// <summary>指定位置を中心に範囲内の緑化済みタイルを茶色（非緑化）へ戻す（ボスの通過跡など）</summary>
+        public bool RevertGroundArea(Vector3 worldPosition, int radius)
+        {
+            if (currentGroundArray == null) return false;
+
+            Vector2Int centerCell = SearchCellIndex(worldPosition);
+            bool anyReverted = false;
+
+            for (int dx = -radius; dx <= radius; dx++)
+            {
+                for (int dy = -radius; dy <= radius; dy++)
+                {
+                    int x = centerCell.x + dx;
+                    int y = centerCell.y + dy;
+
+                    if (x < 0 || x >= groundData.columns || y < 0 || y >= groundData.rows)
+                        continue;
+
+                    // 緑化済みのセルのみ戻す
+                    if (!currentGroundArray[x, y].isDrawn)
+                        continue;
+
+                    if (RevertSingleTile(x, y))
+                        anyReverted = true;
+                }
+            }
+
+            return anyReverted;
+        }
+
+        /// <summary>ワールド座標を対応するセルインデックスへ変換</summary>
+        public Vector2Int WorldToCell(Vector3 worldPosition) => SearchCellIndex(worldPosition);
+
         /// <summary>単一タイルを緑化</summary>
         private bool DrawSingleTile(int x, int y)
         {
             if (groundData.grassTilePrefab == null) return false;
-            
+
             if (tileObjects != null && tileObjects[x, y] != null)
                 Destroy(tileObjects[x, y]);
-            
+
             Vector3 pos = currentGroundArray[x, y].worldPos;
             GameObject grassTile = Instantiate(groundData.grassTilePrefab, pos, Quaternion.identity, transform);
             grassTile.name = $"GrassTile_{x}_{y}";
-            
+
             AdjustTileScale(grassTile, groundData.ActualCellWidth, groundData.ActualCellHeight);
-            
+
             if (tileObjects != null)
                 tileObjects[x, y] = grassTile;
 
             currentGroundArray[x, y].isDrawn = true;
 
             EventBus.Publish(new GroundGreenifiedEvent(pos));
-            
+
+            return true;
+        }
+
+        /// <summary>単一タイルを非緑化（通常タイルへ戻す）。DrawSingleTileの逆処理</summary>
+        private bool RevertSingleTile(int x, int y)
+        {
+            if (groundData.tilePrefab == null) return false;
+
+            if (tileObjects != null && tileObjects[x, y] != null)
+                Destroy(tileObjects[x, y]);
+
+            Vector3 pos = currentGroundArray[x, y].worldPos;
+            GameObject tile = Instantiate(groundData.tilePrefab, pos, Quaternion.identity, transform);
+            tile.name = $"Tile_{x}_{y}";
+
+            AdjustTileScale(tile, groundData.ActualCellWidth, groundData.ActualCellHeight);
+
+            if (tileObjects != null)
+                tileObjects[x, y] = tile;
+
+            currentGroundArray[x, y].isDrawn = false;
+
+            EventBus.Publish(new GroundUngreenifiedEvent(pos));
+
             return true;
         }
 

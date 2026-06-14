@@ -92,8 +92,6 @@ namespace SGC2025.Enemy
                 Debug.LogWarning("[EnemyFactory] 選択可能な敵がいません");
                 return null;
             }
-            
-
 
             return CreateEnemy(selectedEnemy, position, waveLevel);
         }
@@ -111,7 +109,5 @@ namespace SGC2025.Enemy
             
             objectPool.ReturnObject(enemy);
         }
-        
-
     }
 }

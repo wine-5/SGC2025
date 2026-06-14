@@ -64,16 +64,23 @@ namespace SGC2025.UI
         private void OnEnable()
         {
             EventBus.Subscribe<GroundGreenifiedEvent>(OnGroundGreenified);
+            EventBus.Subscribe<GroundUngreenifiedEvent>(OnGroundUngreenified);
         }
 
         private void OnDisable()
         {
             EventBus.Unsubscribe<GroundGreenifiedEvent>(OnGroundGreenified);
+            EventBus.Unsubscribe<GroundUngreenifiedEvent>(OnGroundUngreenified);
         }
         #endregion
 
         #region イベントハンドラー
         private void OnGroundGreenified(GroundGreenifiedEvent e)
+        {
+            UpdateTerritoryGauge();
+        }
+
+        private void OnGroundUngreenified(GroundUngreenifiedEvent e)
         {
             UpdateTerritoryGauge();
         }
@@ -103,11 +110,14 @@ namespace SGC2025.UI
         private void CheckTerritoryMilestone(float rate)
         {
             int milestone = Mathf.FloorToInt(rate * PERCENT_MULTIPLIER / 10f);
-            if (milestone <= lastTerritoryMilestone) return;
+            if (milestone == lastTerritoryMilestone) return;
 
+            // 緑化率が下がった場合は演出せずに基準だけ下げ、再到達時に再び演出できるようにする
+            bool increased = milestone > lastTerritoryMilestone;
             lastTerritoryMilestone = milestone;
 
-            StartCoroutine(territoryGaugeView.AnimateMilestonePulse());
+            if (increased)
+                StartCoroutine(territoryGaugeView.AnimateMilestonePulse());
         }
         #endregion
 
