@@ -9,6 +9,7 @@ namespace SGC2025.Player
     public class HPBarController : MonoBehaviour
     {
         [SerializeField] private GameObject entity;
+        [Tooltip("Playerの場合true。シーン再読込時にPlayerDataProviderからentityを再取得するために使用")]
         [SerializeField] private bool isPlayer;
 
         private float rate;
