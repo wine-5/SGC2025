@@ -1,6 +1,5 @@
 using UnityEngine;
-using SGC2025.Enemy;
-using SGC2025.Player;
+using SGC2025.Core;
 
 namespace SGC2025.Player
 {
@@ -19,8 +18,7 @@ namespace SGC2025.Player
         private Vector3 offsetFromPlayer; // Playerからの相対オフセット（固定）
         private Vector3 originalScale;
         private Quaternion fixedRotation; // 親が回転しても固定したいワールド回転
-        private PlayerController cachedPlayer;
-        private EnemyController cachedEnemy;
+        private IDamageable cachedDamageable;
         private Transform parentTransform;
         private Transform entityTransform;
 
@@ -47,18 +45,9 @@ namespace SGC2025.Player
             // 初期のワールド回転を保存し、以降この向きで固定する
             fixedRotation = parentTransform.rotation;
 
-            if (isPlayer)
-            {
-                cachedPlayer = entity.GetComponent<PlayerController>();
-                if (cachedPlayer != null)
-                    maxHealth = cachedPlayer.GetPlayerMaxHealth();
-            }
-            else
-            {
-                cachedEnemy = entity.GetComponent<EnemyController>();
-                if (cachedEnemy != null)
-                    maxHealth = cachedEnemy.MaxHealth;
-            }
+            cachedDamageable = entity.GetComponent<IDamageable>();
+            if (cachedDamageable != null)
+                maxHealth = cachedDamageable.MaxHealth;
         }
 
         void Update()
@@ -66,16 +55,8 @@ namespace SGC2025.Player
             if (entity == null) return;
             if (entityTransform == null) return;
 
-            if (isPlayer)
-            {
-                if (cachedPlayer != null)
-                    currentHealth = cachedPlayer.GetPlayerCurrentHealth();
-            }
-            else
-            {
-                if (cachedEnemy != null)
-                    currentHealth = cachedEnemy.CurrentHealth;
-            }
+            if (cachedDamageable != null)
+                currentHealth = cachedDamageable.CurrentHealth;
 
             if (maxHealth > 0)
             {
