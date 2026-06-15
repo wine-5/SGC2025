@@ -35,6 +35,8 @@ namespace SGC2025.Item
 
         private float nextSpawnTime;
         private Transform gaugeTarget;
+        private int pendingCloneItems; // フィールドに存在する未取得のクローンアイテム数
+        private SGC2025.Player.PlayerCloneManager cloneManager;
         private Dictionary<ItemType, ItemEffect> activeEffects = new Dictionary<ItemType, ItemEffect>();
         
         protected override bool UseDontDestroyOnLoad => false;
@@ -110,15 +112,51 @@ namespace SGC2025.Item
         private void SpawnRandomItem()
         {
             if (spawnSelector.IsEmpty) return;
-            
-            ItemData selectedItem = spawnSelector.SelectRandom();
+
+            // クローンアイテムは「残り必要数」だけ出すよう抽選を絞り込む
+            ItemData selectedItem = spawnSelector.SelectRandom(CanSpawnItem);
             if (selectedItem == null) return;
-            
+
             // ランダムな位置を取得
             Vector3 spawnPosition = GetRandomSpawnPosition();
-            
+
             // アイテムを生成
             SpawnItem(selectedItem, spawnPosition);
+
+            if (selectedItem.ItemType == ItemType.PlayerClone)
+                pendingCloneItems++;
+        }
+
+        /// <summary>そのアイテムを今生成してよいか（クローンは アクティブ数＋未取得数 が最大未満のときのみ）</summary>
+        private bool CanSpawnItem(ItemData item)
+        {
+            if (item.ItemType != ItemType.PlayerClone) return true;
+
+            var manager = GetCloneManager();
+            if (manager == null) return false; // プレイヤー未準備ならクローンは出さない
+
+            return manager.ActiveCloneCount + pendingCloneItems < manager.MaxCloneCount;
+        }
+
+        /// <summary>PlayerCloneManagerをPlayerDataProvider経由で取得（キャッシュ）</summary>
+        private SGC2025.Player.PlayerCloneManager GetCloneManager()
+        {
+            if (cloneManager == null
+                && SGC2025.Player.PlayerDataProvider.I != null
+                && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
+            {
+                cloneManager = SGC2025.Player.PlayerDataProvider.I.PlayerTransform.GetComponent<SGC2025.Player.PlayerCloneManager>();
+            }
+            return cloneManager;
+        }
+
+        /// <summary>フィールドのアイテムがプールへ返却された通知（取得・寿命切れ共通。生成数管理用）</summary>
+        public void OnItemReturned(ItemData itemData)
+        {
+            if (itemData == null) return;
+
+            if (itemData.ItemType == ItemType.PlayerClone)
+                pendingCloneItems = Mathf.Max(0, pendingCloneItems - 1);
         }
         
         
@@ -160,10 +198,19 @@ namespace SGC2025.Item
         public void CollectItem(ItemData itemData)
         {
             if (itemData == null) return;
-            
+
+            // クローンアイテムは時限効果ではなく、クローンを1体増やす専用処理
+            if (itemData.ItemType == ItemType.PlayerClone)
+            {
+                var manager = GetCloneManager();
+                if (manager != null)
+                    manager.TryActivateNextClone();
+                return;
+            }
+
             if (activeEffects.ContainsKey(itemData.ItemType))
                 RemoveEffect(itemData.ItemType);
-            
+
             ApplyEffect(itemData);
         }
         

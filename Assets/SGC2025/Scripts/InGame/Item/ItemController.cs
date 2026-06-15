@@ -78,6 +78,10 @@ namespace SGC2025.Item
         /// </summary>
         private void ReturnToPool()
         {
+            // 取得・寿命切れ共通の退場通知（クローンアイテムの生成数管理用）
+            if (ItemManager.I != null)
+                ItemManager.I.OnItemReturned(itemData);
+
             if (factory != null)
                 factory.ReturnItem(gameObject);
             else
