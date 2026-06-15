@@ -18,10 +18,11 @@ namespace SGC2025.UI
         [SerializeField] private RectTransform bossMarkerContainer;
         [SerializeField, Tooltip("ボスマーカーの色")] private Color bossMarkerColor = Color.red;
         [SerializeField, Tooltip("ボスマーカーのスプライト（未指定なら塗りつぶしの四角）")] private Sprite bossMarkerSprite;
+        [SerializeField, Tooltip("拡大マップ上のボスマーカーのサイズ")] private float expandBossMarkerSize = 40f;
         [SerializeField, Tooltip("Shift押下中に表示する拡大マップのオブジェクト")]
         private GameObject expandMapObject;
         [SerializeField] private RectTransform expandPlayerMarkerRect;
-        private readonly List<(EnemyController enemy, RectTransform marker)> bossMarkers = new();
+        private readonly List<(EnemyController enemy, RectTransform miniMarker, RectTransform expandMarker)> bossMarkers = new();
 
         private void Start()
         {
@@ -138,17 +139,33 @@ namespace SGC2025.UI
 
         private void CreateBossMarker(EnemyController enemy)
         {
-            if (bossMarkerContainer == null) return;
+            // 小マップ用と拡大マップ用、両方のマーカーを生成する
+            RectTransform miniMarker = CreateMarkerImage(bossMarkerContainer, BOSS_MARKER_SIZE);
+
+            // 拡大マップ側は、拡大マップのプレイヤーマーカーと同じ親へ配置する（サイズは別指定で大きめ）
+            RectTransform expandParent = expandPlayerMarkerRect != null ? expandPlayerMarkerRect.parent as RectTransform : null;
+            RectTransform expandMarker = CreateMarkerImage(expandParent, expandBossMarkerSize);
+
+            if (miniMarker == null && expandMarker == null) return;
+
+            bossMarkers.Add((enemy, miniMarker, expandMarker));
+            enemy.OnDeath += () => RemoveBossMarker(enemy);
+        }
+
+        /// <summary>指定の親の下にボスマーでｋカー（Image）を1つ生成する</summary>
+        private RectTransform CreateMarkerImage(RectTransform container, float size)
+        {
+            if (container == null) return null;
 
             GameObject markerGO = new GameObject("BossMarker", typeof(RectTransform), typeof(Image));
 
             RectTransform markerRect = markerGO.GetComponent<RectTransform>();
             // worldPositionStays=false: Canvasスケールの影響を受けずローカル基準で配置する
-            markerRect.SetParent(bossMarkerContainer, false);
+            markerRect.SetParent(container, false);
             markerRect.anchorMin = markerRect.anchorMax = markerRect.pivot = new Vector2(0.5f, 0.5f);
             markerRect.localScale = Vector3.one;
             markerRect.localPosition = Vector3.zero;
-            markerRect.sizeDelta = new Vector2(BOSS_MARKER_SIZE, BOSS_MARKER_SIZE);
+            markerRect.sizeDelta = new Vector2(size, size);
 
             var image = markerGO.GetComponent<Image>();
             image.color = bossMarkerColor;
@@ -156,29 +173,28 @@ namespace SGC2025.UI
             if (bossMarkerSprite != null)
                 image.sprite = bossMarkerSprite;
 
-            bossMarkers.Add((enemy, markerRect));
-            enemy.OnDeath += () => RemoveBossMarker(enemy);
+            return markerRect;
         }
 
         private void UpdateBossMarkers()
         {
             for (int i = bossMarkers.Count - 1; i >= 0; i--)
             {
-                var (enemy, marker) = bossMarkers[i];
+                var (enemy, miniMarker, expandMarker) = bossMarkers[i];
 
                 if (enemy == null || !enemy.IsAlive)
                 {
-                    if (marker != null)
-                        Destroy(marker.gameObject);
+                    if (miniMarker != null) Destroy(miniMarker.gameObject);
+                    if (expandMarker != null) Destroy(expandMarker.gameObject);
                     bossMarkers.RemoveAt(i);
                     continue;
                 }
 
-                if (marker != null)
-                {
-                    Vector2 miniMapPos = WorldToMiniMapPos(enemy.transform.position);
-                    marker.anchoredPosition = miniMapPos;
-                }
+                Vector3 enemyPos = enemy.transform.position;
+                if (miniMarker != null)
+                    miniMarker.anchoredPosition = WorldToMiniMapPos(enemyPos);
+                if (expandMarker != null)
+                    expandMarker.anchoredPosition = WorldToExpandMapPos(enemyPos);
             }
         }
 
@@ -188,8 +204,8 @@ namespace SGC2025.UI
             {
                 if (bossMarkers[i].enemy == enemy)
                 {
-                    if (bossMarkers[i].marker != null)
-                        Destroy(bossMarkers[i].marker.gameObject);
+                    if (bossMarkers[i].miniMarker != null) Destroy(bossMarkers[i].miniMarker.gameObject);
+                    if (bossMarkers[i].expandMarker != null) Destroy(bossMarkers[i].expandMarker.gameObject);
                     bossMarkers.RemoveAt(i);
                     return;
                 }
