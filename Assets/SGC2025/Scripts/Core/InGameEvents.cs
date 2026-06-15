@@ -117,6 +117,13 @@ namespace SGC2025.Core
     // Item
     // -------------------------------------------------------
 
+    /// <summary>アイテムを取得した（種類を問わず発行。取得演出用）</summary>
+    public struct ItemCollectedEvent : IGameEvent
+    {
+        public SGC2025.Item.ItemType ItemType;
+        public ItemCollectedEvent(SGC2025.Item.ItemType itemType) => ItemType = itemType;
+    }
+
     /// <summary>アイテム効果が開始した</summary>
     public struct ItemEffectActivatedEvent : IGameEvent
     {

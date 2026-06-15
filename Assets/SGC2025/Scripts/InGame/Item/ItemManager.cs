@@ -199,6 +199,9 @@ namespace SGC2025.Item
         {
             if (itemData == null) return;
 
+            // 種類を問わず取得を通知（画面エッジ演出などの取得フィードバック用）
+            EventBus.Publish(new ItemCollectedEvent(itemData.ItemType));
+
             // クローンアイテムは時限効果ではなく、クローンを1体増やす専用処理
             if (itemData.ItemType == ItemType.PlayerClone)
             {
