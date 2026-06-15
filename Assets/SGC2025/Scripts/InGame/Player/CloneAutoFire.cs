@@ -19,7 +19,23 @@ namespace SGC2025.Player
         [SerializeField, Tooltip("使用する弾データ（プレイヤーと同じものでOK）")]
         private BulletDataSO bulletData;
 
+        [Header("向き・位置の固定")]
+        [SerializeField, Tooltip("ONにすると、親(Player)が回転しても向きと相対位置を固定する（一緒に回らない）")]
+        private bool fixToWorld = true;
+
         private float fireTimer;
+        private Transform parentTransform;
+        private Vector3 fixedOffset;       // 親からの相対位置（固定）
+        private Quaternion fixedRotation;  // 親が回転しても保つワールド回転
+
+        private void Awake()
+        {
+            // 設計時のローカル値を、固定すべきオフセット・向きとして保持する
+            // （ローカル値は親の回転に影響されないため、有効化タイミングが途中でも設計値が得られる）
+            parentTransform = transform.parent;
+            fixedOffset = transform.localPosition;
+            fixedRotation = transform.localRotation;
+        }
 
         private void OnEnable()
         {
@@ -34,6 +50,15 @@ namespace SGC2025.Player
 
             fireTimer -= fireInterval;
             Fire();
+        }
+
+        // Playerの移動・回転が確定した後に補正し、1フレームのズレ（チラつき）を防ぐ
+        private void LateUpdate()
+        {
+            if (!fixToWorld || parentTransform == null) return;
+
+            // 親の回転を打ち消し、相対位置と向きを固定（位置と回転をまとめて設定）
+            transform.SetPositionAndRotation(parentTransform.position + fixedOffset, fixedRotation);
         }
 
         private void Fire()
