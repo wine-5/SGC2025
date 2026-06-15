@@ -16,6 +16,8 @@ namespace SGC2025.UI
         [SerializeField] private MiniMapTextureRenderer textureRenderer;
         [SerializeField] private RectTransform playerMarkerRect;
         [SerializeField] private RectTransform bossMarkerContainer;
+        [SerializeField, Tooltip("ボスマーカーの色")] private Color bossMarkerColor = Color.red;
+        [SerializeField, Tooltip("ボスマーカーのスプライト（未指定なら塗りつぶしの四角）")] private Sprite bossMarkerSprite;
         [SerializeField, Tooltip("Shift押下中に表示する拡大マップのオブジェクト")]
         private GameObject expandMapObject;
         [SerializeField] private RectTransform expandPlayerMarkerRect;
@@ -24,6 +26,11 @@ namespace SGC2025.UI
         private void Start()
         {
             textureRenderer?.Initialize();
+
+            // bossMarkerContainer自身に付いている見た目（テンプレの赤マーカー）は隠す。
+            // 入れ物はアクティブのまま残し、実行時に生成する子マーカーのみ表示する。
+            if (bossMarkerContainer != null && bossMarkerContainer.TryGetComponent<Graphic>(out var containerGraphic))
+                containerGraphic.enabled = false;
         }
 
         private void InitializePlayerMarker()
@@ -45,6 +52,7 @@ namespace SGC2025.UI
         private void OnEnable()
         {
             EventBus.Subscribe<GroundGreenifiedEvent>(OnGroundGreenified);
+            EventBus.Subscribe<GroundUngreenifiedEvent>(OnGroundUngreenified);
             EventBus.Subscribe<EnemySpawnedEvent>(OnEnemySpawned);
             EventBus.Subscribe<MiniMapExpandStartedEvent>(OnMiniMapExpandStarted);
             EventBus.Subscribe<MiniMapExpandCanceledEvent>(OnMiniMapExpandCanceled);
@@ -55,6 +63,7 @@ namespace SGC2025.UI
         private void OnDisable()
         {
             EventBus.Unsubscribe<GroundGreenifiedEvent>(OnGroundGreenified);
+            EventBus.Unsubscribe<GroundUngreenifiedEvent>(OnGroundUngreenified);
             EventBus.Unsubscribe<EnemySpawnedEvent>(OnEnemySpawned);
             EventBus.Unsubscribe<MiniMapExpandStartedEvent>(OnMiniMapExpandStarted);
             EventBus.Unsubscribe<MiniMapExpandCanceledEvent>(OnMiniMapExpandCanceled);
@@ -85,6 +94,11 @@ namespace SGC2025.UI
         private void OnGroundGreenified(GroundGreenifiedEvent e)
         {
             textureRenderer?.UpdateGreenifiedCell(e.Position);
+        }
+
+        private void OnGroundUngreenified(GroundUngreenifiedEvent e)
+        {
+            textureRenderer?.UpdateUngreenifiedCell(e.Position);
         }
 
         private void OnMiniMapExpandStarted(MiniMapExpandStartedEvent e)
@@ -126,13 +140,21 @@ namespace SGC2025.UI
         {
             if (bossMarkerContainer == null) return;
 
-            GameObject markerGO = new GameObject("BossMarker");
-            markerGO.transform.SetParent(bossMarkerContainer);
+            GameObject markerGO = new GameObject("BossMarker", typeof(RectTransform), typeof(Image));
 
-            RectTransform markerRect = markerGO.AddComponent<RectTransform>();
+            RectTransform markerRect = markerGO.GetComponent<RectTransform>();
+            // worldPositionStays=false: Canvasスケールの影響を受けずローカル基準で配置する
+            markerRect.SetParent(bossMarkerContainer, false);
+            markerRect.anchorMin = markerRect.anchorMax = markerRect.pivot = new Vector2(0.5f, 0.5f);
+            markerRect.localScale = Vector3.one;
+            markerRect.localPosition = Vector3.zero;
             markerRect.sizeDelta = new Vector2(BOSS_MARKER_SIZE, BOSS_MARKER_SIZE);
 
-            markerGO.AddComponent<Image>();
+            var image = markerGO.GetComponent<Image>();
+            image.color = bossMarkerColor;
+            image.raycastTarget = false;
+            if (bossMarkerSprite != null)
+                image.sprite = bossMarkerSprite;
 
             bossMarkers.Add((enemy, markerRect));
             enemy.OnDeath += () => RemoveBossMarker(enemy);

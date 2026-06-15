@@ -279,6 +279,8 @@ MonoBehaviour:
     greenColor: {r: 0.3, g: 0.7, b: 0.2, a: 0.8}
   playerMarkerRect: {fileID: 8795918450461711961}
   bossMarkerContainer: {fileID: 3120278276540104047}
+  bossMarkerColor: {r: 1, g: 0, b: 0, a: 1}
+  bossMarkerSprite: {fileID: 0}
   expandMapObject: {fileID: 4231974963617349346}
   expandPlayerMarkerRect: {fileID: 4306786788659886192}
 --- !u!1 &1551412257546661271

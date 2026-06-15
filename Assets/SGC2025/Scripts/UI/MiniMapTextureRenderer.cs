@@ -40,6 +40,16 @@ namespace SGC2025.UI
 
         public void UpdateGreenifiedCell(Vector3 worldPos)
         {
+            PaintCell(worldPos, greenColor);
+        }
+
+        public void UpdateUngreenifiedCell(Vector3 worldPos)
+        {
+            PaintCell(worldPos, brownColor);
+        }
+
+        private void PaintCell(Vector3 worldPos, Color color)
+        {
             if (mapTexture == null || GroundManager.I?.MapData == null) return;
 
             var mapData = GroundManager.I.MapData;
@@ -48,7 +58,7 @@ namespace SGC2025.UI
             if (cellPos.x >= 0 && cellPos.x < mapData.columns &&
                 cellPos.y >= 0 && cellPos.y < mapData.rows)
             {
-                mapTexture.SetPixel(cellPos.x, cellPos.y, greenColor);
+                mapTexture.SetPixel(cellPos.x, cellPos.y, color);
                 mapTexture.Apply();
             }
         }

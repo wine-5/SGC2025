@@ -67,6 +67,16 @@ namespace SGC2025.Core
         }
     }
 
+    /// <summary>タイルが非緑化された（茶色に戻った）</summary>
+    public struct GroundUngreenifiedEvent : IGameEvent
+    {
+        public Vector3 Position;
+        public GroundUngreenifiedEvent(Vector3 position)
+        {
+            Position = position;
+        }
+    }
+
     // -------------------------------------------------------
     // Game Flow
     // -------------------------------------------------------
