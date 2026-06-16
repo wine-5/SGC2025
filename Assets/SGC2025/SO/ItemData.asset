@@ -30,4 +30,4 @@ MonoBehaviour:
     duration: 40
     effectValue: 2
     itemPrefab: {fileID: 2584522453560449381, guid: c82c2cc5b429a9041b6de54f7695b03e, type: 3}
-    spawnWeight: 100
+    spawnWeight: 2
