@@ -11,7 +11,7 @@ namespace SGC2025.Item
     /// </summary>
     public class ItemManager : Singleton<ItemManager>
     {
-        private const float MIN_SPAWN_INTERVAL = 3f;
+        private const float MIN_SPAWN_INTERVAL = 0.1f;
         private const float DEFAULT_SPAWN_RANGE = 10f;
         private const float GREENING_PARTICLE_DURATION = 1.5f;
         private const string GAUGE_TAG = "GreenGauge";
@@ -21,7 +21,7 @@ namespace SGC2025.Item
         private ItemSpawnSelector spawnSelector = new ItemSpawnSelector();
         
         [Header("生成設定")]
-        [SerializeField, Range(1f, 60f), Tooltip("アイテム生成間隔（秒）")]
+        [SerializeField, Range(0.1f, 60f), Tooltip("アイテム生成間隔（秒）")]
         private float spawnInterval = 10f;
         
         [SerializeField, Tooltip("生成する高さのオフセット")]
