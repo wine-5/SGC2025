@@ -8,10 +8,11 @@ Shader "SGC2025/ItemEdgeEffect"
         _Color ("Color", Color) = (1, 1, 1, 1)
 
         _Progress ("Progress (0-1)", Range(0, 1)) = 0
-        _Thickness ("Border Thickness", Range(0.0, 0.2)) = 0.03
+        _Thickness ("Border Thickness (core)", Range(0.0, 0.2)) = 0.015
+        _GlowWidth ("Glow Width (halo)", Range(0.0, 0.3)) = 0.08
         _Trail ("Trail Length", Range(0.01, 1.0)) = 0.25
         _Glow ("Head Glow", Range(0, 3)) = 1.5
-        _Intensity ("Intensity", Range(0, 3)) = 1.0
+        _Intensity ("Intensity", Range(0, 10)) = 1.5
         _EdgeFeather ("Edge Feather", Range(0.0, 0.05)) = 0.01
 
         // UGUI 標準（マスク等のため）
@@ -75,6 +76,7 @@ Shader "SGC2025/ItemEdgeEffect"
             fixed4 _Color;
             float _Progress;
             float _Thickness;
+            float _GlowWidth;
             float _Trail;
             float _Glow;
             float _Intensity;
@@ -90,10 +92,15 @@ Shader "SGC2025/ItemEdgeEffect"
                 return o;
             }
 
-            // エッジへの近さ(距離d)を 1=縁ちょうど 〜 0=帯の内縁 のマスクに変換
+            // エッジへの近さ(距離d)を「細い芯＋外側のハロー(にじみ)」のプロファイルに変換
             float EdgeMask(float d, float th, float feather)
             {
-                return 1.0 - smoothstep(th - feather, th, d);
+                // 芯（細く明るい）
+                float core = 1.0 - smoothstep(th - feather, th, d);
+                // ハロー（芯の外へ柔らかく減衰する光）
+                float halo = saturate(1.0 - d / max(_GlowWidth, 1e-4));
+                halo = halo * halo; // 中心に寄せて、にじみらしく
+                return core + halo; // 芯＋にじみ（最終的にsaturateで不透明度化）
             }
 
             // 候補(パスパラメータ・マスク)を、より縁に近い方で採用
