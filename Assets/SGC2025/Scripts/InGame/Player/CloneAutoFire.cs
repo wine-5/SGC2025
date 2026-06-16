@@ -20,8 +20,11 @@ namespace SGC2025.Player
         private BulletDataSO bulletData;
 
         [Header("向き・位置の固定")]
-        [SerializeField, Tooltip("ONにすると、親(Player)が回転しても向きと相対位置を固定する（一緒に回らない）")]
+        [SerializeField, Tooltip("ONにすると、親(Player)が回転しても相対位置を固定する（位置は一緒に回らない）")]
         private bool fixToWorld = true;
+
+        [SerializeField, Tooltip("ONにすると、位置は固定したまま向きだけ親(Player)の回転に追従する（方向を見せたい場合）")]
+        private bool followParentRotation = true;
 
         private float fireTimer;
         private Transform parentTransform;
@@ -57,8 +60,12 @@ namespace SGC2025.Player
         {
             if (!fixToWorld || parentTransform == null) return;
 
-            // 親の回転を打ち消し、相対位置と向きを固定（位置と回転をまとめて設定）
-            transform.SetPositionAndRotation(parentTransform.position + fixedOffset, fixedRotation);
+            // 位置は親の回転を打ち消して相対位置を固定（一緒に回らない）。
+            // 向きは followParentRotation が ON なら親の回転に追従させ、方向が分かるようにする。
+            Quaternion rotation = followParentRotation
+                ? parentTransform.rotation * fixedRotation
+                : fixedRotation;
+            transform.SetPositionAndRotation(parentTransform.position + fixedOffset, rotation);
         }
 
         private void Fire()
