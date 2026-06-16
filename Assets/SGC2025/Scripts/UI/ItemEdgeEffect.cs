@@ -44,6 +44,16 @@ namespace SGC2025.UI
         {
             graphic = GetComponent<Graphic>();
 
+            // 頂点アルファが0だと CullTransparentMesh によりメッシュごと描画破棄され、
+            // シェーダが走らない。出力の不透明度はシェーダ側(光の強さ)で決めるので、
+            // 頂点アルファは常に1に固定しておく。
+            if (graphic != null)
+            {
+                Color c = graphic.color;
+                c.a = 1f;
+                graphic.color = c;
+            }
+
             // 共有マテリアル（アセット）を書き換えないよう、ランタイム用に複製して使う
             if (graphic != null && graphic.material != null)
             {
