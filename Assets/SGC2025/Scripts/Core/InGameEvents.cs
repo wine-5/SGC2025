@@ -24,9 +24,13 @@ namespace SGC2025.Core
     public struct EnemyDestroyedEvent : IGameEvent
     {
         public Vector3 Position;
-        public EnemyDestroyedEvent(Vector3 position)
+        public int GreeningSize;        // 撃破時に緑化する一辺のマス数（基本）
+        public int GreeningSizeBoosted; // 緑化範囲上昇アイテム中の一辺のマス数
+        public EnemyDestroyedEvent(Vector3 position, int greeningSize, int greeningSizeBoosted)
         {
             Position = position;
+            GreeningSize = greeningSize;
+            GreeningSizeBoosted = greeningSizeBoosted;
         }
     }
 

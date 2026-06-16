@@ -74,13 +74,13 @@ namespace SGC2025.Item
         private void OnEnemyDestroyed(EnemyDestroyedEvent e)
         {
             // 敵撃破時パーティクルエフェクトを敵の位置に生成し、緑化度ゲージへ向かって飛ばす
+            // （地面の緑化サイズ判定・実行は GroundManager 側で行う）
             if (EffectFactory.I != null)
                 EffectFactory.I.CreateEffect(EffectType.GreeningParticle, e.Position, GREENING_PARTICLE_DURATION, GetGaugeTarget());
-
-            // AreaGreenify効果が有効な場合は広範囲緑化も追加
-            if (IsEffectActive(ItemType.AreaGreenify) && GroundManager.I != null)
-                GroundManager.I.DrawGroundArea(e.Position);
         }
+
+        /// <summary>緑化範囲上昇アイテムが有効か（GroundManagerが緑化サイズ判定に使用）</summary>
+        public bool IsAreaGreenifyActive => IsEffectActive(ItemType.AreaGreenify);
 
         /// <summary>緑化度ゲージのTransformを取得（キャッシュ）</summary>
         private Transform GetGaugeTarget()

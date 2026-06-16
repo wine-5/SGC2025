@@ -28,10 +28,18 @@ namespace SGC2025.Enemy
         [Header("ボス設定")]
         [SerializeField] private bool isBoss = false;
 
+        [Header("緑化設定")]
+        [SerializeField, Tooltip("撃破時に緑化する一辺のマス数（通常=1, ボス=3 など）")]
+        private int greeningSize = 1;
+        [SerializeField, Tooltip("緑化範囲上昇アイテム中に緑化する一辺のマス数（通常=3, ボス=6 など）")]
+        private int greeningSizeBoosted = 3;
+
         // 基本プロパティ
         public EnemyType EnemyType => enemyType;
         public MovementType MovementType => movementType;
         public bool IsBoss => isBoss;
+        public int GreeningSize => greeningSize;
+        public int GreeningSizeBoosted => greeningSizeBoosted;
         
         /// <summary>
         /// Waveレベルに応じてスケーリングされたパラメーターを取得

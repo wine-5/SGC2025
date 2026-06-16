@@ -17,12 +17,15 @@ namespace SGC2025.Manager
         private const float TILE_Z_POSITION = 0f;
         private const float GRASS_EFFECT_DURATION = 2f;
         private const float GRASS_EFFECT_Y_OFFSET = 0.1f;
-        private const float AREA_EFFECT_SCALE_MULTIPLIER = 2f; // 3x3緑化時のエフェクトスケール倍率
         
         [Header("地面データ設定")]
         [SerializeField]
         [Tooltip("使用するGroundDataSO（マップ設定の単一の真実の源泉）")]
         private GroundDataSO groundData;
+
+        [Header("緑化エフェクト設定")]
+        [SerializeField, Tooltip("緑化範囲(size)に応じたエフェクト拡大の強さ。size=1は等倍、size>1は (1 + (size-1)×この値) 倍")]
+        private float areaEffectScaleFactor = 0.5f;
 
         private struct GroundData
         {
@@ -64,97 +67,77 @@ namespace SGC2025.Manager
             base.OnDestroy();
         }
         
-        private void OnEnemyDestroyed(EnemyDestroyedEvent e) => DrawGround(e.Position);
-
-        /// <summary>指定位置の地面を緑化（1マス）</summary>
-        public bool DrawGround(Vector3 enemyPosition)
+        private void OnEnemyDestroyed(EnemyDestroyedEvent e)
         {
-            if (currentGroundArray == null) return false;
+            // 緑化サイズは敵データ由来。緑化範囲上昇アイテム中はブースト値を使う
+            int size = e.GreeningSize;
+            if (ItemManager.I != null && ItemManager.I.IsAreaGreenifyActive)
+                size = e.GreeningSizeBoosted;
 
-            Vector2Int cellPosition = SearchCellIndex(enemyPosition);
-
-            if (cellPosition.x < 0 || cellPosition.x >= groundData.columns ||
-                cellPosition.y < 0 || cellPosition.y >= groundData.rows) return false;
-            
-            if (currentGroundArray[cellPosition.x, cellPosition.y].isDrawn) return false;
-            
-            bool drawn = DrawSingleTile(cellPosition.x, cellPosition.y);
-            
-            if (drawn)
-            {
-                Vector3 pos = currentGroundArray[cellPosition.x, cellPosition.y].worldPos;
-                
-                if (EffectFactory.I != null)
-                {
-                    Vector3 effectPos = pos + Vector3.up * GRASS_EFFECT_Y_OFFSET;
-                    EffectFactory.I.CreateEffect(EffectType.GrassRestorationEffect, effectPos, GRASS_EFFECT_DURATION);
-                }
-                
-                if (AudioManager.I != null)
-                    AudioManager.I.PlaySE(SEType.Grass);
-            }
-            
-            return drawn;
+            DrawGroundArea(e.Position, size);
         }
 
-        /// <summary>指定位置の地面を広範囲緑化（3x3範囲＝9マス）</summary>
-        public bool DrawGroundArea(Vector3 enemyPosition)
+        /// <summary>指定位置の地面を緑化（1マス）</summary>
+        public bool DrawGround(Vector3 enemyPosition) => DrawGroundArea(enemyPosition, 1);
+
+        /// <summary>
+        /// 指定位置を中心に size×size マスを緑化する。
+        /// エフェクトは1種類のプレハブを size に応じて拡縮して1回だけ生成する。
+        /// 偶数サイズは中心から下・左側に1マス広く取る。
+        /// </summary>
+        public bool DrawGroundArea(Vector3 enemyPosition, int size)
         {
-            if (currentGroundArray == null) return false;
-            
+            if (currentGroundArray == null || size <= 0) return false;
+
             Vector2Int centerCell = SearchCellIndex(enemyPosition);
-            
+
             if (centerCell.x < 0 || centerCell.x >= groundData.columns ||
                 centerCell.y < 0 || centerCell.y >= groundData.rows) return false;
-            
+
+            // size×size を中心に展開（偶数サイズは下/左寄りに1マス広い）
+            int lo = (size - 1) / 2;
+            int hi = size / 2;
+
             bool anyDrawn = false;
-            
-            // 3x3範囲で緑化
-            for (int dx = -1; dx <= 1; dx++)
+
+            for (int dx = -lo; dx <= hi; dx++)
             {
-                for (int dy = -1; dy <= 1; dy++)
+                for (int dy = -lo; dy <= hi; dy++)
                 {
                     int x = centerCell.x + dx;
                     int y = centerCell.y + dy;
-                    
-                    // 範囲チェック
+
                     if (x < 0 || x >= groundData.columns || y < 0 || y >= groundData.rows)
                         continue;
-                    
-                    // 既に緑化済みならスキップ
+
                     if (currentGroundArray[x, y].isDrawn)
                         continue;
-                    
+
                     if (DrawSingleTile(x, y))
                         anyDrawn = true;
                 }
             }
-            
-            // 中心位置にエフェクトと音を生成（1回だけ）
+
+            // 中心位置にエフェクトと音を1回だけ生成（エフェクトはsizeに比例して拡大）
             if (anyDrawn)
             {
                 Vector3 centerPos = currentGroundArray[centerCell.x, centerCell.y].worldPos;
-                
+
                 if (EffectFactory.I != null)
                 {
                     Vector3 effectPos = centerPos + Vector3.up * GRASS_EFFECT_Y_OFFSET;
                     GameObject effect = EffectFactory.I.CreateEffect(EffectType.GrassRestorationEffect, effectPos, GRASS_EFFECT_DURATION);
-                    
-                    // 3x3緑化時はエフェクトのScaleをx,yのみ2倍に
-                    if (effect != null)
-                    {
-                        Vector3 scale = effect.transform.localScale;
-                        effect.transform.localScale = new Vector3(
-                            scale.x * AREA_EFFECT_SCALE_MULTIPLIER, 
-                            scale.y * AREA_EFFECT_SCALE_MULTIPLIER, 
-                            scale.z);
-                    }
+
+                    // 全軸を一律に拡大（エフェクトが回転していても見た目が崩れない）
+                    // size に等倍だと大きすぎるため、係数で緩やかに拡大する
+                    if (effect != null && size > 1)
+                        effect.transform.localScale *= 1f + (size - 1) * areaEffectScaleFactor;
                 }
-                
+
                 if (AudioManager.I != null)
                     AudioManager.I.PlaySE(SEType.Grass);
             }
-            
+
             return anyDrawn;
         }
 

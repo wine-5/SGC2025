@@ -24,7 +24,7 @@ MonoBehaviour:
     duration: 20
     effectValue: 4
     itemPrefab: {fileID: 8577232092810221527, guid: 76b572ba44d64694dbc9d0eaa6adf555, type: 3}
-    spawnWeight: 2
+    spawnWeight: 200
   - itemType: 2
     itemName: "Player\u306E\u30AF\u30ED\u30FC\u30F3\u3092\u751F\u6210"
     duration: 40

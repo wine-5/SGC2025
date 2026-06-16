@@ -18,3 +18,5 @@ MonoBehaviour:
   moveSpeed: 6
   lifeTime: 50
   isBoss: 0
+  greeningSize: 1
+  greeningSizeBoosted: 3

@@ -157,7 +157,11 @@ namespace SGC2025.Enemy
         private void HandleDeath()
         {
             OnDeath?.Invoke();
-            EventBus.Publish(new EnemyDestroyedEvent(transform.position));
+
+            int greeningSize = enemyData != null ? enemyData.GreeningSize : 1;
+            int greeningSizeBoosted = enemyData != null ? enemyData.GreeningSizeBoosted : greeningSize;
+            EventBus.Publish(new EnemyDestroyedEvent(transform.position, greeningSize, greeningSizeBoosted));
+
             ReturnToPool();
         }
 
