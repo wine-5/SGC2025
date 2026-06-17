@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+#if STEAMWORKS_NET
+using SGC2025.Ranking.Steam;
+using SGC2025.Core;
+#endif
 
 namespace SGC2025.Ranking
 {
@@ -21,12 +25,23 @@ namespace SGC2025.Ranking
         }
 
         /// <summary>
-        /// 新しいスコアを登録して保存する
+        /// 新しいスコアを登録して保存する（Steam対応）
         /// </summary>
         /// <param name="playerName">プレイヤー名</param>
         /// <param name="greeningRate">緑化度（％）</param>
         public void AddScore(string playerName, float greeningRate)
         {
+#if STEAMWORKS_NET
+            if (SteamManager.Initialized)
+            {
+                // Steam側へ送信するために int 型に変換（小数点以下を四捨五入）
+                int scoreAsInt = Mathf.RoundToInt(greeningRate);
+                SteamLeaderboardManager.I.UploadScore(scoreAsInt);
+                return;
+            }
+#endif
+
+            // --- 以下、Steam未接続時（ローカル保存）のフォールバック処理 ---
             if (ranking == null)
                 ranking = new RankingData();
 
@@ -34,7 +49,6 @@ namespace SGC2025.Ranking
                 ranking.scores = new List<ScoreData>();
 
             ranking.scores.Add(new ScoreData(playerName, greeningRate));
-
             ranking.scores.Sort((a, b) => b.greeningRate.CompareTo(a.greeningRate));
 
             if (ranking.scores.Count > MAX_RANK)
@@ -93,6 +107,14 @@ namespace SGC2025.Ranking
         /// </summary>
         public bool IsNewRecord(float greeningRate)
         {
+#if STEAMWORKS_NET
+            if (SteamManager.Initialized)
+            {
+                // Steamの場合は常にオンライン上で自己ベストが更新されるため常に許可してOK
+                return true;
+            }
+#endif
+
             List<ScoreData> rankingList = GetRanking();
             if (rankingList == null || rankingList.Count == 0) return true;
             if (rankingList.Count < MAX_RANK) return true;

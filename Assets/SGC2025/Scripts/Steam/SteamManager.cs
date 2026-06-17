@@ -23,11 +23,12 @@ namespace SGC2025.Core
                 if (Steamworks.SteamAPI.Init())
                 {
                     Initialized = true;
+                    CusLog.Log("[SteamManager] Steam API successfully initialized.");
                 }
                 else
                 {
                     Initialized = false;
-                    CusLog.Error("[SteamManager] Failed to initialize Steam API.");
+                    CusLog.Error("[SteamManager] Failed to initialize Steam API. Is Steam running?");
                 }
             }
             catch (System.DllNotFoundException)
@@ -37,6 +38,17 @@ namespace SGC2025.Core
             }
 #else
             Initialized = false;
+            CusLog.Warning("[SteamManager] STEAMWORKS_NET symbol is not defined. Running in offline mode.");
+#endif
+        }
+
+        private void Update()
+        {
+#if STEAMWORKS_NET
+            if (Initialized)
+            {
+                Steamworks.SteamAPI.RunCallbacks();
+            }
 #endif
         }
 
@@ -46,6 +58,7 @@ namespace SGC2025.Core
             if (Initialized)
             {
                 Steamworks.SteamAPI.Shutdown();
+                Initialized = false; 
                 CusLog.Log("[SteamManager] Steam API shutdown.");
             }
 #endif

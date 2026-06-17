@@ -3,6 +3,10 @@ using UnityEngine.EventSystems;
 using TMPro;
 using SGC2025.Manager;
 using SGC2025.Ranking;
+#if STEAMWORKS_NET
+using SGC2025.Core;
+using Steamworks;
+#endif
 
 namespace SGC2025.UI
 {
@@ -100,6 +104,22 @@ namespace SGC2025.UI
                 case ResultPhase.HighScore:
                     float greeningRate = GameManager.I.FinalGreeningRate * PERCENT_MULTIPLIER;
 
+#if STEAMWORKS_NET
+                    if (SteamManager.Initialized)
+                    {
+                        // Steam有効時はログイン中のユーザー名を取得して自動登録（名前入力はスキップ）
+                        string steamName = SteamFriends.GetPersonaName();
+                        RankingManager.I.AddScore(steamName, greeningRate);
+                        
+                        if (rankingUI != null)
+                            rankingUI.UpdateScore();
+
+                        ShowEndButtons();
+                        return;
+                    }
+#endif
+
+                    // --- 以下、Steam未接続時のフォールバック処理 ---
                     var rankingManager = RankingManager.I;
                     if (rankingManager != null && rankingManager.IsNewRecord(greeningRate))
                     {
@@ -165,8 +185,5 @@ namespace SGC2025.UI
             
             UIFocusHelper.SetFocus(firstButtonAfterInput);
         }
-
-
-
     }
 }

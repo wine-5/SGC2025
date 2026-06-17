@@ -106,6 +106,18 @@ namespace SGC2025.Core
     /// <summary>ミニマップ拡大終了</summary>
     public struct MiniMapExpandCanceledEvent : IGameEvent { }
 
+    public struct LeaderboardRankedInEvent : IGameEvent
+    {
+        public int Rank;   
+        public int Score;  
+
+        public LeaderboardRankedInEvent(int rank, int score)
+        {
+            Rank = rank;
+            Score = score;
+        }
+    }
+    
     // -------------------------------------------------------
     // Wave
     // -------------------------------------------------------
