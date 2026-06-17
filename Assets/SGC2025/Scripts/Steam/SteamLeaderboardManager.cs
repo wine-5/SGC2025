@@ -136,6 +136,9 @@ namespace SGC2025.Ranking.Steam
 
             CusLog.Log(LOG_CATEGORY, $"Score {result.m_nScore} uploaded to Steam. ScoreChanged: {result.m_bScoreChanged}");
 
+            // 送信後のグローバル順位をリザルト画面へ通知する
+            EventBus.Publish(new LeaderboardRankedInEvent(result.m_nGlobalRankNew, result.m_nScore));
+
             FetchLeaderboard(LEADERBOARD_MAX_ENTRIES);
         }
 

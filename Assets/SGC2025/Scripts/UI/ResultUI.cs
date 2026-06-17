@@ -3,8 +3,8 @@ using UnityEngine.EventSystems;
 using TMPro;
 using SGC2025.Manager;
 using SGC2025.Ranking;
-#if STEAMWORKS_NET
 using SGC2025.Core;
+#if STEAMWORKS_NET
 using Steamworks;
 #endif
 
@@ -13,14 +13,17 @@ namespace SGC2025.UI
     /// <summary>
     /// リザルト画面UI（スコア表示とカウントアップ演出）
     /// </summary>
-    public class ResulltUI : UIBase
+    public class ResultUI : UIBase
     {
         private const float SCORE_COUNT_UP_TIME = 0.7f;
         private const float ZERO_WAIT_TIME = 0.0f;
         private const float PERCENT_MULTIPLIER = 100f;
+        private const string RANK_SUFFIX = "位";
 
         [SerializeField]
         private TextMeshProUGUI greeningRateText; // 緑化度（％）表示
+        [SerializeField]
+        private TextMeshProUGUI rankText; // 獲得した順位表示
         [SerializeField]
         private GameObject[] buttons;
         [SerializeField]
@@ -53,12 +56,25 @@ namespace SGC2025.UI
                 nameInputUI.Submitted -= HandleNameSubmitted;
                 nameInputUI.Submitted += HandleNameSubmitted;
             }
+
+            EventBus.Subscribe<LeaderboardRankedInEvent>(HandleLeaderboardRankedIn);
         }
 
         private void OnDestroy()
         {
             if (nameInputUI != null)
                 nameInputUI.Submitted -= HandleNameSubmitted;
+
+            EventBus.Unsubscribe<LeaderboardRankedInEvent>(HandleLeaderboardRankedIn);
+        }
+
+        /// <summary>
+        /// Steam Leaderboard へのランクイン結果を受け取り、順位を表示する
+        /// </summary>
+        private void HandleLeaderboardRankedIn(LeaderboardRankedInEvent rankedIn)
+        {
+            if (rankText != null)
+                rankText.SetText($"{rankedIn.Rank}{RANK_SUFFIX}");
         }
 
         private void HandleNameSubmitted()
