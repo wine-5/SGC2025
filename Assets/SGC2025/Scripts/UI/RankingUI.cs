@@ -66,7 +66,6 @@ namespace SGC2025.UI
 
         private void SetType(LeaderboardType type)
         {
-            Polychroma.Core.Log.CusLog.Log("Ranking", $"[DEBUG] SetType called: {type}");
             currentType = type;
             UpdateScore();
         }

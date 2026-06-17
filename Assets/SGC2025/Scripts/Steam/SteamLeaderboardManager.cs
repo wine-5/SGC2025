@@ -48,10 +48,11 @@ namespace SGC2025.Ranking.Steam
         /// <summary>
         /// Steam Leaderboard 名へ変換する
         /// </summary>
+        // 共有テストアプリ(AppID 480)で他開発者と衝突しないよう、プロジェクト固有の名前にする
         private static string GetLeaderboardName(LeaderboardType type) => type switch
         {
-            LeaderboardType.TotalScore => "TotalScore",
-            _ => "GreenificationRate",
+            LeaderboardType.TotalScore => "SGC2025_TotalScore",
+            _ => "SGC2025_GreeningRate",
         };
 
         /// <summary>

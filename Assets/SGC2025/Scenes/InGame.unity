@@ -181,7 +181,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8900758465941632728, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: gameTimeLimit
-      value: 10
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 8900758465941632728, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: startCountDownTime

@@ -889,6 +889,8 @@ MonoBehaviour:
   firstSelect: {fileID: 0}
   rowPrefab: {fileID: -4260495826238242793, guid: ff0a31b0cd855ac4fa2a7331f8508cb6, type: 3}
   contentParent: {fileID: 484604361}
+  greeningButton: {fileID: 1480853783}
+  totalButton: {fileID: 923899712}
 --- !u!1 &923899710
 GameObject:
   m_ObjectHideFlags: 0
@@ -902,7 +904,7 @@ GameObject:
   - component: {fileID: 923899713}
   - component: {fileID: 923899712}
   m_Layer: 0
-  m_Name: ScoreRankingButton
+  m_Name: TotalScoreRankingButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2003,8 +2005,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 923899711}
   - {fileID: 1480853782}
+  - {fileID: 923899711}
   m_Father: {fileID: 905094044}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
