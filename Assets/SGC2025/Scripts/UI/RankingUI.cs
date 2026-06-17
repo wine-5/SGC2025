@@ -16,6 +16,7 @@ namespace SGC2025.UI
     {
         private const float GREENING_DISPLAY_DIVISOR = 100f; // Steam格納値(%×100)を%へ戻す除数
         private const int MAX_ENTRIES = 10;
+        private const string EMPTY_TEXT = "---"; // 空きスロットの表示
 
         [SerializeField]
         private RankingRow rowPrefab; // 1行分のプレハブ
@@ -93,11 +94,15 @@ namespace SGC2025.UI
             ClearRows();
 
             List<SteamLeaderboardEntry> entries = SteamLeaderboardManager.I.GetCachedEntries(currentType);
-            if (entries == null) return;
 
-            int count = Mathf.Min(entries.Count, MAX_ENTRIES);
-            for (int i = 0; i < count; i++)
-                CreateRow().Set(i + 1, entries[i].PlayerName, FormatSteamScore(entries[i].Score));
+            // 実データが少なくても常に MAX_ENTRIES 行表示し、空きは「---」で埋める
+            for (int i = 0; i < MAX_ENTRIES; i++)
+            {
+                if (entries != null && i < entries.Count)
+                    CreateRow().Set(i + 1, entries[i].PlayerName, FormatSteamScore(entries[i].Score));
+                else
+                    CreateRow().Set(i + 1, EMPTY_TEXT, EMPTY_TEXT);
+            }
         }
 
         /// <summary>
@@ -115,9 +120,15 @@ namespace SGC2025.UI
             ClearRows();
 
             List<ScoreData> ranking = RankingManager.I.GetRanking(currentType);
-            int count = Mathf.Min(ranking.Count, MAX_ENTRIES);
-            for (int i = 0; i < count; i++)
-                CreateRow().Set(i + 1, ranking[i].playerName, FormatLocalScore(ranking[i].score));
+
+            // 実データが少なくても常に MAX_ENTRIES 行表示し、空きは「---」で埋める
+            for (int i = 0; i < MAX_ENTRIES; i++)
+            {
+                if (i < ranking.Count)
+                    CreateRow().Set(i + 1, ranking[i].playerName, FormatLocalScore(ranking[i].score));
+                else
+                    CreateRow().Set(i + 1, EMPTY_TEXT, EMPTY_TEXT);
+            }
         }
 
         /// <summary>
