@@ -79,6 +79,17 @@ namespace SGC2025.Core
     /// <summary>ポーズが解除された</summary>
     public struct ResumedEvent : IGameEvent { }
 
+    public struct LeaderboardRankedInEvent : IGameEvent
+    {
+        public int Rank;   
+        public int Score;  
+
+        public LeaderboardRankedInEvent(int rank, int score)
+        {
+            Rank = rank;
+            Score = score;
+        }
+    }
     // -------------------------------------------------------
     // Wave
     // -------------------------------------------------------
