@@ -26,6 +26,7 @@ namespace SGC2025.Enemy
         private bool isInitialized = false;
         private EnemyMovement movement;
         private float elapsedTime;
+        private IEnemyAbility[] abilities;
 
         public event System.Action<float> OnDamageTaken;
         public event System.Action OnDeath;
@@ -39,12 +40,20 @@ namespace SGC2025.Enemy
 
         private float LifeTime => cachedParameters.lifeTime;
 
+        private void Awake()
+        {
+            // 同一GameObject上のアビリティ（ボス能力など）を収集（プール再利用でも不変なので一度だけ）
+            abilities = GetComponents<IEnemyAbility>();
+        }
+
         private void Update()
         {
             if (!isInitialized) return;
 
             movement.Tick(Time.deltaTime);
             elapsedTime += Time.deltaTime;
+
+            TickAbilities(Time.deltaTime);
 
             if (ShouldReturn())
                 ReturnToPool();
@@ -75,7 +84,35 @@ namespace SGC2025.Enemy
             movement = new EnemyMovement(transform, this);
             elapsedTime = 0f;
             isInitialized = true;
+            EventBus.Publish(new EnemySpawnedEvent(this));
+
+            NotifyAbilitiesSpawned();
         }
+
+        #region アビリティ
+
+        private void NotifyAbilitiesSpawned()
+        {
+            if (abilities == null) return;
+            foreach (var ability in abilities)
+                ability.OnSpawn(this);
+        }
+
+        private void TickAbilities(float deltaTime)
+        {
+            if (abilities == null) return;
+            foreach (var ability in abilities)
+                ability.Tick(deltaTime);
+        }
+
+        private void NotifyAbilitiesDespawned()
+        {
+            if (abilities == null) return;
+            foreach (var ability in abilities)
+                ability.OnDespawn();
+        }
+
+        #endregion
 
         /// <summary>
         /// 移動戦略を設定（追従型）
@@ -112,6 +149,7 @@ namespace SGC2025.Enemy
             if (!isInitialized) return;
 
             isInitialized = false;
+            NotifyAbilitiesDespawned();
             if (EnemyFactory.I != null)
                 EnemyFactory.I.ReturnEnemy(gameObject);
         }
@@ -119,7 +157,11 @@ namespace SGC2025.Enemy
         private void HandleDeath()
         {
             OnDeath?.Invoke();
-            EventBus.Publish(new EnemyDestroyedEvent(transform.position));
+
+            int greeningSize = enemyData != null ? enemyData.GreeningSize : 1;
+            int greeningSizeBoosted = enemyData != null ? enemyData.GreeningSizeBoosted : greeningSize;
+            EventBus.Publish(new EnemyDestroyedEvent(transform.position, greeningSize, greeningSizeBoosted));
+
             ReturnToPool();
         }
 

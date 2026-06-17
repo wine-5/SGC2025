@@ -22,6 +22,12 @@ MonoBehaviour:
   - itemType: 1
     itemName: "\u7DD1\u5316\u7BC4\u56F2\u4E0A\u6607"
     duration: 20
-    effectValue: 2
+    effectValue: 4
     itemPrefab: {fileID: 8577232092810221527, guid: 76b572ba44d64694dbc9d0eaa6adf555, type: 3}
-    spawnWeight: 2
+    spawnWeight: 200
+  - itemType: 2
+    itemName: "Player\u306E\u30AF\u30ED\u30FC\u30F3\u3092\u751F\u6210"
+    duration: 40
+    effectValue: 2
+    itemPrefab: {fileID: 2584522453560449381, guid: c82c2cc5b429a9041b6de54f7695b03e, type: 3}
+    spawnWeight: 100

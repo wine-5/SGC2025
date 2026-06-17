@@ -1,31 +1,36 @@
 #if STEAMWORKS_NET
 using System.Collections.Generic;
-using UnityEngine;
 using Steamworks;
 using Polychroma.Core.Log;
 using SGC2025.Core;
+using SGC2025.Ranking;
 using Cysharp.Threading.Tasks;
 
 namespace SGC2025.Ranking.Steam
 {
     /// <summary>
-    /// Steam リーダーボードの管理を行うシングルトンマネージャー
+    /// Steam リーダーボード（緑化度・総スコア）の管理を行うシングルトンマネージャー
     /// </summary>
     public class SteamLeaderboardManager : Singleton<SteamLeaderboardManager>
     {
-        private const string LEADERBOARD_NAME = "GreenificationRate";
         private const int LEADERBOARD_MAX_ENTRIES = 10;
         private const string LOG_CATEGORY = "Steam";
-        private SteamLeaderboard_t leaderboardHandle;
-        private bool isLeaderboardReady = false;
 
-        // 取得済みエントリーキャッシュ
-        public List<SteamLeaderboardEntry> CachedEntries { get; private set; } = new List<SteamLeaderboardEntry>();
+        private static readonly LeaderboardType[] AllTypes =
+        {
+            LeaderboardType.GreeningRate,
+            LeaderboardType.TotalScore,
+        };
 
-        //Steamworks.NET 非同期通信用の CallResult 定義
-        private CallResult<LeaderboardFindResult_t> m_SteamCallResultLeaderboardFind;
-        private CallResult<LeaderboardScoresDownloaded_t> m_SteamCallResultLeaderboardEntriesLoaded;
-        private CallResult<LeaderboardScoreUploaded_t> m_SteamCallResultLeaderboardScoreUploaded;
+        // 種別ごとの状態
+        private readonly Dictionary<LeaderboardType, SteamLeaderboard_t> handles = new Dictionary<LeaderboardType, SteamLeaderboard_t>();
+        private readonly Dictionary<LeaderboardType, bool> ready = new Dictionary<LeaderboardType, bool>();
+        private readonly Dictionary<LeaderboardType, List<SteamLeaderboardEntry>> cachedEntries = new Dictionary<LeaderboardType, List<SteamLeaderboardEntry>>();
+
+        // 種別ごとの CallResult（同時進行で互いに上書きしないよう種別単位で保持）
+        private readonly Dictionary<LeaderboardType, CallResult<LeaderboardFindResult_t>> findCallResults = new Dictionary<LeaderboardType, CallResult<LeaderboardFindResult_t>>();
+        private readonly Dictionary<LeaderboardType, CallResult<LeaderboardScoresDownloaded_t>> downloadCallResults = new Dictionary<LeaderboardType, CallResult<LeaderboardScoresDownloaded_t>>();
+        private readonly Dictionary<LeaderboardType, CallResult<LeaderboardScoreUploaded_t>> uploadCallResults = new Dictionary<LeaderboardType, CallResult<LeaderboardScoreUploaded_t>>();
 
         protected override bool UseDontDestroyOnLoad => true;
         protected override bool DestroyTargetGameObject => true;
@@ -41,6 +46,16 @@ namespace SGC2025.Ranking.Steam
         }
 
         /// <summary>
+        /// Steam Leaderboard 名へ変換する
+        /// </summary>
+        // 共有テストアプリ(AppID 480)で他開発者と衝突しないよう、プロジェクト固有の名前にする
+        private static string GetLeaderboardName(LeaderboardType type) => type switch
+        {
+            LeaderboardType.TotalScore => "SGC2025_TotalScore",
+            _ => "SGC2025_GreeningRate",
+        };
+
+        /// <summary>
         /// UniTask による非同期初期化処理
         /// </summary>
         private async UniTaskVoid InitializeAsync()
@@ -49,149 +64,169 @@ namespace SGC2025.Ranking.Steam
 
             await UniTask.Yield();
 
-            // Steam 初期化確認
             if (!SteamManager.Initialized)
             {
                 CusLog.Warning(LOG_CATEGORY, "Steam is NOT initialized. Test mode.");
                 return;
             }
 
-            // CallResult のインスタンスを作成
-            m_SteamCallResultLeaderboardFind = CallResult<LeaderboardFindResult_t>.Create(OnLeaderboardFound);
-            m_SteamCallResultLeaderboardEntriesLoaded = CallResult<LeaderboardScoresDownloaded_t>.Create(OnLeaderboardEntriesLoaded);
-            m_SteamCallResultLeaderboardScoreUploaded = CallResult<LeaderboardScoreUploaded_t>.Create(OnLeaderboardScoreUploaded);
+            foreach (LeaderboardType type in AllTypes)
+            {
+                LeaderboardType captured = type;
+                cachedEntries[captured] = new List<SteamLeaderboardEntry>();
+                ready[captured] = false;
+                findCallResults[captured] = CallResult<LeaderboardFindResult_t>.Create((r, io) => OnLeaderboardFound(captured, r, io));
+                downloadCallResults[captured] = CallResult<LeaderboardScoresDownloaded_t>.Create((r, io) => OnLeaderboardEntriesLoaded(captured, r, io));
+                uploadCallResults[captured] = CallResult<LeaderboardScoreUploaded_t>.Create((r, io) => OnLeaderboardScoreUploaded(captured, r, io));
 
-            FindOrCreateLeaderboard();
+                FindOrCreateLeaderboard(captured);
+            }
         }
 
         /// <summary>
         /// リーダーボードのハンドルを Steam 側から探す、なければ作成する
         /// </summary>
-        private void FindOrCreateLeaderboard()
+        private void FindOrCreateLeaderboard(LeaderboardType type)
         {
-            CusLog.Log(LOG_CATEGORY, $"Finding or Creating Leaderboard: {LEADERBOARD_NAME}");
+            string name = GetLeaderboardName(type);
+            CusLog.Log(LOG_CATEGORY, $"Finding or Creating Leaderboard: {name}");
 
             SteamAPICall_t hSteamAPICall = SteamUserStats.FindOrCreateLeaderboard(
-                LEADERBOARD_NAME,
+                name,
                 ELeaderboardSortMethod.k_ELeaderboardSortMethodDescending, // 降順（スコアが高い順）
                 ELeaderboardDisplayType.k_ELeaderboardDisplayTypeNumeric
             );
 
-            m_SteamCallResultLeaderboardFind.Set(hSteamAPICall);
+            findCallResults[type].Set(hSteamAPICall);
         }
 
         /// <summary>
         /// リーダーボードが見つかった（または作成された）時に呼ばれるコールバック
         /// </summary>
-        private void OnLeaderboardFound(LeaderboardFindResult_t result, bool bIOFailure)
+        private void OnLeaderboardFound(LeaderboardType type, LeaderboardFindResult_t result, bool bIOFailure)
         {
             if (bIOFailure || result.m_bLeaderboardFound == 0)
             {
-                CusLog.Error(LOG_CATEGORY, "Leaderboard NOT found!");
+                CusLog.Error(LOG_CATEGORY, $"Leaderboard NOT found! ({GetLeaderboardName(type)})");
                 return;
             }
 
-            leaderboardHandle = result.m_hSteamLeaderboard;
-            isLeaderboardReady = true;
-            CusLog.Log(LOG_CATEGORY, "Leaderboard found and ready.");
+            handles[type] = result.m_hSteamLeaderboard;
+            ready[type] = true;
+            CusLog.Log(LOG_CATEGORY, $"Leaderboard found and ready. ({GetLeaderboardName(type)})");
 
             // 初期化成功時にトップ10をキャッシュしておく
-            FetchLeaderboard(LEADERBOARD_MAX_ENTRIES);
+            FetchLeaderboard(type, LEADERBOARD_MAX_ENTRIES);
         }
 
         /// <summary>
         /// スコアを Steam に送信する
         /// </summary>
-        public void UploadScore(int score)
+        public void UploadScore(LeaderboardType type, int score)
         {
-            CusLog.Log(LOG_CATEGORY, $"UploadScore called: {score}");
+            CusLog.Log(LOG_CATEGORY, $"UploadScore called: {GetLeaderboardName(type)} = {score}");
 
-            if (!isLeaderboardReady)
+            if (!IsReady(type))
             {
-                CusLog.Warning(LOG_CATEGORY, "Leaderboard not ready. Upload skipped.");
+                CusLog.Warning(LOG_CATEGORY, $"Leaderboard not ready. Upload skipped. ({GetLeaderboardName(type)})");
                 return;
             }
 
             SteamAPICall_t hSteamAPICall = SteamUserStats.UploadLeaderboardScore(
-                leaderboardHandle,
+                handles[type],
                 ELeaderboardUploadScoreMethod.k_ELeaderboardUploadScoreMethodKeepBest, // 自己ベストを保持
                 score,
                 null,
                 0
             );
 
-            m_SteamCallResultLeaderboardScoreUploaded.Set(hSteamAPICall);
+            uploadCallResults[type].Set(hSteamAPICall);
         }
 
         /// <summary>
         /// スコア送信が完了した時に呼ばれるコールバック
         /// </summary>
-        private void OnLeaderboardScoreUploaded(LeaderboardScoreUploaded_t result, bool bIOFailure)
+        private void OnLeaderboardScoreUploaded(LeaderboardType type, LeaderboardScoreUploaded_t result, bool bIOFailure)
         {
             if (bIOFailure || result.m_bSuccess == 0)
             {
-                CusLog.Error(LOG_CATEGORY, "Failed to upload score to Steam.");
+                CusLog.Error(LOG_CATEGORY, $"Failed to upload score to Steam. ({GetLeaderboardName(type)})");
                 return;
             }
 
-            CusLog.Log(LOG_CATEGORY, $"Score {result.m_nScore} uploaded to Steam. ScoreChanged: {result.m_bScoreChanged}");
+            CusLog.Log(LOG_CATEGORY, $"Score {result.m_nScore} uploaded to Steam. ScoreChanged: {result.m_bScoreChanged} ({GetLeaderboardName(type)})");
 
-            FetchLeaderboard(LEADERBOARD_MAX_ENTRIES);
+            // 送信後のグローバル順位をリザルト画面へ通知する
+            EventBus.Publish(new LeaderboardRankedInEvent(result.m_nGlobalRankNew, result.m_nScore, type));
+
+            FetchLeaderboard(type, LEADERBOARD_MAX_ENTRIES);
         }
 
         /// <summary>
         /// グローバルランキングデータを取得する
         /// </summary>
-        public void FetchLeaderboard(int count)
+        public void FetchLeaderboard(LeaderboardType type, int count)
         {
-            if (!isLeaderboardReady)
+            if (!IsReady(type))
             {
-                CusLog.Warning(LOG_CATEGORY, "Leaderboard not ready. Cannot fetch.");
+                CusLog.Warning(LOG_CATEGORY, $"Leaderboard not ready. Cannot fetch. ({GetLeaderboardName(type)})");
                 return;
             }
 
-            CusLog.Log(LOG_CATEGORY, $"Fetching top {count} entries...");
+            CusLog.Log(LOG_CATEGORY, $"Fetching top {count} entries... ({GetLeaderboardName(type)})");
 
             SteamAPICall_t hSteamAPICall = SteamUserStats.DownloadLeaderboardEntries(
-                leaderboardHandle,
+                handles[type],
                 ELeaderboardDataRequest.k_ELeaderboardDataRequestGlobal,
                 1,
                 count
             );
 
-            m_SteamCallResultLeaderboardEntriesLoaded.Set(hSteamAPICall);
+            downloadCallResults[type].Set(hSteamAPICall);
         }
 
         /// <summary>
         /// ランキングデータのダウンロードが完了した時に呼ばれるコールバック
         /// </summary>
-        private void OnLeaderboardEntriesLoaded(LeaderboardScoresDownloaded_t result, bool bIOFailure)
+        private void OnLeaderboardEntriesLoaded(LeaderboardType type, LeaderboardScoresDownloaded_t result, bool bIOFailure)
         {
             if (bIOFailure)
             {
-                CusLog.Error(LOG_CATEGORY, "IO Failure while fetching leaderboard entries.");
+                CusLog.Error(LOG_CATEGORY, $"IO Failure while fetching leaderboard entries. ({GetLeaderboardName(type)})");
                 return;
             }
 
-            CusLog.Log(LOG_CATEGORY, $"Fetched {result.m_cEntryCount} entries.");
+            CusLog.Log(LOG_CATEGORY, $"Fetched {result.m_cEntryCount} entries. ({GetLeaderboardName(type)})");
 
-            CachedEntries.Clear();
+            List<SteamLeaderboardEntry> entries = cachedEntries[type];
+            entries.Clear();
 
             for (int i = 0; i < result.m_cEntryCount; i++)
             {
-                LeaderboardEntry_t entry;
-                SteamUserStats.GetDownloadedLeaderboardEntry(result.m_hSteamLeaderboardEntries, i, out entry, null, 0);
+                SteamUserStats.GetDownloadedLeaderboardEntry(result.m_hSteamLeaderboardEntries, i, out LeaderboardEntry_t entry, null, 0);
 
-                CachedEntries.Add(new SteamLeaderboardEntry
+                entries.Add(new SteamLeaderboardEntry
                 {
                     PlayerName = SteamFriends.GetFriendPersonaName(entry.m_steamIDUser),
                     Score = entry.m_nScore,
                     Rank = entry.m_nGlobalRank
                 });
-
-                CusLog.Log(LOG_CATEGORY, $"Entry {i + 1}: {CachedEntries[i].PlayerName} - {CachedEntries[i].Score} (Rank: {CachedEntries[i].Rank})");
             }
+
+            // 取得完了をUIへ通知して再描画させる
+            EventBus.Publish(new LeaderboardEntriesUpdatedEvent(type));
         }
+
+        /// <summary>
+        /// 指定種別の取得済みエントリーを取得する
+        /// </summary>
+        public List<SteamLeaderboardEntry> GetCachedEntries(LeaderboardType type)
+            => cachedEntries.TryGetValue(type, out List<SteamLeaderboardEntry> entries) ? entries : null;
+
+        /// <summary>
+        /// 指定種別の Leaderboard が利用可能か
+        /// </summary>
+        private bool IsReady(LeaderboardType type) => ready.TryGetValue(type, out bool isReady) && isReady;
     }
 }
 #endif

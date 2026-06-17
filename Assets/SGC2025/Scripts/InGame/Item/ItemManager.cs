@@ -11,15 +11,17 @@ namespace SGC2025.Item
     /// </summary>
     public class ItemManager : Singleton<ItemManager>
     {
-        private const float MIN_SPAWN_INTERVAL = 3f;
+        private const float MIN_SPAWN_INTERVAL = 0.1f;
         private const float DEFAULT_SPAWN_RANGE = 10f;
+        private const float GREENING_PARTICLE_DURATION = 1.5f;
+        private const string GAUGE_TAG = "GreenGauge";
         
         [Header("アイテム抽選設定")]
         [SerializeField, Tooltip("アイテムの抽選を行うセレクター")]
         private ItemSpawnSelector spawnSelector = new ItemSpawnSelector();
         
         [Header("生成設定")]
-        [SerializeField, Range(1f, 60f), Tooltip("アイテム生成間隔（秒）")]
+        [SerializeField, Range(0.1f, 60f), Tooltip("アイテム生成間隔（秒）")]
         private float spawnInterval = 10f;
         
         [SerializeField, Tooltip("生成する高さのオフセット")]
@@ -32,6 +34,9 @@ namespace SGC2025.Item
         [SerializeField] private ItemFactory itemFactory;
 
         private float nextSpawnTime;
+        private Transform gaugeTarget;
+        private int pendingCloneItems; // フィールドに存在する未取得のクローンアイテム数
+        private SGC2025.Player.PlayerCloneManager cloneManager;
         private Dictionary<ItemType, ItemEffect> activeEffects = new Dictionary<ItemType, ItemEffect>();
         
         protected override bool UseDontDestroyOnLoad => false;
@@ -68,13 +73,26 @@ namespace SGC2025.Item
         /// </summary>
         private void OnEnemyDestroyed(EnemyDestroyedEvent e)
         {
-            // 敵撃破時エフェクト生成（常に出す）
-            // if (EffectFactory.I != null)
-            //     EffectFactory.I.CreateEffect(EffectType.GreenificationParticle, e.Position, 1f);
+            // 敵撃破時パーティクルエフェクトを敵の位置に生成し、緑化度ゲージへ向かって飛ばす
+            // （地面の緑化サイズ判定・実行は GroundManager 側で行う）
+            if (EffectFactory.I != null)
+                EffectFactory.I.CreateEffect(EffectType.GreeningParticle, e.Position, GREENING_PARTICLE_DURATION, GetGaugeTarget());
+        }
 
-            // AreaGreenify効果が有効な場合は広範囲緑化も追加
-            if (IsEffectActive(ItemType.AreaGreenify) && GroundManager.I != null)
-                GroundManager.I.DrawGroundArea(e.Position);
+        /// <summary>緑化範囲上昇アイテムが有効か（GroundManagerが緑化サイズ判定に使用）</summary>
+        public bool IsAreaGreenifyActive => IsEffectActive(ItemType.AreaGreenify);
+
+        /// <summary>緑化度ゲージのTransformを取得（キャッシュ）</summary>
+        private Transform GetGaugeTarget()
+        {
+            // TODO: Findをやめて実装する
+            if (gaugeTarget == null)
+            {
+                GameObject gaugeObject = GameObject.FindWithTag(GAUGE_TAG);
+                if (gaugeObject != null)
+                    gaugeTarget = gaugeObject.transform;
+            }
+            return gaugeTarget;
         }
         
         private void Update()
@@ -94,15 +112,51 @@ namespace SGC2025.Item
         private void SpawnRandomItem()
         {
             if (spawnSelector.IsEmpty) return;
-            
-            ItemData selectedItem = spawnSelector.SelectRandom();
+
+            // クローンアイテムは「残り必要数」だけ出すよう抽選を絞り込む
+            ItemData selectedItem = spawnSelector.SelectRandom(CanSpawnItem);
             if (selectedItem == null) return;
-            
+
             // ランダムな位置を取得
             Vector3 spawnPosition = GetRandomSpawnPosition();
-            
+
             // アイテムを生成
             SpawnItem(selectedItem, spawnPosition);
+
+            if (selectedItem.ItemType == ItemType.PlayerClone)
+                pendingCloneItems++;
+        }
+
+        /// <summary>そのアイテムを今生成してよいか（クローンは アクティブ数＋未取得数 が最大未満のときのみ）</summary>
+        private bool CanSpawnItem(ItemData item)
+        {
+            if (item.ItemType != ItemType.PlayerClone) return true;
+
+            var manager = GetCloneManager();
+            if (manager == null) return false; // プレイヤー未準備ならクローンは出さない
+
+            return manager.ActiveCloneCount + pendingCloneItems < manager.MaxCloneCount;
+        }
+
+        /// <summary>PlayerCloneManagerをPlayerDataProvider経由で取得（キャッシュ）</summary>
+        private SGC2025.Player.PlayerCloneManager GetCloneManager()
+        {
+            if (cloneManager == null
+                && SGC2025.Player.PlayerDataProvider.I != null
+                && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
+            {
+                cloneManager = SGC2025.Player.PlayerDataProvider.I.PlayerTransform.GetComponent<SGC2025.Player.PlayerCloneManager>();
+            }
+            return cloneManager;
+        }
+
+        /// <summary>フィールドのアイテムがプールへ返却された通知（取得・寿命切れ共通。生成数管理用）</summary>
+        public void OnItemReturned(ItemData itemData)
+        {
+            if (itemData == null) return;
+
+            if (itemData.ItemType == ItemType.PlayerClone)
+                pendingCloneItems = Mathf.Max(0, pendingCloneItems - 1);
         }
         
         
@@ -144,10 +198,22 @@ namespace SGC2025.Item
         public void CollectItem(ItemData itemData)
         {
             if (itemData == null) return;
-            
+
+            // 種類を問わず取得を通知（画面エッジ演出などの取得フィードバック用）
+            EventBus.Publish(new ItemCollectedEvent(itemData.ItemType));
+
+            // クローンアイテムは時限効果ではなく、クローンを1体増やす専用処理
+            if (itemData.ItemType == ItemType.PlayerClone)
+            {
+                var manager = GetCloneManager();
+                if (manager != null)
+                    manager.TryActivateNextClone();
+                return;
+            }
+
             if (activeEffects.ContainsKey(itemData.ItemType))
                 RemoveEffect(itemData.ItemType);
-            
+
             ApplyEffect(itemData);
         }
         

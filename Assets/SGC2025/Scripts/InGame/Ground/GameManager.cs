@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using SGC2025.Audio;
+using SGC2025.Core;
 
 namespace SGC2025.Manager
 {
@@ -10,14 +11,65 @@ namespace SGC2025.Manager
     /// </summary>
     public class GameManager : Singleton<GameManager>
     {
+        private const float PERCENT_MULTIPLIER = 100f;
+        private const int TOTAL_SCORE_MULTIPLIER = 10; // 総スコア計算の倍率
+        private const int TOTAL_SCORE_BASE = 100;      // 総スコアの基礎点
+
+        [SerializeField]
+        private GameModeConfig gameModeConfig; // 展示用/Steam用の動作モード設定
+
         protected override bool UseDontDestroyOnLoad => true;
+
+        /// <summary>ゲーム終了時点の緑化率（0.0～1.0）。リザルト画面で参照する</summary>
+        public float FinalGreeningRate { get; private set; }
+
+        /// <summary>ゲーム終了時点の敵撃破数。リザルト画面で参照する</summary>
+        public int FinalKillCount { get; private set; }
+
+        /// <summary>ゲーム終了時点の総スコア。リザルト画面で参照する</summary>
+        public int FinalTotalScore { get; private set; }
+
+        private int killCount;
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            // SO参照を持つインスタンスは（破棄される側でも）必ず設定を登録する
+            if (gameModeConfig != null)
+                GameModeConfig.Register(gameModeConfig);
+
+            // 重複インスタンス（破棄される側）では購読しない
+            if (I != this) return;
+
+            EventBus.Subscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
+            EventBus.Subscribe<CountDownFinishedEvent>(OnCountDownFinished);
+        }
 
         protected override void OnDestroy()
         {
+            EventBus.Unsubscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
+            EventBus.Unsubscribe<CountDownFinishedEvent>(OnCountDownFinished);
+
             // Time.timeScaleを確実にリセット（ポーズ中に破棄された場合に備えて）
             Time.timeScale = 1f;
-            
+
             base.OnDestroy();
+        }
+
+        /// <summary>ゲーム開始時に撃破数をリセットする</summary>
+        private void OnCountDownFinished(CountDownFinishedEvent _) => killCount = 0;
+
+        /// <summary>敵撃破ごとに撃破数を加算する</summary>
+        private void OnEnemyDestroyed(EnemyDestroyedEvent _) => killCount++;
+
+        /// <summary>
+        /// 総スコアを計算する（敵撃破数 × 倍率 × 緑化％ + 基礎点）
+        /// </summary>
+        private int CalcTotalScore()
+        {
+            float greeningPercent = FinalGreeningRate * PERCENT_MULTIPLIER;
+            return Mathf.RoundToInt(killCount * TOTAL_SCORE_MULTIPLIER * greeningPercent + TOTAL_SCORE_BASE);
         }
 
         /// <summary>
@@ -28,6 +80,14 @@ namespace SGC2025.Manager
         {
             // ポーズ中にゲームオーバーになった場合に備えてTime.timeScaleをリセット
             Time.timeScale = 1f;
+
+            // GroundManagerはInGameシーンと共に破棄されるため、遷移前に緑化率を確定させる
+            if (GroundManager.Exists)
+                FinalGreeningRate = GroundManager.I.GetGreenificationRate();
+
+            // 緑化率の確定後に総スコアを確定させる
+            FinalKillCount = killCount;
+            FinalTotalScore = CalcTotalScore();
 
             if (SceneController.I != null)
             {

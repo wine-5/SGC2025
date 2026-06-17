@@ -22,19 +22,30 @@ namespace SGC2025.Item
         /// 重み付きランダム抽選を実行
         /// </summary>
         /// <returns>抽選されたアイテムデータ（抽選失敗時はnull）</returns>
-        public ItemData SelectRandom()
+        public ItemData SelectRandom() => SelectRandom(null);
+
+        /// <summary>
+        /// 条件で絞り込んだうえで重み付きランダム抽選を実行する
+        /// </summary>
+        /// <param name="canSpawn">生成可能なら true を返す述語（null なら全て対象）</param>
+        /// <returns>抽選されたアイテムデータ（対象なし・失敗時は null）</returns>
+        public ItemData SelectRandom(Func<ItemData, bool> canSpawn)
         {
             if (IsEmpty) return null;
-            
-            var itemList = itemDataSO.ItemList;
-            
-            int totalWeight = itemList.Sum(item => item.SpawnWeight);
+
+            var candidates = canSpawn == null
+                ? itemDataSO.ItemList
+                : itemDataSO.ItemList.Where(canSpawn).ToList();
+
+            if (candidates.Count == 0) return null;
+
+            int totalWeight = candidates.Sum(item => item.SpawnWeight);
             if (totalWeight <= 0) return null;
-            
+
             int randomValue = UnityEngine.Random.Range(0, totalWeight);
             int currentWeight = 0;
-            
-            foreach (var item in itemList)
+
+            foreach (var item in candidates)
             {
                 currentWeight += item.SpawnWeight;
                 if (randomValue < currentWeight)
@@ -42,8 +53,8 @@ namespace SGC2025.Item
                     return item;
                 }
             }
-            
-            return itemList[0];
+
+            return candidates[0];
         }
         
     }

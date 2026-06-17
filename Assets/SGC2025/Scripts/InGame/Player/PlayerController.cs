@@ -11,12 +11,21 @@ namespace SGC2025.Player
     /// <summary>
     /// プレイヤーキャラクターの管理
     /// </summary>
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour, IDamageable
     {
         #region プロパティ
         public Animator anim { get; private set; }
         public Vector2 moveInput { get; private set; }
         public PlayerInputSet PlayerInput { get; private set; }
+
+        public float CurrentHealth => currentHealth;
+        public float MaxHealth => maxHealth;
+        public bool IsAlive => currentHealth > 0f;
+        #endregion
+
+        #region IDamageableイベント
+        public event System.Action<float> OnDamageTaken;
+        public event System.Action OnDeath;
         #endregion
 
         #region フィールド
@@ -55,7 +64,9 @@ namespace SGC2025.Player
             PlayerInput.Player.Movement.canceled += OnMovementCanceled;
             PlayerInput.Player.Shot.performed += OnShotPerformed;
             PlayerInput.Player.Pause.performed += OnPausePerformed;
-            
+            PlayerInput.Player.MiniMapExpand.started += OnMiniMapExpandStarted;
+            PlayerInput.Player.MiniMapExpand.canceled += OnMiniMapExpandCanceled;
+
             EventBus.Subscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
             EventBus.Subscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
         }
@@ -66,8 +77,10 @@ namespace SGC2025.Player
             PlayerInput.Player.Movement.canceled -= OnMovementCanceled;
             PlayerInput.Player.Shot.performed -= OnShotPerformed;
             PlayerInput.Player.Pause.performed -= OnPausePerformed;
+            PlayerInput.Player.MiniMapExpand.started -= OnMiniMapExpandStarted;
+            PlayerInput.Player.MiniMapExpand.canceled -= OnMiniMapExpandCanceled;
             PlayerInput.Disable();
-            
+
             EventBus.Unsubscribe<ItemEffectActivatedEvent>(OnItemEffectActivatedEvent);
             EventBus.Unsubscribe<ItemEffectExpiredEvent>(OnItemEffectExpiredEvent);
         }
@@ -129,6 +142,16 @@ namespace SGC2025.Player
             if (weaponSystem == null) return;
             weaponSystem.Fire();
         }
+
+        private void OnMiniMapExpandStarted(InputAction.CallbackContext context)
+        {
+            EventBus.Publish(new MiniMapExpandStartedEvent());
+        }
+
+        private void OnMiniMapExpandCanceled(InputAction.CallbackContext context)
+        {
+            EventBus.Publish(new MiniMapExpandCanceledEvent());
+        }
         #endregion
 
         #region 移動処理
@@ -178,12 +201,6 @@ namespace SGC2025.Player
         #endregion
 
         #region ヘルスシステム
-        /// <summary>最大HP取得</summary>
-        public float GetPlayerMaxHealth() => maxHealth;
-
-        /// <summary>現在HP取得</summary>
-        public float GetPlayerCurrentHealth() => currentHealth;
-
         private void Damage()
         {
             if (nowMutekiTime > 0f) return;
@@ -193,15 +210,20 @@ namespace SGC2025.Player
         }
 
         /// <summary>ダメージを受ける</summary>
-        private void TakeDamage(float damage)
+        public void TakeDamage(float damage)
         {
             if (damage <= 0f) return;
             currentHealth = Mathf.Max(0f, currentHealth - damage);
-            
+
+            OnDamageTaken?.Invoke(damage);
+
             float hpRate = maxHealth > 0f ? currentHealth / maxHealth : 0f;
             EventBus.Publish(new PlayerDamagedEvent(hpRate));
             if (currentHealth <= 0f)
+            {
+                OnDeath?.Invoke();
                 EventBus.Publish(new PlayerDiedEvent());
+            }
         }
 
         private void DecreaseMutekiTime() => nowMutekiTime -= Time.deltaTime;

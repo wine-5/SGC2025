@@ -27,7 +27,7 @@ namespace SGC2025.UI
             if (AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.ButtonClick);
 
-            SceneController.I.LoadScene(SceneName.InGame_Ranking);
+            SceneController.I.LoadScene(SceneName.InGame);
         }
 
         public void OnClickBackTitle()
@@ -35,7 +35,7 @@ namespace SGC2025.UI
             if (AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.ButtonClick);
 
-            SceneController.I.LoadScene(SceneName.Title);
+            SceneController.I.LoadScene(SceneName.TitleSelect);
         }
         
         public void OnClickExit()

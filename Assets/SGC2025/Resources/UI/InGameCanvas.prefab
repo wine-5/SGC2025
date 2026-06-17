@@ -153,16 +153,15 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &284509765517275742
-Transform:
+--- !u!224 &284509765517275742
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 466600155442444977}
-  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 271.0772, y: -225.00002, z: 5702.668}
+  m_LocalPosition: {x: 0, y: 0, z: 5702.668}
   m_LocalScale: {x: 0.3125, y: 0.3125, z: 0.3125}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -170,6 +169,11 @@ Transform:
   - {fileID: 4740766536663264359}
   m_Father: {fileID: 2343378516607040469}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 271.0772, y: -225.00002}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1084715111592633582
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,19 +634,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff6eab23072078e45b0a9e3599450ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.InGameUI
-  timeText: {fileID: 0}
-  waveText: {fileID: 0}
+  gameTimeView:
+    timeText: {fileID: 0}
+    warningThreshold: 10
+    blinkSpeed: 3
+    warningColor: {r: 1, g: 0, b: 0, a: 1}
+  territoryGaugeView:
+    gaugeImage: {fileID: 0}
+    pulseTarget: {fileID: 0}
+    percentageText: {fileID: 0}
+    labelText: {fileID: 0}
+    lowColor: {r: 0.6, g: 1, b: 0.6, a: 1}
+    highColor: {r: 0.2, g: 0.8, b: 0.2, a: 1}
+    labelLowColor: {r: 1, g: 1, b: 1, a: 1}
+    labelHighColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+    pulseScale: 1.3
+    pulseDuration: 0.4
   countdownText: {fileID: 0}
   countdownPulseScale: 1.5
   countdownColor: {r: 1, g: 1, b: 1, a: 1}
   startColor: {r: 0, g: 1, b: 0, a: 1}
-  territoryGaugeImage: {fileID: 0}
-  territoryPercentageText: {fileID: 0}
-  lowTerritoryColor: {r: 0.6, g: 1, b: 0.6, a: 1}
-  highTerritoryColor: {r: 0.2, g: 0.8, b: 0.2, a: 1}
-  wavePulseScale: 1.3
-  wavePulseDuration: 0.5
-  waveChangeColor: {r: 1, g: 0.8, b: 0, a: 1}
 --- !u!1 &3441193237786255967
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,7 +667,7 @@ GameObject:
   - component: {fileID: 3240532405482749601}
   m_Layer: 0
   m_Name: GreenGauge
-  m_TagString: Untagged
+  m_TagString: GreenGauge
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

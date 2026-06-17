@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: -2033994243966344502}
   - component: {fileID: 6590570624721586210}
   - component: {fileID: 4517228491307590455}
+  - component: {fileID: 1175814954598820099}
+  - component: {fileID: 194178109500092553}
   m_Layer: 7
   m_Name: Excavator
   m_TagString: Untagged
@@ -30,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4.5, y: 4.5, z: 1}
+  m_LocalScale: {x: 8, y: 8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -176,3 +178,31 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.5505061, y: 0.60273755}
   m_EdgeRadius: 0
+--- !u!114 &1175814954598820099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5222075728982253602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5df9534b5f60674f812dda9f7314ba2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.GroundRevertAbility
+  revertSize: 3
+--- !u!114 &194178109500092553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5222075728982253602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57bd54ed1d33af646bc151f475da922b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemyHitBlink
+  blinkDuration: 0.15
+  blinkInterval: 0.05
+  blinkAlpha: 0.3

@@ -9,7 +9,7 @@ namespace SGC2025.UI
     /// </summary>
     public class SceneChangeButtonHandler : MonoBehaviour
     {
-        [SerializeField] private SceneName targetScene = SceneName.Title;
+        [SerializeField] private SceneName targetScene = SceneName.TitleSelect;
 
         public void ChangeScene()
         {

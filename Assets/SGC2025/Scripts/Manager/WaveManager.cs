@@ -1,6 +1,8 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using SGC2025.Core;
 using SGC2025.Enemy;
+using SGC2025.UI;
 
 namespace SGC2025.Manager
 {
@@ -22,6 +24,11 @@ namespace SGC2025.Manager
         [SerializeField] private bool useTestMode = false;
         [SerializeField] private float testWaveInterval = 10f;
 
+        [Header("View参照")]
+        [Tooltip("Wave表示View（進行度リング・テキストの描画のみを担当）")]
+        [SerializeField, FormerlySerializedAs("waveProgressView")]
+        private WaveView waveView;
+
         
         private int currentWaveLevel = 1;
         private bool isGameActive = true;
@@ -34,12 +41,15 @@ namespace SGC2025.Manager
         protected override void Init()
         {
             base.Init();
-            
+
             EventBus.Subscribe<GameOverEvent>(OnGameOver);
             EventBus.Subscribe<PausedEvent>(OnPaused);
             EventBus.Subscribe<ResumedEvent>(OnResumed);
-            
+
             InitializeWaveSystem();
+
+            waveView?.Initialize();
+            waveView?.SetWaveLevel(currentWaveLevel);
         }
         
         protected override void OnDestroy()
@@ -54,8 +64,28 @@ namespace SGC2025.Manager
         private void Update()
         {
             if (!isGameActive) return;
-            
+
             CheckWaveProgression();
+            UpdateProgressView();
+        }
+
+        /// <summary>現在のWave内での経過進行度（0.0～1.0）を計算してViewへ渡す</summary>
+        private void UpdateProgressView()
+        {
+            if (waveView == null) return;
+
+            waveView.SetProgress(CalcWaveProgress());
+        }
+
+        private float CalcWaveProgress()
+        {
+            if (InGameManager.I == null) return 0f;
+
+            // 最大Wave到達後はそれ以上変化しないため満タン表示で固定
+            if (currentWaveLevel >= MAX_WAVE_LEVEL) return 1f;
+
+            float interval = useTestMode ? testWaveInterval : waveInterval;
+            return Mathf.Clamp01(InGameManager.I.CurrentGameTime % interval / interval);
         }
         
         private void InitializeWaveSystem()
@@ -82,7 +112,13 @@ namespace SGC2025.Manager
         {
             currentWaveLevel = newWaveLevel;
             UpdateCurrentWaveData();
-            
+
+            if (waveView != null)
+            {
+                waveView.SetWaveLevel(currentWaveLevel);
+                StartCoroutine(waveView.AnimateWaveChange());
+            }
+
             EventBus.Publish(new WaveChangedEvent(currentWaveLevel));
         }
         

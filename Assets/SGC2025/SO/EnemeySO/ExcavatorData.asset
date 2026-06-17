@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: ExcavatorData
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.EnemyDataSO
   enemyType: 3
-  movementType: 4
-  health: 10
-  moveSpeed: 3
+  movementType: 1
+  health: 30
+  moveSpeed: 2
   lifeTime: 120
-  baseScale: {x: 1, y: 1, z: 1}
-  scaleGrowthRate: 0.05
+  isBoss: 1
+  greeningSize: 3
+  greeningSizeBoosted: 6

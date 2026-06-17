@@ -127,6 +127,15 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MiniMapExpand"",
+                    ""type"": ""Button"",
+                    ""id"": ""1b2c3d4e-5f6a-47b8-c9d0-e1f2a3b4c5d6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -382,6 +391,39 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5ca"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keybord & Mouse"",
+                    ""action"": ""MiniMapExpand"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9cd5eab0-5045-4005-9e95-16077072af11"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MiniMapExpand"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f422beb3-481c-48d8-8e27-f87044d314d4"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MiniMapExpand"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -422,6 +464,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         m_Player_Shot = m_Player.FindAction("Shot", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         m_Player_Cancel = m_Player.FindAction("Cancel", throwIfNotFound: true);
+        m_Player_MiniMapExpand = m_Player.FindAction("MiniMapExpand", throwIfNotFound: true);
     }
 
     ~@PlayerInputSet()
@@ -506,6 +549,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Shot;
     private readonly InputAction m_Player_Pause;
     private readonly InputAction m_Player_Cancel;
+    private readonly InputAction m_Player_MiniMapExpand;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -533,6 +577,10 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Cancel".
         /// </summary>
         public InputAction @Cancel => m_Wrapper.m_Player_Cancel;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/MiniMapExpand".
+        /// </summary>
+        public InputAction @MiniMapExpand => m_Wrapper.m_Player_MiniMapExpand;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -571,6 +619,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @Cancel.started += instance.OnCancel;
             @Cancel.performed += instance.OnCancel;
             @Cancel.canceled += instance.OnCancel;
+            @MiniMapExpand.started += instance.OnMiniMapExpand;
+            @MiniMapExpand.performed += instance.OnMiniMapExpand;
+            @MiniMapExpand.canceled += instance.OnMiniMapExpand;
         }
 
         /// <summary>
@@ -594,6 +645,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @Cancel.started -= instance.OnCancel;
             @Cancel.performed -= instance.OnCancel;
             @Cancel.canceled -= instance.OnCancel;
+            @MiniMapExpand.started -= instance.OnMiniMapExpand;
+            @MiniMapExpand.performed -= instance.OnMiniMapExpand;
+            @MiniMapExpand.canceled -= instance.OnMiniMapExpand;
         }
 
         /// <summary>
@@ -688,5 +742,12 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCancel(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MiniMapExpand" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMiniMapExpand(InputAction.CallbackContext context);
     }
 }

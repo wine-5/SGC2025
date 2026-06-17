@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025.Ranking;
 
 namespace SGC2025.Core
 {
@@ -24,9 +25,13 @@ namespace SGC2025.Core
     public struct EnemyDestroyedEvent : IGameEvent
     {
         public Vector3 Position;
-        public EnemyDestroyedEvent(Vector3 position)
+        public int GreeningSize;        // 撃破時に緑化する一辺のマス数（基本）
+        public int GreeningSizeBoosted; // 緑化範囲上昇アイテム中の一辺のマス数
+        public EnemyDestroyedEvent(Vector3 position, int greeningSize, int greeningSizeBoosted)
         {
             Position = position;
+            GreeningSize = greeningSize;
+            GreeningSizeBoosted = greeningSizeBoosted;
         }
     }
 
@@ -46,6 +51,13 @@ namespace SGC2025.Core
         }
     }
 
+    /// <summary>敵がスポーンされた</summary>
+    public struct EnemySpawnedEvent : IGameEvent
+    {
+        public SGC2025.Enemy.EnemyController Enemy;
+        public EnemySpawnedEvent(SGC2025.Enemy.EnemyController enemy) => Enemy = enemy;
+    }
+
     // -------------------------------------------------------
     // Ground
     // -------------------------------------------------------
@@ -55,6 +67,16 @@ namespace SGC2025.Core
     {
         public Vector3 Position;
         public GroundGreenifiedEvent(Vector3 position)
+        {
+            Position = position;
+        }
+    }
+
+    /// <summary>タイルが非緑化された（茶色に戻った）</summary>
+    public struct GroundUngreenifiedEvent : IGameEvent
+    {
+        public Vector3 Position;
+        public GroundUngreenifiedEvent(Vector3 position)
         {
             Position = position;
         }
@@ -79,17 +101,34 @@ namespace SGC2025.Core
     /// <summary>ポーズが解除された</summary>
     public struct ResumedEvent : IGameEvent { }
 
+    /// <summary>ミニマップ拡大開始</summary>
+    public struct MiniMapExpandStartedEvent : IGameEvent { }
+
+    /// <summary>ミニマップ拡大終了</summary>
+    public struct MiniMapExpandCanceledEvent : IGameEvent { }
+
+    /// <summary>Leaderboard のエントリー取得（更新）が完了した</summary>
+    public struct LeaderboardEntriesUpdatedEvent : IGameEvent
+    {
+        public LeaderboardType Type;
+        public LeaderboardEntriesUpdatedEvent(LeaderboardType type) => Type = type;
+    }
+
+    /// <summary>Leaderboard にランクインした（どのランキングかは Type で区別）</summary>
     public struct LeaderboardRankedInEvent : IGameEvent
     {
-        public int Rank;   
-        public int Score;  
+        public int Rank;
+        public int Score;
+        public LeaderboardType Type;
 
-        public LeaderboardRankedInEvent(int rank, int score)
+        public LeaderboardRankedInEvent(int rank, int score, LeaderboardType type)
         {
             Rank = rank;
             Score = score;
+            Type = type;
         }
     }
+    
     // -------------------------------------------------------
     // Wave
     // -------------------------------------------------------
@@ -104,6 +143,13 @@ namespace SGC2025.Core
     // -------------------------------------------------------
     // Item
     // -------------------------------------------------------
+
+    /// <summary>アイテムを取得した（種類を問わず発行。取得演出用）</summary>
+    public struct ItemCollectedEvent : IGameEvent
+    {
+        public SGC2025.Item.ItemType ItemType;
+        public ItemCollectedEvent(SGC2025.Item.ItemType itemType) => ItemType = itemType;
+    }
 
     /// <summary>アイテム効果が開始した</summary>
     public struct ItemEffectActivatedEvent : IGameEvent
