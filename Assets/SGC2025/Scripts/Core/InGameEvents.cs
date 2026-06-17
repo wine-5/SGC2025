@@ -1,4 +1,5 @@
 using UnityEngine;
+using SGC2025.Ranking;
 
 namespace SGC2025.Core
 {
@@ -106,15 +107,25 @@ namespace SGC2025.Core
     /// <summary>ミニマップ拡大終了</summary>
     public struct MiniMapExpandCanceledEvent : IGameEvent { }
 
+    /// <summary>Leaderboard のエントリー取得（更新）が完了した</summary>
+    public struct LeaderboardEntriesUpdatedEvent : IGameEvent
+    {
+        public LeaderboardType Type;
+        public LeaderboardEntriesUpdatedEvent(LeaderboardType type) => Type = type;
+    }
+
+    /// <summary>Leaderboard にランクインした（どのランキングかは Type で区別）</summary>
     public struct LeaderboardRankedInEvent : IGameEvent
     {
-        public int Rank;   
-        public int Score;  
+        public int Rank;
+        public int Score;
+        public LeaderboardType Type;
 
-        public LeaderboardRankedInEvent(int rank, int score)
+        public LeaderboardRankedInEvent(int rank, int score, LeaderboardType type)
         {
             Rank = rank;
             Score = score;
+            Type = type;
         }
     }
     

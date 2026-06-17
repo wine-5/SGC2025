@@ -66,8 +66,9 @@ namespace SGC2025.UI
                 name = DEFAULT_NAME;
 
             float greeningRate = GameManager.I.FinalGreeningRate * PERCENT_MULTIPLIER;
-            
-            RankingManager.I.AddScore(name, greeningRate);
+            int totalScore = GameManager.I.FinalTotalScore;
+
+            RankingManager.I.AddResult(name, greeningRate, totalScore);
 
             Submitted?.Invoke();
             
