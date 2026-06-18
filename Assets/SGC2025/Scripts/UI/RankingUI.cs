@@ -99,7 +99,7 @@ namespace SGC2025.UI
             for (int i = 0; i < MAX_ENTRIES; i++)
             {
                 if (entries != null && i < entries.Count)
-                    CreateRow().Set(i + 1, entries[i].PlayerName, FormatSteamScore(entries[i].Score));
+                    CreateRow().Set(i + 1, entries[i].PlayerName, FormatSteamScore(entries[i].Score), entries[i].IsCurrentUser);
                 else
                     CreateRow().Set(i + 1, EMPTY_TEXT, EMPTY_TEXT);
             }
@@ -120,14 +120,20 @@ namespace SGC2025.UI
             ClearRows();
 
             List<ScoreData> ranking = RankingManager.I.GetRanking(currentType);
+            string currentName = GetCurrentPlayerName();
 
             // 実データが少なくても常に MAX_ENTRIES 行表示し、空きは「---」で埋める
             for (int i = 0; i < MAX_ENTRIES; i++)
             {
                 if (i < ranking.Count)
-                    CreateRow().Set(i + 1, ranking[i].playerName, FormatLocalScore(ranking[i].score));
+                {
+                    bool isCurrentUser = !string.IsNullOrEmpty(currentName) && ranking[i].playerName == currentName;
+                    CreateRow().Set(i + 1, ranking[i].playerName, FormatLocalScore(ranking[i].score), isCurrentUser);
+                }
                 else
+                {
                     CreateRow().Set(i + 1, EMPTY_TEXT, EMPTY_TEXT);
+                }
             }
         }
 
@@ -136,6 +142,18 @@ namespace SGC2025.UI
         /// </summary>
         private string FormatLocalScore(float score)
             => currentType == LeaderboardType.GreeningRate ? $"{score:F1}%" : Mathf.RoundToInt(score).ToString();
+
+        /// <summary>
+        /// 本人判定用の現在プレイヤー名を取得する（Steam時はログイン名、それ以外は空＝ハイライト無し）
+        /// </summary>
+        private string GetCurrentPlayerName()
+        {
+#if STEAMWORKS_NET
+            if (SteamManager.Initialized)
+                return Steamworks.SteamFriends.GetPersonaName();
+#endif
+            return string.Empty;
+        }
 
         /// <summary>
         /// 生成済みの行を全て破棄する
