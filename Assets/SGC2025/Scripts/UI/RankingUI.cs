@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using SGC2025.Ranking;
 using SGC2025.Core;
 #if STEAMWORKS_NET
@@ -17,6 +18,8 @@ namespace SGC2025.UI
         private const float GREENING_DISPLAY_DIVISOR = 100f; // Steam格納値(%×100)を%へ戻す除数
         private const int MAX_ENTRIES = 10;
         private const string EMPTY_TEXT = "---"; // 空きスロットの表示
+        private const string GREENING_HEADER = "緑化度";  // スコア列見出し（緑化度表示時）
+        private const string TOTAL_HEADER = "総スコア";   // スコア列見出し（総スコア表示時）
 
         [SerializeField]
         private RankingRow rowPrefab; // 1行分のプレハブ
@@ -26,6 +29,8 @@ namespace SGC2025.UI
         private Button greeningButton; // 緑化度ランキング切替ボタン
         [SerializeField]
         private Button totalButton; // 総スコアランキング切替ボタン
+        [SerializeField]
+        private TextMeshProUGUI scoreHeaderText; // スコア列の見出し（緑化度／総スコアを切替表示）
 
         private readonly List<RankingRow> spawnedRows = new List<RankingRow>();
         private LeaderboardType currentType = LeaderboardType.GreeningRate;
@@ -42,6 +47,7 @@ namespace SGC2025.UI
         private void OnEnable()
         {
             EventBus.Subscribe<LeaderboardEntriesUpdatedEvent>(OnEntriesUpdated);
+            UpdateHeader();
             UpdateScore();
         }
 
@@ -68,7 +74,17 @@ namespace SGC2025.UI
         private void SetType(LeaderboardType type)
         {
             currentType = type;
+            UpdateHeader();
             UpdateScore();
+        }
+
+        /// <summary>
+        /// スコア列の見出しを現在の表示種別に合わせて切り替える
+        /// </summary>
+        private void UpdateHeader()
+        {
+            if (scoreHeaderText != null)
+                scoreHeaderText.SetText(currentType == LeaderboardType.GreeningRate ? GREENING_HEADER : TOTAL_HEADER);
         }
 
         public void UpdateScore()
