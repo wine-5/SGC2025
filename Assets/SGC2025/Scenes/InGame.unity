@@ -127,6 +127,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 779903851427366667, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_Type
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 779903851427366667, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 779903851427366667, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_FillOrigin
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2347185575079331102, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: autoSpawn
       value: 1
@@ -178,6 +190,10 @@ PrefabInstance:
     - target: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7598834064868492910, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8900758465941632728, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: gameTimeLimit

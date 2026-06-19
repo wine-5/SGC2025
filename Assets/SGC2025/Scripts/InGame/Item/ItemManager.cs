@@ -76,7 +76,7 @@ namespace SGC2025.Item
             // 敵撃破時パーティクルエフェクトを敵の位置に生成し、緑化度ゲージへ向かって飛ばす
             // （地面の緑化サイズ判定・実行は GroundManager 側で行う）
             if (EffectFactory.I != null)
-                EffectFactory.I.CreateEffect(EffectType.GreeningParticle, e.Position, GREENING_PARTICLE_DURATION, GetGaugeTarget());
+                EffectFactory.I.CreateEffect(EffectType.GreeningParticle, e.Position, GREENING_PARTICLE_DURATION);
         }
 
         /// <summary>緑化範囲上昇アイテムが有効か（GroundManagerが緑化サイズ判定に使用）</summary>
