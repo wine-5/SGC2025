@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using SGC2025.Audio;
@@ -29,6 +30,17 @@ namespace SGC2025.Manager
         /// <summary>ゲーム終了時点の総スコア。リザルト画面で参照する</summary>
         public int FinalTotalScore { get; private set; }
 
+        /// <summary>緑化したセルを塗った順に記録したリスト。リザルトのマップ再生で参照する</summary>
+        public IReadOnlyList<Vector2Int> GreenifiedSequence => greenifiedSequence;
+
+        /// <summary>マップの列数（リザルトのマップ再生でテクスチャ生成に使う）</summary>
+        public int MapColumns { get; private set; }
+
+        /// <summary>マップの行数（リザルトのマップ再生でテクスチャ生成に使う）</summary>
+        public int MapRows { get; private set; }
+
+        private readonly List<Vector2Int> greenifiedSequence = new List<Vector2Int>();
+
         private int killCount;
 
         protected override void Awake()
@@ -44,12 +56,14 @@ namespace SGC2025.Manager
 
             EventBus.Subscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
             EventBus.Subscribe<CountDownFinishedEvent>(OnCountDownFinished);
+            EventBus.Subscribe<GroundGreenifiedEvent>(OnGroundGreenified);
         }
 
         protected override void OnDestroy()
         {
             EventBus.Unsubscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
             EventBus.Unsubscribe<CountDownFinishedEvent>(OnCountDownFinished);
+            EventBus.Unsubscribe<GroundGreenifiedEvent>(OnGroundGreenified);
 
             // Time.timeScaleを確実にリセット（ポーズ中に破棄された場合に備えて）
             Time.timeScale = 1f;
@@ -57,11 +71,22 @@ namespace SGC2025.Manager
             base.OnDestroy();
         }
 
-        /// <summary>ゲーム開始時に撃破数をリセットする</summary>
-        private void OnCountDownFinished(CountDownFinishedEvent _) => killCount = 0;
+        /// <summary>ゲーム開始時に撃破数と塗り順記録をリセットする</summary>
+        private void OnCountDownFinished(CountDownFinishedEvent _)
+        {
+            killCount = 0;
+            greenifiedSequence.Clear();
+        }
 
         /// <summary>敵撃破ごとに撃破数を加算する</summary>
         private void OnEnemyDestroyed(EnemyDestroyedEvent _) => killCount++;
+
+        /// <summary>緑化したセルを塗った順に記録する（リザルトのマップ再生用）</summary>
+        private void OnGroundGreenified(GroundGreenifiedEvent e)
+        {
+            if (GroundManager.Exists)
+                greenifiedSequence.Add(GroundManager.I.WorldToCell(e.Position));
+        }
 
         /// <summary>
         /// 総スコアを計算する（敵撃破数 × 倍率 × 緑化％ + 基礎点）
@@ -81,9 +106,13 @@ namespace SGC2025.Manager
             // ポーズ中にゲームオーバーになった場合に備えてTime.timeScaleをリセット
             Time.timeScale = 1f;
 
-            // GroundManagerはInGameシーンと共に破棄されるため、遷移前に緑化率を確定させる
+            // GroundManagerはInGameシーンと共に破棄されるため、遷移前に緑化率とマップ寸法を確定させる
             if (GroundManager.Exists)
+            {
                 FinalGreeningRate = GroundManager.I.GetGreenificationRate();
+                MapColumns = GroundManager.I.MapData.columns;
+                MapRows = GroundManager.I.MapData.rows;
+            }
 
             // 緑化率の確定後に総スコアを確定させる
             FinalKillCount = killCount;
