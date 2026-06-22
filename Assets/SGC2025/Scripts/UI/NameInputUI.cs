@@ -22,7 +22,7 @@ namespace SGC2025.UI
 
         public event Action Submitted;
 
-        override public void Start()
+        private void Start()
         {
             if (nameInputField != null)
             {
@@ -30,10 +30,8 @@ namespace SGC2025.UI
                 nameInputField.onValueChanged.AddListener(OnInputValueChanged);
                 nameInputField.characterLimit = MAX_NAME_LENGTH;
             }
-            
+
             UpdateSubmitButtonState();
-            
-            base.Start();
         }
         
         /// <summary>

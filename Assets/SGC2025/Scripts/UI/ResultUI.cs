@@ -53,10 +53,8 @@ namespace SGC2025.UI
 
         ResultPhase currentPhase = ResultPhase.Init;
 
-        override public void Start()
+        private void Start()
         {
-            base.Start();
-
             if (nameInputUI != null)
             {
                 nameInputUI.Submitted -= HandleNameSubmitted;

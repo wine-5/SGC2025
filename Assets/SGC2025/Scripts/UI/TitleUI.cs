@@ -8,10 +8,8 @@ namespace SGC2025.UI
     /// </summary>
     public class TitleUI : UIBase
     {
-        override public void Start()
+        private void Start()
         {
-            base.Start();
-            
             if (AudioManager.I != null)
                 AudioManager.I.PlayBGM(BGMType.Title);
         }
