@@ -138,7 +138,7 @@ namespace SGC2025.Player
 
         private void OnShotPerformed(InputAction.CallbackContext context)
         {
-            if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
+            if (InGameManager.I != null && (InGameManager.I.IsCountingDown || InGameManager.I.IsPaused)) return;
             if (weaponSystem == null) return;
             weaponSystem.Fire();
         }
