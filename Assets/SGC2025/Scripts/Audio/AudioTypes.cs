@@ -14,6 +14,8 @@ namespace SGC2025.Audio
         GetItem,
         CountDown,
         BossDefeated,       // ボスを撃破したとき
+        SceneCover,         // シーン遷移：タイルで覆うとき（Se_Cover）
+        SceneUncover,       // シーン遷移：タイルが晴れるとき（Se_UnCover）
     }
 
     /// <summary>

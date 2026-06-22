@@ -1,5 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using SGC2025.Audio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -72,6 +73,7 @@ namespace SGC2025.Manager
             // 1. 中央→外へタイルで画面を覆う
             EnsureBuilt();
             blocker.enabled = true;
+            PlaySe(SEType.SceneCover);
             await Animate(reveal: true, ct);
 
             // 2. 覆っている間にシーンを切り替える
@@ -81,10 +83,18 @@ namespace SGC2025.Manager
 
             // 3. 中央→外へ覆いを晴らし、次シーンを見せる（解像度変化にも追従）
             EnsureBuilt();
+            PlaySe(SEType.SceneUncover);
             await Animate(reveal: false, ct);
             blocker.enabled = false;
 
             isTransitioning = false;
+        }
+
+        /// <summary>SEを再生する（AudioManager未生成時は何もしない）。</summary>
+        private static void PlaySe(SEType seType)
+        {
+            if (AudioManager.Exists)
+                AudioManager.I.PlaySE(seType);
         }
 
         /// <summary>
