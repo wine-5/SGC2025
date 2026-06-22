@@ -11,13 +11,12 @@ namespace SGC2025.UI
 {
     public class MiniMapMarkerController : MonoBehaviour
     {
-        private const float BOSS_MARKER_SIZE = 20f;
-
         [SerializeField] private MiniMapTextureRenderer textureRenderer;
         [SerializeField] private RectTransform playerMarkerRect;
         [SerializeField] private RectTransform bossMarkerContainer;
         [SerializeField, Tooltip("ボスマーカーの色")] private Color bossMarkerColor = Color.red;
         [SerializeField, Tooltip("ボスマーカーのスプライト（未指定なら塗りつぶしの四角）")] private Sprite bossMarkerSprite;
+        [SerializeField, Tooltip("小マップ上のボスマーカーのサイズ")] private float bossMarkerSize = 20f;
         [SerializeField, Tooltip("拡大マップ上のボスマーカーのサイズ")] private float expandBossMarkerSize = 40f;
         [SerializeField, Tooltip("Shift押下中に表示する拡大マップのオブジェクト")]
         private GameObject expandMapObject;
@@ -140,7 +139,7 @@ namespace SGC2025.UI
         private void CreateBossMarker(EnemyController enemy)
         {
             // 小マップ用と拡大マップ用、両方のマーカーを生成する
-            RectTransform miniMarker = CreateMarkerImage(bossMarkerContainer, BOSS_MARKER_SIZE);
+            RectTransform miniMarker = CreateMarkerImage(bossMarkerContainer, bossMarkerSize);
 
             // 拡大マップ側は、拡大マップのプレイヤーマーカーと同じ親へ配置する（サイズは別指定で大きめ）
             RectTransform expandParent = expandPlayerMarkerRect != null ? expandPlayerMarkerRect.parent as RectTransform : null;
