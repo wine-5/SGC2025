@@ -2521,6 +2521,9 @@ MonoBehaviour:
   greeningButton: {fileID: 1480853783}
   totalButton: {fileID: 923899712}
   scoreHeaderText: {fileID: 4492515071954602516}
+  animationTarget: {fileID: 0}
+  fadeDuration: 0.18
+  startScale: 0.92
 --- !u!114 &905094046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3598,7 +3601,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 127}
+  m_AnchoredPosition: {x: 0, y: 21}
   m_SizeDelta: {x: 520, y: 292.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1120778925
@@ -5919,6 +5922,8 @@ MonoBehaviour:
   keyboardMouseButton: {fileID: 918069487}
   controllerPanel: {fileID: 996383744}
   keyboardMousePanel: {fileID: 859072629}
+  fadeDuration: 0.18
+  startScale: 0.92
 --- !u!114 &1714994465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5931,7 +5936,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09ea6d92477c7f34d966fc04d176127a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.UI.AutoSelectFirst
-  firstSelected: {fileID: 1493081072}
+  firstSelected: {fileID: 1696728871}
   restoreFocusOnDisable: 1
 --- !u!114 &1714994466
 MonoBehaviour:

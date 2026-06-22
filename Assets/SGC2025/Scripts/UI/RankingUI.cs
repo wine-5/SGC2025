@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,8 +33,17 @@ namespace SGC2025.UI
         [SerializeField]
         private TextMeshProUGUI scoreHeaderText; // スコア列の見出し（緑化度／総スコアを切替表示）
 
+        [Header("切替アニメーション")]
+        [SerializeField]
+        private GameObject animationTarget; // 切替演出をかける対象（未指定なら Content を使用）
+        [SerializeField]
+        private float fadeDuration = UIPanelAnimator.DefaultFadeDuration; // フェードイン時間（秒）
+        [SerializeField]
+        private float startScale = UIPanelAnimator.DefaultStartScale;     // 出現開始時のスケール倍率
+
         private readonly List<RankingRow> spawnedRows = new List<RankingRow>();
         private LeaderboardType currentType = LeaderboardType.GreeningRate;
+        private Coroutine playingRoutine;
 
         private void Awake()
         {
@@ -76,6 +86,28 @@ namespace SGC2025.UI
             currentType = type;
             UpdateHeader();
             UpdateScore();
+            PlaySwitchAnimation();
+        }
+
+        /// <summary>
+        /// ランキング切替時にフェード＋スケールのポップ演出を再生する
+        /// </summary>
+        private void PlaySwitchAnimation()
+        {
+            GameObject target = animationTarget != null
+                ? animationTarget
+                : (contentParent != null ? contentParent.gameObject : null);
+
+            if (target == null || !isActiveAndEnabled) return;
+
+            if (playingRoutine != null) StopCoroutine(playingRoutine);
+            playingRoutine = StartCoroutine(PlayShowAnimation(target));
+        }
+
+        private IEnumerator PlayShowAnimation(GameObject target)
+        {
+            yield return UIPanelAnimator.PlayShow(target, fadeDuration, startScale);
+            playingRoutine = null;
         }
 
         /// <summary>

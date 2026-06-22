@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using SGC2025.Audio;
@@ -19,6 +20,14 @@ namespace SGC2025.UI
         [SerializeField]
         private GameObject keyboardMousePanel; // キーボード＆マウス版の説明
 
+        [Header("切替アニメーション")]
+        [SerializeField]
+        private float fadeDuration = UIPanelAnimator.DefaultFadeDuration; // フェードイン時間（秒）
+        [SerializeField]
+        private float startScale = UIPanelAnimator.DefaultStartScale;     // 出現開始時のスケール倍率
+
+        private Coroutine playingRoutine;
+
         private void Awake()
         {
             if (controllerButton != null)
@@ -30,20 +39,20 @@ namespace SGC2025.UI
 
         private void OnEnable()
         {
-            // 表示する度に既定（コントローラー版）から開始する
-            ShowPanel(controllerPanel, playSE: false);
+            // 表示する度に既定（コントローラー版）から開始する（演出なし）
+            ShowPanel(controllerPanel, playSE: false, animate: false);
         }
 
         /// <summary>コントローラー版の説明へ切り替える（切替ボタンから呼ぶ）</summary>
-        public void ShowController() => ShowPanel(controllerPanel, playSE: true);
+        public void ShowController() => ShowPanel(controllerPanel, playSE: true, animate: true);
 
         /// <summary>キーボード＆マウス版の説明へ切り替える（切替ボタンから呼ぶ）</summary>
-        public void ShowKeyboardMouse() => ShowPanel(keyboardMousePanel, playSE: true);
+        public void ShowKeyboardMouse() => ShowPanel(keyboardMousePanel, playSE: true, animate: true);
 
         /// <summary>
         /// 指定した方の説明GameObjectのみを表示し、もう一方を非表示にする
         /// </summary>
-        private void ShowPanel(GameObject target, bool playSE)
+        private void ShowPanel(GameObject target, bool playSE, bool animate)
         {
             if (playSE && AudioManager.I != null)
                 AudioManager.I.PlaySE(SEType.ButtonClick);
@@ -53,6 +62,24 @@ namespace SGC2025.UI
 
             if (keyboardMousePanel != null)
                 keyboardMousePanel.SetActive(target == keyboardMousePanel);
+
+            if (target == null) return;
+
+            if (playingRoutine != null) StopCoroutine(playingRoutine);
+
+            if (animate && isActiveAndEnabled)
+                playingRoutine = StartCoroutine(PlayShowAnimation(target));
+            else
+                UIPanelAnimator.Reset(target);
+        }
+
+        /// <summary>
+        /// フェードイン＋スケールのポップ演出を再生する
+        /// </summary>
+        private IEnumerator PlayShowAnimation(GameObject target)
+        {
+            yield return UIPanelAnimator.PlayShow(target, fadeDuration, startScale);
+            playingRoutine = null;
         }
     }
 }

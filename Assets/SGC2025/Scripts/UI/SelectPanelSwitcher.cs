@@ -32,9 +32,9 @@ namespace SGC2025.UI
 
         [Header("切替アニメーション")]
         [SerializeField]
-        private float fadeDuration = 0.18f; // フェードイン時間（秒）
+        private float fadeDuration = UIPanelAnimator.DefaultFadeDuration; // フェードイン時間（秒）
         [SerializeField]
-        private float startScale = 0.92f;   // 出現開始時のスケール倍率
+        private float startScale = UIPanelAnimator.DefaultStartScale;     // 出現開始時のスケール倍率
 
         private GameObject currentPanel;
         private Coroutine playingRoutine;
@@ -109,7 +109,7 @@ namespace SGC2025.UI
             if (animate && isActiveAndEnabled)
                 playingRoutine = StartCoroutine(PlayShowAnimation(target));
             else
-                ResetPanel(target);
+                UIPanelAnimator.Reset(target);
         }
 
         /// <summary>
@@ -117,45 +117,8 @@ namespace SGC2025.UI
         /// </summary>
         private IEnumerator PlayShowAnimation(GameObject target)
         {
-            CanvasGroup group = GetCanvasGroup(target);
-            Transform tf = target.transform;
-            float elapsed = 0f;
-
-            group.alpha = 0f;
-            tf.localScale = Vector3.one * startScale;
-
-            while (elapsed < fadeDuration)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                float t = Mathf.Clamp01(elapsed / fadeDuration);
-                float eased = 1f - (1f - t) * (1f - t); // EaseOutQuad
-
-                group.alpha = eased;
-                tf.localScale = Vector3.one * Mathf.Lerp(startScale, 1f, eased);
-                yield return null;
-            }
-
-            ResetPanel(target);
+            yield return UIPanelAnimator.PlayShow(target, fadeDuration, startScale);
             playingRoutine = null;
-        }
-
-        /// <summary>
-        /// Panelの見た目を通常状態（不透明・等倍）へ戻す
-        /// </summary>
-        private void ResetPanel(GameObject target)
-        {
-            GetCanvasGroup(target).alpha = 1f;
-            target.transform.localScale = Vector3.one;
-        }
-
-        /// <summary>
-        /// PanelのCanvasGroupを取得（無ければ追加する）
-        /// </summary>
-        private CanvasGroup GetCanvasGroup(GameObject target)
-        {
-            CanvasGroup group = target.GetComponent<CanvasGroup>();
-            if (group == null) group = target.AddComponent<CanvasGroup>();
-            return group;
         }
 
         /// <summary>
