@@ -18,13 +18,15 @@ namespace SGC2025.UI
         private const float ZERO_WAIT_TIME = 0.0f;
         private const float PERCENT_MULTIPLIER = 100f;
         private const string RANK_SUFFIX = "位";
-        private const string GREENING_RANK_LABEL = "緑化度 ";
-        private const string TOTAL_RANK_LABEL = "総スコア ";
+        private const string GREENING_RANK_LABEL = "緑化ランキング ";
+        private const string TOTAL_RANK_LABEL = "総スコアランキング ";
 
         [SerializeField]
         private TextMeshProUGUI greeningRateText; // 緑化度（％）表示
         [SerializeField]
-        private TextMeshProUGUI rankText; // ランクイン順位表示（緑化度・総スコアをまとめて表示）
+        private TextMeshProUGUI greeningRankText; // 緑化度ランキング順位表示
+        [SerializeField]
+        private TextMeshProUGUI totalRankText; // 総スコアランキング順位表示
         [SerializeField]
         private TextMeshProUGUI totalScoreText; // 総スコア表示
 
@@ -90,20 +92,11 @@ namespace SGC2025.UI
         /// </summary>
         private void RefreshRankText()
         {
-            if (rankText == null) return;
+            if (greeningRankText != null && greeningRank.HasValue)
+                greeningRankText.SetText($"{GREENING_RANK_LABEL}{greeningRank.Value}{RANK_SUFFIX}");
 
-            string text = string.Empty;
-
-            if (greeningRank.HasValue)
-                text += $"{GREENING_RANK_LABEL}{greeningRank.Value}{RANK_SUFFIX}";
-
-            if (totalRank.HasValue)
-            {
-                if (text.Length > 0) text += "\n";
-                text += $"{TOTAL_RANK_LABEL}{totalRank.Value}{RANK_SUFFIX}";
-            }
-
-            rankText.SetText(text);
+            if (totalRankText != null && totalRank.HasValue)
+                totalRankText.SetText($"{TOTAL_RANK_LABEL}{totalRank.Value}{RANK_SUFFIX}");
         }
 
         private void HandleNameSubmitted()
