@@ -35,6 +35,7 @@ namespace SGC2025.Enemy
         public float CurrentHealth => currentHp;
         public bool IsAlive => currentHp > MIN_HEALTH && isInitialized;
         public float MaxHealth => cachedParameters.health;
+        public float AttackPower => enemyData.AttackPower;
         public float MoveSpeed => cachedParameters.moveSpeed;
         public bool CanMove => IsAlive && isInitialized;
 

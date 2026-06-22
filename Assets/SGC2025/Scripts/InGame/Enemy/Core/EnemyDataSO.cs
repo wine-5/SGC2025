@@ -17,10 +17,13 @@ namespace SGC2025.Enemy
         private const float DEFAULT_HEALTH = 100f;
         private const float DEFAULT_MOVE_SPEED = 3f;
         private const float DEFAULT_LIFE_TIME = 30f;
-        
+        private const float DEFAULT_ATTACK_POWER = 10f;
+
         [Header("基本パラメーター")]
         [SerializeField] private float health = DEFAULT_HEALTH;
         [SerializeField] private float moveSpeed = DEFAULT_MOVE_SPEED;
+        [SerializeField, Tooltip("プレイヤーに接触したときに与えるダメージ")]
+        private float attackPower = DEFAULT_ATTACK_POWER;
         
         [Header("生存時間設定")]
         [SerializeField] private float lifeTime = DEFAULT_LIFE_TIME;
@@ -38,6 +41,7 @@ namespace SGC2025.Enemy
         public EnemyType EnemyType => enemyType;
         public MovementType MovementType => movementType;
         public bool IsBoss => isBoss;
+        public float AttackPower => attackPower;
         public int GreeningSize => greeningSize;
         public int GreeningSizeBoosted => greeningSizeBoosted;
         
