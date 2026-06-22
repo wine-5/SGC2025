@@ -20,21 +20,28 @@ namespace SGC2025.Manager
     {
         protected override bool UseDontDestroyOnLoad => true;
 
-        // --- 演出パラメータ（コード生成のため定数で持つ）---
-        private const int Columns = 16;            // 横方向のタイル分割数（縦はアスペクト比から算出）
-        private const int SortingOrder = 32000;    // 他のCanvasより手前に出すための描画順
+        // --- 演出パラメータ（Manager シーンに配置すればインスペクターから調整可能。未配置時はここの初期値で動作）---
+        [Header("グリッド")]
+        [Tooltip("横方向のタイル分割数（縦はアスペクト比から自動算出）")]
+        [SerializeField] private int columns = 16;
+        [Tooltip("他のCanvasより手前に出すための描画順")]
+        [SerializeField] private int sortingOrder = 32000;
 
-        // 覆う（Cover）側の速度
-        private const float CoverTileDuration = 0.22f; // 1タイルの開アニメ時間（秒）
-        private const float CoverSpreadTime = 0.45f;   // 中央→最外周までの広がり時間（秒）
+        [Header("覆う（Cover）速度")]
+        [Tooltip("1タイルの開アニメ時間（秒）")]
+        [SerializeField] private float coverTileDuration = 0.22f;
+        [Tooltip("中央→最外周までの広がり時間（秒）")]
+        [SerializeField] private float coverSpreadTime = 0.45f;
 
-        // 晴れる（Uncover）側の速度 ＝ 徐々に見えてくる演出。Cover より遅め。
-        private const float UncoverTileDuration = 0.32f; // 1タイルの閉アニメ時間（秒）
-        private const float UncoverSpreadTime = 0.85f;   // 中央→最外周までの広がり時間（秒）
+        [Header("晴れる（Uncover）速度 ＝ 徐々に見えてくる演出")]
+        [Tooltip("1タイルの閉アニメ時間（秒）。大きいほどゆっくり")]
+        [SerializeField] private float uncoverTileDuration = 0.32f;
+        [Tooltip("中央→最外周までの広がり時間（秒）。大きいほどゆっくり")]
+        [SerializeField] private float uncoverSpreadTime = 0.85f;
 
-        // タイルの緑（蝶の自然回復をイメージした2トーン）
-        private static readonly Color GreenBase = new Color(0.30f, 0.69f, 0.31f); // #4CAF50系
-        private static readonly Color GreenDeep = new Color(0.22f, 0.56f, 0.24f); // 一段濃い緑
+        [Header("タイルの色（蝶の自然回復をイメージした2トーン）")]
+        [SerializeField] private Color greenBase = new Color(0.30f, 0.69f, 0.31f); // #4CAF50系
+        [SerializeField] private Color greenDeep = new Color(0.22f, 0.56f, 0.24f); // 一段濃い緑
 
         private RectTransform[] tiles;
         private float[] tileNorms;    // 各タイルの中央からの正規化距離（中央=0、最外周=1）。広がり順に使う
@@ -87,8 +94,8 @@ namespace SGC2025.Manager
         private async UniTask Animate(bool reveal, CancellationToken ct)
         {
             // Cover / Uncover で速度を分ける（Uncover ＝ 徐々に見えてくる演出を遅めに）
-            float spread = reveal ? CoverSpreadTime : UncoverSpreadTime;
-            float tileDuration = reveal ? CoverTileDuration : UncoverTileDuration;
+            float spread = reveal ? coverSpreadTime : uncoverSpreadTime;
+            float tileDuration = reveal ? coverTileDuration : uncoverTileDuration;
             float total = spread + tileDuration;
             float elapsed = 0f;
 
@@ -151,13 +158,11 @@ namespace SGC2025.Manager
 
             var canvas = canvasGo.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = SortingOrder;
+            canvas.sortingOrder = sortingOrder;
 
             var scaler = canvasGo.GetComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920f, 1080f);
-
-            var canvasRect = (RectTransform)canvasGo.transform;
 
             // --- 入力ブロッカー（透明・遷移中のみ有効）---
             var blockerGo = new GameObject("InputBlocker", typeof(Image));
@@ -170,25 +175,25 @@ namespace SGC2025.Manager
             blocker.enabled = false;
 
             // --- タイルグリッド ---
-            int rows = Mathf.Max(1, Mathf.RoundToInt(Columns * (float)Screen.height / Mathf.Max(1, Screen.width)));
-            tiles = new RectTransform[Columns * rows];
-            tileNorms = new float[Columns * rows];
+            int rows = Mathf.Max(1, Mathf.RoundToInt(columns * (float)Screen.height / Mathf.Max(1, Screen.width)));
+            tiles = new RectTransform[columns * rows];
+            tileNorms = new float[columns * rows];
 
-            float centerC = (Columns - 1) * 0.5f;
+            float centerC = (columns - 1) * 0.5f;
             float centerR = (rows - 1) * 0.5f;
             float maxDist = Mathf.Max(centerC, centerR); // チェビシェフ距離の最大値
 
             int index = 0;
             for (int r = 0; r < rows; r++)
             {
-                for (int c = 0; c < Columns; c++)
+                for (int c = 0; c < columns; c++)
                 {
                     var tileGo = new GameObject($"Tile_{c}_{r}", typeof(Image));
                     tileGo.transform.SetParent(canvasGo.transform, false);
 
                     var rect = (RectTransform)tileGo.transform;
-                    rect.anchorMin = new Vector2((float)c / Columns, (float)r / rows);
-                    rect.anchorMax = new Vector2((float)(c + 1) / Columns, (float)(r + 1) / rows);
+                    rect.anchorMin = new Vector2((float)c / columns, (float)r / rows);
+                    rect.anchorMax = new Vector2((float)(c + 1) / columns, (float)(r + 1) / rows);
                     // セル境界の継ぎ目を防ぐためわずかに広げる
                     rect.offsetMin = new Vector2(-1f, -1f);
                     rect.offsetMax = new Vector2(1f, 1f);
@@ -196,16 +201,16 @@ namespace SGC2025.Manager
                     rect.localScale = Vector3.zero;
 
                     var img = tileGo.GetComponent<Image>();
-                    img.color = ((c + r) & 1) == 0 ? GreenBase : GreenDeep; // 市松で2トーン
+                    img.color = ((c + r) & 1) == 0 ? greenBase : greenDeep; // 市松で2トーン
                     img.raycastTarget = false;
 
-                    // 中央からの距離（チェビシェフ）で広がり順を決める
+                    // 中央からの正規化距離（チェビシェフ, 0..1）で広がり順を決める。
+                    // 実際の遅延時間は Animate 側で spread を掛けて算出する（Cover/Uncoverで速度可変）。
                     float dist = Mathf.Max(Mathf.Abs(c - centerC), Mathf.Abs(r - centerR));
-                    float delay = maxDist > 0f ? (dist / maxDist) * SpreadTime : 0f;
+                    float norm = maxDist > 0f ? dist / maxDist : 0f;
 
                     tiles[index] = rect;
-                    tileDelays[index] = delay;
-                    if (delay > maxDelay) maxDelay = delay;
+                    tileNorms[index] = norm;
                     index++;
                 }
             }

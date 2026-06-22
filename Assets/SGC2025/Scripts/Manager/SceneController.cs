@@ -1,7 +1,3 @@
-using System.Collections;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-
 namespace SGC2025.Manager
 {
     /// <summary>
@@ -23,43 +19,18 @@ namespace SGC2025.Manager
     {
         protected override bool UseDontDestroyOnLoad => true;
 
-        private bool isTransitioning;
-
         /// <summary>
-        /// 指定されたシーンに切り替え（タイルめくり演出つき）
+        /// 指定されたシーンに切り替え（緑化タイルめくり演出つき）。
+        /// 実際の「覆う→読み込み→晴れる」フローは SceneTransition が担当する。
         /// </summary>
         public void LoadScene(SceneName sceneName)
         {
-            // 多重遷移を防止（演出中の連打・重複呼び出し対策）
-            if (isTransitioning) return;
-            StartCoroutine(LoadSceneRoutine(sceneName));
+            SceneTransition.I.TransitionTo(sceneName.ToString());
         }
 
         /// <summary>
         /// Resultシーンを読み込む
         /// </summary>
         public void LoadResultScene() => LoadScene(SceneName.Result);
-
-        /// <summary>
-        /// Cover（覆う）→ シーン読み込み → Uncover（晴れる）の順で遷移する。
-        /// </summary>
-        private IEnumerator LoadSceneRoutine(SceneName sceneName)
-        {
-            isTransitioning = true;
-
-            // タイルで画面を覆う
-            yield return SceneTransition.I.PlayCover();
-
-            // 覆っている間にシーンを切り替える（ポーズ起因の timeScale=0 をここで確実に戻す）
-            Time.timeScale = 1f;
-            var op = SceneManager.LoadSceneAsync(sceneName.ToString());
-            while (op != null && !op.isDone)
-                yield return null;
-
-            // 覆いを晴らして次シーンを見せる
-            yield return SceneTransition.I.PlayUncover();
-
-            isTransitioning = false;
-        }
     }
 }
