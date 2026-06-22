@@ -862,7 +862,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &357684491
 Transform:
   m_ObjectHideFlags: 0
@@ -2044,7 +2044,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 31a758f3383502e4ba9355ee6ba0042a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 40b4aea4fe57e7b4e8161b2ed493e89b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3246,7 +3246,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: da85ee82f1464164dab960af57d7b158, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 74985afea1d433846aa9f62f3b09ba9d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3310,6 +3310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92526ecdc11bc9148a3c03f17116f3dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.UI.SelectionGuard
+  mouseMoveThreshold: 0.01
 --- !u!114 &1105186241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5887,7 +5888,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1714994463
 Transform:
   m_ObjectHideFlags: 0
