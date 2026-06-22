@@ -149,12 +149,22 @@ namespace SGC2025.UI
             }
         }
 
+        /// <summary>
+        /// カウントアップ進捗(0〜1)を返す。scoreCountUpTimeが0以下でも
+        /// 0除算（NaN）にならないよう、その場合は即完了(1)とみなす。
+        /// </summary>
+        private float CountUpProgress(float waitTime)
+        {
+            if (scoreCountUpTime <= 0f) return 1f;
+            return Mathf.Clamp01(waitTime / scoreCountUpTime);
+        }
+
         private void OnPhaseUpdate(float waitTime)
         {
             switch (currentPhase)
             {
                 case ResultPhase.GreeningRate:
-                    float greeningProgress = Mathf.Clamp01(waitTime / scoreCountUpTime);
+                    float greeningProgress = CountUpProgress(waitTime);
 
                     if (greeningRateRow != null)
                     {
@@ -172,7 +182,7 @@ namespace SGC2025.UI
                     if (totalScoreRow != null)
                     {
                         int maxScore = GameManager.I.FinalTotalScore;
-                        int currentScore = Mathf.RoundToInt(Mathf.Lerp(0f, maxScore, Mathf.Clamp01(waitTime / scoreCountUpTime)));
+                        int currentScore = Mathf.RoundToInt(Mathf.Lerp(0f, maxScore, CountUpProgress(waitTime)));
                         totalScoreRow.SetValue(currentScore.ToString());
                     }
                     break;
