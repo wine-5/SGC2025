@@ -149,7 +149,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3759847360181544773, guid: fddfa864c81163a408f40d202ab2d6b2, type: 3}
       propertyPath: scoreCountUpTime
-      value: 0.1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5162230008805113320, guid: fddfa864c81163a408f40d202ab2d6b2, type: 3}
       propertyPath: m_LocalPosition.x

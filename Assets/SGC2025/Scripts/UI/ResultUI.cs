@@ -41,6 +41,8 @@ namespace SGC2025.UI
         [Header("演出設定")]
         [SerializeField, Tooltip("緑化度・総スコアのカウントアップ（＝マップ再生）にかける秒数")]
         private float scoreCountUpTime = 2f;
+        [SerializeField, Tooltip("カウントアップ開始前の前置き秒数（Init/Start各フェーズ）。0ですぐ開始")]
+        private float startDelay = 0.2f;
         [SerializeField, Tooltip("背景に塗り直しを再生するマップ（緑化度カウントアップに同期）")]
         private ResultMapReplay mapReplay;
 
@@ -115,7 +117,7 @@ namespace SGC2025.UI
         {
             base.Update();
 
-            if (waitTime >= scoreCountUpTime)
+            if (waitTime >= GetPhaseDuration(currentPhase))
             {
                 OnPhaseUpdate(scoreCountUpTime); // 最終値を表示
                 currentPhase++;
@@ -125,6 +127,22 @@ namespace SGC2025.UI
             else
             {
                 OnPhaseUpdate(waitTime);
+            }
+        }
+
+        /// <summary>
+        /// フェーズごとの所要時間を返す。
+        /// カウントアップ系は演出時間、それ以外（前置き）は短いstartDelayを使う。
+        /// </summary>
+        private float GetPhaseDuration(ResultPhase phase)
+        {
+            switch (phase)
+            {
+                case ResultPhase.GreeningRate:
+                case ResultPhase.TotalScore:
+                    return scoreCountUpTime;
+                default:
+                    return startDelay;
             }
         }
 
