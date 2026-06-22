@@ -74,7 +74,7 @@ namespace SGC2025.Manager
             if (ItemManager.I != null && ItemManager.I.IsAreaGreenifyActive)
                 size = e.GreeningSizeBoosted;
 
-            DrawGroundArea(e.Position, size);
+            DrawGroundArea(e.Position, size, e.IsBoss);
         }
 
         /// <summary>指定位置の地面を緑化（1マス）</summary>
@@ -85,7 +85,7 @@ namespace SGC2025.Manager
         /// エフェクトは1種類のプレハブを size に応じて拡縮して1回だけ生成する。
         /// 偶数サイズは中心から下・左側に1マス広く取る。
         /// </summary>
-        public bool DrawGroundArea(Vector3 enemyPosition, int size)
+        public bool DrawGroundArea(Vector3 enemyPosition, int size, bool isBoss = false)
         {
             if (currentGroundArray == null || size <= 0) return false;
 
@@ -134,8 +134,9 @@ namespace SGC2025.Manager
                         effect.transform.localScale *= 1f + (size - 1) * areaEffectScaleFactor;
                 }
 
+                // ボス撃破による緑化はボス専用SE、それ以外は通常の緑化SE
                 if (AudioManager.I != null)
-                    AudioManager.I.PlaySE(SEType.Grass);
+                    AudioManager.I.PlaySE(isBoss ? SEType.BossDefeated : SEType.Grass);
             }
 
             return anyDrawn;

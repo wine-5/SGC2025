@@ -160,7 +160,8 @@ namespace SGC2025.Enemy
 
             int greeningSize = enemyData != null ? enemyData.GreeningSize : 1;
             int greeningSizeBoosted = enemyData != null ? enemyData.GreeningSizeBoosted : greeningSize;
-            EventBus.Publish(new EnemyDestroyedEvent(transform.position, greeningSize, greeningSizeBoosted));
+            bool isBoss = enemyData != null && enemyData.IsBoss;
+            EventBus.Publish(new EnemyDestroyedEvent(transform.position, greeningSize, greeningSizeBoosted, isBoss));
 
             ReturnToPool();
         }
