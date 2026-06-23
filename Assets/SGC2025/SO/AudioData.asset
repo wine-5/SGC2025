@@ -18,7 +18,7 @@ MonoBehaviour:
     volumeMultiplier: 0.8
   - seType: 2
     audioClip: {fileID: 8300000, guid: a56a071257410b7449243303de2592d9, type: 3}
-    volumeMultiplier: 0.2
+    volumeMultiplier: 0.3
   - seType: 3
     audioClip: {fileID: 8300000, guid: 8b70b5e725574af40a1b4f995ca05ffb, type: 3}
     volumeMultiplier: 0.8
@@ -37,6 +37,15 @@ MonoBehaviour:
   - seType: 7
     audioClip: {fileID: 8300000, guid: 86d50c3a7e59d874aa30975654fd9ac4, type: 3}
     volumeMultiplier: 0.6
+  - seType: 8
+    audioClip: {fileID: 8300000, guid: dfcca3092f36bb542a82817dee6c85e5, type: 3}
+    volumeMultiplier: 1
+  - seType: 9
+    audioClip: {fileID: 8300000, guid: aa17804251126ea4a889f8faf310d825, type: 3}
+    volumeMultiplier: 0.45
+  - seType: 10
+    audioClip: {fileID: 8300000, guid: cc8f113e7fc9f9c498fb7aebfecc03fe, type: 3}
+    volumeMultiplier: 0.4
   bgmAudioDataList:
   - bgmType: 1
     audioClip: {fileID: 8300000, guid: 7a74a42255a083049a4702bc9108cd96, type: 3}

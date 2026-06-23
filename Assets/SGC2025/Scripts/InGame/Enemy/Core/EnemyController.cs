@@ -35,6 +35,7 @@ namespace SGC2025.Enemy
         public float CurrentHealth => currentHp;
         public bool IsAlive => currentHp > MIN_HEALTH && isInitialized;
         public float MaxHealth => cachedParameters.health;
+        public float AttackPower => enemyData.AttackPower;
         public float MoveSpeed => cachedParameters.moveSpeed;
         public bool CanMove => IsAlive && isInitialized;
 
@@ -160,7 +161,8 @@ namespace SGC2025.Enemy
 
             int greeningSize = enemyData != null ? enemyData.GreeningSize : 1;
             int greeningSizeBoosted = enemyData != null ? enemyData.GreeningSizeBoosted : greeningSize;
-            EventBus.Publish(new EnemyDestroyedEvent(transform.position, greeningSize, greeningSizeBoosted));
+            bool isBoss = enemyData != null && enemyData.IsBoss;
+            EventBus.Publish(new EnemyDestroyedEvent(transform.position, greeningSize, greeningSizeBoosted, isBoss));
 
             ReturnToPool();
         }

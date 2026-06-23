@@ -40,8 +40,9 @@ namespace SGC2025.Player
             entityTransform = entity.transform;
             originalScale = transform.localScale;
 
-            // HPBarの初期位置を相対オフセットとして保存（Inspectorで設定された値）
-            offsetFromPlayer = parentTransform.position;
+            // HPBarの初期位置を「Playerからの相対オフセット」として保存
+            // （絶対座標を保存すると、原点から離れた位置にスポーンしたときにズレる）
+            offsetFromPlayer = parentTransform.position - entityTransform.position;
 
             // 初期のワールド回転を保存し、以降この向きで固定する
             fixedRotation = parentTransform.rotation;

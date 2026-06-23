@@ -23,5 +23,10 @@ namespace SGC2025.Effect
         /// 緑化時パーティクルエフェクト
         /// </summary>
         GreeningParticle,
+
+        /// <summary>
+        /// クローン（蝶）増加時にプレイヤーから出すエフェクト
+        /// </summary>
+        PlayerCloneEffect,
     }
 }

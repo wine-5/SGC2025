@@ -5,19 +5,13 @@ using SGC2025.Manager;
 namespace SGC2025.UI
 {
     /// <summary>
-    /// UI画面の基底クラス
+    /// UI画面の基底クラス（共通のボタン操作と経過時間管理を提供）
+    /// 初期フォーカスは AutoSelectFirst コンポーネントで設定する。
     /// </summary>
     public class UIBase : MonoBehaviour
     {
-        [SerializeField]
-        protected GameObject firstSelect;
         protected float waitTime = 0.0f;
 
-        virtual public void Start()
-        {
-            UIFocusHelper.SetFocus(firstSelect);
-        }
-        
         virtual public void Update()
         {
             waitTime += Time.unscaledDeltaTime;

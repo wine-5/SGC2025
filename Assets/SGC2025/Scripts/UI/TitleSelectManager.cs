@@ -30,6 +30,11 @@ namespace SGC2025.UI
         private void OnSubmitPressed()
         {
             if (!titleScreen.activeSelf) return;
+
+            // タイトルから進むときにボタン音を鳴らす（クリック・コントローラー共通）
+            if (AudioManager.I != null)
+                AudioManager.I.PlaySE(SEType.ButtonClick);
+
             titleScreen.SetActive(false);
             selectScreen.SetActive(true);
         }

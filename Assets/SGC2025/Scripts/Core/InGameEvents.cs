@@ -27,11 +27,13 @@ namespace SGC2025.Core
         public Vector3 Position;
         public int GreeningSize;        // 撃破時に緑化する一辺のマス数（基本）
         public int GreeningSizeBoosted; // 緑化範囲上昇アイテム中の一辺のマス数
-        public EnemyDestroyedEvent(Vector3 position, int greeningSize, int greeningSizeBoosted)
+        public bool IsBoss;             // ボスかどうか（緑化SEの出し分けに使用）
+        public EnemyDestroyedEvent(Vector3 position, int greeningSize, int greeningSizeBoosted, bool isBoss = false)
         {
             Position = position;
             GreeningSize = greeningSize;
             GreeningSizeBoosted = greeningSizeBoosted;
+            IsBoss = isBoss;
         }
     }
 

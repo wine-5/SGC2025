@@ -209,7 +209,8 @@ namespace SGC2025.Ranking.Steam
                 {
                     PlayerName = SteamFriends.GetFriendPersonaName(entry.m_steamIDUser),
                     Score = entry.m_nScore,
-                    Rank = entry.m_nGlobalRank
+                    Rank = entry.m_nGlobalRank,
+                    IsCurrentUser = entry.m_steamIDUser == SteamUser.GetSteamID()
                 });
             }
 

@@ -21,6 +21,7 @@ namespace SGC2025.Player
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
         public bool IsAlive => currentHealth > 0f;
+        public float AttackPower => attackPower;
         #endregion
 
         #region IDamageableイベント
@@ -38,7 +39,10 @@ namespace SGC2025.Player
         [Header("ステータス")]
         [SerializeField] private float maxHealth = 100;
         [SerializeField] private float currentHealth;
+        [SerializeField, Tooltip("プレイヤーの攻撃力（IDamageable経由で参照される）")]
+        private float attackPower = 10f;
 
+        // 敵側で攻撃力が取得できなかった場合のフォールバックダメージ
         private const float DAMAGE = 10f;
         private float baseMovSpeed;
         [SerializeField] private float moveSpeed;
@@ -108,8 +112,11 @@ namespace SGC2025.Player
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.layer == GameLayers.EnemyLayer)
-                Damage();
+            if (other.gameObject.layer != GameLayers.EnemyLayer) return;
+
+            // 接触した敵のIDamageableから攻撃力を取得し、その分のダメージを受ける
+            float damage = other.GetComponentInParent<IDamageable>()?.AttackPower ?? DAMAGE;
+            Damage(damage);
         }
         #endregion
 
@@ -138,7 +145,7 @@ namespace SGC2025.Player
 
         private void OnShotPerformed(InputAction.CallbackContext context)
         {
-            if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
+            if (InGameManager.I != null && (InGameManager.I.IsCountingDown || InGameManager.I.IsPaused)) return;
             if (weaponSystem == null) return;
             weaponSystem.Fire();
         }
@@ -201,10 +208,10 @@ namespace SGC2025.Player
         #endregion
 
         #region ヘルスシステム
-        private void Damage()
+        private void Damage(float damage)
         {
             if (nowMutekiTime > 0f) return;
-            TakeDamage(DAMAGE);
+            TakeDamage(damage);
             nowMutekiTime = mutekiTime;
             AudioManager.I?.PlaySE(SEType.PlayerDamage);
         }

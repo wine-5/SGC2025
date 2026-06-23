@@ -14,6 +14,7 @@ namespace SGC2025.Item
         private const float MIN_SPAWN_INTERVAL = 0.1f;
         private const float DEFAULT_SPAWN_RANGE = 10f;
         private const float GREENING_PARTICLE_DURATION = 1.5f;
+        private const float CLONE_EFFECT_DURATION = 1.5f;
         private const string GAUGE_TAG = "GreenGauge";
         
         [Header("アイテム抽選設定")]
@@ -206,8 +207,9 @@ namespace SGC2025.Item
             if (itemData.ItemType == ItemType.PlayerClone)
             {
                 var manager = GetCloneManager();
-                if (manager != null)
-                    manager.TryActivateNextClone();
+                // 実際にクローンが増えたときだけプレイヤーからエフェクトを出す
+                if (manager != null && manager.TryActivateNextClone())
+                    SpawnPlayerEffect(EffectType.PlayerCloneEffect, CLONE_EFFECT_DURATION);
                 return;
             }
 
@@ -257,6 +259,20 @@ namespace SGC2025.Item
             }
         }
         
+        /// <summary>
+        /// プレイヤーの位置からエフェクトを生成する（プレイヤーに追従）。
+        /// </summary>
+        private GameObject SpawnPlayerEffect(EffectType effectType, float duration)
+        {
+            if (EffectFactory.I == null
+                || SGC2025.Player.PlayerDataProvider.I == null
+                || !SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
+                return null;
+
+            var playerTransform = SGC2025.Player.PlayerDataProvider.I.PlayerTransform;
+            return EffectFactory.I.CreateEffect(effectType, playerTransform.position, duration, playerTransform);
+        }
+
         /// <summary>
         /// 効果時間の期限をチェック
         /// </summary>

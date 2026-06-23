@@ -1,5 +1,4 @@
 using UnityEngine;
-using TMPro;
 using SGC2025.Manager;
 using SGC2025.Ranking;
 using SGC2025.Core;
@@ -14,19 +13,19 @@ namespace SGC2025.UI
     /// </summary>
     public class ResultUI : UIBase
     {
-        private const float SCORE_COUNT_UP_TIME = 0.7f;
         private const float ZERO_WAIT_TIME = 0.0f;
         private const float PERCENT_MULTIPLIER = 100f;
         private const string RANK_SUFFIX = "位";
-        private const string GREENING_RANK_LABEL = "緑化度 ";
-        private const string TOTAL_RANK_LABEL = "総スコア ";
 
+        [Header("結果の各行（ラベル＋数値のセット）")]
         [SerializeField]
-        private TextMeshProUGUI greeningRateText; // 緑化度（％）表示
+        private ResultStatRow greeningRateRow; // 緑化度（％）
         [SerializeField]
-        private TextMeshProUGUI rankText; // ランクイン順位表示（緑化度・総スコアをまとめて表示）
+        private ResultStatRow totalScoreRow;   // 総スコア
         [SerializeField]
-        private TextMeshProUGUI totalScoreText; // 総スコア表示
+        private ResultStatRow greeningRankRow;  // 緑化度ランキング順位
+        [SerializeField]
+        private ResultStatRow totalRankRow;     // 総スコアランキング順位
 
         private int? greeningRank;
         private int? totalRank;
@@ -38,6 +37,14 @@ namespace SGC2025.UI
         private NameInputUI nameInputUI; // 名前入力UI（展示用ハイスコア時に表示）
         [SerializeField]
         private GameObject firstButtonAfterInput; // 名前入力後に最初に選択されるボタン
+
+        [Header("演出設定")]
+        [SerializeField, Tooltip("緑化度・総スコアのカウントアップ（＝マップ再生）にかける秒数")]
+        private float scoreCountUpTime = 2f;
+        [SerializeField, Tooltip("カウントアップ開始前の前置き秒数（Init/Start各フェーズ）。0ですぐ開始")]
+        private float startDelay = 0.2f;
+        [SerializeField, Tooltip("背景に塗り直しを再生するマップ（緑化度カウントアップに同期）")]
+        private ResultMapReplay mapReplay;
 
         enum ResultPhase
         {
@@ -51,10 +58,8 @@ namespace SGC2025.UI
 
         ResultPhase currentPhase = ResultPhase.Init;
 
-        override public void Start()
+        private void Start()
         {
-            base.Start();
-
             if (nameInputUI != null)
             {
                 nameInputUI.Submitted -= HandleNameSubmitted;
@@ -62,6 +67,9 @@ namespace SGC2025.UI
             }
 
             EventBus.Subscribe<LeaderboardRankedInEvent>(HandleLeaderboardRankedIn);
+
+            if (mapReplay != null)
+                mapReplay.Initialize();
         }
 
         private void OnDestroy()
@@ -90,20 +98,11 @@ namespace SGC2025.UI
         /// </summary>
         private void RefreshRankText()
         {
-            if (rankText == null) return;
+            if (greeningRankRow != null && greeningRank.HasValue)
+                greeningRankRow.SetValue($"{greeningRank.Value}{RANK_SUFFIX}");
 
-            string text = string.Empty;
-
-            if (greeningRank.HasValue)
-                text += $"{GREENING_RANK_LABEL}{greeningRank.Value}{RANK_SUFFIX}";
-
-            if (totalRank.HasValue)
-            {
-                if (text.Length > 0) text += "\n";
-                text += $"{TOTAL_RANK_LABEL}{totalRank.Value}{RANK_SUFFIX}";
-            }
-
-            rankText.SetText(text);
+            if (totalRankRow != null && totalRank.HasValue)
+                totalRankRow.SetValue($"{totalRank.Value}{RANK_SUFFIX}");
         }
 
         private void HandleNameSubmitted()
@@ -118,9 +117,9 @@ namespace SGC2025.UI
         {
             base.Update();
 
-            if (waitTime >= SCORE_COUNT_UP_TIME)
+            if (waitTime >= GetPhaseDuration(currentPhase))
             {
-                OnPhaseUpdate(SCORE_COUNT_UP_TIME); // 最終値を表示
+                OnPhaseUpdate(scoreCountUpTime); // 最終値を表示
                 currentPhase++;
                 OnPhaseChanged();
                 waitTime = ZERO_WAIT_TIME;
@@ -131,18 +130,32 @@ namespace SGC2025.UI
             }
         }
 
+        /// <summary>
+        /// フェーズごとの所要時間を返す。
+        /// カウントアップ系は演出時間、それ以外（前置き）は短いstartDelayを使う。
+        /// </summary>
+        private float GetPhaseDuration(ResultPhase phase)
+        {
+            switch (phase)
+            {
+                case ResultPhase.GreeningRate:
+                case ResultPhase.TotalScore:
+                    return scoreCountUpTime;
+                default:
+                    return startDelay;
+            }
+        }
+
         private void OnPhaseChanged()
         {
             switch (currentPhase)
             {
                 case ResultPhase.GreeningRate:
-                    if (greeningRateText != null)
-                        greeningRateText.SetText("0.0%");
+                    greeningRateRow?.SetValue("0.0%");
                     break;
 
                 case ResultPhase.TotalScore:
-                    if (totalScoreText != null)
-                        totalScoreText.SetText("0");
+                    totalScoreRow?.SetValue("0");
                     break;
 
                 case ResultPhase.HighScore:
@@ -154,25 +167,41 @@ namespace SGC2025.UI
             }
         }
 
+        /// <summary>
+        /// カウントアップ進捗(0〜1)を返す。scoreCountUpTimeが0以下でも
+        /// 0除算（NaN）にならないよう、その場合は即完了(1)とみなす。
+        /// </summary>
+        private float CountUpProgress(float waitTime)
+        {
+            if (scoreCountUpTime <= 0f) return 1f;
+            return Mathf.Clamp01(waitTime / scoreCountUpTime);
+        }
+
         private void OnPhaseUpdate(float waitTime)
         {
             switch (currentPhase)
             {
                 case ResultPhase.GreeningRate:
-                    if (greeningRateText != null)
+                    float greeningProgress = CountUpProgress(waitTime);
+
+                    if (greeningRateRow != null)
                     {
                         float maxRate = GameManager.I.FinalGreeningRate * PERCENT_MULTIPLIER;
-                        float currentRate = Mathf.Lerp(0f, maxRate, Mathf.Clamp01(waitTime / SCORE_COUNT_UP_TIME));
-                        greeningRateText.SetText($"{currentRate:F1}%");
+                        float currentRate = Mathf.Lerp(0f, maxRate, greeningProgress);
+                        greeningRateRow.SetValue($"{currentRate:F1}%");
                     }
+
+                    // ％の進捗に同期して背景マップへ塗り直しを再生する
+                    if (mapReplay != null)
+                        mapReplay.SetProgress(greeningProgress);
                     break;
 
                 case ResultPhase.TotalScore:
-                    if (totalScoreText != null)
+                    if (totalScoreRow != null)
                     {
                         int maxScore = GameManager.I.FinalTotalScore;
-                        int currentScore = Mathf.RoundToInt(Mathf.Lerp(0f, maxScore, Mathf.Clamp01(waitTime / SCORE_COUNT_UP_TIME)));
-                        totalScoreText.SetText(currentScore.ToString());
+                        int currentScore = Mathf.RoundToInt(Mathf.Lerp(0f, maxScore, CountUpProgress(waitTime)));
+                        totalScoreRow.SetValue(currentScore.ToString());
                     }
                     break;
 
