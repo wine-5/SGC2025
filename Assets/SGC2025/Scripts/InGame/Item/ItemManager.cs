@@ -15,7 +15,6 @@ namespace Tyotyo.InGame.Item
         private const float DEFAULT_SPAWN_RANGE = 10f;
         private const float GREENING_PARTICLE_DURATION = 1.5f;
         private const float CLONE_EFFECT_DURATION = 1.5f;
-        private const string GAUGE_TAG = "GreenGauge";
         
         [Header("アイテム抽選設定")]
         [SerializeField, Tooltip("アイテムの抽選を行うセレクター")]
@@ -34,8 +33,11 @@ namespace Tyotyo.InGame.Item
         [Header("ファクトリー参照")]
         [SerializeField] private ItemFactory itemFactory;
 
-        private float nextSpawnTime;
+        [Header("UI参照")]
+        [SerializeField, Tooltip("緑化度ゲージのTransform（Inspector で割り当てる）")]
         private Transform gaugeTarget;
+
+        private float nextSpawnTime;
         private int pendingCloneItems; // フィールドに存在する未取得のクローンアイテム数
         private Tyotyo.InGame.Player.PlayerCloneManager cloneManager;
         private Dictionary<ItemType, ItemEffect> activeEffects = new Dictionary<ItemType, ItemEffect>();
@@ -85,18 +87,8 @@ namespace Tyotyo.InGame.Item
         /// <summary>緑化範囲上昇アイテムが有効か（GroundManagerが緑化サイズ判定に使用）</summary>
         public bool IsAreaGreenifyActive => IsEffectActive(ItemType.AreaGreenify);
 
-        /// <summary>緑化度ゲージのTransformを取得（キャッシュ）</summary>
-        private Transform GetGaugeTarget()
-        {
-            // TODO: Findをやめて実装する
-            if (gaugeTarget == null)
-            {
-                GameObject gaugeObject = GameObject.FindWithTag(GAUGE_TAG);
-                if (gaugeObject != null)
-                    gaugeTarget = gaugeObject.transform;
-            }
-            return gaugeTarget;
-        }
+        /// <summary>緑化度ゲージのTransformを取得（Inspector で設定済み前提）</summary>
+        private Transform GetGaugeTarget() => gaugeTarget;
         
         private void Update()
         {
