@@ -1,5 +1,4 @@
 using UnityEngine;
-using Tyotyo.Core;
 using Tyotyo.InGame.Player;
 
 namespace Tyotyo.InGame.Enemy
@@ -22,7 +21,6 @@ namespace Tyotyo.InGame.Enemy
         private Vector3 _lastPosition;
 
         private Transform _playerTransform;
-        private bool _playerSearchAttempted = false;
 
         public EnemyMovement(Transform transform, EnemyController controller)
         {
@@ -87,22 +85,14 @@ namespace Tyotyo.InGame.Enemy
 
         private Transform GetPlayerTransform()
         {
+            // Playerは生成時にPlayerDataProviderへ登録される。
+            // 登録前はnullのまま、次フレーム以降に再取得を試みる（取得後はキャッシュ）。
             if (_playerTransform != null) return _playerTransform;
-            if (_playerSearchAttempted) return null;
 
-            _playerSearchAttempted = true;
             if (PlayerDataProvider.I != null && PlayerDataProvider.I.IsPlayerRegistered)
-            {
                 _playerTransform = PlayerDataProvider.I.PlayerTransform;
-                return _playerTransform;
-            }
-            GameObject playerObject = GameObject.FindWithTag(GameLayers.PlayerTag);
-            if (playerObject != null)
-            {
-                _playerTransform = playerObject.transform;
-                return _playerTransform;
-            }
-            return null;
+
+            return _playerTransform;
         }
 
         private void MoveToFixedTarget(float speed, float deltaTime)
