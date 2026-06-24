@@ -35,6 +35,10 @@ namespace Tyotyo.InGame.Bullet
         private SpriteRenderer cachedSpriteRenderer;
         private BulletRotationEffect rotationEffect;
         private BulletFactory factory;
+
+        // 円スプライトは全弾で共通。インスタンスごとに生成せず1回だけ作って共有する
+        // （プールで再利用される弾やシーン再読込時のTexture2Dリークを防ぐ）
+        private static Sprite sharedCircleSprite;
         
         // 弾の状態
         private float remainingLifeTime;
@@ -210,15 +214,17 @@ namespace Tyotyo.InGame.Bullet
                 // SpriteRendererに既存のSpriteがない場合のみ、円形スプライトを作成
                 if (cachedSpriteRenderer.sprite == null)
                 {
-                    cachedSpriteRenderer.sprite = CreateCircleSprite();
+                    cachedSpriteRenderer.sprite = GetOrCreateCircleSprite();
                 }
                 
                 cachedSpriteRenderer.color = Color.white;
             }
         }
 
-        private Sprite CreateCircleSprite()
+        private Sprite GetOrCreateCircleSprite()
         {
+            if (sharedCircleSprite != null) return sharedCircleSprite;
+
             var texture = new Texture2D(CIRCLE_SPRITE_SIZE, CIRCLE_SPRITE_SIZE);
             var colors = new Color[CIRCLE_SPRITE_SIZE * CIRCLE_SPRITE_SIZE];
             
@@ -246,7 +252,8 @@ namespace Tyotyo.InGame.Bullet
             
             var rect = new Rect(0, 0, CIRCLE_SPRITE_SIZE, CIRCLE_SPRITE_SIZE);
             var pivot = new Vector2(CIRCLE_SPRITE_PIVOT, CIRCLE_SPRITE_PIVOT);
-            return Sprite.Create(texture, rect, pivot);
+            sharedCircleSprite = Sprite.Create(texture, rect, pivot);
+            return sharedCircleSprite;
         }
 
         #endregion
