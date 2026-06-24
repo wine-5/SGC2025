@@ -14,8 +14,8 @@ namespace Tyotyo.InGame.Player
     public class PlayerController : MonoBehaviour, IDamageable
     {
         #region プロパティ
-        public Animator anim { get; private set; }
-        public Vector2 moveInput { get; private set; }
+        public Animator Anim { get; private set; }
+        public Vector2 MoveInput { get; private set; }
         public PlayerInputSet PlayerInput { get; private set; }
 
         public float CurrentHealth => currentHealth;
@@ -44,18 +44,18 @@ namespace Tyotyo.InGame.Player
 
         // 敵側で攻撃力が取得できなかった場合のフォールバックダメージ
         private const float DAMAGE = 10f;
-        private float baseMovSpeed;
+        private float baseMoveSpeed;
         [SerializeField] private float moveSpeed;
-        [SerializeField] private float mutekiTime;
-        private float nowMutekiTime;
+        [SerializeField] private float invincibleDuration;
+        private float invincibleTimer;
 
-        public bool IsInvincible => nowMutekiTime > 0f;
+        public bool IsInvincible => invincibleTimer > 0f;
         #endregion
 
         #region Unityライフサイクル
         private void Awake()
         {
-            anim = GetComponentInChildren<Animator>();
+            Anim = GetComponentInChildren<Animator>();
             rb = GetComponent<Rigidbody2D>();
             weaponSystem = GetComponent<PlayerWeaponSystem>();
             PlayerInput = new PlayerInputSet();
@@ -92,8 +92,8 @@ namespace Tyotyo.InGame.Player
         private void Start()
         {
             currentHealth = maxHealth;
-            baseMovSpeed = moveSpeed;
-            anim.SetBool("fly", true);
+            baseMoveSpeed = moveSpeed;
+            Anim.SetBool("fly", true);
             if (GroundManager.I != null)
                 transform.position = GroundManager.I.GetPlayerSpawnPosition();
             
@@ -106,7 +106,7 @@ namespace Tyotyo.InGame.Player
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             
             HandleMovement();
-            DecreaseMutekiTime();
+            DecreaseInvincibleTimer();
             PlayerRotate();
         }
 
@@ -134,13 +134,13 @@ namespace Tyotyo.InGame.Player
         private void OnMovementPerformed(InputAction.CallbackContext context)
         {
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
-            moveInput = context.ReadValue<Vector2>();
+            MoveInput = context.ReadValue<Vector2>();
         }
 
         private void OnMovementCanceled(InputAction.CallbackContext context)
         {
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
-            moveInput = Vector2.zero;
+            MoveInput = Vector2.zero;
         }
 
         private void OnShotPerformed(InputAction.CallbackContext context)
@@ -164,7 +164,7 @@ namespace Tyotyo.InGame.Player
         #region 移動処理
         private void HandleMovement()
         {
-            if (moveInput == Vector2.zero)
+            if (MoveInput == Vector2.zero)
             {
                 rb.linearVelocity = Vector2.zero;
                 return;
@@ -172,7 +172,7 @@ namespace Tyotyo.InGame.Player
 
             if (GroundManager.I == null || GroundManager.I.MapData == null)
             {
-                rb.linearVelocity = moveInput.normalized * moveSpeed;
+                rb.linearVelocity = MoveInput.normalized * moveSpeed;
                 return;
             }
 
@@ -196,13 +196,13 @@ namespace Tyotyo.InGame.Player
             }
             else
             {
-                rb.linearVelocity = moveInput.normalized * moveSpeed;
+                rb.linearVelocity = MoveInput.normalized * moveSpeed;
             }
         }
 
         private void PlayerRotate()
         {
-            if (moveInput != Vector2.zero)
+            if (MoveInput != Vector2.zero)
                 transform.up = rb.linearVelocity;
         }
         #endregion
@@ -210,9 +210,9 @@ namespace Tyotyo.InGame.Player
         #region ヘルスシステム
         private void Damage(float damage)
         {
-            if (nowMutekiTime > 0f) return;
+            if (invincibleTimer > 0f) return;
             TakeDamage(damage);
-            nowMutekiTime = mutekiTime;
+            invincibleTimer = invincibleDuration;
             AudioManager.I?.PlaySE(SEType.PlayerDamage);
         }
 
@@ -233,7 +233,7 @@ namespace Tyotyo.InGame.Player
             }
         }
 
-        private void DecreaseMutekiTime() => nowMutekiTime -= Time.deltaTime;
+        private void DecreaseInvincibleTimer() => invincibleTimer -= Time.deltaTime;
         #endregion
 
         #region アイテム効果
@@ -254,7 +254,7 @@ namespace Tyotyo.InGame.Player
         /// </summary>
         private void ApplySpeedBoost(float multiplier)
         {
-            moveSpeed = baseMovSpeed * multiplier;
+            moveSpeed = baseMoveSpeed * multiplier;
         }
         
         /// <summary>
@@ -262,7 +262,7 @@ namespace Tyotyo.InGame.Player
         /// </summary>
         private void ResetSpeed()
         {
-            moveSpeed = baseMovSpeed;
+            moveSpeed = baseMoveSpeed;
         }
         #endregion
     }
