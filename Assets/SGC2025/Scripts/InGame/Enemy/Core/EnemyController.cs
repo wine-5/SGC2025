@@ -151,6 +151,12 @@ namespace Tyotyo.InGame.Enemy
 
             isInitialized = false;
             NotifyAbilitiesDespawned();
+
+            // プール再利用で購読が蓄積しないようイベントをクリアする。
+            // OnDeathはHandleDeathで通知された後にReturnToPoolが呼ばれるため、購読者は通知済み。
+            OnDeath = null;
+            OnDamageTaken = null;
+
             if (EnemyFactory.I != null)
                 EnemyFactory.I.ReturnEnemy(gameObject);
         }
