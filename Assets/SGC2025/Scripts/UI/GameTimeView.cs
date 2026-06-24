@@ -24,12 +24,16 @@ namespace Tyotyo.UI
 
         private Color originalColor = Color.white;
 
+        // 直近に表示した残り時間（1/10秒単位）。値が変わった時だけToStringして文字列確保を避ける
+        private int lastDisplayedTenths = int.MinValue;
+
         /// <summary>元の文字色を記憶して初期化する</summary>
         public void Initialize()
         {
             if (timeText == null) return;
 
             originalColor = timeText.color;
+            lastDisplayedTenths = int.MinValue;
         }
 
         /// <summary>残り時間（秒）を描画に反映する。閾値以下では警告色で点滅する</summary>
@@ -37,7 +41,12 @@ namespace Tyotyo.UI
         {
             if (timeText == null) return;
 
-            timeText.text = remainingTime.ToString("F1");
+            int tenths = Mathf.RoundToInt(remainingTime * 10f);
+            if (tenths != lastDisplayedTenths)
+            {
+                lastDisplayedTenths = tenths;
+                timeText.text = remainingTime.ToString("F1");
+            }
 
             if (remainingTime <= warningThreshold)
             {
