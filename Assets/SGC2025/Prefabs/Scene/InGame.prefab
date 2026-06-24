@@ -1622,6 +1622,7 @@ MonoBehaviour:
   spawnHeightOffset: 0.5
   autoSpawn: 1
   itemFactory: {fileID: 6676039536516340211}
+  gaugeTarget: {fileID: 5564918578049885695}
 --- !u!1 &6385992789826873755
 GameObject:
   m_ObjectHideFlags: 0
@@ -2296,9 +2297,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   maxHealth: 100
   currentHealth: 0
-  attackPower: 10
   moveSpeed: 8
-  mutekiTime: 2
+  invincibleDuration: 0
 --- !u!212 &5684880878517744152
 SpriteRenderer:
   serializedVersion: 2
