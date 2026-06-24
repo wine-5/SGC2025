@@ -54,7 +54,7 @@ namespace Tyotyo.UI
             if (mapTexture == null || GroundManager.I?.MapData == null) return;
 
             var mapData = GroundManager.I.MapData;
-            Vector2Int cellPos = WorldToCellIndex(worldPos);
+            Vector2Int cellPos = GroundManager.I.WorldToCell(worldPos);
 
             if (cellPos.x >= 0 && cellPos.x < mapData.columns &&
                 cellPos.y >= 0 && cellPos.y < mapData.rows)
@@ -75,22 +75,6 @@ namespace Tyotyo.UI
 
             mapTexture.Apply();
             isDirty = false;
-        }
-
-        private Vector2Int WorldToCellIndex(Vector3 worldPos)
-        {
-            if (GroundManager.I?.MapData == null) return Vector2Int.zero;
-
-            var mapData = GroundManager.I.MapData;
-            Vector3 origin = GroundManager.I.transform.position;
-
-            int x = Mathf.RoundToInt((worldPos.x - origin.x) / mapData.ActualCellWidth);
-            int y = Mathf.RoundToInt((worldPos.y - origin.y) / mapData.ActualCellHeight);
-
-            x = Mathf.Clamp(x, 0, mapData.columns - 1);
-            y = Mathf.Clamp(y, 0, mapData.rows - 1);
-
-            return new Vector2Int(x, y);
         }
     }
 }
