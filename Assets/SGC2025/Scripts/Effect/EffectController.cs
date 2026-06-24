@@ -1,4 +1,5 @@
 using UnityEngine;
+using Tyotyo.Core;
 
 namespace Tyotyo.Effect
 {
@@ -97,14 +98,9 @@ namespace Tyotyo.Effect
         /// </summary>
         private Vector3 ResolveWorldPosition(Transform target)
         {
-            UnityEngine.Camera cam = UnityEngine.Camera.main;
-
-            if (target is RectTransform && cam != null)
+            if (target is RectTransform)
             {
-                Vector3 viewport = new Vector3(gaugeViewportPoint.x, gaugeViewportPoint.y, Mathf.Abs(cam.transform.position.z));
-                Vector3 world = cam.ViewportToWorldPoint(viewport);
-                world.z = 0f;
-                return world;
+                return CameraUtil.ViewportToWorld(gaugeViewportPoint);
             }
 
             return target.position;
