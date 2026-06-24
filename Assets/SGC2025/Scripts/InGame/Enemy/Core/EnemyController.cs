@@ -8,7 +8,7 @@ namespace Tyotyo.InGame.Enemy
     /// 敵オブジェクトの唯一の窓口
     /// 状態管理・移動・ライフタイム管理を統括する
     /// </summary>
-    public class EnemyController : MonoBehaviour, IDamageable
+    public class EnemyController : MonoBehaviour, IDamageable, IAttacker
     {
         private const int MIN_WAVE_LEVEL = 1;
         private const float MIN_HEALTH = 0f;
