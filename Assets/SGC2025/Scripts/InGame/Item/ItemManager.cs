@@ -39,7 +39,9 @@ namespace Tyotyo.InGame.Item
         private int pendingCloneItems; // フィールドに存在する未取得のクローンアイテム数
         private Tyotyo.InGame.Player.PlayerCloneManager cloneManager;
         private Dictionary<ItemType, ItemEffect> activeEffects = new Dictionary<ItemType, ItemEffect>();
-        
+        // CheckEffectExpirationで毎フレーム確保しないよう、期限切れ判定用リストを使い回す
+        private readonly List<ItemType> expiredEffectsBuffer = new List<ItemType>();
+
         protected override bool UseDontDestroyOnLoad => false;
         
         /// <summary>
@@ -278,20 +280,20 @@ namespace Tyotyo.InGame.Item
         /// </summary>
         private void CheckEffectExpiration()
         {
-            var expiredEffects = new List<ItemType>();
-            
+            expiredEffectsBuffer.Clear();
+
             foreach (var kvp in activeEffects)
             {
                 float elapsedTime = Time.time - kvp.Value.startTime;
                 if (elapsedTime >= kvp.Value.data.Duration)
                 {
-                    expiredEffects.Add(kvp.Key);
+                    expiredEffectsBuffer.Add(kvp.Key);
                 }
             }
-            
-            foreach (var itemType in expiredEffects)
+
+            for (int i = 0; i < expiredEffectsBuffer.Count; i++)
             {
-                RemoveEffect(itemType);
+                RemoveEffect(expiredEffectsBuffer[i]);
             }
         }
         
