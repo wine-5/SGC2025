@@ -306,18 +306,11 @@ namespace Tyotyo.InGame.Bullet
         private void CheckBoundary()
         {
             if (GroundManager.I == null || GroundManager.I.MapData == null) return;
-            
-            Vector3 pos = transform.position;
-            var mapData = GroundManager.I.MapData;
-            Vector2 maxWorldPos = mapData.MapMaxWorldPosition;
-            
+
             // マップのワールド座標範囲外に出たら非アクティブ化（マージン付き）
             const float BOUNDARY_MARGIN = 1f;
-            if (pos.x < -BOUNDARY_MARGIN || pos.x > maxWorldPos.x + BOUNDARY_MARGIN ||
-                pos.y < -BOUNDARY_MARGIN || pos.y > maxWorldPos.y + BOUNDARY_MARGIN)
-            {
+            if (GroundManager.I.MapData.IsOutOfBounds(transform.position, BOUNDARY_MARGIN))
                 Deactivate();
-            }
         }
 
         #endregion

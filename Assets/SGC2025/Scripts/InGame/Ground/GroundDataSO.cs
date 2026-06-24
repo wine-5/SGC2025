@@ -70,7 +70,15 @@ namespace Tyotyo.InGame.Ground
             (columns - 1) * ActualCellWidth,
             (rows - 1) * ActualCellHeight
         );
-        
+
+        /// <summary>指定座標がマップ範囲（マージン込み）の外にあるかを判定する</summary>
+        public bool IsOutOfBounds(Vector3 position, float margin)
+        {
+            Vector2 max = MapMaxWorldPosition;
+            return position.x < -margin || position.x > max.x + margin ||
+                   position.y < -margin || position.y > max.y + margin;
+        }
+
         /// <summary>
         /// Prefabから実際のサイズを取得
         /// SpriteRenderer、MeshRenderer、Colliderの順で試行

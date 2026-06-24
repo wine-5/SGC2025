@@ -183,13 +183,7 @@ namespace Tyotyo.InGame.Enemy
         {
             if (GroundManager.I == null || GroundManager.I.MapData == null) return false;
 
-            var mapData = GroundManager.I.MapData;
-            Vector3 pos = transform.position;
-
-            return pos.x < -OUT_OF_BOUNDS_MARGIN ||
-                   pos.x > mapData.MapMaxWorldPosition.x + OUT_OF_BOUNDS_MARGIN ||
-                   pos.y < -OUT_OF_BOUNDS_MARGIN ||
-                   pos.y > mapData.MapMaxWorldPosition.y + OUT_OF_BOUNDS_MARGIN;
+            return GroundManager.I.MapData.IsOutOfBounds(transform.position, OUT_OF_BOUNDS_MARGIN);
         }
 
         #endregion
