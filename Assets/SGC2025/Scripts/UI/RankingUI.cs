@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using SGC2025.Ranking;
-using SGC2025.Core;
+using Tyotyo.Ranking;
+using Tyotyo.Core;
 #if STEAMWORKS_NET
-using SGC2025.Ranking.Steam;
+using Tyotyo.Ranking.Steam;
 #endif
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// ランキング表示UI（緑化度・総スコアを切替表示。ScrollView 内に行を動的生成）

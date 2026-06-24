@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 敵のパラメーターと出現設定を管理するScriptableObject

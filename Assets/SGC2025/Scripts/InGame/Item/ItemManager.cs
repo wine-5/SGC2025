@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
-using SGC2025.Core;
-using SGC2025.Manager;
-using SGC2025.Effect;
+using Tyotyo.Core;
+using Tyotyo.Manager;
+using Tyotyo.Effect;
 
-namespace SGC2025.Item
+namespace Tyotyo.InGame.Item
 {
     /// <summary>
     /// アイテムの生成と効果管理を行うマネージャー
@@ -37,7 +37,7 @@ namespace SGC2025.Item
         private float nextSpawnTime;
         private Transform gaugeTarget;
         private int pendingCloneItems; // フィールドに存在する未取得のクローンアイテム数
-        private SGC2025.Player.PlayerCloneManager cloneManager;
+        private Tyotyo.InGame.Player.PlayerCloneManager cloneManager;
         private Dictionary<ItemType, ItemEffect> activeEffects = new Dictionary<ItemType, ItemEffect>();
         
         protected override bool UseDontDestroyOnLoad => false;
@@ -140,13 +140,13 @@ namespace SGC2025.Item
         }
 
         /// <summary>PlayerCloneManagerをPlayerDataProvider経由で取得（キャッシュ）</summary>
-        private SGC2025.Player.PlayerCloneManager GetCloneManager()
+        private Tyotyo.InGame.Player.PlayerCloneManager GetCloneManager()
         {
             if (cloneManager == null
-                && SGC2025.Player.PlayerDataProvider.I != null
-                && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
+                && Tyotyo.InGame.Player.PlayerDataProvider.I != null
+                && Tyotyo.InGame.Player.PlayerDataProvider.I.IsPlayerRegistered)
             {
-                cloneManager = SGC2025.Player.PlayerDataProvider.I.PlayerTransform.GetComponent<SGC2025.Player.PlayerCloneManager>();
+                cloneManager = Tyotyo.InGame.Player.PlayerDataProvider.I.PlayerTransform.GetComponent<Tyotyo.InGame.Player.PlayerCloneManager>();
             }
             return cloneManager;
         }
@@ -235,9 +235,9 @@ namespace SGC2025.Item
             
             EventBus.Publish(new ItemEffectActivatedEvent(itemData.ItemType, itemData.EffectValue, itemData.Duration));
             
-            if (SGC2025.Player.PlayerDataProvider.I != null && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
+            if (Tyotyo.InGame.Player.PlayerDataProvider.I != null && Tyotyo.InGame.Player.PlayerDataProvider.I.IsPlayerRegistered)
             {
-                var playerTransform = SGC2025.Player.PlayerDataProvider.I.PlayerTransform;
+                var playerTransform = Tyotyo.InGame.Player.PlayerDataProvider.I.PlayerTransform;
                 Vector3 playerPos = playerTransform.position;
                 
                 // アイテムタイプに応じてエフェクト生成を判定
@@ -265,11 +265,11 @@ namespace SGC2025.Item
         private GameObject SpawnPlayerEffect(EffectType effectType, float duration)
         {
             if (EffectFactory.I == null
-                || SGC2025.Player.PlayerDataProvider.I == null
-                || !SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
+                || Tyotyo.InGame.Player.PlayerDataProvider.I == null
+                || !Tyotyo.InGame.Player.PlayerDataProvider.I.IsPlayerRegistered)
                 return null;
 
-            var playerTransform = SGC2025.Player.PlayerDataProvider.I.PlayerTransform;
+            var playerTransform = Tyotyo.InGame.Player.PlayerDataProvider.I.PlayerTransform;
             return EffectFactory.I.CreateEffect(effectType, playerTransform.position, duration, playerTransform);
         }
 

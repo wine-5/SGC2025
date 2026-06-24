@@ -1,6 +1,7 @@
 using System;
+using Tyotyo.Core;
 
-namespace SGC2025.Manager
+namespace Tyotyo.Manager
 {
     /// <summary>
     /// UI関連の入力を一元管理するマネージャー

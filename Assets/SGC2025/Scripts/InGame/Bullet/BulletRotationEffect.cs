@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Bullet.Effects
+namespace Tyotyo.InGame.Bullet
 {
     /// <summary>
     /// 弾のスプライト回転エフェクトを管理するコンポーネント

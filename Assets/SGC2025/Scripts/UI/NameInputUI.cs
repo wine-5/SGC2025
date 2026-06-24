@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using SGC2025.Manager;
-using SGC2025.Ranking;
+using Tyotyo.Manager;
+using Tyotyo.Ranking;
 using System;
 
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// ハイスコア達成時の名前入力UI

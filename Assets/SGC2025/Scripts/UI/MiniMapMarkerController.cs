@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using SGC2025.Core;
-using SGC2025.Enemy;
-using SGC2025.Manager;
-using SGC2025.Player;
+using Tyotyo.Core;
+using Tyotyo.InGame.Enemy;
+using Tyotyo.Manager;
+using Tyotyo.InGame.Player;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     public class MiniMapMarkerController : MonoBehaviour
     {

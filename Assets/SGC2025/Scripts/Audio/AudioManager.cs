@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using Tyotyo.Core;
 
-namespace SGC2025.Audio
+namespace Tyotyo.Audio
 {
     /// <summary>
     /// オーディオ再生を管理するマネージャー

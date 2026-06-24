@@ -1,7 +1,7 @@
-using SGC2025.Systems;
+using Tyotyo.Systems;
 using UnityEngine;
 
-namespace SGC2025.Item
+namespace Tyotyo.InGame.Item
 {
     /// <summary>
     /// アイテムの生成・プール管理を行うファクトリークラス

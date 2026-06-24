@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace SGC2025.Editor
+namespace Tyotyo.Editor
 {
     /// <summary>
     /// ReadOnlyAttribute用のPropertyDrawer

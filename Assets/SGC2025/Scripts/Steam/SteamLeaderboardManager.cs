@@ -1,12 +1,12 @@
 #if STEAMWORKS_NET
 using System.Collections.Generic;
 using Steamworks;
-using Polychroma.Core.Log;
-using SGC2025.Core;
-using SGC2025.Ranking;
+using Tyotyo.Core.Log;
+using Tyotyo.Core;
+using Tyotyo.Ranking;
 using Cysharp.Threading.Tasks;
 
-namespace SGC2025.Ranking.Steam
+namespace Tyotyo.Ranking.Steam
 {
     /// <summary>
     /// Steam リーダーボード（緑化度・総スコア）の管理を行うシングルトンマネージャー

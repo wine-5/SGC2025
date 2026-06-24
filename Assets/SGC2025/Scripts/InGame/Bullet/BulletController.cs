@@ -1,10 +1,10 @@
 using UnityEngine;
-using SGC2025.Core;
-using SGC2025.Enemy;
-using SGC2025.Bullet.Effects;
-using SGC2025.Manager;
+using Tyotyo.Core;
+using Tyotyo.InGame.Enemy;
+using Tyotyo.InGame.Bullet;
+using Tyotyo.Manager;
 
-namespace SGC2025.Bullet
+namespace Tyotyo.InGame.Bullet
 {
     /// <summary>
     /// 弾の動作とライフサイクルを管理するコントローラー

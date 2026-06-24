@@ -1,8 +1,8 @@
 using UnityEngine;
-using SGC2025.Player;
-using SGC2025.Core;
+using Tyotyo.InGame.Player;
+using Tyotyo.Core;
 
-namespace SGC2025.Effects
+namespace Tyotyo.Effect
 {
     /// <summary>
     /// 無敵時間中のスプライト点滅演出

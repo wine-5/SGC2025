@@ -1,8 +1,8 @@
 using UnityEngine;
-using SGC2025;
-using SGC2025.Systems;
+using Tyotyo.Core;
+using Tyotyo.Systems;
 
-namespace SGC2025.Bullet
+namespace Tyotyo.InGame.Bullet
 {
     /// <summary>
     /// 弾の生成・管理・プールリングを担当するファクトリークラス

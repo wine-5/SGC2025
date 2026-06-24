@@ -1,4 +1,4 @@
-namespace SGC2025.Item
+namespace Tyotyo.InGame.Item
 {
     /// <summary>
     /// アイテムの種類を定義

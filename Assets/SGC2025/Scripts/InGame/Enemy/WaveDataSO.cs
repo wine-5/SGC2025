@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
-using SGC2025.Enemy;
+using Tyotyo.InGame.Enemy;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// Waveの設定データを定義するScriptableObject

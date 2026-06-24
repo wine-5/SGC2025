@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using SGC2025.Core;
-using SGC2025.Audio;
-using SGC2025.Effect;
-using SGC2025.Item;
+using Tyotyo.Core;
+using Tyotyo.Audio;
+using Tyotyo.Effect;
+using Tyotyo.InGame.Item;
+using Tyotyo.InGame.Ground;
 
-namespace SGC2025.Manager
+namespace Tyotyo.Manager
 {
     /// <summary>
     /// 地面システムの管理クラス

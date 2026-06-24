@@ -1,4 +1,4 @@
-namespace SGC2025.Ranking.Steam
+namespace Tyotyo.Ranking.Steam
 {
     public struct SteamLeaderboardEntry
     {

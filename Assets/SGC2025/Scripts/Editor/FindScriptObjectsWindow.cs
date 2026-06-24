@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
-namespace SGC2025.Editor
+namespace Tyotyo.Editor
 {
     public class FindScriptObjectsWindow : EditorWindow
     {

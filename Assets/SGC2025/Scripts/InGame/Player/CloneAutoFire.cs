@@ -1,7 +1,7 @@
 using UnityEngine;
-using SGC2025.Bullet;
+using Tyotyo.InGame.Bullet;
 
-namespace SGC2025.Player
+namespace Tyotyo.InGame.Player
 {
     /// <summary>
     /// クローン（蝶）の自動発射。

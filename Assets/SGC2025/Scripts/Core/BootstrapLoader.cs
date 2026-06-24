@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace SGC2025.Core.Scene
+namespace Tyotyo.Core.Scene
 {
     /// <summary>
     /// どのシーンから開始しても必要なManagerシーンを自動的にロードするBootstrap

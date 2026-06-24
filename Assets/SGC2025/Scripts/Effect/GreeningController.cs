@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.VFX;
 
-namespace SGC2025
+namespace Tyotyo.Effect
 {
     public class GreeningController : MonoBehaviour
     {

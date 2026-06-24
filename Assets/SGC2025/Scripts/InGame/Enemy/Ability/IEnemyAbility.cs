@@ -1,4 +1,4 @@
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 敵の特殊挙動（ボス能力など）を表すアビリティ。

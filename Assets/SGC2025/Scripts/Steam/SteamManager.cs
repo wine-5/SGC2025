@@ -1,9 +1,9 @@
-using Polychroma.Core.Log;
+using Tyotyo.Core.Log;
 #if STEAMWORKS_NET
 using Steamworks;
 #endif
 
-namespace SGC2025.Core
+namespace Tyotyo.Core
 {
     /// <summary>
     /// Steam 初期化・管理を行うマネージャー

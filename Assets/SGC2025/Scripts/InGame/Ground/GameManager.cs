@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using SGC2025.Audio;
-using SGC2025.Core;
+using Tyotyo.Audio;
+using Tyotyo.Core;
 
-namespace SGC2025.Manager
+namespace Tyotyo.Manager
 {
     /// <summary>
     /// ゲーム全体のループと状態管理を行うマネージャー

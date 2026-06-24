@@ -1,4 +1,5 @@
-namespace SGC2025.Manager
+using Tyotyo.Core;
+namespace Tyotyo.Manager
 {
     /// <summary>
     /// ゲーム内のシーン名を定義するenum

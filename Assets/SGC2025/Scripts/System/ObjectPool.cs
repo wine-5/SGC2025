@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SGC2025.Systems
+namespace Tyotyo.Systems
 {
     public class ObjectPool : MonoBehaviour
     {

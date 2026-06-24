@@ -1,6 +1,6 @@
 using System;
 
-namespace SGC2025.Core
+namespace Tyotyo.Core
 {
     /// <summary>
     /// ダメージを受けることができるオブジェクトのインターフェース

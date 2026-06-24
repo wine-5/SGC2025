@@ -1,12 +1,12 @@
 using UnityEngine;
-using SGC2025.Manager;
-using SGC2025.Ranking;
-using SGC2025.Core;
+using Tyotyo.Manager;
+using Tyotyo.Ranking;
+using Tyotyo.Core;
 #if STEAMWORKS_NET
 using Steamworks;
 #endif
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// リザルト画面UI（緑化度・総スコアのカウントアップ演出とランキング登録）

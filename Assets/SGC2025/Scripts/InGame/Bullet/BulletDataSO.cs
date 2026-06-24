@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Bullet
+namespace Tyotyo.InGame.Bullet
 {
     /// <summary>
     /// 弾のパラメーターを定義するScriptableObject

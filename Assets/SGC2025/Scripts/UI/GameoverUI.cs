@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// ゲームオーバー画面UI

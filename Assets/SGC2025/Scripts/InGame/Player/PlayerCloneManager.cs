@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Player
+namespace Tyotyo.InGame.Player
 {
     /// <summary>
     /// プレイヤーのクローン（自動発射する蝶）を管理する。

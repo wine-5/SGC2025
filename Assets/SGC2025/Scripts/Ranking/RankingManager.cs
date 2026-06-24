@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using SGC2025.Core;
+using Tyotyo.Core;
 #if STEAMWORKS_NET
-using SGC2025.Ranking.Steam;
+using Tyotyo.Ranking.Steam;
 #endif
 
-namespace SGC2025.Ranking
+namespace Tyotyo.Ranking
 {
     /// <summary>
     /// ランキングデータの保存と取得を管理するクラス（緑化度・総スコアの2系統 / 展示用・Steam用対応）

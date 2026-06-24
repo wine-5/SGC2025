@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// 残り時間テキストを描画するView

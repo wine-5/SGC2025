@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace SGC2025.Editor
+namespace Tyotyo.Editor
 {
     public class MissingComponentFinderWindow : EditorWindow
     {

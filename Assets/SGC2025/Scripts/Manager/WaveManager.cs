@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.Serialization;
-using SGC2025.Core;
-using SGC2025.Enemy;
-using SGC2025.UI;
+using Tyotyo.Core;
+using Tyotyo.InGame.Enemy;
+using Tyotyo.UI;
 
-namespace SGC2025.Manager
+namespace Tyotyo.Manager
 {
     /// <summary>
     /// Waveシステムを管理するマネージャー

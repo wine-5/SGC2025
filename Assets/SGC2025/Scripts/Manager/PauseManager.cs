@@ -1,9 +1,9 @@
-using SGC2025.Core;
-using SGC2025.UI;
+using Tyotyo.Core;
+using Tyotyo.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace SGC2025.Manager
+namespace Tyotyo.Manager
 {
     /// <summary>
     /// ポーズ機能の管理を行うクラス

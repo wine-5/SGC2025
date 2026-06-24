@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using SGC2025.Core;
-using SGC2025.Bullet;
-using SGC2025.Audio;
-using SGC2025.Manager;
-using SGC2025.Item;
+using Tyotyo.Core;
+using Tyotyo.InGame.Bullet;
+using Tyotyo.Audio;
+using Tyotyo.Manager;
+using Tyotyo.InGame.Item;
 
-namespace SGC2025.Player
+namespace Tyotyo.InGame.Player
 {
     /// <summary>
     /// プレイヤーキャラクターの管理

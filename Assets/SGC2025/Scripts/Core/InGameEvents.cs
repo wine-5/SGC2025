@@ -1,7 +1,7 @@
 using UnityEngine;
-using SGC2025.Ranking;
+using Tyotyo.Ranking;
 
-namespace SGC2025.Core
+namespace Tyotyo.Core
 {
     // -------------------------------------------------------
     // Player
@@ -56,8 +56,8 @@ namespace SGC2025.Core
     /// <summary>敵がスポーンされた</summary>
     public struct EnemySpawnedEvent : IGameEvent
     {
-        public SGC2025.Enemy.EnemyController Enemy;
-        public EnemySpawnedEvent(SGC2025.Enemy.EnemyController enemy) => Enemy = enemy;
+        public Tyotyo.InGame.Enemy.EnemyController Enemy;
+        public EnemySpawnedEvent(Tyotyo.InGame.Enemy.EnemyController enemy) => Enemy = enemy;
     }
 
     // -------------------------------------------------------
@@ -149,17 +149,17 @@ namespace SGC2025.Core
     /// <summary>アイテムを取得した（種類を問わず発行。取得演出用）</summary>
     public struct ItemCollectedEvent : IGameEvent
     {
-        public SGC2025.Item.ItemType ItemType;
-        public ItemCollectedEvent(SGC2025.Item.ItemType itemType) => ItemType = itemType;
+        public Tyotyo.InGame.Item.ItemType ItemType;
+        public ItemCollectedEvent(Tyotyo.InGame.Item.ItemType itemType) => ItemType = itemType;
     }
 
     /// <summary>アイテム効果が開始した</summary>
     public struct ItemEffectActivatedEvent : IGameEvent
     {
-        public SGC2025.Item.ItemType ItemType;
+        public Tyotyo.InGame.Item.ItemType ItemType;
         public float EffectValue;
         public float Duration;
-        public ItemEffectActivatedEvent(SGC2025.Item.ItemType itemType, float effectValue, float duration)
+        public ItemEffectActivatedEvent(Tyotyo.InGame.Item.ItemType itemType, float effectValue, float duration)
         {
             ItemType = itemType;
             EffectValue = effectValue;
@@ -170,7 +170,7 @@ namespace SGC2025.Core
     /// <summary>アイテム効果が終了した</summary>
     public struct ItemEffectExpiredEvent : IGameEvent
     {
-        public SGC2025.Item.ItemType ItemType;
-        public ItemEffectExpiredEvent(SGC2025.Item.ItemType itemType) => ItemType = itemType;
+        public Tyotyo.InGame.Item.ItemType ItemType;
+        public ItemEffectExpiredEvent(Tyotyo.InGame.Item.ItemType itemType) => ItemType = itemType;
     }
 }

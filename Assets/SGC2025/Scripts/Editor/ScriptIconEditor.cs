@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace SGC2025.Editor
+namespace Tyotyo.Editor
 {
     [InitializeOnLoad]  // エディタが初期化される際に自動で実行
     public static class ScriptIconEditor

@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-namespace SGC2025.Editor
+namespace Tyotyo.Editor
 {
     /// <summary>
     /// Unityツールバーにシーン切り替えボタンを追加するエディタ拡張
@@ -245,7 +245,7 @@ namespace SGC2025.Editor
 }
 
 // UIElements用の互換性クラス
-namespace SGC2025.Editor
+namespace Tyotyo.Editor
 {
     using UnityEngine.UIElements;
     

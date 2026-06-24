@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-using SGC2025.Enemy;
-using SGC2025.Systems;
+using Tyotyo.InGame.Enemy;
+using Tyotyo.Systems;
+using Tyotyo.Core;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 敵の生成・プール管理を行うファクトリークラス

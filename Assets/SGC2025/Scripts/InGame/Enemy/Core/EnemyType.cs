@@ -1,4 +1,4 @@
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 敵の種類を定義する列挙型

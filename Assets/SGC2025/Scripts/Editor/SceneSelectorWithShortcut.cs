@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using System.IO;
 
-namespace SGC2025.Editor
+namespace Tyotyo.Editor
 {
     public class SceneSelectorWithShortcut : EditorWindow
     {

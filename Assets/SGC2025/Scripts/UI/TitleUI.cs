@@ -1,7 +1,7 @@
 using UnityEngine;
-using SGC2025.Audio;
+using Tyotyo.Audio;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// タイトル画面UI

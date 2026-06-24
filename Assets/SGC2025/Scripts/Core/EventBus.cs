@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SGC2025.Core
+namespace Tyotyo.Core
 {
     /// <summary>
     /// 型安全なイベントバスシステム

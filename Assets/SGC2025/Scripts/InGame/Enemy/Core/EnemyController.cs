@@ -1,8 +1,8 @@
 using UnityEngine;
-using SGC2025.Core;
-using SGC2025.Manager;
+using Tyotyo.Core;
+using Tyotyo.Manager;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 敵オブジェクトの唯一の窓口

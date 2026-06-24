@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Core
+namespace Tyotyo.Core
 {
     /// <summary>
     /// プロジェクト共通のレイヤー名・タグ定数

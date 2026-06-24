@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025
+namespace Tyotyo.Core
 {
     public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {

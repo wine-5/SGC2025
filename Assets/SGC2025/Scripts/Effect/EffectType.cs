@@ -1,4 +1,4 @@
-namespace SGC2025.Effect
+namespace Tyotyo.Effect
 {
     /// <summary>
     /// エフェクトの種類を定義するenum

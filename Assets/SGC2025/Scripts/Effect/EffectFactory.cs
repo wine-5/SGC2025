@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
-using SGC2025.Systems;
+using Tyotyo.Systems;
+using Tyotyo.Core;
 
-namespace SGC2025.Effect
+namespace Tyotyo.Effect
 {
     /// <summary>
     /// エフェクト生成を一元管理するFactory

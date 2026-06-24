@@ -1,6 +1,6 @@
 using System;
 
-namespace SGC2025.Ranking
+namespace Tyotyo.Ranking
 {
     /// <summary>
     /// ランキング1エントリのデータ。score の意味は LeaderboardType によって異なる

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Polychroma.Core.Log
+namespace Tyotyo.Core.Log
 {
     /// <summary>
     /// ログカテゴリの設定データ

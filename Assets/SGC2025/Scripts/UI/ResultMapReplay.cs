@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
-using SGC2025.Manager;
+using Tyotyo.Manager;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// リザルト画面で、InGameの塗り順を背景ミニマップとして再生するコンポーネント。

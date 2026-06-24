@@ -1,6 +1,6 @@
-using SGC2025.Enemy;
+using Tyotyo.InGame.Enemy;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 移動タイプに応じて移動戦略を生成するファクトリー

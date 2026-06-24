@@ -1,10 +1,10 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using SGC2025.Core;
-using SGC2025.Item;
+using Tyotyo.Core;
+using Tyotyo.InGame.Item;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// アイテム取得時に画面の縁を走らせる演出の「駆動部」。

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Effect
+namespace Tyotyo.Effect
 {
     /// <summary>
     /// エフェクトの挙動を制御するコンポーネント

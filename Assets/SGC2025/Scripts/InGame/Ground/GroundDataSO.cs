@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025
+namespace Tyotyo.InGame.Ground
 {
     /// <summary>
     /// マップ全体の設定を管理するScriptableObject
