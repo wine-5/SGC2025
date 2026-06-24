@@ -13,6 +13,7 @@ namespace SGC2025.UI
         [SerializeField] private Color greenColor = new(0.3f, 0.7f, 0.2f);
 
         private Texture2D mapTexture;
+        private bool isDirty;
 
         public void Initialize()
         {
@@ -59,8 +60,21 @@ namespace SGC2025.UI
                 cellPos.y >= 0 && cellPos.y < mapData.rows)
             {
                 mapTexture.SetPixel(cellPos.x, cellPos.y, color);
-                mapTexture.Apply();
+                isDirty = true;
             }
+        }
+
+        /// <summary>
+        /// このフレームで <see cref="SetPixel"/> による変更があった場合のみ、
+        /// テクスチャ全体のGPU再アップロード（<see cref="Texture2D.Apply"/>）を1回だけ行う。
+        /// 毎フレーム末尾に呼ぶこと。
+        /// </summary>
+        public void ApplyIfDirty()
+        {
+            if (!isDirty || mapTexture == null) return;
+
+            mapTexture.Apply();
+            isDirty = false;
         }
 
         private Vector2Int WorldToCellIndex(Vector3 worldPos)

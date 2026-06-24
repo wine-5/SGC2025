@@ -89,6 +89,9 @@ namespace SGC2025.UI
             }
 
             UpdateBossMarkers();
+
+            // 緑化セルの塗り替えはこのフレームで1回だけGPUへ反映する
+            textureRenderer?.ApplyIfDirty();
         }
 
         private void OnGroundGreenified(GroundGreenifiedEvent e)
