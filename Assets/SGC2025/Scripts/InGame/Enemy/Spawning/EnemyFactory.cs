@@ -24,6 +24,9 @@ namespace Tyotyo.InGame.Enemy
 
         // 各インスタンスのプレハブ元スケールを保存
         private readonly Dictionary<GameObject, Vector3> originalScales = new Dictionary<GameObject, Vector3>();
+
+        // EnemyType→プール名（enum.ToString()）をキャッシュし、スポーンごとの文字列確保を避ける
+        private readonly Dictionary<EnemyType, string> poolNameCache = new Dictionary<EnemyType, string>();
         
         protected override void Init()
         {
@@ -50,7 +53,7 @@ namespace Tyotyo.InGame.Enemy
         {
             if (enemyData == null) return null;
             
-            string poolName = enemyData.EnemyType.ToString();
+            string poolName = GetPoolName(enemyData.EnemyType);
             GameObject enemyObj = objectPool.GetObjectByName(poolName);
             
             if (enemyObj == null) return null;
@@ -95,6 +98,17 @@ namespace Tyotyo.InGame.Enemy
             }
 
             return CreateEnemy(selectedEnemy, position, waveLevel);
+        }
+
+        /// <summary>EnemyTypeに対応するプール名を返す（初回のみToStringし、以降はキャッシュ）</summary>
+        private string GetPoolName(EnemyType enemyType)
+        {
+            if (!poolNameCache.TryGetValue(enemyType, out var poolName))
+            {
+                poolName = enemyType.ToString();
+                poolNameCache[enemyType] = poolName;
+            }
+            return poolName;
         }
 
         /// <summary>
