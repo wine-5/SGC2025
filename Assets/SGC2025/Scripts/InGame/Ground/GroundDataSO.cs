@@ -1,4 +1,5 @@
 using UnityEngine;
+using Tyotyo.Core.Log;
 
 namespace Tyotyo.InGame.Ground
 {
@@ -38,9 +39,7 @@ namespace Tyotyo.InGame.Ground
             get
             {
                 if (autoCalculateSize && tilePrefab != null)
-                {
                     return GetPrefabSize().x;
-                }
                 return cellWidth;
             }
         }
@@ -51,9 +50,7 @@ namespace Tyotyo.InGame.Ground
             get
             {
                 if (autoCalculateSize && tilePrefab != null)
-                {
                     return GetPrefabSize().y;
-                }
                 return cellHeight;
             }
         }
@@ -87,7 +84,7 @@ namespace Tyotyo.InGame.Ground
         {
             if (tilePrefab == null)
             {
-                Debug.LogWarning("[GroundDataSO] tilePrefabが設定されていません");
+                CusLog.Warning("GroundDataSO", "tilePrefabが設定されていません");
                 return new Vector2(cellWidth, cellHeight);
             }
             
@@ -132,7 +129,7 @@ namespace Tyotyo.InGame.Ground
             }
             
             // 取得できない場合は設定値を返す
-            Debug.LogWarning($"[GroundDataSO] {tilePrefab.name}からサイズを自動取得できませんでした。手動設定値を使用します。");
+            CusLog.Warning("GroundDataSO", $"{tilePrefab.name}からサイズを自動取得できませんでした。手動設定値を使用します。");
             return new Vector2(cellWidth, cellHeight);
         }
         
