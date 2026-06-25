@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using Tyotyo.Core.Log;
 
 namespace Tyotyo.Editor
 {
@@ -30,7 +31,7 @@ namespace Tyotyo.Editor
                 }
                 else
                 {
-                    Debug.LogWarning("Please select a script to search for.");
+                    CusLog.Warning("FindScriptObjectsWindow", "Please select a script to search for.");
                 }
             }
 
@@ -59,7 +60,7 @@ namespace Tyotyo.Editor
             System.Type scriptType = targetScript.GetClass();
             if (scriptType == null || !typeof(MonoBehaviour).IsAssignableFrom(scriptType))
             {
-                Debug.LogError("Selected script is not a MonoBehaviour.");
+                CusLog.Error("FindScriptObjectsWindow", "Selected script is not a MonoBehaviour.");
                 return;
             }
 
@@ -74,7 +75,7 @@ namespace Tyotyo.Editor
                 }
             }
 
-            Debug.Log($"Found {foundObjects.Count} objects with the script {targetScript.name}.");
+            CusLog.Log("FindScriptObjectsWindow", $"Found {foundObjects.Count} objects with the script {targetScript.name}.");
         }
     }
 }

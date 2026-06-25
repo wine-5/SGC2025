@@ -3,6 +3,7 @@ using UnityEditor.SceneManagement;
 using System.Linq;
 using UnityEngine;
 using System.IO;
+using Tyotyo.Core.Log;
 
 namespace Tyotyo.Editor
 {
@@ -40,7 +41,7 @@ namespace Tyotyo.Editor
                         }
                         else
                         {
-                            Debug.LogError($"Scene file not found: {scene.path}");
+                            CusLog.Error("SceneSelector", $"Scene file not found: {scene.path}");
                         }
                     }
                 }

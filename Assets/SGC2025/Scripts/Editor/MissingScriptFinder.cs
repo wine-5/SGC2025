@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using Tyotyo.Core.Log;
 
 namespace Tyotyo.Editor
 {
@@ -59,7 +60,7 @@ namespace Tyotyo.Editor
                         missingCount++;
                         string path = GetGameObjectPath(go);
                         string log = $"Missing Script発見: {path}\n";
-                        Debug.Log(log, go);
+                        CusLog.Log("MissingScriptFinder", log, go);
                         result += log;
                     }
                 }
