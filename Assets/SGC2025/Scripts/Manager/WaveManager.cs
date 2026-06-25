@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 using Tyotyo.Core;
+using Tyotyo.Core.Log;
 using Tyotyo.InGame.Enemy;
 using Tyotyo.UI;
 
@@ -126,7 +127,7 @@ namespace Tyotyo.Manager
         {
             if (waveData == null)
             {
-                Debug.LogWarning("[WaveManager] WaveData is null - cannot update wave data");
+                CusLog.Warning("WaveManager", "WaveData is null - cannot update wave data");
                 return;
             }
             

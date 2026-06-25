@@ -1,4 +1,5 @@
 using Tyotyo.Core;
+using Tyotyo.Core.Log;
 using Tyotyo.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -35,7 +36,7 @@ namespace Tyotyo.Manager
             if (pausePanel != null)
                 pausePanel.SetActive(true);
             else
-                Debug.LogWarning("[PauseManager] Cannot pause - PausePanel not assigned");
+                CusLog.Warning("PauseManager", "Cannot pause - PausePanel not assigned");
 
             Time.timeScale = 0f;
             UIFocusHelper.SetFocus(firstPauseButton);
@@ -51,7 +52,7 @@ namespace Tyotyo.Manager
             if (pausePanel != null)
                 pausePanel.SetActive(false);
             else
-                Debug.LogWarning("[PauseManager] Cannot resume - PausePanel not assigned");
+                CusLog.Warning("PauseManager", "Cannot resume - PausePanel not assigned");
 
             Time.timeScale = 1f;
             UIFocusHelper.ClearFocus();

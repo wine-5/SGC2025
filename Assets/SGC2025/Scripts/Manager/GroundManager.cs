@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Tyotyo.Core;
+using Tyotyo.Core.Log;
 using Tyotyo.InGame.Item;
 using Tyotyo.InGame.Ground;
 
@@ -12,7 +13,14 @@ namespace Tyotyo.Manager
     /// </summary>
     public class GroundManager : Singleton<GroundManager>
     {
-        protected override bool UseDontDestroyOnLoad => false;
+        #region 定数
+
+        private const float HALF_CELL_OFFSET = 0.5f;
+        private const float TILE_ANCHOR = 0.5f;
+
+        #endregion
+
+        #region フィールド
 
         [Header("地面データ設定")]
         [SerializeField]
@@ -42,12 +50,23 @@ namespace Tyotyo.Manager
         private TileBase groundTile;
         private TileBase grassTile;
 
+        #endregion
+
+        #region プロパティ
+
+        protected override bool UseDontDestroyOnLoad => false;
+
         public GroundDataSO MapData => groundData;
+
+        #endregion
+
+        #region Unityライフサイクル
 
         /// <summary>Playerのスポーン位置を取得（マップの中心）</summary>
         public Vector3 GetPlayerSpawnPosition()
         {
-            if (groundData == null) return Vector3.zero;
+            if (groundData == null)
+                return Vector3.zero;
             return groundData.MapCenterPosition;
         }
 
@@ -55,13 +74,13 @@ namespace Tyotyo.Manager
         {
             if (groundData == null)
             {
-                Debug.LogError("[GroundManager] GroundDataSO is not assigned!");
+                CusLog.Error("GroundManager", "GroundDataSO is not assigned!");
                 return;
             }
 
             if (tilemap == null)
             {
-                Debug.LogError("[GroundManager] Tilemap is not assigned!");
+                CusLog.Error("GroundManager", "Tilemap is not assigned!");
                 return;
             }
 
@@ -78,11 +97,17 @@ namespace Tyotyo.Manager
             EventBus.Unsubscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
 
             // ランタイム生成したTileを破棄（ScriptableObjectのリーク防止）
-            if (groundTile != null) Destroy(groundTile);
-            if (grassTile != null) Destroy(grassTile);
+            if (groundTile != null)
+                Destroy(groundTile);
+            if (grassTile != null)
+                Destroy(grassTile);
 
             base.OnDestroy();
         }
+
+        #endregion
+
+        #region イベントハンドラ
 
         private void OnEnemyDestroyed(EnemyDestroyedEvent e)
         {
@@ -93,6 +118,10 @@ namespace Tyotyo.Manager
 
             DrawGroundArea(e.Position, size);
         }
+
+        #endregion
+
+        #region パブリックメソッド
 
         /// <summary>指定位置の地面を緑化（1マス）</summary>
         public bool DrawGround(Vector3 enemyPosition) => DrawGroundArea(enemyPosition, 1);
@@ -264,9 +293,9 @@ namespace Tyotyo.Manager
             if (grid != null)
             {
                 grid.cellSize = new Vector3(cellW, cellH, 0f);
-                grid.transform.position = new Vector3(-cellW * 0.5f, -cellH * 0.5f, 0f);
+                grid.transform.position = new Vector3(-cellW * HALF_CELL_OFFSET, -cellH * HALF_CELL_OFFSET, 0f);
             }
-            tilemap.tileAnchor = new Vector3(0.5f, 0.5f, 0f);
+            tilemap.tileAnchor = new Vector3(TILE_ANCHOR, TILE_ANCHOR, 0f);
         }
 
         /// <summary>スプライトを targetWidth×targetHeight に収まるよう一律拡縮したTileを生成する</summary>
@@ -293,6 +322,10 @@ namespace Tyotyo.Manager
             return tile;
         }
 
+        #endregion
+
+        #region プライベートメソッド
+
         /// <summary>Tilemapを全マス通常タイルで敷き詰め、状態配列を初期化する</summary>
         private void SetStageObject()
         {
@@ -316,5 +349,7 @@ namespace Tyotyo.Manager
 
             currentOriginPosition = transform.position;
         }
+
+        #endregion
     }
 }
