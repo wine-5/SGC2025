@@ -6,7 +6,7 @@
 |---|---|
 | PascalCase | `MyClassName` |
 | camelCase | `myVariableName` |
-| _camelCase（アンダースコアプレフィックス） | `_myField` |
+| UPPER_SNAKE_CASE（大文字スネークケース） | `MY_CONSTANT` |
 
 ---
 
@@ -51,9 +51,9 @@ public event EventHandler<DataEventArgs> DataReceived;
 ### フィールド・変数・パラメーター
 
 ```csharp
-// privateフィールド: _camelCase（アンダースコアプレフィックス）
-private string _customerName;
-private readonly IRepository _repository;
+// privateフィールド: camelCase（アンダースコアなし）
+private string customerName;
+private readonly IRepository repository;
 
 // publicフィールド: PascalCase（ただし通常はプロパティを使う）
 public string Name;
@@ -69,12 +69,12 @@ public void ProcessOrder(int orderId, string customerName) { }
 ### 定数・静的読み取り専用フィールド
 
 ```csharp
-// 定数: PascalCase
-public const int MaxRetryCount = 3;
-private const string DefaultPrefix = "USR_";
+// 定数: 大文字スネークケース
+public const int MAX_RETRY_COUNT = 3;
+private const string DEFAULT_PREFIX = "USR_";
 
-// static readonly: PascalCase
-public static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+// static readonly: 大文字スネークケース
+public static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(30);
 ```
 
 ### 型パラメーター（ジェネリクス）
@@ -107,10 +107,10 @@ namespace TechC.Data.Repositories { }
 | メソッド | PascalCase | なし | `GetById` |
 | プロパティ | PascalCase | なし | `FullName` |
 | イベント | PascalCase | なし | `DataLoaded` |
-| privateフィールド | camelCase | `_` | `_userCount` |
+| privateフィールド | camelCase | なし | `userCount` |
 | publicフィールド | PascalCase | なし | `MaxSize` |
 | ローカル変数 | camelCase | なし | `itemCount` |
 | パラメーター | camelCase | なし | `orderId` |
-| 定数 | PascalCase | なし | `MaxValue` |
+| 定数 | 大文字スネークケース | なし | `MAX_VALUE` |
 | 型パラメーター | PascalCase | `T` | `TEntity` |
 | 名前空間 | PascalCase | なし | `MyApp.Services` |
