@@ -3,6 +3,7 @@ using UnityEngine;
 using Tyotyo.InGame.Enemy;
 using Tyotyo.Systems;
 using Tyotyo.Core;
+using Tyotyo.Core.Log;
 
 namespace Tyotyo.InGame.Enemy
 {
@@ -43,7 +44,7 @@ namespace Tyotyo.InGame.Enemy
             if (objectPool == null) return;
             
             if (!spawnConfigManager.HasValidConfigs)
-                Debug.LogError("EnemyFactory: EnemySpawnConfigManagerに有効な設定がありません");
+                CusLog.Error("EnemyFactory", "EnemySpawnConfigManagerに有効な設定がありません");
         }
         
         /// <summary>
@@ -73,7 +74,7 @@ namespace Tyotyo.InGame.Enemy
             if (controller != null)
                 controller.Initialize(enemyData, waveLevel);
             else
-                Debug.LogError($"[EnemyFactory] {enemyData.EnemyType}にEnemyControllerが見つかりません");
+                CusLog.Error("EnemyFactory", $"{enemyData.EnemyType}にEnemyControllerが見つかりません");
             
             return enemyObj;
         }
@@ -85,7 +86,7 @@ namespace Tyotyo.InGame.Enemy
         {
             if (!spawnConfigManager.HasValidConfigs)
             {
-                Debug.LogError("[EnemyFactory] EnemySpawnConfigManagerに有効な設定がありません");
+                CusLog.Error("EnemyFactory", "EnemySpawnConfigManagerに有効な設定がありません");
                 return null;
             }
             
@@ -93,7 +94,7 @@ namespace Tyotyo.InGame.Enemy
             var selectedEnemy = spawnConfigManager.SelectRandomEnemyData();
             if (selectedEnemy == null)
             {
-                Debug.LogWarning("[EnemyFactory] 選択可能な敵がいません");
+                CusLog.Warning("EnemyFactory", "選択可能な敵がいません");
                 return null;
             }
 

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Tyotyo.InGame.Enemy;
+using Tyotyo.Core.Log;
 
 namespace Tyotyo.InGame.Enemy
 {
@@ -77,7 +78,7 @@ namespace Tyotyo.InGame.Enemy
                 {
                     if (waves[i].waveLevel == waves[j].waveLevel)
                     {
-                        Debug.LogWarning($"[WaveDataSO] Wave {i} と Wave {j} のwaveLevelが重複しています: {waves[i].waveLevel}");
+                        CusLog.Warning("WaveDataSO", $"Wave {i} と Wave {j} のwaveLevelが重複しています: {waves[i].waveLevel}");
                     }
                 }
             }

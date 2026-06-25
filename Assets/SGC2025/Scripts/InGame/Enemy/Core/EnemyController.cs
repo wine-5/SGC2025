@@ -1,5 +1,6 @@
 using UnityEngine;
 using Tyotyo.Core;
+using Tyotyo.Core.Log;
 using Tyotyo.Manager;
 
 namespace Tyotyo.InGame.Enemy
@@ -74,7 +75,7 @@ namespace Tyotyo.InGame.Enemy
         {
             if (data == null)
             {
-                Debug.LogError("[EnemyController] EnemyDataSOがnullです");
+                CusLog.Error("EnemyController", "EnemyDataSOがnullです");
                 return;
             }
 

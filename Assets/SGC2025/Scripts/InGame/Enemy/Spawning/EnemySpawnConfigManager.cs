@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Tyotyo.Core.Log;
 
 namespace Tyotyo.InGame.Enemy
 {
@@ -30,7 +31,7 @@ namespace Tyotyo.InGame.Enemy
             var validConfigs = GetValidConfigs();
             if (validConfigs.Count == 0)
             {
-                Debug.LogError("EnemySpawnConfigManager: 有効な敵生成設定がありません");
+                CusLog.Error("EnemySpawnConfigManager", "有効な敵生成設定がありません");
                 return null;
             }
 

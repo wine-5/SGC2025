@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Tyotyo.Core.Log;
 
 namespace Tyotyo.InGame.Enemy
 {
@@ -51,7 +52,7 @@ namespace Tyotyo.InGame.Enemy
             var validEnemies = GetValidEnemies();
             if (validEnemies.Count == 0)
             {
-                Debug.LogWarning("[EnemySpawnConfigSO] 有効な敵が設定されていません");
+                CusLog.Warning("EnemySpawnConfigSO", "有効な敵が設定されていません");
                 return null;
             }
             
