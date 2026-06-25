@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Tyotyo.Core;
+using Tyotyo.Core.Log;
 using Tyotyo.Manager;
 using Tyotyo.Effect;
 
@@ -11,11 +12,17 @@ namespace Tyotyo.InGame.Item
     /// </summary>
     public class ItemManager : Singleton<ItemManager>
     {
+        #region 定数
+
         private const float MIN_SPAWN_INTERVAL = 0.1f;
         private const float DEFAULT_SPAWN_RANGE = 10f;
         private const float GREENING_PARTICLE_DURATION = 1.5f;
         private const float CLONE_EFFECT_DURATION = 1.5f;
-        
+
+        #endregion
+
+        #region フィールド
+
         [Header("アイテム抽選設定")]
         [SerializeField, Tooltip("アイテムの抽選を行うセレクター")]
         private ItemSpawnSelector spawnSelector = new ItemSpawnSelector();
@@ -44,8 +51,16 @@ namespace Tyotyo.InGame.Item
         // CheckEffectExpirationで毎フレーム確保しないよう、期限切れ判定用リストを使い回す
         private readonly List<ItemType> expiredEffectsBuffer = new List<ItemType>();
 
+        #endregion
+
+        #region プロパティ
+
         protected override bool UseDontDestroyOnLoad => false;
-        
+
+        #endregion
+
+        #region ネストクラス
+
         /// <summary>
         /// アイテム効果の状態
         /// </summary>
@@ -55,7 +70,11 @@ namespace Tyotyo.InGame.Item
             public float startTime;
             public GameObject effectInstance;
         }
-        
+
+        #endregion
+
+        #region Unityライフサイクル
+
         protected override void Init()
         {
             base.Init();
@@ -84,12 +103,24 @@ namespace Tyotyo.InGame.Item
                 EffectFactory.I.CreateEffect(EffectType.GreeningParticle, e.Position, GREENING_PARTICLE_DURATION);
         }
 
+        #endregion
+
+        #region パブリックプロパティ
+
         /// <summary>緑化範囲上昇アイテムが有効か（GroundManagerが緑化サイズ判定に使用）</summary>
         public bool IsAreaGreenifyActive => IsEffectActive(ItemType.AreaGreenify);
 
+        #endregion
+
+        #region プライベートメソッド
+
         /// <summary>緑化度ゲージのTransformを取得（Inspector で設定済み前提）</summary>
         private Transform GetGaugeTarget() => gaugeTarget;
-        
+
+        #endregion
+
+        #region Unityイベント
+
         private void Update()
         {
             if (autoSpawn && Time.time >= nextSpawnTime)
@@ -106,11 +137,13 @@ namespace Tyotyo.InGame.Item
         /// </summary>
         private void SpawnRandomItem()
         {
-            if (spawnSelector.IsEmpty) return;
+            if (spawnSelector.IsEmpty)
+                return;
 
             // クローンアイテムは「残り必要数」だけ出すよう抽選を絞り込む
             ItemData selectedItem = spawnSelector.SelectRandom(CanSpawnItem);
-            if (selectedItem == null) return;
+            if (selectedItem == null)
+                return;
 
             // ランダムな位置を取得
             Vector3 spawnPosition = GetRandomSpawnPosition();
@@ -125,10 +158,12 @@ namespace Tyotyo.InGame.Item
         /// <summary>そのアイテムを今生成してよいか（クローンは アクティブ数＋未取得数 が最大未満のときのみ）</summary>
         private bool CanSpawnItem(ItemData item)
         {
-            if (item.ItemType != ItemType.PlayerClone) return true;
+            if (item.ItemType != ItemType.PlayerClone)
+                return true;
 
             var manager = GetCloneManager();
-            if (manager == null) return false; // プレイヤー未準備ならクローンは出さない
+            if (manager == null)
+                return false; // プレイヤー未準備ならクローンは出さない
 
             return manager.ActiveCloneCount + pendingCloneItems < manager.MaxCloneCount;
         }
@@ -148,13 +183,18 @@ namespace Tyotyo.InGame.Item
         /// <summary>フィールドのアイテムがプールへ返却された通知（取得・寿命切れ共通。生成数管理用）</summary>
         public void OnItemReturned(ItemData itemData)
         {
-            if (itemData == null) return;
+            if (itemData == null)
+                return;
 
             if (itemData.ItemType == ItemType.PlayerClone)
                 pendingCloneItems = Mathf.Max(0, pendingCloneItems - 1);
         }
         
         
+        #endregion
+
+        #region パブリックメソッド
+
         /// <summary>
         /// ランダムな生成位置を取得
         /// </summary>
@@ -164,26 +204,27 @@ namespace Tyotyo.InGame.Item
             {
                 var mapData = GroundManager.I.MapData;
                 Vector2 maxWorldPos = mapData.MapMaxWorldPosition;
-                
+
                 float randomX = Random.Range(0f, maxWorldPos.x);
                 float randomY = Random.Range(0f, maxWorldPos.y);
-                
+
                 return new Vector3(randomX, randomY, 0f) + new Vector3(0f, spawnHeightOffset, 0f);
             }
-            
+
             return new Vector3(
                 Random.Range(-DEFAULT_SPAWN_RANGE, DEFAULT_SPAWN_RANGE),
                 Random.Range(-DEFAULT_SPAWN_RANGE, DEFAULT_SPAWN_RANGE) + spawnHeightOffset,
                 0f
             );
         }
-        
+
         /// <summary>
         /// アイテムを生成
         /// </summary>
         private void SpawnItem(ItemData itemData, Vector3 position)
         {
-            if (itemFactory == null) return;
+            if (itemFactory == null)
+                return;
             itemFactory.SpawnItem(itemData, position);
         }
 
@@ -192,7 +233,8 @@ namespace Tyotyo.InGame.Item
         /// </summary>
         public void CollectItem(ItemData itemData)
         {
-            if (itemData == null) return;
+            if (itemData == null)
+                return;
 
             // 種類を問わず取得を通知（画面エッジ演出などの取得フィードバック用）
             EventBus.Publish(new ItemCollectedEvent(itemData.ItemType));
@@ -247,7 +289,7 @@ namespace Tyotyo.InGame.Item
                         break;
 
                     default:
-                        Debug.LogWarning($"[ItemManager] ItemType {itemData.ItemType} のエフェクト処理が未実装です");
+                        CusLog.Warning("ItemManager", $"ItemType {itemData.ItemType} のエフェクト処理が未実装です");
                         break;
                 }
             }
@@ -294,23 +336,26 @@ namespace Tyotyo.InGame.Item
         /// </summary>
         private void RemoveEffect(ItemType itemType)
         {
-            if (!activeEffects.ContainsKey(itemType)) return;
-            
+            if (!activeEffects.ContainsKey(itemType))
+                return;
+
             var effect = activeEffects[itemType];
-            
+
             if (effect.effectInstance != null && EffectFactory.I != null)
             {
                 EffectFactory.I.ReturnEffect(effect.effectInstance);
             }
-            
+
             activeEffects.Remove(itemType);
-            
+
             EventBus.Publish(new ItemEffectExpiredEvent(itemType));
         }
-        
+
         /// <summary>
         /// 指定した種類のアイテムが有効か確認
         /// </summary>
         private bool IsEffectActive(ItemType itemType) => activeEffects.ContainsKey(itemType);
+
+        #endregion
     }
 }

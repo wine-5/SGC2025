@@ -1,5 +1,6 @@
 using Tyotyo.Systems;
 using UnityEngine;
+using Tyotyo.Core.Log;
 
 namespace Tyotyo.InGame.Item
 {
@@ -22,7 +23,7 @@ namespace Tyotyo.InGame.Item
         {
             if (itemData == null || itemData.ItemPrefab == null)
             {
-                Debug.LogWarning("[ItemFactory] ItemData or ItemPrefab is null!");
+                CusLog.Warning("ItemFactory", "ItemData or ItemPrefab is null!");
                 return null;
             }
             
@@ -31,7 +32,7 @@ namespace Tyotyo.InGame.Item
             
             if (itemObj == null)
             {
-                Debug.LogWarning($"[ItemFactory] Failed to spawn item: {itemData.ItemName}");
+                CusLog.Warning("ItemFactory", $"Failed to spawn item: {itemData.ItemName}");
                 return null;
             }
             
