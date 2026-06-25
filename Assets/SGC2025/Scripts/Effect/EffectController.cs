@@ -1,5 +1,6 @@
 using UnityEngine;
 using Tyotyo.Core;
+using Tyotyo.Core.Log;
 
 namespace Tyotyo.Effect
 {
@@ -115,7 +116,7 @@ namespace Tyotyo.Effect
                 EffectFactory.I.ReturnEffect(gameObject);
             else
             {
-                Debug.LogError("[EffectController] EffectFactory is not available! Cannot return effect to pool.");
+                CusLog.Error("EffectController", "EffectFactory is not available! Cannot return effect to pool.");
                 gameObject.SetActive(false);
             }
         }

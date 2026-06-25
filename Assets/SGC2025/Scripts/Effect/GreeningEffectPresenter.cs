@@ -12,9 +12,11 @@ namespace Tyotyo.Effect
     {
         private const float GRASS_EFFECT_DURATION = 2f;
         private const float GRASS_EFFECT_Y_OFFSET = 0.1f;
+        private const float DEFAULT_AREA_EFFECT_SCALE_FACTOR = 0.5f;
+        private const float BASE_SCALE = 1f;
 
         [SerializeField, Tooltip("緑化範囲(size)に応じたエフェクト拡大の強さ。size=1は等倍、size>1は (1 + (size-1)×この値) 倍")]
-        private float areaEffectScaleFactor = 0.5f;
+        private float areaEffectScaleFactor = DEFAULT_AREA_EFFECT_SCALE_FACTOR;
 
         private void OnEnable()
         {
@@ -37,7 +39,7 @@ namespace Tyotyo.Effect
                 // 全軸を一律に拡大（エフェクトが回転していても見た目が崩れない）
                 // size に等倍だと大きすぎるため、係数で緩やかに拡大する
                 if (effect != null && e.Size > 1)
-                    effect.transform.localScale *= 1f + (e.Size - 1) * areaEffectScaleFactor;
+                    effect.transform.localScale *= BASE_SCALE + (e.Size - 1) * areaEffectScaleFactor;
             }
 
             if (AudioManager.I != null)
