@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Tyotyo.Core;
-using Tyotyo.Audio;
-using Tyotyo.Effect;
 using Tyotyo.InGame.Item;
 using Tyotyo.InGame.Ground;
 
@@ -15,9 +13,6 @@ namespace Tyotyo.Manager
     public class GroundManager : Singleton<GroundManager>
     {
         protected override bool UseDontDestroyOnLoad => false;
-
-        private const float GRASS_EFFECT_DURATION = 2f;
-        private const float GRASS_EFFECT_Y_OFFSET = 0.1f;
 
         [Header("地面データ設定")]
         [SerializeField]
@@ -33,10 +28,6 @@ namespace Tyotyo.Manager
 
         [SerializeField, Tooltip("緑化（草）タイルのスプライト")]
         private Sprite grassSprite;
-
-        [Header("緑化エフェクト設定")]
-        [SerializeField, Tooltip("緑化範囲(size)に応じたエフェクト拡大の強さ。size=1は等倍、size>1は (1 + (size-1)×この値) 倍")]
-        private float areaEffectScaleFactor = 0.5f;
 
         private struct GroundData
         {
@@ -144,24 +135,12 @@ namespace Tyotyo.Manager
                 }
             }
 
-            // 中心位置にエフェクトと音を1回だけ生成（エフェクトはsizeに比例して拡大）
+            // 緑化が成立したら「結果」をイベントで通知するだけにする。
+            // エフェクト生成・SE再生は購読側（GreeningEffectPresenter）が担当し、地面の責務を単一に保つ。
             if (anyDrawn)
             {
                 Vector3 centerPos = currentGroundArray[centerCell.x, centerCell.y].worldPos;
-
-                if (EffectFactory.I != null)
-                {
-                    Vector3 effectPos = centerPos + Vector3.up * GRASS_EFFECT_Y_OFFSET;
-                    GameObject effect = EffectFactory.I.CreateEffect(EffectType.GrassRestorationEffect, effectPos, GRASS_EFFECT_DURATION);
-
-                    // 全軸を一律に拡大（エフェクトが回転していても見た目が崩れない）
-                    // size に等倍だと大きすぎるため、係数で緩やかに拡大する
-                    if (effect != null && size > 1)
-                        effect.transform.localScale *= 1f + (size - 1) * areaEffectScaleFactor;
-                }
-
-                if (AudioManager.I != null)
-                    AudioManager.I.PlaySE(SEType.Grass);
+                EventBus.Publish(new GroundAreaGreenifiedEvent(centerPos, size));
             }
 
             return anyDrawn;

@@ -84,6 +84,18 @@ namespace Tyotyo.Core
         }
     }
 
+    /// <summary>範囲緑化が成立した（中心位置と一辺のマス数）。エフェクト/SE再生は購読側が担当する</summary>
+    public struct GroundAreaGreenifiedEvent : IGameEvent
+    {
+        public Vector3 CenterPosition;
+        public int Size;
+        public GroundAreaGreenifiedEvent(Vector3 centerPosition, int size)
+        {
+            CenterPosition = centerPosition;
+            Size = size;
+        }
+    }
+
     // -------------------------------------------------------
     // Game Flow
     // -------------------------------------------------------
