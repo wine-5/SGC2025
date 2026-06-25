@@ -60,42 +60,42 @@ namespace Tyotyo.Core.Log
 
         public List<LogCategory> Categories => _categories;
 
-        private const float _defaultPlayerColorR = 0.3f;
-        private const float _defaultPlayerColorG = 0.7f;
-        private const float _defaultPlayerColorB = 1f;
+        private const float DEFAULT_PLAYER_COLOR_R = 0.3f;
+        private const float DEFAULT_PLAYER_COLOR_G = 0.7f;
+        private const float DEFAULT_PLAYER_COLOR_B = 1f;
 
-        private const float _defaultEnemyColorR = 1f;
-        private const float _defaultEnemyColorG = 0.3f;
-        private const float _defaultEnemyColorB = 0.3f;
+        private const float DEFAULT_ENEMY_COLOR_R = 1f;
+        private const float DEFAULT_ENEMY_COLOR_G = 0.3f;
+        private const float DEFAULT_ENEMY_COLOR_B = 0.3f;
 
-        private const float _defaultUiColorR = 0.5f;
-        private const float _defaultUiColorG = 1f;
-        private const float _defaultUiColorB = 0.5f;
+        private const float DEFAULT_UI_COLOR_R = 0.5f;
+        private const float DEFAULT_UI_COLOR_G = 1f;
+        private const float DEFAULT_UI_COLOR_B = 0.5f;
 
-        private const float _defaultAudioColorR = 1f;
-        private const float _defaultAudioColorG = 0.8f;
-        private const float _defaultAudioColorB = 0.3f;
+        private const float DEFAULT_AUDIO_COLOR_R = 1f;
+        private const float DEFAULT_AUDIO_COLOR_G = 0.8f;
+        private const float DEFAULT_AUDIO_COLOR_B = 0.3f;
 
-        private const float _defaultNetworkColorR = 1f;
-        private const float _defaultNetworkColorG = 0.5f;
-        private const float _defaultNetworkColorB = 1f;
+        private const float DEFAULT_NETWORK_COLOR_R = 1f;
+        private const float DEFAULT_NETWORK_COLOR_G = 0.5f;
+        private const float DEFAULT_NETWORK_COLOR_B = 1f;
 
-        private const float _defaultSystemColorR = 0.8f;
-        private const float _defaultSystemColorG = 0.8f;
-        private const float _defaultSystemColorB = 0.8f;
+        private const float DEFAULT_SYSTEM_COLOR_R = 0.8f;
+        private const float DEFAULT_SYSTEM_COLOR_G = 0.8f;
+        private const float DEFAULT_SYSTEM_COLOR_B = 0.8f;
 
-        private const int _hexColorMaxValue = 255;
+        private const int HEX_COLOR_MAX_VALUE = 255;
 
         private void InitializeDefaultCategories()
         {
             _categories = new List<LogCategory>
             {
-                new LogCategory("Player", new Color(_defaultPlayerColorR, _defaultPlayerColorG, _defaultPlayerColorB)),
-                new LogCategory("Enemy", new Color(_defaultEnemyColorR, _defaultEnemyColorG, _defaultEnemyColorB)),
-                new LogCategory("UI", new Color(_defaultUiColorR, _defaultUiColorG, _defaultUiColorB)),
-                new LogCategory("Audio", new Color(_defaultAudioColorR, _defaultAudioColorG, _defaultAudioColorB)),
-                new LogCategory("Network", new Color(_defaultNetworkColorR, _defaultNetworkColorG, _defaultNetworkColorB)),
-                new LogCategory("System", new Color(_defaultSystemColorR, _defaultSystemColorG, _defaultSystemColorB)),
+                new LogCategory("Player", new Color(DEFAULT_PLAYER_COLOR_R, DEFAULT_PLAYER_COLOR_G, DEFAULT_PLAYER_COLOR_B)),
+                new LogCategory("Enemy", new Color(DEFAULT_ENEMY_COLOR_R, DEFAULT_ENEMY_COLOR_G, DEFAULT_ENEMY_COLOR_B)),
+                new LogCategory("UI", new Color(DEFAULT_UI_COLOR_R, DEFAULT_UI_COLOR_G, DEFAULT_UI_COLOR_B)),
+                new LogCategory("Audio", new Color(DEFAULT_AUDIO_COLOR_R, DEFAULT_AUDIO_COLOR_G, DEFAULT_AUDIO_COLOR_B)),
+                new LogCategory("Network", new Color(DEFAULT_NETWORK_COLOR_R, DEFAULT_NETWORK_COLOR_G, DEFAULT_NETWORK_COLOR_B)),
+                new LogCategory("System", new Color(DEFAULT_SYSTEM_COLOR_R, DEFAULT_SYSTEM_COLOR_G, DEFAULT_SYSTEM_COLOR_B)),
             };
         }
 
@@ -159,9 +159,9 @@ namespace Tyotyo.Core.Log
         /// </summary>
         private string ColorToHex(Color color)
         {
-            int r = Mathf.RoundToInt(color.r * _hexColorMaxValue);
-            int g = Mathf.RoundToInt(color.g * _hexColorMaxValue);
-            int b = Mathf.RoundToInt(color.b * _hexColorMaxValue);
+            int r = Mathf.RoundToInt(color.r * HEX_COLOR_MAX_VALUE);
+            int g = Mathf.RoundToInt(color.g * HEX_COLOR_MAX_VALUE);
+            int b = Mathf.RoundToInt(color.b * HEX_COLOR_MAX_VALUE);
             return $"#{r:X2}{g:X2}{b:X2}";
         }
     }

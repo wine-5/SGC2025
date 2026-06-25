@@ -41,6 +41,6 @@ namespace Tyotyo.Core
         /// <summary>
         /// Steam モードかどうか（未設定時は false=展示用として扱う）
         /// </summary>
-        public static bool UseSteam => Current != null && Current.Mode == GameMode.Steam;
+        public static bool UseSteam => Current is not null && Current.Mode == GameMode.Steam;
     }
 }

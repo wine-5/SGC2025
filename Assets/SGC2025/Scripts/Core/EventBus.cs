@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Tyotyo.Core.Log;
 using UnityEngine;
 
 namespace Tyotyo.Core
@@ -98,7 +99,7 @@ namespace Tyotyo.Core
                     }
                     catch (Exception ex)
                     {
-                        Debug.LogError($"[EventBus] ハンドラーでエラーが発生しました: {eventType.Name}\n{ex}");
+                        CusLog.Error("EventBus", $"ハンドラーでエラーが発生しました: {eventType.Name}\n{ex}");
                     }
                 }
             }
