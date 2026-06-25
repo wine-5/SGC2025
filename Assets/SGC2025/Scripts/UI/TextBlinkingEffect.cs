@@ -14,17 +14,17 @@ namespace Tyotyo.UI
         [SerializeField] private float stayDuration = 1.0f;
         [SerializeField] private float minAlpha = 0.3f;
 
-        private bool _isActive;
+        private bool isActive;
 
         private void OnEnable()
         {
-            _isActive = true;
+            isActive = true;
             StartBlinkingAsync().Forget();
         }
 
         private void OnDisable()
         {
-            _isActive = false;
+            isActive = false;
         }
 
         private async UniTask StartBlinkingAsync()
@@ -32,7 +32,7 @@ namespace Tyotyo.UI
             if (targetText == null)
                 return;
 
-            while (_isActive)
+            while (isActive)
             {
                 await FadeOutAsync();
                 await UniTask.Delay((int)(stayDuration * 1000));
@@ -46,7 +46,7 @@ namespace Tyotyo.UI
             float elapsedTime = 0f;
             Color originalColor = targetText.color;
 
-            while (elapsedTime < fadeDuration && _isActive)
+            while (elapsedTime < fadeDuration && isActive)
             {
                 elapsedTime += Time.deltaTime;
                 float alpha = Mathf.Lerp(1f, minAlpha, elapsedTime / fadeDuration);
@@ -67,7 +67,7 @@ namespace Tyotyo.UI
             float elapsedTime = 0f;
             Color originalColor = targetText.color;
 
-            while (elapsedTime < fadeDuration && _isActive)
+            while (elapsedTime < fadeDuration && isActive)
             {
                 elapsedTime += Time.deltaTime;
                 float alpha = Mathf.Lerp(minAlpha, 1f, elapsedTime / fadeDuration);
