@@ -101,7 +101,8 @@ namespace Tyotyo.InGame.Bullet
         /// </summary>
         private void Deactivate()
         {
-            if (!isActive) return;
+            if (!isActive)
+                return;
             isActive = false;
             StopMovement();
             ReturnToPool();

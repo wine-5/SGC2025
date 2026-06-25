@@ -1,4 +1,5 @@
 using UnityEngine;
+using Tyotyo.Core.Log;
 
 namespace Tyotyo.InGame.Bullet
 {
@@ -24,7 +25,7 @@ namespace Tyotyo.InGame.Bullet
         {
             if (levelData == null || levelData.Length == 0)
             {
-                Debug.LogError("WeaponUpgradeDataSO: レベルデータが設定されていません");
+                CusLog.Error("WeaponUpgradeDataSO", "レベルデータが設定されていません");
                 return new WeaponLevelData();
             }
             
