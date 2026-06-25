@@ -2731,6 +2731,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6553813152698670916}
   - component: {fileID: 5288690471158314082}
+  - component: {fileID: 3888819960635342938}
   m_Layer: 0
   m_Name: GroundManager
   m_TagString: Untagged
@@ -2769,6 +2770,18 @@ MonoBehaviour:
   tilemap: {fileID: 4638210138543935177}
   groundSprite: {fileID: 21300000, guid: 033e00e6711ea9346ac6c3a6a675fe5e, type: 3}
   grassSprite: {fileID: 21300000, guid: 84380855a6f65db43b5ca2a72fabd462, type: 3}
+--- !u!114 &3888819960635342938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8142594577934867652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f8ec5455a7d4db9980d91dae06c4d4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tyotyo.Effect.GreeningEffectPresenter
   areaEffectScaleFactor: 0.5
 --- !u!1 &8455613011829971440
 GameObject:
