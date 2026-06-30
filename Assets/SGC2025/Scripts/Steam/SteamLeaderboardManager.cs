@@ -63,7 +63,7 @@ namespace Tyotyo.Ranking.Steam
         /// </summary>
         private async UniTaskVoid InitializeAsync()
         {
-            CusLog.Log(LOG_CATEGORY, "UniTaskで初期化を開始します...");
+            // CusLog.Log(LOG_CATEGORY, "UniTaskで初期化を開始します...");
 
             await UniTask.Yield();
 
@@ -93,7 +93,7 @@ namespace Tyotyo.Ranking.Steam
         private void FindOrCreateLeaderboard(LeaderboardType type)
         {
             string name = GetLeaderboardName(type);
-            CusLog.Log(LOG_CATEGORY, $"リーダーボードを検索または作成します: {name}");
+            // CusLog.Log(LOG_CATEGORY, $"リーダーボードを検索または作成します: {name}");
 
             SteamAPICall_t hSteamAPICall = SteamUserStats.FindOrCreateLeaderboard(
                 name,
@@ -117,7 +117,7 @@ namespace Tyotyo.Ranking.Steam
 
             handles[type] = result.m_hSteamLeaderboard;
             ready[type] = true;
-            CusLog.Log(LOG_CATEGORY, $"リーダーボードの準備が完了しました。（{GetLeaderboardName(type)}）");
+            // CusLog.Log(LOG_CATEGORY, $"リーダーボードの準備が完了しました。（{GetLeaderboardName(type)}）");
 
             // 初期化成功時にトップ10をキャッシュしておく
             FetchLeaderboard(type, LEADERBOARD_MAX_ENTRIES);
@@ -219,7 +219,7 @@ namespace Tyotyo.Ranking.Steam
                 return;
             }
 
-            CusLog.Log(LOG_CATEGORY, $"上位 {count} 件を取得します...（{GetLeaderboardName(type)}）");
+            // CusLog.Log(LOG_CATEGORY, $"上位 {count} 件を取得します...（{GetLeaderboardName(type)}）");
 
             SteamAPICall_t hSteamAPICall = SteamUserStats.DownloadLeaderboardEntries(
                 handles[type],
@@ -242,7 +242,7 @@ namespace Tyotyo.Ranking.Steam
                 return;
             }
 
-            CusLog.Log(LOG_CATEGORY, $"{result.m_cEntryCount} 件を取得しました。（{GetLeaderboardName(type)}）");
+            // CusLog.Log(LOG_CATEGORY, $"{result.m_cEntryCount} 件を取得しました。（{GetLeaderboardName(type)}）");
 
             List<SteamLeaderboardEntry> entries = cachedEntries[type];
             entries.Clear();

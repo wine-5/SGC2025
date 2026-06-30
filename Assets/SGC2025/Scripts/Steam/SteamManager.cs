@@ -23,7 +23,7 @@ namespace Tyotyo.Core
                 if (Steamworks.SteamAPI.Init())
                 {
                     Initialized = true;
-                    CusLog.Log("[SteamManager] Steam APIの初期化に成功しました。");
+                    // CusLog.Log("[SteamManager] Steam APIの初期化に成功しました。");
                 }
                 else
                 {
@@ -58,8 +58,8 @@ namespace Tyotyo.Core
             if (Initialized)
             {
                 Steamworks.SteamAPI.Shutdown();
-                Initialized = false; 
-                CusLog.Log("[SteamManager] Steam APIをシャットダウンしました。");
+                Initialized = false;
+                // CusLog.Log("[SteamManager] Steam APIをシャットダウンしました。");
             }
 #endif
             base.OnDestroy();
