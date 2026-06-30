@@ -1,6 +1,8 @@
 using UnityEngine;
+using Tyotyo.Core;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Effect
+namespace Tyotyo.Effect
 {
     /// <summary>
     /// エフェクトの挙動を制御するコンポーネント
@@ -97,14 +99,9 @@ namespace SGC2025.Effect
         /// </summary>
         private Vector3 ResolveWorldPosition(Transform target)
         {
-            UnityEngine.Camera cam = UnityEngine.Camera.main;
-
-            if (target is RectTransform && cam != null)
+            if (target is RectTransform)
             {
-                Vector3 viewport = new Vector3(gaugeViewportPoint.x, gaugeViewportPoint.y, Mathf.Abs(cam.transform.position.z));
-                Vector3 world = cam.ViewportToWorldPoint(viewport);
-                world.z = 0f;
-                return world;
+                return CameraUtil.ViewportToWorld(gaugeViewportPoint);
             }
 
             return target.position;
@@ -119,7 +116,7 @@ namespace SGC2025.Effect
                 EffectFactory.I.ReturnEffect(gameObject);
             else
             {
-                Debug.LogError("[EffectController] EffectFactory is not available! Cannot return effect to pool.");
+                CusLog.Error("EffectController", "EffectFactory is not available! Cannot return effect to pool.");
                 gameObject.SetActive(false);
             }
         }

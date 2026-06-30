@@ -1,6 +1,6 @@
 using System;
 
-namespace SGC2025.Core
+namespace Tyotyo.Core
 {
     /// <summary>
     /// ダメージを受けることができるオブジェクトのインターフェース
@@ -19,9 +19,6 @@ namespace SGC2025.Core
 
         /// <summary>生存状態</summary>
         bool IsAlive { get; }
-
-        /// <summary>接触などで相手に与える攻撃力</summary>
-        float AttackPower { get; }
 
         /// <summary>ダメージを受けた際のイベント</summary>
         event Action<float> OnDamageTaken;

@@ -50,8 +50,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   maxHealth: 100
   currentHealth: 0
+  attackPower: 10
   moveSpeed: 8
-  mutekiTime: 3
+  invincibleDuration: 1.5
 --- !u!54 &1333771880581410669
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -133,6 +134,18 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: a983b8aa-bb52-47d0-aaa7-54517fbfff68
     m_ActionName: 'Player/Shot[/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6b9059d3-113a-4cae-862f-6010b176abfb
+    m_ActionName: 'Player/Pause[/Keyboard/escape,/DualShock4GamepadHID/start]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0a5f5bff-75d2-46b3-91eb-40a300666218
+    m_ActionName: 'Player/Cancel[/Keyboard/escape,/DualShock4GamepadHID/buttonSouth]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1b2c3d4e-5f6a-47b8-c9d0-e1f2a3b4c5d6
+    m_ActionName: 'Player/MiniMapExpand[/Keyboard/shift,/DualShock4GamepadHID/leftShoulder,/DualShock4GamepadHID/rightShoulder]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

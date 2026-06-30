@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Systems
+namespace Tyotyo.Systems
 {
     public class ObjectPool : MonoBehaviour
     {
+        #region フィールド
+
         [Header("Object Pool Settings")]
         [SerializeField] private List<ObjectPoolItem> poolItems = new List<ObjectPoolItem>(); // プールする項目のリスト
         [SerializeField] private bool autoExpand = true; // プールが空の場合に自動的に拡張するかどうか
@@ -16,10 +19,18 @@ namespace SGC2025.Systems
         // インスタンスと元のプレハブを紐づける辞書
         private Dictionary<GameObject, ObjectPoolItem> instanceToPoolItemMap = new Dictionary<GameObject, ObjectPoolItem>();
 
+        #endregion
+
+        #region Unityライフサイクル
+
         private void Awake()
         {
             InitializeAllPools();
         }
+
+        #endregion
+
+        #region プライベートメソッド
 
         /// <summary>
         /// すべてのプールを初期化します
@@ -28,7 +39,7 @@ namespace SGC2025.Systems
         {
             if (poolItems == null || poolItems.Count == 0)
             {
-                Debug.LogWarning("Object Poolの初期化が不足しています。プールリストを設定してください。");
+                CusLog.Warning("ObjectPool", "Object Poolの初期化が不足しています。プールリストを設定してください。");
                 return;
             }
 
@@ -36,7 +47,7 @@ namespace SGC2025.Systems
             {
                 if (poolItem.prefab == null)
                 {
-                    Debug.LogError($"プール項目 '{poolItem.name}' のプレハブがnullです。");
+                    CusLog.Error("ObjectPool", $"プール項目 '{poolItem.name}' のプレハブがnullです。");
                     continue;
                 }
                 if (poolItem.parent == null)
@@ -53,7 +64,7 @@ namespace SGC2025.Systems
         {
             if (poolItem.prefab == null)
             {
-                Debug.LogError("プレハブがnullのプールを初期化できません。");
+                CusLog.Error("ObjectPool", "プレハブがnullのプールを初期化できません。");
                 return;
             }
             if (!objectPools.ContainsKey(poolItem.prefab))
@@ -85,7 +96,7 @@ namespace SGC2025.Systems
         {
             if (prefab == null)
             {
-                Debug.LogError("nullのプレハブからオブジェクトを取得できません。");
+                CusLog.Error("ObjectPool", "nullのプレハブからオブジェクトを取得できません。");
                 return null;
             }
 
@@ -122,7 +133,7 @@ namespace SGC2025.Systems
                 }
                 else
                 {
-                    Debug.LogWarning($"要求されたプレハブ '{prefab.name}' は ObjectPool に登録されていません。");
+                    CusLog.Warning("ObjectPool", $"要求されたプレハブ '{prefab.name}' は ObjectPool に登録されていません。");
                     return null;
                 }
             }
@@ -153,7 +164,7 @@ namespace SGC2025.Systems
         {
             if (string.IsNullOrEmpty(poolName))
             {
-                Debug.LogError("プール名がnullまたは空です。");
+                CusLog.Error("ObjectPool", "プール名がnullまたは空です。");
                 return null;
             }
 
@@ -176,7 +187,7 @@ namespace SGC2025.Systems
         {
             if (poolItem == null || poolItem.prefab == null)
             {
-                Debug.LogError("無効なプール項目でプールを拡張できません。");
+                CusLog.Error("ObjectPool", "無効なプール項目でプールを拡張できません。");
                 return;
             }
 
@@ -197,7 +208,7 @@ namespace SGC2025.Systems
         {
             if (obj == null)
             {
-                Debug.LogWarning("nullのオブジェクトをプールに返却できません。");
+                CusLog.Warning("ObjectPool", "nullのオブジェクトをプールに返却できません。");
                 return;
             }
 
@@ -228,9 +239,11 @@ namespace SGC2025.Systems
             }
             else
             {
-                Debug.LogWarning($"オブジェクト '{obj.name}' はプールに登録されていません。削除します。");
+                CusLog.Warning("ObjectPool", $"オブジェクト '{obj.name}' はプールに登録されていません。削除します。");
                 Destroy(obj);
             }
         }
+
+        #endregion
     }
 }

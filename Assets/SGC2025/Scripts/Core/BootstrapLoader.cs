@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Core.Scene
+namespace Tyotyo.Core.Scene
 {
     /// <summary>
     /// どのシーンから開始しても必要なManagerシーンを自動的にロードするBootstrap
@@ -31,8 +32,8 @@ namespace SGC2025.Core.Scene
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"[Bootstrap] {_managerSceneName}シーンのロードに失敗しました: {e.Message}");
-                Debug.LogError($"[Bootstrap] Build Settingsに'{_managerSceneName}'シーンが追加されているか確認してください");
+                CusLog.Error("Bootstrap", $"{_managerSceneName}シーンのロードに失敗しました: {e.Message}");
+                CusLog.Error("Bootstrap", $"Build Settingsに'{_managerSceneName}'シーンが追加されているか確認してください");
             }
         }
 
@@ -41,8 +42,7 @@ namespace SGC2025.Core.Scene
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
-                if (scene.name == sceneName && scene.isLoaded)
-                    return true;
+                if (scene.name == sceneName && scene.isLoaded) return true;
             }
             return false;
         }

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 敵の生成設定を管理するScriptableObject
@@ -51,7 +52,7 @@ namespace SGC2025.Enemy
             var validEnemies = GetValidEnemies();
             if (validEnemies.Count == 0)
             {
-                Debug.LogWarning("[EnemySpawnConfigSO] 有効な敵が設定されていません");
+                CusLog.Warning("EnemySpawnConfigSO", "有効な敵が設定されていません");
                 return null;
             }
             

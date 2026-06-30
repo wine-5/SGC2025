@@ -1,6 +1,7 @@
 using UnityEngine;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Bullet
+namespace Tyotyo.InGame.Bullet
 {
     /// <summary>
     /// 武器の強化レベルごとのパラメーターを定義するScriptableObject
@@ -24,7 +25,7 @@ namespace SGC2025.Bullet
         {
             if (levelData == null || levelData.Length == 0)
             {
-                Debug.LogError("WeaponUpgradeDataSO: レベルデータが設定されていません");
+                CusLog.Error("WeaponUpgradeDataSO", "レベルデータが設定されていません");
                 return new WeaponLevelData();
             }
             

@@ -1,6 +1,7 @@
 using UnityEngine;
+using Tyotyo.Core.Log;
 
-namespace SGC2025
+namespace Tyotyo.InGame.Ground
 {
     /// <summary>
     /// マップ全体の設定を管理するScriptableObject
@@ -38,9 +39,7 @@ namespace SGC2025
             get
             {
                 if (autoCalculateSize && tilePrefab != null)
-                {
                     return GetPrefabSize().x;
-                }
                 return cellWidth;
             }
         }
@@ -51,9 +50,7 @@ namespace SGC2025
             get
             {
                 if (autoCalculateSize && tilePrefab != null)
-                {
                     return GetPrefabSize().y;
-                }
                 return cellHeight;
             }
         }
@@ -70,7 +67,15 @@ namespace SGC2025
             (columns - 1) * ActualCellWidth,
             (rows - 1) * ActualCellHeight
         );
-        
+
+        /// <summary>指定座標がマップ範囲（マージン込み）の外にあるかを判定する</summary>
+        public bool IsOutOfBounds(Vector3 position, float margin)
+        {
+            Vector2 max = MapMaxWorldPosition;
+            return position.x < -margin || position.x > max.x + margin ||
+                   position.y < -margin || position.y > max.y + margin;
+        }
+
         /// <summary>
         /// Prefabから実際のサイズを取得
         /// SpriteRenderer、MeshRenderer、Colliderの順で試行
@@ -79,7 +84,7 @@ namespace SGC2025
         {
             if (tilePrefab == null)
             {
-                Debug.LogWarning("[GroundDataSO] tilePrefabが設定されていません");
+                CusLog.Warning("GroundDataSO", "tilePrefabが設定されていません");
                 return new Vector2(cellWidth, cellHeight);
             }
             
@@ -124,7 +129,7 @@ namespace SGC2025
             }
             
             // 取得できない場合は設定値を返す
-            Debug.LogWarning($"[GroundDataSO] {tilePrefab.name}からサイズを自動取得できませんでした。手動設定値を使用します。");
+            CusLog.Warning("GroundDataSO", $"{tilePrefab.name}からサイズを自動取得できませんでした。手動設定値を使用します。");
             return new Vector2(cellWidth, cellHeight);
         }
         

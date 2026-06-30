@@ -1,7 +1,7 @@
 using UnityEngine;
-using SGC2025.Manager;
+using Tyotyo.Manager;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 通過した地面の緑化を茶色（非緑化）へ戻すボス能力。

@@ -1,7 +1,7 @@
-using SGC2025.Audio;
+using Tyotyo.Audio;
 using UnityEngine;
 
-namespace SGC2025.Item
+namespace Tyotyo.InGame.Item
 {
     /// <summary>
     /// アイテムオブジェクトの動作を制御するクラス

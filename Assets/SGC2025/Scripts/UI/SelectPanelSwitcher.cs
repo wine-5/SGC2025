@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using SGC2025.Audio;
+using Tyotyo.Audio;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// セレクト画面で、ボタンを押すと対応するPanelへ右側表示を切り替え、

@@ -1,4 +1,4 @@
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 敵の移動タイプを定義する列挙型

@@ -1,7 +1,7 @@
 using UnityEngine;
-using SGC2025.Core;
+using Tyotyo.Core;
 
-namespace SGC2025.Camera
+namespace Tyotyo.Cam
 {
     /// <summary>
     /// カメラ関連機能を統括するマネージャー

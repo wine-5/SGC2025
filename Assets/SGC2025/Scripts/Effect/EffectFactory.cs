@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
-using SGC2025.Systems;
+using Tyotyo.Systems;
+using Tyotyo.Core;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Effect
+namespace Tyotyo.Effect
 {
     /// <summary>
     /// エフェクト生成を一元管理するFactory
@@ -25,7 +27,7 @@ namespace SGC2025.Effect
 
             if (objectPool == null)
             {
-                Debug.LogError("[EffectFactory] ObjectPool が見つかりません！");
+                CusLog.Error("EffectFactory", "ObjectPool が見つかりません！");
                 return;
             }
 
@@ -38,13 +40,13 @@ namespace SGC2025.Effect
 
             if (effectDataSO == null)
             {
-                Debug.LogError("[EffectFactory] EffectDataSOが設定されていません!");
+                CusLog.Error("EffectFactory", "EffectDataSOが設定されていません!");
                 return;
             }
 
             if (effectDataSO.EffectDataList == null)
             {
-                Debug.LogError("[EffectFactory] EffectDataListがnullです!");
+                CusLog.Error("EffectFactory", "EffectDataListがnullです!");
                 return;
             }
 
@@ -67,26 +69,26 @@ namespace SGC2025.Effect
         {
             if (effectDataDictionary == null || effectDataDictionary.Count == 0)
             {
-                Debug.LogError("[EffectFactory] エフェクトデータ辞書が初期化されていません");
+                CusLog.Error("EffectFactory", "エフェクトデータ辞書が初期化されていません");
                 InitializeEffectDataDictionary();
                 if (effectDataDictionary == null || effectDataDictionary.Count == 0) return null;
             }
 
             if (!effectDataDictionary.TryGetValue(effectType, out EffectData data))
             {
-                Debug.LogError($"[EffectFactory] EffectType '{effectType}' のデータが見つかりません");
+                CusLog.Error("EffectFactory", $"EffectType '{effectType}' のデータが見つかりません");
                 return null;
             }
 
             if (objectPool == null)
             {
-                Debug.LogError("[EffectFactory] ObjectPool が利用できません");
+                CusLog.Error("EffectFactory", "ObjectPool が利用できません");
                 return null;
             }
 
             if (data.EffectPrefab == null)
             {
-                Debug.LogError($"[EffectFactory] EffectType '{effectType}' のプレハブがnullです");
+                CusLog.Error("EffectFactory", $"EffectType '{effectType}' のプレハブがnullです");
                 return null;
             }
 
@@ -114,7 +116,7 @@ namespace SGC2025.Effect
 
             if (objectPool == null)
             {
-                Debug.LogError("[EffectFactory] ObjectPool is not available! Cannot return effect to pool.");
+                CusLog.Error("EffectFactory", "ObjectPool is not available! Cannot return effect to pool.");
                 effectObject.SetActive(false);
                 return;
             }

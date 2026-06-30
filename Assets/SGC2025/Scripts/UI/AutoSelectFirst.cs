@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Polychroma.Core.Log;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// 有効化されたときに、指定したUI要素（未指定なら最初の操作可能な子）へ自動でフォーカスを設定する。

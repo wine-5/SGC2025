@@ -1,22 +1,28 @@
 using UnityEngine;
 using System.Collections.Generic;
-using SGC2025.Core;
-using SGC2025.Manager;
-using SGC2025.Effect;
+using Tyotyo.Core;
+using Tyotyo.Core.Log;
+using Tyotyo.Manager;
+using Tyotyo.Effect;
 
-namespace SGC2025.Item
+namespace Tyotyo.InGame.Item
 {
     /// <summary>
     /// アイテムの生成と効果管理を行うマネージャー
     /// </summary>
     public class ItemManager : Singleton<ItemManager>
     {
+        #region 定数
+
         private const float MIN_SPAWN_INTERVAL = 0.1f;
         private const float DEFAULT_SPAWN_RANGE = 10f;
         private const float GREENING_PARTICLE_DURATION = 1.5f;
         private const float CLONE_EFFECT_DURATION = 1.5f;
-        private const string GAUGE_TAG = "GreenGauge";
-        
+
+        #endregion
+
+        #region フィールド
+
         [Header("アイテム抽選設定")]
         [SerializeField, Tooltip("アイテムの抽選を行うセレクター")]
         private ItemSpawnSelector spawnSelector = new ItemSpawnSelector();
@@ -34,14 +40,27 @@ namespace SGC2025.Item
         [Header("ファクトリー参照")]
         [SerializeField] private ItemFactory itemFactory;
 
-        private float nextSpawnTime;
+        [Header("UI参照")]
+        [SerializeField, Tooltip("緑化度ゲージのTransform（Inspector で割り当てる）")]
         private Transform gaugeTarget;
+
+        private float nextSpawnTime;
         private int pendingCloneItems; // フィールドに存在する未取得のクローンアイテム数
-        private SGC2025.Player.PlayerCloneManager cloneManager;
+        private Tyotyo.InGame.Player.PlayerCloneManager cloneManager;
         private Dictionary<ItemType, ItemEffect> activeEffects = new Dictionary<ItemType, ItemEffect>();
-        
+        // CheckEffectExpirationで毎フレーム確保しないよう、期限切れ判定用リストを使い回す
+        private readonly List<ItemType> expiredEffectsBuffer = new List<ItemType>();
+
+        #endregion
+
+        #region プロパティ
+
         protected override bool UseDontDestroyOnLoad => false;
-        
+
+        #endregion
+
+        #region ネストクラス
+
         /// <summary>
         /// アイテム効果の状態
         /// </summary>
@@ -51,7 +70,11 @@ namespace SGC2025.Item
             public float startTime;
             public GameObject effectInstance;
         }
-        
+
+        #endregion
+
+        #region Unityライフサイクル
+
         protected override void Init()
         {
             base.Init();
@@ -80,22 +103,24 @@ namespace SGC2025.Item
                 EffectFactory.I.CreateEffect(EffectType.GreeningParticle, e.Position, GREENING_PARTICLE_DURATION);
         }
 
+        #endregion
+
+        #region パブリックプロパティ
+
         /// <summary>緑化範囲上昇アイテムが有効か（GroundManagerが緑化サイズ判定に使用）</summary>
         public bool IsAreaGreenifyActive => IsEffectActive(ItemType.AreaGreenify);
 
-        /// <summary>緑化度ゲージのTransformを取得（キャッシュ）</summary>
-        private Transform GetGaugeTarget()
-        {
-            // TODO: Findをやめて実装する
-            if (gaugeTarget == null)
-            {
-                GameObject gaugeObject = GameObject.FindWithTag(GAUGE_TAG);
-                if (gaugeObject != null)
-                    gaugeTarget = gaugeObject.transform;
-            }
-            return gaugeTarget;
-        }
-        
+        #endregion
+
+        #region プライベートメソッド
+
+        /// <summary>緑化度ゲージのTransformを取得（Inspector で設定済み前提）</summary>
+        private Transform GetGaugeTarget() => gaugeTarget;
+
+        #endregion
+
+        #region Unityイベント
+
         private void Update()
         {
             if (autoSpawn && Time.time >= nextSpawnTime)
@@ -112,11 +137,13 @@ namespace SGC2025.Item
         /// </summary>
         private void SpawnRandomItem()
         {
-            if (spawnSelector.IsEmpty) return;
+            if (spawnSelector.IsEmpty)
+                return;
 
             // クローンアイテムは「残り必要数」だけ出すよう抽選を絞り込む
             ItemData selectedItem = spawnSelector.SelectRandom(CanSpawnItem);
-            if (selectedItem == null) return;
+            if (selectedItem == null)
+                return;
 
             // ランダムな位置を取得
             Vector3 spawnPosition = GetRandomSpawnPosition();
@@ -131,22 +158,24 @@ namespace SGC2025.Item
         /// <summary>そのアイテムを今生成してよいか（クローンは アクティブ数＋未取得数 が最大未満のときのみ）</summary>
         private bool CanSpawnItem(ItemData item)
         {
-            if (item.ItemType != ItemType.PlayerClone) return true;
+            if (item.ItemType != ItemType.PlayerClone)
+                return true;
 
             var manager = GetCloneManager();
-            if (manager == null) return false; // プレイヤー未準備ならクローンは出さない
+            if (manager == null)
+                return false; // プレイヤー未準備ならクローンは出さない
 
             return manager.ActiveCloneCount + pendingCloneItems < manager.MaxCloneCount;
         }
 
         /// <summary>PlayerCloneManagerをPlayerDataProvider経由で取得（キャッシュ）</summary>
-        private SGC2025.Player.PlayerCloneManager GetCloneManager()
+        private Tyotyo.InGame.Player.PlayerCloneManager GetCloneManager()
         {
             if (cloneManager == null
-                && SGC2025.Player.PlayerDataProvider.I != null
-                && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
+                && Tyotyo.InGame.Player.PlayerDataProvider.I != null
+                && Tyotyo.InGame.Player.PlayerDataProvider.I.IsPlayerRegistered)
             {
-                cloneManager = SGC2025.Player.PlayerDataProvider.I.PlayerTransform.GetComponent<SGC2025.Player.PlayerCloneManager>();
+                cloneManager = Tyotyo.InGame.Player.PlayerDataProvider.I.PlayerTransform.GetComponent<Tyotyo.InGame.Player.PlayerCloneManager>();
             }
             return cloneManager;
         }
@@ -154,13 +183,18 @@ namespace SGC2025.Item
         /// <summary>フィールドのアイテムがプールへ返却された通知（取得・寿命切れ共通。生成数管理用）</summary>
         public void OnItemReturned(ItemData itemData)
         {
-            if (itemData == null) return;
+            if (itemData == null)
+                return;
 
             if (itemData.ItemType == ItemType.PlayerClone)
                 pendingCloneItems = Mathf.Max(0, pendingCloneItems - 1);
         }
         
         
+        #endregion
+
+        #region パブリックメソッド
+
         /// <summary>
         /// ランダムな生成位置を取得
         /// </summary>
@@ -170,26 +204,27 @@ namespace SGC2025.Item
             {
                 var mapData = GroundManager.I.MapData;
                 Vector2 maxWorldPos = mapData.MapMaxWorldPosition;
-                
+
                 float randomX = Random.Range(0f, maxWorldPos.x);
                 float randomY = Random.Range(0f, maxWorldPos.y);
-                
+
                 return new Vector3(randomX, randomY, 0f) + new Vector3(0f, spawnHeightOffset, 0f);
             }
-            
+
             return new Vector3(
                 Random.Range(-DEFAULT_SPAWN_RANGE, DEFAULT_SPAWN_RANGE),
                 Random.Range(-DEFAULT_SPAWN_RANGE, DEFAULT_SPAWN_RANGE) + spawnHeightOffset,
                 0f
             );
         }
-        
+
         /// <summary>
         /// アイテムを生成
         /// </summary>
         private void SpawnItem(ItemData itemData, Vector3 position)
         {
-            if (itemFactory == null) return;
+            if (itemFactory == null)
+                return;
             itemFactory.SpawnItem(itemData, position);
         }
 
@@ -198,7 +233,8 @@ namespace SGC2025.Item
         /// </summary>
         public void CollectItem(ItemData itemData)
         {
-            if (itemData == null) return;
+            if (itemData == null)
+                return;
 
             // 種類を問わず取得を通知（画面エッジ演出などの取得フィードバック用）
             EventBus.Publish(new ItemCollectedEvent(itemData.ItemType));
@@ -235,9 +271,9 @@ namespace SGC2025.Item
             
             EventBus.Publish(new ItemEffectActivatedEvent(itemData.ItemType, itemData.EffectValue, itemData.Duration));
             
-            if (SGC2025.Player.PlayerDataProvider.I != null && SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
+            if (Tyotyo.InGame.Player.PlayerDataProvider.I != null && Tyotyo.InGame.Player.PlayerDataProvider.I.IsPlayerRegistered)
             {
-                var playerTransform = SGC2025.Player.PlayerDataProvider.I.PlayerTransform;
+                var playerTransform = Tyotyo.InGame.Player.PlayerDataProvider.I.PlayerTransform;
                 Vector3 playerPos = playerTransform.position;
                 
                 // アイテムタイプに応じてエフェクト生成を判定
@@ -253,7 +289,7 @@ namespace SGC2025.Item
                         break;
 
                     default:
-                        Debug.LogWarning($"[ItemManager] ItemType {itemData.ItemType} のエフェクト処理が未実装です");
+                        CusLog.Warning("ItemManager", $"ItemType {itemData.ItemType} のエフェクト処理が未実装です");
                         break;
                 }
             }
@@ -265,11 +301,11 @@ namespace SGC2025.Item
         private GameObject SpawnPlayerEffect(EffectType effectType, float duration)
         {
             if (EffectFactory.I == null
-                || SGC2025.Player.PlayerDataProvider.I == null
-                || !SGC2025.Player.PlayerDataProvider.I.IsPlayerRegistered)
+                || Tyotyo.InGame.Player.PlayerDataProvider.I == null
+                || !Tyotyo.InGame.Player.PlayerDataProvider.I.IsPlayerRegistered)
                 return null;
 
-            var playerTransform = SGC2025.Player.PlayerDataProvider.I.PlayerTransform;
+            var playerTransform = Tyotyo.InGame.Player.PlayerDataProvider.I.PlayerTransform;
             return EffectFactory.I.CreateEffect(effectType, playerTransform.position, duration, playerTransform);
         }
 
@@ -278,20 +314,20 @@ namespace SGC2025.Item
         /// </summary>
         private void CheckEffectExpiration()
         {
-            var expiredEffects = new List<ItemType>();
-            
+            expiredEffectsBuffer.Clear();
+
             foreach (var kvp in activeEffects)
             {
                 float elapsedTime = Time.time - kvp.Value.startTime;
                 if (elapsedTime >= kvp.Value.data.Duration)
                 {
-                    expiredEffects.Add(kvp.Key);
+                    expiredEffectsBuffer.Add(kvp.Key);
                 }
             }
-            
-            foreach (var itemType in expiredEffects)
+
+            for (int i = 0; i < expiredEffectsBuffer.Count; i++)
             {
-                RemoveEffect(itemType);
+                RemoveEffect(expiredEffectsBuffer[i]);
             }
         }
         
@@ -300,23 +336,26 @@ namespace SGC2025.Item
         /// </summary>
         private void RemoveEffect(ItemType itemType)
         {
-            if (!activeEffects.ContainsKey(itemType)) return;
-            
+            if (!activeEffects.ContainsKey(itemType))
+                return;
+
             var effect = activeEffects[itemType];
-            
+
             if (effect.effectInstance != null && EffectFactory.I != null)
             {
                 EffectFactory.I.ReturnEffect(effect.effectInstance);
             }
-            
+
             activeEffects.Remove(itemType);
-            
+
             EventBus.Publish(new ItemEffectExpiredEvent(itemType));
         }
-        
+
         /// <summary>
         /// 指定した種類のアイテムが有効か確認
         /// </summary>
         private bool IsEffectActive(ItemType itemType) => activeEffects.ContainsKey(itemType);
+
+        #endregion
     }
 }

@@ -1,4 +1,4 @@
-namespace SGC2025.Ranking
+namespace Tyotyo.Ranking
 {
     /// <summary>
     /// ランキング（リーダーボード）の種別

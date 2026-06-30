@@ -1,8 +1,8 @@
 using UnityEngine;
-using SGC2025.Core;
-using SGC2025.Audio;
+using Tyotyo.Core;
+using Tyotyo.Audio;
 
-namespace SGC2025.Bullet
+namespace Tyotyo.InGame.Bullet
 {
     /// <summary>
     /// プレイヤーの武器システムを管理するクラス

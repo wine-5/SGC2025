@@ -1,7 +1,7 @@
 using UnityEngine;
-using SGC2025.Enemy;
+using Tyotyo.InGame.Enemy;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 予測追従型の移動戦略

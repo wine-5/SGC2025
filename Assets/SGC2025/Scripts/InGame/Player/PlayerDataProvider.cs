@@ -1,6 +1,7 @@
 using UnityEngine;
+using Tyotyo.Core;
 
-namespace SGC2025.Player
+namespace Tyotyo.InGame.Player
 {
     /// <summary>
     /// Playerの参照を提供するプロバイダー

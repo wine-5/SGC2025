@@ -1,8 +1,8 @@
 using UnityEngine;
-using SGC2025.Manager;
-using SGC2025.Audio;
+using Tyotyo.Manager;
+using Tyotyo.Audio;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// ButtonのOnClickからシーンを変更するためのラッパークラス

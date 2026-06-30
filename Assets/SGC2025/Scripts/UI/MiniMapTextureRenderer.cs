@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
-using SGC2025.Manager;
+using Tyotyo.Manager;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     [System.Serializable]
     public class MiniMapTextureRenderer
@@ -13,6 +13,7 @@ namespace SGC2025.UI
         [SerializeField] private Color greenColor = new(0.3f, 0.7f, 0.2f);
 
         private Texture2D mapTexture;
+        private bool isDirty;
 
         public void Initialize()
         {
@@ -53,30 +54,27 @@ namespace SGC2025.UI
             if (mapTexture == null || GroundManager.I?.MapData == null) return;
 
             var mapData = GroundManager.I.MapData;
-            Vector2Int cellPos = WorldToCellIndex(worldPos);
+            Vector2Int cellPos = GroundManager.I.WorldToCell(worldPos);
 
             if (cellPos.x >= 0 && cellPos.x < mapData.columns &&
                 cellPos.y >= 0 && cellPos.y < mapData.rows)
             {
                 mapTexture.SetPixel(cellPos.x, cellPos.y, color);
-                mapTexture.Apply();
+                isDirty = true;
             }
         }
 
-        private Vector2Int WorldToCellIndex(Vector3 worldPos)
+        /// <summary>
+        /// このフレームで <see cref="SetPixel"/> による変更があった場合のみ、
+        /// テクスチャ全体のGPU再アップロード（<see cref="Texture2D.Apply"/>）を1回だけ行う。
+        /// 毎フレーム末尾に呼ぶこと。
+        /// </summary>
+        public void ApplyIfDirty()
         {
-            if (GroundManager.I?.MapData == null) return Vector2Int.zero;
+            if (!isDirty || mapTexture == null) return;
 
-            var mapData = GroundManager.I.MapData;
-            Vector3 origin = GroundManager.I.transform.position;
-
-            int x = Mathf.RoundToInt((worldPos.x - origin.x) / mapData.ActualCellWidth);
-            int y = Mathf.RoundToInt((worldPos.y - origin.y) / mapData.ActualCellHeight);
-
-            x = Mathf.Clamp(x, 0, mapData.columns - 1);
-            y = Mathf.Clamp(y, 0, mapData.rows - 1);
-
-            return new Vector2Int(x, y);
+            mapTexture.Apply();
+            isDirty = false;
         }
     }
 }

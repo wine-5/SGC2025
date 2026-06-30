@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 敵が被弾したときにスプライトを短時間点滅させるヒットフィードバック。

@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using SGC2025.Core;
+using Tyotyo.Core;
 #if STEAMWORKS_NET
-using SGC2025.Ranking.Steam;
+using Tyotyo.Ranking.Steam;
 #endif
 
-namespace SGC2025.Ranking
+namespace Tyotyo.Ranking
 {
     /// <summary>
     /// ランキングデータの保存と取得を管理するクラス（緑化度・総スコアの2系統 / 展示用・Steam用対応）
@@ -129,6 +129,32 @@ namespace SGC2025.Ranking
         /// 指定種別の現在のローカルランキングを取得する
         /// </summary>
         public List<ScoreData> GetRanking(LeaderboardType type) => GetList(type);
+
+        /// <summary>
+        /// 指定した名前がローカルランキングに既に存在するか判定する（展示用の同名入力禁止に使用）。
+        /// 緑化度・総スコアどちらのリストに含まれていても「使用済み」とみなす。
+        /// </summary>
+        public bool NameExists(string playerName)
+        {
+            if (string.IsNullOrWhiteSpace(playerName)) return false;
+
+            EnsureRanking();
+            string target = playerName.Trim();
+            return ContainsName(ranking.greeningScores, target) || ContainsName(ranking.totalScores, target);
+        }
+
+        /// <summary>
+        /// リスト内に指定名のエントリが存在するか
+        /// </summary>
+        private bool ContainsName(List<ScoreData> list, string target)
+        {
+            if (list == null) return false;
+
+            foreach (ScoreData entry in list)
+                if (entry.playerName == target) return true;
+
+            return false;
+        }
 
         /// <summary>
         /// 新しいスコアがランキングに入るか判定する

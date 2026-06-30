@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace SGC2025.Item
+namespace Tyotyo.InGame.Item
 {
     /// <summary>
     /// 個別のアイテムデータ

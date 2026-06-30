@@ -1,11 +1,12 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using SGC2025.Audio;
+using Tyotyo.Audio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Tyotyo.Core;
 
-namespace SGC2025.Manager
+namespace Tyotyo.Manager
 {
     /// <summary>
     /// シーン遷移時の「緑化タイルめくり」演出を担当するシングルトン。

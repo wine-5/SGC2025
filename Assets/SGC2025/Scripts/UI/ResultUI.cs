@@ -1,12 +1,12 @@
 using UnityEngine;
-using SGC2025.Manager;
-using SGC2025.Ranking;
-using SGC2025.Core;
+using Tyotyo.Manager;
+using Tyotyo.Ranking;
+using Tyotyo.Core;
 #if STEAMWORKS_NET
 using Steamworks;
 #endif
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// リザルト画面UI（緑化度・総スコアのカウントアップ演出とランキング登録）
@@ -16,6 +16,8 @@ namespace SGC2025.UI
         private const float ZERO_WAIT_TIME = 0.0f;
         private const float PERCENT_MULTIPLIER = 100f;
         private const string RANK_SUFFIX = "位";
+        private const string OUT_OF_RANK_TEXT = "圏外"; // TOP10圏外（死亡や低スコア含む）の順位表示
+        private const int MAX_RANK = 10;               // ランキングに掲載される最大順位
 
         [Header("結果の各行（ラベル＋数値のセット）")]
         [SerializeField]
@@ -29,6 +31,8 @@ namespace SGC2025.UI
 
         private int? greeningRank;
         private int? totalRank;
+        // 順位が確定したか（登録処理を開始した時点でtrue）。確定後はランクイン外を「圏外」と表示する
+        private bool ranksFinalized;
         [SerializeField]
         private GameObject[] buttons;
         [SerializeField]
@@ -94,15 +98,27 @@ namespace SGC2025.UI
         }
 
         /// <summary>
-        /// 取得済みの順位を1つのテキストへ反映する（ランクインした種別のみ表示）
+        /// 取得済みの順位を各行へ反映する。
+        /// TOP10入りは「N位」、確定後にランクイン外（死亡や低スコア）なら「圏外」と表示する。
         /// </summary>
         private void RefreshRankText()
         {
-            if (greeningRankRow != null && greeningRank.HasValue)
-                greeningRankRow.SetValue($"{greeningRank.Value}{RANK_SUFFIX}");
+            UpdateRankRow(greeningRankRow, greeningRank);
+            UpdateRankRow(totalRankRow, totalRank);
+        }
 
-            if (totalRankRow != null && totalRank.HasValue)
-                totalRankRow.SetValue($"{totalRank.Value}{RANK_SUFFIX}");
+        /// <summary>
+        /// 1つの順位行を更新する。ランクイン（1〜MAX_RANK位）なら順位、確定後の圏外なら「圏外」を表示する。
+        /// 順位未確定かつ未ランクインの場合は何もしない（カウントアップ中に上書きしないため）。
+        /// </summary>
+        private void UpdateRankRow(ResultStatRow row, int? rank)
+        {
+            if (row == null) return;
+
+            if (rank.HasValue && rank.Value >= 1 && rank.Value <= MAX_RANK)
+                row.SetValue($"{rank.Value}{RANK_SUFFIX}");
+            else if (ranksFinalized)
+                row.SetValue(OUT_OF_RANK_TEXT);
         }
 
         private void HandleNameSubmitted()
@@ -215,6 +231,11 @@ namespace SGC2025.UI
         /// </summary>
         private void RegisterResult()
         {
+            // ここで順位を確定する。ランクインした種別は登録処理（イベント）で「N位」へ上書きされ、
+            // ランクインしなかった種別（死亡・低スコア含む）は「圏外」として表示される。
+            ranksFinalized = true;
+            RefreshRankText();
+
             float greeningRate = GameManager.I.FinalGreeningRate * PERCENT_MULTIPLIER;
             int totalScore = GameManager.I.FinalTotalScore;
 

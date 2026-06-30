@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Editor
+namespace Tyotyo.Editor
 {
     /// <summary>
     /// Inspector上でフィールドを読み取り専用として表示するアトリビュート

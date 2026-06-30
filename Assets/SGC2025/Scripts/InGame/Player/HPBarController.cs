@@ -1,7 +1,7 @@
 using UnityEngine;
-using SGC2025.Core;
+using Tyotyo.Core;
 
-namespace SGC2025.Player
+namespace Tyotyo.InGame.Player
 {
     /// <summary>
     /// エンティティのHPバーを制御するコンポーネント

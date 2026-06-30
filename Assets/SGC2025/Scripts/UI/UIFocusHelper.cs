@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// UI要素のフォーカス（選択状態）管理を行うヘルパークラス

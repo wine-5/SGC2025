@@ -1,7 +1,7 @@
 using UnityEngine;
-using Polychroma.Core.Log;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Core
+namespace Tyotyo.Core
 {
     /// <summary>
     /// ゲームの動作モード（展示用 / Steam用）を切り替える設定
@@ -41,6 +41,6 @@ namespace SGC2025.Core
         /// <summary>
         /// Steam モードかどうか（未設定時は false=展示用として扱う）
         /// </summary>
-        public static bool UseSteam => Current != null && Current.Mode == GameMode.Steam;
+        public static bool UseSteam => Current is not null && Current.Mode == GameMode.Steam;
     }
 }

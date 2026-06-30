@@ -1,9 +1,9 @@
 using UnityEngine;
-using SGC2025.Core;
-using SGC2025.Player;
-using SGC2025.Audio;
+using Tyotyo.Core;
+using Tyotyo.InGame.Player;
+using Tyotyo.Audio;
 
-namespace SGC2025.Manager
+namespace Tyotyo.Manager
 {
     /// <summary>
     /// ゲーム内の時間管理、カウントダウン、プレイヤー死亡処理を行うマネージャー

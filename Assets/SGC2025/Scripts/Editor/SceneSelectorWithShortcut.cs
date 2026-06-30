@@ -3,8 +3,9 @@ using UnityEditor.SceneManagement;
 using System.Linq;
 using UnityEngine;
 using System.IO;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Editor
+namespace Tyotyo.Editor
 {
     public class SceneSelectorWithShortcut : EditorWindow
     {
@@ -40,7 +41,7 @@ namespace SGC2025.Editor
                         }
                         else
                         {
-                            Debug.LogError($"Scene file not found: {scene.path}");
+                            CusLog.Error("SceneSelector", $"Scene file not found: {scene.path}");
                         }
                     }
                 }

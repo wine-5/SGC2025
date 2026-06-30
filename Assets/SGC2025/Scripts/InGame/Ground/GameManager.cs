@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using SGC2025.Audio;
-using SGC2025.Core;
+using Tyotyo.Audio;
+using Tyotyo.Core;
 
-namespace SGC2025.Manager
+namespace Tyotyo.Manager
 {
     /// <summary>
     /// ゲーム全体のループと状態管理を行うマネージャー
@@ -40,6 +40,9 @@ namespace SGC2025.Manager
         public int MapRows { get; private set; }
 
         private readonly List<Vector2Int> greenifiedSequence = new List<Vector2Int>();
+        // 同一セルの重複記録を防ぐ。再緑化（revert→再greenify）でリストが際限なく伸びるのを抑え、
+        // 記録数を一意セル数（最大でマップ全マス）に頭打ちにする。
+        private readonly HashSet<Vector2Int> recordedGreenCells = new HashSet<Vector2Int>();
 
         private int killCount;
 
@@ -76,6 +79,7 @@ namespace SGC2025.Manager
         {
             killCount = 0;
             greenifiedSequence.Clear();
+            recordedGreenCells.Clear();
         }
 
         /// <summary>敵撃破ごとに撃破数を加算する</summary>
@@ -84,8 +88,12 @@ namespace SGC2025.Manager
         /// <summary>緑化したセルを塗った順に記録する（リザルトのマップ再生用）</summary>
         private void OnGroundGreenified(GroundGreenifiedEvent e)
         {
-            if (GroundManager.Exists)
-                greenifiedSequence.Add(GroundManager.I.WorldToCell(e.Position));
+            if (!GroundManager.Exists) return;
+
+            Vector2Int cell = GroundManager.I.WorldToCell(e.Position);
+            // 初めて記録するセルのみ順序リストへ追加する（重複は無視）
+            if (recordedGreenCells.Add(cell))
+                greenifiedSequence.Add(cell);
         }
 
         /// <summary>

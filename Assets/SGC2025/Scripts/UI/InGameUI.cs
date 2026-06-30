@@ -1,10 +1,10 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using SGC2025.Core;
-using SGC2025.Manager;
+using Tyotyo.Core;
+using Tyotyo.Manager;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// インゲーム中のUI表示を管理
@@ -165,8 +165,8 @@ namespace SGC2025.UI
                         if (countNumber != lastCountdownNumber)
                         {
                             lastCountdownNumber = countNumber;
-                            if (SGC2025.Audio.AudioManager.I != null)
-                                SGC2025.Audio.AudioManager.I.PlaySE(SGC2025.Audio.SEType.CountDown);
+                            if (Tyotyo.Audio.AudioManager.I != null)
+                                Tyotyo.Audio.AudioManager.I.PlaySE(Tyotyo.Audio.SEType.CountDown);
                         }
                     }
                     else
@@ -186,8 +186,8 @@ namespace SGC2025.UI
                     if (lastCountdownNumber != 0)
                     {
                         lastCountdownNumber = 0;
-                        if (SGC2025.Audio.AudioManager.I != null)
-                            SGC2025.Audio.AudioManager.I.PlaySE(SGC2025.Audio.SEType.CountDown);
+                        if (Tyotyo.Audio.AudioManager.I != null)
+                            Tyotyo.Audio.AudioManager.I.PlaySE(Tyotyo.Audio.SEType.CountDown);
                     }
                 }
 

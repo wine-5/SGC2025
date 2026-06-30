@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using Cysharp.Threading.Tasks;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// TextMeshProのテキストをフェードイン・アウトさせる演出
@@ -14,17 +14,17 @@ namespace SGC2025.UI
         [SerializeField] private float stayDuration = 1.0f;
         [SerializeField] private float minAlpha = 0.3f;
 
-        private bool _isActive;
+        private bool isActive;
 
         private void OnEnable()
         {
-            _isActive = true;
+            isActive = true;
             StartBlinkingAsync().Forget();
         }
 
         private void OnDisable()
         {
-            _isActive = false;
+            isActive = false;
         }
 
         private async UniTask StartBlinkingAsync()
@@ -32,7 +32,7 @@ namespace SGC2025.UI
             if (targetText == null)
                 return;
 
-            while (_isActive)
+            while (isActive)
             {
                 await FadeOutAsync();
                 await UniTask.Delay((int)(stayDuration * 1000));
@@ -46,7 +46,7 @@ namespace SGC2025.UI
             float elapsedTime = 0f;
             Color originalColor = targetText.color;
 
-            while (elapsedTime < fadeDuration && _isActive)
+            while (elapsedTime < fadeDuration && isActive)
             {
                 elapsedTime += Time.deltaTime;
                 float alpha = Mathf.Lerp(1f, minAlpha, elapsedTime / fadeDuration);
@@ -67,7 +67,7 @@ namespace SGC2025.UI
             float elapsedTime = 0f;
             Color originalColor = targetText.color;
 
-            while (elapsedTime < fadeDuration && _isActive)
+            while (elapsedTime < fadeDuration && isActive)
             {
                 elapsedTime += Time.deltaTime;
                 float alpha = Mathf.Lerp(minAlpha, 1f, elapsedTime / fadeDuration);

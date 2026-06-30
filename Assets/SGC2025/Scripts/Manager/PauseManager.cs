@@ -1,9 +1,10 @@
-using SGC2025.Core;
-using SGC2025.UI;
+using Tyotyo.Core;
+using Tyotyo.Core.Log;
+using Tyotyo.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace SGC2025.Manager
+namespace Tyotyo.Manager
 {
     /// <summary>
     /// ポーズ機能の管理を行うクラス
@@ -35,7 +36,7 @@ namespace SGC2025.Manager
             if (pausePanel != null)
                 pausePanel.SetActive(true);
             else
-                Debug.LogWarning("[PauseManager] Cannot pause - PausePanel not assigned");
+                CusLog.Warning("PauseManager", "Cannot pause - PausePanel not assigned");
 
             Time.timeScale = 0f;
             UIFocusHelper.SetFocus(firstPauseButton);
@@ -51,7 +52,7 @@ namespace SGC2025.Manager
             if (pausePanel != null)
                 pausePanel.SetActive(false);
             else
-                Debug.LogWarning("[PauseManager] Cannot resume - PausePanel not assigned");
+                CusLog.Warning("PauseManager", "Cannot resume - PausePanel not assigned");
 
             Time.timeScale = 1f;
             UIFocusHelper.ClearFocus();

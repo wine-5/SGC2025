@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using SGC2025.Core;
-using SGC2025.Bullet;
-using SGC2025.Audio;
-using SGC2025.Manager;
-using SGC2025.Item;
+using Tyotyo.Core;
+using Tyotyo.InGame.Bullet;
+using Tyotyo.Audio;
+using Tyotyo.Manager;
+using Tyotyo.InGame.Item;
 
-namespace SGC2025.Player
+namespace Tyotyo.InGame.Player
 {
     /// <summary>
     /// プレイヤーキャラクターの管理
@@ -14,14 +14,13 @@ namespace SGC2025.Player
     public class PlayerController : MonoBehaviour, IDamageable
     {
         #region プロパティ
-        public Animator anim { get; private set; }
-        public Vector2 moveInput { get; private set; }
+        public Animator Anim { get; private set; }
+        public Vector2 MoveInput { get; private set; }
         public PlayerInputSet PlayerInput { get; private set; }
 
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
         public bool IsAlive => currentHealth > 0f;
-        public float AttackPower => attackPower;
         #endregion
 
         #region IDamageableイベント
@@ -39,23 +38,21 @@ namespace SGC2025.Player
         [Header("ステータス")]
         [SerializeField] private float maxHealth = 100;
         [SerializeField] private float currentHealth;
-        [SerializeField, Tooltip("プレイヤーの攻撃力（IDamageable経由で参照される）")]
-        private float attackPower = 10f;
 
         // 敵側で攻撃力が取得できなかった場合のフォールバックダメージ
         private const float DAMAGE = 10f;
-        private float baseMovSpeed;
+        private float baseMoveSpeed;
         [SerializeField] private float moveSpeed;
-        [SerializeField] private float mutekiTime;
-        private float nowMutekiTime;
+        [SerializeField] private float invincibleDuration;
+        private float invincibleTimer;
 
-        public bool IsInvincible => nowMutekiTime > 0f;
+        public bool IsInvincible => invincibleTimer > 0f;
         #endregion
 
         #region Unityライフサイクル
         private void Awake()
         {
-            anim = GetComponentInChildren<Animator>();
+            Anim = GetComponentInChildren<Animator>();
             rb = GetComponent<Rigidbody2D>();
             weaponSystem = GetComponent<PlayerWeaponSystem>();
             PlayerInput = new PlayerInputSet();
@@ -92,8 +89,8 @@ namespace SGC2025.Player
         private void Start()
         {
             currentHealth = maxHealth;
-            baseMovSpeed = moveSpeed;
-            anim.SetBool("fly", true);
+            baseMoveSpeed = moveSpeed;
+            Anim.SetBool("fly", true);
             if (GroundManager.I != null)
                 transform.position = GroundManager.I.GetPlayerSpawnPosition();
             
@@ -106,7 +103,7 @@ namespace SGC2025.Player
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
             
             HandleMovement();
-            DecreaseMutekiTime();
+            DecreaseInvincibleTimer();
             PlayerRotate();
         }
 
@@ -114,8 +111,8 @@ namespace SGC2025.Player
         {
             if (other.gameObject.layer != GameLayers.EnemyLayer) return;
 
-            // 接触した敵のIDamageableから攻撃力を取得し、その分のダメージを受ける
-            float damage = other.GetComponentInParent<IDamageable>()?.AttackPower ?? DAMAGE;
+            // 接触した敵のIAttackerから攻撃力を取得し、その分のダメージを受ける
+            float damage = other.GetComponentInParent<IAttacker>()?.AttackPower ?? DAMAGE;
             Damage(damage);
         }
         #endregion
@@ -134,13 +131,13 @@ namespace SGC2025.Player
         private void OnMovementPerformed(InputAction.CallbackContext context)
         {
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
-            moveInput = context.ReadValue<Vector2>();
+            MoveInput = context.ReadValue<Vector2>();
         }
 
         private void OnMovementCanceled(InputAction.CallbackContext context)
         {
             if (InGameManager.I != null && InGameManager.I.IsCountingDown) return;
-            moveInput = Vector2.zero;
+            MoveInput = Vector2.zero;
         }
 
         private void OnShotPerformed(InputAction.CallbackContext context)
@@ -164,7 +161,7 @@ namespace SGC2025.Player
         #region 移動処理
         private void HandleMovement()
         {
-            if (moveInput == Vector2.zero)
+            if (MoveInput == Vector2.zero)
             {
                 rb.linearVelocity = Vector2.zero;
                 return;
@@ -172,7 +169,7 @@ namespace SGC2025.Player
 
             if (GroundManager.I == null || GroundManager.I.MapData == null)
             {
-                rb.linearVelocity = moveInput.normalized * moveSpeed;
+                rb.linearVelocity = MoveInput.normalized * moveSpeed;
                 return;
             }
 
@@ -196,13 +193,13 @@ namespace SGC2025.Player
             }
             else
             {
-                rb.linearVelocity = moveInput.normalized * moveSpeed;
+                rb.linearVelocity = MoveInput.normalized * moveSpeed;
             }
         }
 
         private void PlayerRotate()
         {
-            if (moveInput != Vector2.zero)
+            if (MoveInput != Vector2.zero)
                 transform.up = rb.linearVelocity;
         }
         #endregion
@@ -210,9 +207,9 @@ namespace SGC2025.Player
         #region ヘルスシステム
         private void Damage(float damage)
         {
-            if (nowMutekiTime > 0f) return;
+            if (invincibleTimer > 0f) return;
             TakeDamage(damage);
-            nowMutekiTime = mutekiTime;
+            invincibleTimer = invincibleDuration;
             AudioManager.I?.PlaySE(SEType.PlayerDamage);
         }
 
@@ -233,7 +230,7 @@ namespace SGC2025.Player
             }
         }
 
-        private void DecreaseMutekiTime() => nowMutekiTime -= Time.deltaTime;
+        private void DecreaseInvincibleTimer() => invincibleTimer -= Time.deltaTime;
         #endregion
 
         #region アイテム効果
@@ -254,7 +251,7 @@ namespace SGC2025.Player
         /// </summary>
         private void ApplySpeedBoost(float multiplier)
         {
-            moveSpeed = baseMovSpeed * multiplier;
+            moveSpeed = baseMoveSpeed * multiplier;
         }
         
         /// <summary>
@@ -262,7 +259,7 @@ namespace SGC2025.Player
         /// </summary>
         private void ResetSpeed()
         {
-            moveSpeed = baseMovSpeed;
+            moveSpeed = baseMoveSpeed;
         }
         #endregion
     }

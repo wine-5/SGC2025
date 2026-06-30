@@ -1,18 +1,33 @@
 using UnityEngine;
+using Tyotyo.Core.Log;
 
-namespace SGC2025
+namespace Tyotyo.Core
 {
     public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
+        #region プロパティ
+
         public static T I => Instance;
 
         /// <summary>インスタンスが存在するか（自動生成せずに確認できる）</summary>
-        public static bool Exists => instance != null;
+        public static bool Exists => instance is not null;
+
+        #endregion
+
+        #region フィールド
 
         private static T instance;
 
+        #endregion
+
+        #region 設定
+
         protected virtual bool UseDontDestroyOnLoad => true;
         protected virtual bool DestroyTargetGameObject => false;
+
+        #endregion
+
+        #region インスタンス管理
 
         /// <summary>
         /// シングルトンのインスタンスを取得
@@ -30,20 +45,22 @@ namespace SGC2025
             }
         }
 
-        
+        #endregion
+
+        #region メソッド
+
         /// <summary>
         /// シングルトンの初期化処理
         /// なければ自身を追加
         /// </summary>
         protected virtual void Awake()
         {
-            
             // 既存のインスタンスがnullまたは破棄されている場合
             if (instance == null || instance.gameObject == null)
             {
                 instance = this as T;
                 Init();
-                if (UseDontDestroyOnLoad) 
+                if (UseDontDestroyOnLoad)
                 {
                     // DontDestroyOnLoadはルートオブジェクトにのみ適用可能
                     if (transform.parent == null)
@@ -52,7 +69,7 @@ namespace SGC2025
                     }
                     else
                     {
-                        Debug.LogWarning($"[{typeof(T).Name}] DontDestroyOnLoad requires root GameObject. Current object has parent: {transform.parent.name}");
+                        CusLog.Warning(typeof(T).Name, $"DontDestroyOnLoad requires root GameObject. Current object has parent: {transform.parent.name}");
                     }
                 }
             }
@@ -64,32 +81,32 @@ namespace SGC2025
                     T oldInstance = instance;
                     instance = this as T;
                     if (oldInstance != null && oldInstance.gameObject != null)
-                    {
                         Destroy(oldInstance.gameObject);
-                    }
                     Init();
                 }
                 else
                 {
                     if (DestroyTargetGameObject)
                         Destroy(gameObject);
-                    else Destroy(this);
+                    else
+                        Destroy(this);
                 }
             }
         }
 
         /// <summary>
-        ///インスタンス破棄時の処理
+        /// インスタンス破棄時の処理
         /// </summary>
         protected virtual void OnDestroy()
         {
-            if (instance == this)
-                instance = null;
+            if (instance == this) instance = null;
         }
 
         /// <summary>
         /// 派生クラスで初期化処理を追加したい場合にオーバーライドして使用可能
         /// </summary>
         protected virtual void Init() { }
+
+        #endregion
     }
 }

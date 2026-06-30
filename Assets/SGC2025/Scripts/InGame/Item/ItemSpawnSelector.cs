@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace SGC2025.Item
+namespace Tyotyo.InGame.Item
 {
     /// <summary>
     /// アイテムの重み付きランダム抽選を行うクラス

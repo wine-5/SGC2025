@@ -1,31 +1,20 @@
 using UnityEngine;
 using UnityEngine.VFX;
+using Tyotyo.Core;
 
-namespace SGC2025
+namespace Tyotyo.Effect
 {
     public class GreeningController : MonoBehaviour
     {
+        private const float DEFAULT_GAUGE_VIEWPORT_X = 0.08f;
+        private const float DEFAULT_GAUGE_VIEWPORT_Y = 0.88f;
+
         [SerializeField] private VisualEffect greeningEffect;
-        [SerializeField] private Vector2 gaugeViewportPoint = new Vector2(0.08f, 0.88f);
+        [SerializeField] private Vector2 gaugeViewportPoint = new Vector2(DEFAULT_GAUGE_VIEWPORT_X, DEFAULT_GAUGE_VIEWPORT_Y);
 
         void Update()
         {
-            greeningEffect.SetVector3("UIPos",ResolveWorldPosition());
-        }
-
-        private Vector3 ResolveWorldPosition()
-        {
-            UnityEngine.Camera cam = UnityEngine.Camera.main;
-
-            if (cam != null)
-            {
-                Vector3 viewport = new Vector3(gaugeViewportPoint.x, gaugeViewportPoint.y, Mathf.Abs(cam.transform.position.z));
-                Vector3 world = cam.ViewportToWorldPoint(viewport);
-                world.z = 0f;
-                return world;
-            }
-
-            return new (0,0,0);
+            greeningEffect.SetVector3("UIPos", CameraUtil.ViewportToWorld(gaugeViewportPoint));
         }
     }
 }

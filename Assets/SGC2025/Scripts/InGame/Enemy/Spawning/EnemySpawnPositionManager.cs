@@ -1,7 +1,7 @@
 using UnityEngine;
-using SGC2025.Manager;
+using Tyotyo.Manager;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 敵の生成位置を計算するクラス

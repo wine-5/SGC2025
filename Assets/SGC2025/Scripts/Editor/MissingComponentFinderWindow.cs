@@ -3,13 +3,13 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace SGC2025.Editor
+namespace Tyotyo.Editor
 {
     public class MissingComponentFinderWindow : EditorWindow
     {
-        private readonly List<GameObject> _results = new List<GameObject>();
-        private Vector2 _scroll;
-        private bool _includeInactive = true;
+        private readonly List<GameObject> results = new List<GameObject>();
+        private Vector2 scroll;
+        private bool includeInactive = true;
 
         [MenuItem("Tools/Missing Component Finder")]
         public static void Open()
@@ -23,7 +23,7 @@ namespace SGC2025.Editor
             EditorGUILayout.LabelField("Missing Component Finder", EditorStyles.boldLabel);
 
             EditorGUILayout.Space();
-            _includeInactive = EditorGUILayout.ToggleLeft("Include Inactive Objects", _includeInactive);
+            includeInactive = EditorGUILayout.ToggleLeft("Include Inactive Objects", includeInactive);
 
             EditorGUILayout.Space();
 
@@ -36,12 +36,12 @@ namespace SGC2025.Editor
 
                 if (GUILayout.Button("Clear", GUILayout.Height(28), GUILayout.Width(80)))
                 {
-                    _results.Clear();
+                    results.Clear();
                 }
             }
 
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField($"Found: {_results.Count}", EditorStyles.helpBox);
+            EditorGUILayout.LabelField($"Found: {results.Count}", EditorStyles.helpBox);
 
             EditorGUILayout.Space();
             DrawResults();
@@ -49,7 +49,7 @@ namespace SGC2025.Editor
 
         private void Search()
         {
-            _results.Clear();
+            results.Clear();
 
             // シーン内全ルート取得
             var scene = SceneManager.GetActiveScene();
@@ -57,7 +57,7 @@ namespace SGC2025.Editor
 
             foreach (var root in roots)
             {
-                var all = root.GetComponentsInChildren<Transform>(_includeInactive);
+                var all = root.GetComponentsInChildren<Transform>(includeInactive);
 
                 foreach (var t in all)
                 {
@@ -70,7 +70,7 @@ namespace SGC2025.Editor
                     {
                         if (components[i] == null)
                         {
-                            _results.Add(go);
+                            results.Add(go);
                             break;
                         }
                     }
@@ -83,17 +83,17 @@ namespace SGC2025.Editor
 
         private void DrawResults()
         {
-            if (_results.Count == 0)
+            if (results.Count == 0)
             {
                 EditorGUILayout.HelpBox("Missing Component is not found (or press Search).", MessageType.Info);
                 return;
             }
 
-            _scroll = EditorGUILayout.BeginScrollView(_scroll);
+            scroll = EditorGUILayout.BeginScrollView(scroll);
 
-            for (int i = 0; i < _results.Count; i++)
+            for (int i = 0; i < results.Count; i++)
             {
-                var go = _results[i];
+                var go = results[i];
                 if (go == null) continue;
 
                 using (new EditorGUILayout.HorizontalScope("box"))

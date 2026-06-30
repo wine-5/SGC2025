@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SGC2025.Ranking
+namespace Tyotyo.Ranking
 {
     /// <summary>
     /// ランキングデータのコンテナクラス（緑化度・総スコアの2系統を保持）

@@ -1,7 +1,7 @@
 using UnityEngine;
-using SGC2025.Manager;
+using Tyotyo.Manager;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// このパネル内の要素にフォーカスがある状態でCancel（×ボタン）が押されたら、

@@ -2,14 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using Tyotyo.Core;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Audio
+namespace Tyotyo.Audio
 {
     /// <summary>
     /// オーディオ再生を管理するマネージャー
     /// </summary>
     public class AudioManager : Singleton<AudioManager>
     {
+        private const int INITIAL_SE_POOL_SIZE = 10;
+
         [Header("音量設定")]
         [Range(0f, 1f)] public float masterVolume = 1f;
         [Range(0f, 1f)] public float bgmVolume = 0.7f;
@@ -34,7 +38,6 @@ namespace SGC2025.Audio
 
         // SE用のAudioSourceプール
         private List<AudioSource> seAudioSourcePool = new List<AudioSource>();
-        private int initialSePoolSize = 10;
 
         // 音声データのディクショナリ
         private Dictionary<SEType, SEAudioData> seDataDict = new Dictionary<SEType, SEAudioData>();
@@ -53,7 +56,7 @@ namespace SGC2025.Audio
             if (audioData != null)
                 BuildAudioDataDictionaries();
             else
-                Debug.LogWarning("[AudioManager] AudioDataSO is not assigned. Audio will not be available.");
+                CusLog.Warning("AudioManager", "AudioDataSO is not assigned. Audio will not be available.");
         }
 
         private void InitializeAudioSources()
@@ -63,7 +66,7 @@ namespace SGC2025.Audio
             currentBgmAudioSource = bgmAudioSource1;
             previousBgmAudioSource = bgmAudioSource2;
 
-            for (int i = 0; i < initialSePoolSize; i++)
+            for (int i = 0; i < INITIAL_SE_POOL_SIZE; i++)
             {
                 AudioSource seSource = CreateAudioSource($"SE_AudioSource_{i}", seMixerGroup);
                 seAudioSourcePool.Add(seSource);

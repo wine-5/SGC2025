@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// パネル切替時のフェードイン＋スケールのポップ演出を共通化するヘルパー。

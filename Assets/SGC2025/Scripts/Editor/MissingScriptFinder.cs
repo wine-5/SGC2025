@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEditor;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Editor
+namespace Tyotyo.Editor
 {
     /// <summary>
     /// シーン内のMissing Scriptを持つGameObjectを検索して一覧表示するツール
@@ -59,7 +60,7 @@ namespace SGC2025.Editor
                         missingCount++;
                         string path = GetGameObjectPath(go);
                         string log = $"Missing Script発見: {path}\n";
-                        Debug.Log(log, go);
+                        CusLog.Log("MissingScriptFinder", log, go);
                         result += log;
                     }
                 }

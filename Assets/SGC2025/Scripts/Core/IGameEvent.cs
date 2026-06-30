@@ -1,4 +1,4 @@
-namespace SGC2025.Core
+namespace Tyotyo.Core
 {
     /// <summary>
     /// ゲームイベントのマーカーインターフェース

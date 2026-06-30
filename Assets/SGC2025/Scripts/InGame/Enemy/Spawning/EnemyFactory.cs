@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-using SGC2025.Enemy;
-using SGC2025.Systems;
+using Tyotyo.InGame.Enemy;
+using Tyotyo.Systems;
+using Tyotyo.Core;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 敵の生成・プール管理を行うファクトリークラス
@@ -23,6 +25,9 @@ namespace SGC2025.Enemy
 
         // 各インスタンスのプレハブ元スケールを保存
         private readonly Dictionary<GameObject, Vector3> originalScales = new Dictionary<GameObject, Vector3>();
+
+        // EnemyType→プール名（enum.ToString()）をキャッシュし、スポーンごとの文字列確保を避ける
+        private readonly Dictionary<EnemyType, string> poolNameCache = new Dictionary<EnemyType, string>();
         
         protected override void Init()
         {
@@ -39,7 +44,7 @@ namespace SGC2025.Enemy
             if (objectPool == null) return;
             
             if (!spawnConfigManager.HasValidConfigs)
-                Debug.LogError("EnemyFactory: EnemySpawnConfigManagerに有効な設定がありません");
+                CusLog.Error("EnemyFactory", "EnemySpawnConfigManagerに有効な設定がありません");
         }
         
         /// <summary>
@@ -49,7 +54,7 @@ namespace SGC2025.Enemy
         {
             if (enemyData == null) return null;
             
-            string poolName = enemyData.EnemyType.ToString();
+            string poolName = GetPoolName(enemyData.EnemyType);
             GameObject enemyObj = objectPool.GetObjectByName(poolName);
             
             if (enemyObj == null) return null;
@@ -69,7 +74,7 @@ namespace SGC2025.Enemy
             if (controller != null)
                 controller.Initialize(enemyData, waveLevel);
             else
-                Debug.LogError($"[EnemyFactory] {enemyData.EnemyType}にEnemyControllerが見つかりません");
+                CusLog.Error("EnemyFactory", $"{enemyData.EnemyType}にEnemyControllerが見つかりません");
             
             return enemyObj;
         }
@@ -81,7 +86,7 @@ namespace SGC2025.Enemy
         {
             if (!spawnConfigManager.HasValidConfigs)
             {
-                Debug.LogError("[EnemyFactory] EnemySpawnConfigManagerに有効な設定がありません");
+                CusLog.Error("EnemyFactory", "EnemySpawnConfigManagerに有効な設定がありません");
                 return null;
             }
             
@@ -89,11 +94,22 @@ namespace SGC2025.Enemy
             var selectedEnemy = spawnConfigManager.SelectRandomEnemyData();
             if (selectedEnemy == null)
             {
-                Debug.LogWarning("[EnemyFactory] 選択可能な敵がいません");
+                CusLog.Warning("EnemyFactory", "選択可能な敵がいません");
                 return null;
             }
 
             return CreateEnemy(selectedEnemy, position, waveLevel);
+        }
+
+        /// <summary>EnemyTypeに対応するプール名を返す（初回のみToStringし、以降はキャッシュ）</summary>
+        private string GetPoolName(EnemyType enemyType)
+        {
+            if (!poolNameCache.TryGetValue(enemyType, out var poolName))
+            {
+                poolName = enemyType.ToString();
+                poolNameCache[enemyType] = poolName;
+            }
+            return poolName;
         }
 
         /// <summary>

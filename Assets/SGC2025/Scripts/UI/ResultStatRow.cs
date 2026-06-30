@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// リザルトの1行（見出しラベル＋数値）をまとめたコンポーネント。

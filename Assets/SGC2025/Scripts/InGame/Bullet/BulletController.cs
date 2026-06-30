@@ -1,10 +1,10 @@
 using UnityEngine;
-using SGC2025.Core;
-using SGC2025.Enemy;
-using SGC2025.Bullet.Effects;
-using SGC2025.Manager;
+using Tyotyo.Core;
+using Tyotyo.InGame.Enemy;
+using Tyotyo.InGame.Bullet;
+using Tyotyo.Manager;
 
-namespace SGC2025.Bullet
+namespace Tyotyo.InGame.Bullet
 {
     /// <summary>
     /// 弾の動作とライフサイクルを管理するコントローラー
@@ -35,6 +35,10 @@ namespace SGC2025.Bullet
         private SpriteRenderer cachedSpriteRenderer;
         private BulletRotationEffect rotationEffect;
         private BulletFactory factory;
+
+        // 円スプライトは全弾で共通。インスタンスごとに生成せず1回だけ作って共有する
+        // （プールで再利用される弾やシーン再読込時のTexture2Dリークを防ぐ）
+        private static Sprite sharedCircleSprite;
         
         // 弾の状態
         private float remainingLifeTime;
@@ -97,7 +101,8 @@ namespace SGC2025.Bullet
         /// </summary>
         private void Deactivate()
         {
-            if (!isActive) return;
+            if (!isActive)
+                return;
             isActive = false;
             StopMovement();
             ReturnToPool();
@@ -210,15 +215,17 @@ namespace SGC2025.Bullet
                 // SpriteRendererに既存のSpriteがない場合のみ、円形スプライトを作成
                 if (cachedSpriteRenderer.sprite == null)
                 {
-                    cachedSpriteRenderer.sprite = CreateCircleSprite();
+                    cachedSpriteRenderer.sprite = GetOrCreateCircleSprite();
                 }
                 
                 cachedSpriteRenderer.color = Color.white;
             }
         }
 
-        private Sprite CreateCircleSprite()
+        private Sprite GetOrCreateCircleSprite()
         {
+            if (sharedCircleSprite != null) return sharedCircleSprite;
+
             var texture = new Texture2D(CIRCLE_SPRITE_SIZE, CIRCLE_SPRITE_SIZE);
             var colors = new Color[CIRCLE_SPRITE_SIZE * CIRCLE_SPRITE_SIZE];
             
@@ -246,7 +253,8 @@ namespace SGC2025.Bullet
             
             var rect = new Rect(0, 0, CIRCLE_SPRITE_SIZE, CIRCLE_SPRITE_SIZE);
             var pivot = new Vector2(CIRCLE_SPRITE_PIVOT, CIRCLE_SPRITE_PIVOT);
-            return Sprite.Create(texture, rect, pivot);
+            sharedCircleSprite = Sprite.Create(texture, rect, pivot);
+            return sharedCircleSprite;
         }
 
         #endregion
@@ -299,18 +307,11 @@ namespace SGC2025.Bullet
         private void CheckBoundary()
         {
             if (GroundManager.I == null || GroundManager.I.MapData == null) return;
-            
-            Vector3 pos = transform.position;
-            var mapData = GroundManager.I.MapData;
-            Vector2 maxWorldPos = mapData.MapMaxWorldPosition;
-            
+
             // マップのワールド座標範囲外に出たら非アクティブ化（マージン付き）
             const float BOUNDARY_MARGIN = 1f;
-            if (pos.x < -BOUNDARY_MARGIN || pos.x > maxWorldPos.x + BOUNDARY_MARGIN ||
-                pos.y < -BOUNDARY_MARGIN || pos.y > maxWorldPos.y + BOUNDARY_MARGIN)
-            {
+            if (GroundManager.I.MapData.IsOutOfBounds(transform.position, BOUNDARY_MARGIN))
                 Deactivate();
-            }
         }
 
         #endregion

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Diagnostics;
 
-namespace Polychroma.Core.Log
+namespace Tyotyo.Core.Log
 {
     /// <summary>
     /// カスタムロガーシステム
@@ -117,7 +117,7 @@ namespace Polychroma.Core.Log
             foreach (var frame in frames)
             {
                 var method = frame.GetMethod();
-                if (method?.DeclaringType?.Namespace == "Polychroma.Core.Log")
+                if (method?.DeclaringType?.Namespace == "Tyotyo.Core.Log")
                     continue;
 
                 filteredFrames.Add(frame.ToString());

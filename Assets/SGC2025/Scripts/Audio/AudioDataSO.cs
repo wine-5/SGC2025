@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Audio
+namespace Tyotyo.Audio
 {
     /// <summary>
     /// SE用のオーディオデータ

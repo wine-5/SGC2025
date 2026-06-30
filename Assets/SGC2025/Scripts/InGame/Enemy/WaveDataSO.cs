@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
-using SGC2025.Enemy;
+using Tyotyo.InGame.Enemy;
+using Tyotyo.Core.Log;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// Waveの設定データを定義するScriptableObject
@@ -77,7 +78,7 @@ namespace SGC2025.Enemy
                 {
                     if (waves[i].waveLevel == waves[j].waveLevel)
                     {
-                        Debug.LogWarning($"[WaveDataSO] Wave {i} と Wave {j} のwaveLevelが重複しています: {waves[i].waveLevel}");
+                        CusLog.Warning("WaveDataSO", $"Wave {i} と Wave {j} のwaveLevelが重複しています: {waves[i].waveLevel}");
                     }
                 }
             }

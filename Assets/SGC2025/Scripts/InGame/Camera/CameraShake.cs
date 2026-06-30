@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Camera
+namespace Tyotyo.Cam
 {
     /// <summary>
     /// カメラシェイクの設定とパラメータを管理するクラス

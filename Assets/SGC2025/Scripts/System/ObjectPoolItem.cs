@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace SGC2025.Systems
+namespace Tyotyo.Systems
 {
     /// <summary>
     /// オブジェクトプールの各アイテムを定義するクラス

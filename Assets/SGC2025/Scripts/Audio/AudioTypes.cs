@@ -1,4 +1,4 @@
-namespace SGC2025.Audio
+namespace Tyotyo.Audio
 {
     /// <summary>
     /// SEの種類

@@ -1,14 +1,15 @@
 using UnityEngine;
-using SGC2025.Core;
-using SGC2025.Manager;
+using Tyotyo.Core;
+using Tyotyo.Core.Log;
+using Tyotyo.Manager;
 
-namespace SGC2025.Enemy
+namespace Tyotyo.InGame.Enemy
 {
     /// <summary>
     /// 敵オブジェクトの唯一の窓口
     /// 状態管理・移動・ライフタイム管理を統括する
     /// </summary>
-    public class EnemyController : MonoBehaviour, IDamageable
+    public class EnemyController : MonoBehaviour, IDamageable, IAttacker
     {
         private const int MIN_WAVE_LEVEL = 1;
         private const float MIN_HEALTH = 0f;
@@ -74,7 +75,7 @@ namespace SGC2025.Enemy
         {
             if (data == null)
             {
-                Debug.LogError("[EnemyController] EnemyDataSOがnullです");
+                CusLog.Error("EnemyController", "EnemyDataSOがnullです");
                 return;
             }
 
@@ -151,6 +152,12 @@ namespace SGC2025.Enemy
 
             isInitialized = false;
             NotifyAbilitiesDespawned();
+
+            // プール再利用で購読が蓄積しないようイベントをクリアする。
+            // OnDeathはHandleDeathで通知された後にReturnToPoolが呼ばれるため、購読者は通知済み。
+            OnDeath = null;
+            OnDamageTaken = null;
+
             if (EnemyFactory.I != null)
                 EnemyFactory.I.ReturnEnemy(gameObject);
         }
@@ -177,13 +184,7 @@ namespace SGC2025.Enemy
         {
             if (GroundManager.I == null || GroundManager.I.MapData == null) return false;
 
-            var mapData = GroundManager.I.MapData;
-            Vector3 pos = transform.position;
-
-            return pos.x < -OUT_OF_BOUNDS_MARGIN ||
-                   pos.x > mapData.MapMaxWorldPosition.x + OUT_OF_BOUNDS_MARGIN ||
-                   pos.y < -OUT_OF_BOUNDS_MARGIN ||
-                   pos.y > mapData.MapMaxWorldPosition.y + OUT_OF_BOUNDS_MARGIN;
+            return GroundManager.I.MapData.IsOutOfBounds(transform.position, OUT_OF_BOUNDS_MARGIN);
         }
 
         #endregion

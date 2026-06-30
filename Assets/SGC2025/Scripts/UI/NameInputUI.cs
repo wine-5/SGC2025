@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using SGC2025.Manager;
-using SGC2025.Ranking;
+using Tyotyo.Manager;
+using Tyotyo.Ranking;
 using System;
 
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// ハイスコア達成時の名前入力UI
@@ -19,6 +19,7 @@ namespace SGC2025.UI
 
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private Button submitButton; // 決定ボタン
+        [SerializeField] private GameObject duplicateWarning; // 同名使用済みの警告表示（任意）
 
         public event Action Submitted;
 
@@ -43,17 +44,30 @@ namespace SGC2025.UI
         }
         
         /// <summary>
-        /// ボタンの有効/無効を更新
+        /// ボタンの有効/無効を更新する。
+        /// 未入力、または既にローカルランキングで使われている名前の場合は決定不可にする。
         /// </summary>
         private void UpdateSubmitButtonState()
         {
-            if (submitButton != null && nameInputField != null)
-            {
-                bool hasInput = !string.IsNullOrWhiteSpace(nameInputField.text);
-                submitButton.interactable = hasInput;
-                submitButton.gameObject.SetActive(hasInput);
-            }
+            if (submitButton == null || nameInputField == null) return;
+
+            string name = nameInputField.text.Trim();
+            bool hasInput = !string.IsNullOrWhiteSpace(name);
+            bool isDuplicate = hasInput && IsNameTaken(name);
+            bool canSubmit = hasInput && !isDuplicate;
+
+            submitButton.interactable = canSubmit;
+            submitButton.gameObject.SetActive(canSubmit);
+
+            if (duplicateWarning != null)
+                duplicateWarning.SetActive(isDuplicate);
         }
+
+        /// <summary>
+        /// 指定名がローカルランキングで使用済みかどうか
+        /// </summary>
+        private bool IsNameTaken(string name)
+            => RankingManager.I != null && RankingManager.I.NameExists(name);
 
         public void OnSubmit()
         {
@@ -62,6 +76,13 @@ namespace SGC2025.UI
             string name = nameInputField.text.Trim();
             if (string.IsNullOrEmpty(name))
                 name = DEFAULT_NAME;
+
+            // 同名は登録不可（Enterキー等でボタン無効化を迂回した場合の保険）
+            if (IsNameTaken(name))
+            {
+                UpdateSubmitButtonState();
+                return;
+            }
 
             float greeningRate = GameManager.I.FinalGreeningRate * PERCENT_MULTIPLIER;
             int totalScore = GameManager.I.FinalTotalScore;

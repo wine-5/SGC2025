@@ -1,8 +1,8 @@
 using UnityEngine;
-using SGC2025.Audio;
-using SGC2025.Manager;
+using Tyotyo.Audio;
+using Tyotyo.Manager;
 
-namespace SGC2025.UI
+namespace Tyotyo.UI
 {
     /// <summary>
     /// UI画面の基底クラス（共通のボタン操作と経過時間管理を提供）

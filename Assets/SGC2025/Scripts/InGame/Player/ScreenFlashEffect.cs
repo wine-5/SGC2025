@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
-using SGC2025.Player;
-using SGC2025.Core;
+using Tyotyo.InGame.Player;
+using Tyotyo.Core;
 
-namespace SGC2025.Effects
+namespace Tyotyo.Effect
 {
     /// <summary>
     /// Playerがダメージを受けた時の画面フラッシュ演出

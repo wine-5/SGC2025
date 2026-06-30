@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SGC2025.Camera
+namespace Tyotyo.Cam
 {
     /// <summary>
     /// プレイヤーをスムーズに追従するカメラ移動設定
