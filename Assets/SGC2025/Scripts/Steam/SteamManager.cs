@@ -23,22 +23,22 @@ namespace Tyotyo.Core
                 if (Steamworks.SteamAPI.Init())
                 {
                     Initialized = true;
-                    CusLog.Log("[SteamManager] Steam API successfully initialized.");
+                    CusLog.Log("[SteamManager] Steam APIの初期化に成功しました。");
                 }
                 else
                 {
                     Initialized = false;
-                    CusLog.Error("[SteamManager] Failed to initialize Steam API. Is Steam running?");
+                    CusLog.Error("[SteamManager] Steam APIの初期化に失敗しました。Steamが起動していますか？");
                 }
             }
             catch (System.DllNotFoundException)
             {
                 Initialized = false;
-                CusLog.Error("[SteamManager] Steam DLL not found. Running in offline mode.");
+                CusLog.Error("[SteamManager] Steam DLLが見つかりません。オフラインモードで動作します。");
             }
 #else
             Initialized = false;
-            CusLog.Warning("[SteamManager] STEAMWORKS_NET symbol is not defined. Running in offline mode.");
+            CusLog.Warning("[SteamManager] STEAMWORKS_NETシンボルが定義されていません。オフラインモードで動作します。");
 #endif
         }
 
@@ -59,7 +59,7 @@ namespace Tyotyo.Core
             {
                 Steamworks.SteamAPI.Shutdown();
                 Initialized = false; 
-                CusLog.Log("[SteamManager] Steam API shutdown.");
+                CusLog.Log("[SteamManager] Steam APIをシャットダウンしました。");
             }
 #endif
             base.OnDestroy();
