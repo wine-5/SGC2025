@@ -9,7 +9,7 @@ namespace Tyotyo.InGame.Enemy
     /// </summary>
     public class GroundRevertAbility : MonoBehaviour, IEnemyAbility
     {
-        [Header("戻す範囲：一辺のマス数を直接入力。奇数のみ有効（偶数は禁止）。例: 3 → 3x3, 5 → 5x5")]
+        [Header("戻す範囲：一辺のマス数を直接入力。例: 2 → 2x2, 3 → 3x3, 4 → 4x4, 5 → 5x5")]
         [SerializeField]
         private int revertSize = 3;
 
@@ -32,8 +32,7 @@ namespace Tyotyo.InGame.Enemy
             if (currentCell == lastCell) return;
 
             lastCell = currentCell;
-            // 一辺のマス数 → 中心からの半径（3→1, 5→2）。偶数が入っても切り捨てで動作
-            int radius = Mathf.Max(0, (revertSize - 1) / 2);
+            int radius = revertSize / 2;
             GroundManager.I.RevertGroundArea(transform.position, radius);
         }
 

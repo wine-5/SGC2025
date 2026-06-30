@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5df9534b5f60674f812dda9f7314ba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Enemy.GroundRevertAbility
-  revertSize: 3
+  revertSize: 2
 --- !u!114 &194178109500092553
 MonoBehaviour:
   m_ObjectHideFlags: 0

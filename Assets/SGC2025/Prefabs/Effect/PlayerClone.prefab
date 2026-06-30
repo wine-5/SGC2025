@@ -131,8 +131,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c21cc8caa6172144bb7614d8258cca8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Effect.EffectController
-  followOffset: {x: 0, y: 0, z: 0}
+  followOffset: {x: 0, y: -1, z: 0}
   followSmooth: 0
-  followRotation: 1
+  followRotation: 0
   sendTargetToVfx: 0
   gaugeViewportPoint: {x: 0.08, y: 0.88}
