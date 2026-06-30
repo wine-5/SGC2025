@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Tyotyo.Ranking;
 using Tyotyo.Core;
+using Tyotyo.Audio;
 #if STEAMWORKS_NET
 using Tyotyo.Ranking.Steam;
 #endif
@@ -83,6 +84,10 @@ namespace Tyotyo.UI
 
         private void SetType(LeaderboardType type)
         {
+            // 緑化度／総スコアの切替ボタンを押すたびにクリック音を鳴らす
+            if (AudioManager.I != null)
+                AudioManager.I.PlaySE(SEType.ButtonClick);
+
             currentType = type;
             UpdateHeader();
             UpdateScore();

@@ -133,5 +133,18 @@ namespace Tyotyo.Manager
                     AudioManager.I.PlayBGM(BGMType.Result);
             }
         }
+
+        /// <summary>
+        /// ゲームを終了する（タイトル画面の終了ボタンから呼ばれる）。
+        /// エディタでは再生を停止し、ビルドではアプリケーションを終了する。
+        /// </summary>
+        public void QuitGame()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
     }
 }
