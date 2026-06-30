@@ -1,12 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using Tyotyo.Core.Log;
+using Tyotyo.Manager;
 
 namespace Tyotyo.UI
 {
     /// <summary>
-    /// 有効化されたときに、指定したUI要素（未指定なら最初の操作可能な子）へ自動でフォーカスを設定する。
-    /// コントローラー操作でカーソルが無くても「最初の選択先」を保証するためのコンポーネント。
+    /// UI画面がアクティブな時、デバイスに応じてフォーカスとカーソル表示を自動切り替える。
+    /// コントローラー：最初のボタンに選択状態を維持、カーソル非表示。
+    /// キーボード/マウス：フォーカスをクリア、カーソル表示（クリック操作に対応）。
     /// 画面ルートや開閉するパネルのルートにアタッチして使う。
     /// </summary>
     public class AutoSelectFirst : MonoBehaviour
@@ -20,6 +23,9 @@ namespace Tyotyo.UI
         // 有効化される直前に選択されていた要素（閉じたときの戻り先）
         private GameObject previousSelected;
 
+        // イベント登録時の UIInputManager インスタンスをキャッシュ（登録解除時に使用）
+        private UIInputManager cachedUIInputManager;
+
         private void OnEnable()
         {
             // 戻り先として、開く直前の選択を記憶しておく
@@ -32,7 +38,27 @@ namespace Tyotyo.UI
                 return;
             }
 
+            // 常にフォーカスを付与（デバイスに関わらず、ボタンが選択状態になる）
             UIFocusHelper.SetFocus(target);
+
+            // 次にデバイスに応じてカーソル表示を制御
+            ApplyUIStateForDevice(target);
+        }
+
+        private void Start()
+        {
+            // UIInputManager のデバイス切り替えイベントを購読
+            // 登録したインスタンスをキャッシュして、登録解除時に同じインスタンスから削除するため
+            cachedUIInputManager = UIInputManager.I;
+            if (cachedUIInputManager != null)
+                cachedUIInputManager.OnDeviceSwitched += OnDeviceSwitched;
+        }
+
+        private void OnDestroy()
+        {
+            // 登録したときと同じインスタンスから確実に登録解除
+            if (cachedUIInputManager != null)
+                cachedUIInputManager.OnDeviceSwitched -= OnDeviceSwitched;
         }
 
         private void OnDisable()
@@ -43,7 +69,41 @@ namespace Tyotyo.UI
         }
 
         /// <summary>
-        /// 子階層から最初の操作可能なSelectableを探す。
+        /// デバイスが切り替わった時に呼ばれるコールバック
+        /// </のパネルが非アクティブ、またはこの GameObject が非アクティブなら何もしない
+        /// </summary>
+        private void OnDeviceSwitched(InputDeviceType deviceType)
+        {
+            // このパネル自体が非アクティブなら、フォーカス操作をしない
+            if (!gameObject.activeInHierarchy) return;
+            if (!isActiveAndEnabled) return;
+
+            GameObject target = firstSelected != null ? firstSelected : FindFirstSelectable();
+            if (target == null) return;
+
+            ApplyUIStateForDevice(target);
+        }
+
+        /// <summary>
+        /// デバイスの種類に応じてカーソル表示を制御
+        /// フォーカス状態は常に保持して、Navigation が機能するようにする
+        /// </summary>
+        private void ApplyUIStateForDevice(GameObject target)
+        {
+            if (target == null) return;
+
+            if (UIInputManager.I == null) return; // UIInputManager が未初期化の場合はスキップ
+
+            // ゲームパッド接続時はカーソル非表示、未接続時は表示
+            if (Gamepad.current != null && Gamepad.current.enabled)
+                Cursor.visible = false;
+            else
+                Cursor.visible = true;
+            // フォーカスは常に target で保持（Navigation が機能するため）
+        }
+
+        /// <summary>
+        /// 子階層から最初の操作可能なSelectableを探す
         /// </summary>
         private GameObject FindFirstSelectable()
         {
