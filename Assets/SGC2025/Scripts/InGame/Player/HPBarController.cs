@@ -18,7 +18,6 @@ namespace Tyotyo.InGame.Player
         private float currentHealth;
         private Vector3 offsetFromPlayer;
         private Vector3 originalScale;
-        private Vector3 originalPosition;
         private Quaternion fixedRotation;
         private IDamageable cachedDamageable;
         private Transform parentTransform;
@@ -40,9 +39,8 @@ namespace Tyotyo.InGame.Player
             parentTransform = transform.parent;
             entityTransform = entity.transform;
 
-            // HPバーの塗り部分の初期スケール・位置を基準値としてキャッシュする
+            // HPバーの塗り部分の初期スケールを基準値としてキャッシュする
             originalScale = hpBarFill.localScale;
-            originalPosition = hpBarFill.localPosition;
 
             // HPBarの初期位置を「Playerからの相対オフセット」として保存
             // （絶対座標を保存すると、原点から離れた位置にスポーンしたときにズレる）
@@ -70,12 +68,10 @@ namespace Tyotyo.InGame.Player
 
                 // Startでキャッシュした元のスケール(1.9等)を基準に割合をかける
                 // ※ 現在のlocalScale.xを基準にすると前フレームの縮小値が累積し0に収束して消える
+                // ※ Fillスプライトのピボットは左端なので、スケールXを変えるだけで左端固定のまま右から縮む
+                //    （Positionを動かすと横にズレて広がるため、位置は触らない）
                 float scaledX = originalScale.x * rate;
                 hpBarFill.localScale = new Vector3(scaledX, originalScale.y, originalScale.z);
-
-                // 右端を固定するため、減った分だけ左にシフト
-                float positionShift = originalScale.x * (1 - rate) / 2;
-                hpBarFill.localPosition = new Vector3(originalPosition.x - positionShift, originalPosition.y, originalPosition.z);
             }
         }
 
