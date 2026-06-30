@@ -4988,6 +4988,7 @@ GameObject:
   - component: {fileID: 1493081076}
   - component: {fileID: 1493081075}
   - component: {fileID: 1493081074}
+  - component: {fileID: 1493081079}
   m_Layer: 0
   m_Name: InGameButton
   m_TagString: Untagged
@@ -5136,6 +5137,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1493081072}
   m_CullTransparentMesh: 1
+--- !u!114 &1493081079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493081072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f31c73464bfd604e8539bc2b0da397e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tyotyo.UI.ButtonPulseEffect
+  minScale: 0.9
+  maxScale: 1.2
+  pulseSpeed: 3
 --- !u!1 &1519288146
 GameObject:
   m_ObjectHideFlags: 0
@@ -6228,7 +6244,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1913042316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6242,7 +6258,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tyotyo.Core.Log.OnScreenLogView
   maxLines: 20
-  toggleKey: 282
   fontSize: 16
   visibleOnStart: 1
 --- !u!4 &1913042317
