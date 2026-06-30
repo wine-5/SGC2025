@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a696a5f5eab2151439ff8dd67cba982a, type: 3}
   m_Name: GameModeConfig
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Core.GameModeConfig
-  mode: 1
+  mode: 0
