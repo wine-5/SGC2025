@@ -131,6 +131,32 @@ namespace Tyotyo.Ranking
         public List<ScoreData> GetRanking(LeaderboardType type) => GetList(type);
 
         /// <summary>
+        /// 指定した名前がローカルランキングに既に存在するか判定する（展示用の同名入力禁止に使用）。
+        /// 緑化度・総スコアどちらのリストに含まれていても「使用済み」とみなす。
+        /// </summary>
+        public bool NameExists(string playerName)
+        {
+            if (string.IsNullOrWhiteSpace(playerName)) return false;
+
+            EnsureRanking();
+            string target = playerName.Trim();
+            return ContainsName(ranking.greeningScores, target) || ContainsName(ranking.totalScores, target);
+        }
+
+        /// <summary>
+        /// リスト内に指定名のエントリが存在するか
+        /// </summary>
+        private bool ContainsName(List<ScoreData> list, string target)
+        {
+            if (list == null) return false;
+
+            foreach (ScoreData entry in list)
+                if (entry.playerName == target) return true;
+
+            return false;
+        }
+
+        /// <summary>
         /// 新しいスコアがランキングに入るか判定する
         /// </summary>
         public bool IsNewRecord(LeaderboardType type, float score)
