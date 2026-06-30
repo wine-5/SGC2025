@@ -9,16 +9,17 @@ namespace Tyotyo.InGame.Player
     public class HPBarController : MonoBehaviour
     {
         [SerializeField] private GameObject entity;
+        [Tooltip("HPバーの塗り部分。このTransformのScaleを変化させてHPを表現する")]
+        [SerializeField] private Transform hpBarFill;
         [Tooltip("Playerの場合true。シーン再読込時にPlayerDataProviderからentityを再取得するために使用")]
         [SerializeField] private bool isPlayer;
 
-        private float rate;
-
         private float maxHealth;
         private float currentHealth;
-        private Vector3 offsetFromPlayer; // Playerからの相対オフセット（固定）
+        private Vector3 offsetFromPlayer;
         private Vector3 originalScale;
-        private Quaternion fixedRotation; // 親が回転しても固定したいワールド回転
+        private Vector3 originalPosition;
+        private Quaternion fixedRotation;
         private IDamageable cachedDamageable;
         private Transform parentTransform;
         private Transform entityTransform;
@@ -38,7 +39,10 @@ namespace Tyotyo.InGame.Player
 
             parentTransform = transform.parent;
             entityTransform = entity.transform;
-            originalScale = transform.localScale;
+
+            // HPバーの塗り部分の初期スケール・位置を基準値としてキャッシュする
+            originalScale = hpBarFill.localScale;
+            originalPosition = hpBarFill.localPosition;
 
             // HPBarの初期位置を「Playerからの相対オフセット」として保存
             // （絶対座標を保存すると、原点から離れた位置にスポーンしたときにズレる）
@@ -56,14 +60,22 @@ namespace Tyotyo.InGame.Player
         {
             if (entity == null) return;
             if (entityTransform == null) return;
+            if (cachedDamageable == null) return;
 
-            if (cachedDamageable != null)
-                currentHealth = cachedDamageable.CurrentHealth;
+            currentHealth = cachedDamageable.CurrentHealth;
 
             if (maxHealth > 0)
             {
-                rate = currentHealth / maxHealth;
-                transform.localScale = new Vector3(originalScale.x * rate, originalScale.y, originalScale.z);
+                float rate = Mathf.Clamp01(currentHealth / maxHealth);
+
+                // Startでキャッシュした元のスケール(1.9等)を基準に割合をかける
+                // ※ 現在のlocalScale.xを基準にすると前フレームの縮小値が累積し0に収束して消える
+                float scaledX = originalScale.x * rate;
+                hpBarFill.localScale = new Vector3(scaledX, originalScale.y, originalScale.z);
+
+                // 右端を固定するため、減った分だけ左にシフト
+                float positionShift = originalScale.x * (1 - rate) / 2;
+                hpBarFill.localPosition = new Vector3(originalPosition.x - positionShift, originalPosition.y, originalPosition.z);
             }
         }
 
