@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
 using Tyotyo.Core;
 
 namespace Tyotyo.Manager
@@ -59,12 +58,9 @@ namespace Tyotyo.Manager
             inputActions.Player.Cancel.performed += _ => OnCancelPressed?.Invoke();
 
             // Shotアクション（決定操作）のイベント登録
-            inputActions.Player.Shot.performed += _ =>
-            {
-                OnSubmitPressed?.Invoke();
-                // 選択されているボタンに対して Submit を送信（UI ボタン反応用）
-                SendSubmitToSelectedButton();
-            };
+            // UI ボタンへの Submit 送信は EventSystem の InputSystemUIInputModule が
+            // 担うため、ここでは行わない（二重に発火してクリック音が重複するのを防ぐ）
+            inputActions.Player.Shot.performed += _ => OnSubmitPressed?.Invoke();
         }
 
         private void Update()
@@ -84,20 +80,6 @@ namespace Tyotyo.Manager
                 currentDeviceType = newDeviceType;
                 OnDeviceSwitched?.Invoke(currentDeviceType);
             }
-        }
-
-        /// <summary>
-        /// 選択されているボタンに対して Submit イベントを送信
-        /// </summary>
-        private void SendSubmitToSelectedButton()
-        {
-            if (EventSystem.current == null) return;
-
-            GameObject selectedObject = EventSystem.current.currentSelectedGameObject;
-            if (selectedObject == null) return;
-
-            // 選択されているオブジェクトに Submit イベントを送信
-            ExecuteEvents.Execute(selectedObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
         }
 
         /// <summary>

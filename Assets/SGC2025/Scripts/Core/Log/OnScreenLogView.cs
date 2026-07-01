@@ -37,7 +37,10 @@ namespace Tyotyo.Core.Log
                 return;
             }
 
-            DontDestroyOnLoad(gameObject);
+            // ルート GameObject でのみ DontDestroyOnLoad を適用
+            if (gameObject.transform.parent == null)
+                DontDestroyOnLoad(gameObject);
+
             isVisible = visibleOnStart;
         }
 
