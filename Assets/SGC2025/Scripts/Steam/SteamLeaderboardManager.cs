@@ -73,6 +73,9 @@ namespace Tyotyo.Ranking.Steam
                 return;
             }
 
+            // Steam が完全に初期化されるまで少し待つ
+            await UniTask.Delay(1000);
+
             foreach (LeaderboardType type in AllTypes)
             {
                 LeaderboardType captured = type;
@@ -93,11 +96,11 @@ namespace Tyotyo.Ranking.Steam
         private void FindOrCreateLeaderboard(LeaderboardType type)
         {
             string name = GetLeaderboardName(type);
-            // CusLog.Log(LOG_CATEGORY, $"リーダーボードを検索または作成します: {name}");
+            CusLog.Log(LOG_CATEGORY, $"リーダーボードを検索または作成します: {name}");
 
             SteamAPICall_t hSteamAPICall = SteamUserStats.FindOrCreateLeaderboard(
                 name,
-                ELeaderboardSortMethod.k_ELeaderboardSortMethodDescending, // 降順（スコアが高い順）
+                ELeaderboardSortMethod.k_ELeaderboardSortMethodDescending,
                 ELeaderboardDisplayType.k_ELeaderboardDisplayTypeNumeric
             );
 
