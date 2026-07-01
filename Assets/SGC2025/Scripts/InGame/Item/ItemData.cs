@@ -20,6 +20,9 @@ namespace Tyotyo.InGame.Item
         [SerializeField, Tooltip("効果の持続時間（秒）")]
         private float duration = 10f;
 
+        [SerializeField, Tooltip("アイテムの表示時間（秒。0で消えない）")]
+        private float lifeTime = 0f;
+
         [SerializeField, Tooltip("効果の強さ（移動速度の倍率 or スコアの倍率）")]
         private float effectValue = 1.5f;
 
@@ -33,6 +36,7 @@ namespace Tyotyo.InGame.Item
         public ItemType ItemType => itemType;
         public string ItemName => itemName;
         public float Duration => duration;
+        public float LifeTime => lifeTime;
         public float EffectValue => effectValue;
         public GameObject ItemPrefab => itemPrefab;
         public int SpawnWeight => spawnWeight;

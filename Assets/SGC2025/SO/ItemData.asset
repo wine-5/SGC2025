@@ -16,18 +16,21 @@ MonoBehaviour:
   - itemType: 0
     itemName: "\u79FB\u52D5\u901F\u5EA6\u4E0A\u6607"
     duration: 20
+    lifeTime: 60
     effectValue: 1.2
     itemPrefab: {fileID: 5706087732011277661, guid: e3f8c96c7b82e12439eac413ddc1ad97, type: 3}
-    spawnWeight: 2
+    spawnWeight: 10
   - itemType: 1
     itemName: "\u7DD1\u5316\u7BC4\u56F2\u4E0A\u6607"
     duration: 20
+    lifeTime: 0
     effectValue: 4
     itemPrefab: {fileID: 8577232092810221527, guid: 76b572ba44d64694dbc9d0eaa6adf555, type: 3}
-    spawnWeight: 10
+    spawnWeight: 100
   - itemType: 2
     itemName: "Player\u306E\u30AF\u30ED\u30FC\u30F3\u3092\u751F\u6210"
     duration: 40
+    lifeTime: 60
     effectValue: 2
     itemPrefab: {fileID: 2584522453560449381, guid: c82c2cc5b429a9041b6de54f7695b03e, type: 3}
-    spawnWeight: 4
+    spawnWeight: 30
