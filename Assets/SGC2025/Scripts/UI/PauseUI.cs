@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using Tyotyo.Manager;
 using Tyotyo.Audio;
 using Tyotyo.Core;
-using Tyotyo.Core.Event;
 
 namespace Tyotyo.UI
 {
@@ -19,14 +18,12 @@ namespace Tyotyo.UI
 
         [Header("ポーズボタン")]
         [SerializeField] private Button resumeButton;
-        [SerializeField] private Button quitButton;
 
         protected override void Start()
         {
-            base.Start(); // UIBase のリスナー登録処理を実行
+            base.Start(); // UIBase のリスナー登録処理を実行（backToTitleButton）
 
             resumeButton?.onClick.AddListener(OnResumePressed);
-            quitButton?.onClick.AddListener(OnQuitPressed);
 
             // PausedEvent に購読して、UI パネルを表示
             EventBus.Subscribe<PausedEvent>(OnPaused);
@@ -43,9 +40,6 @@ namespace Tyotyo.UI
 
             if (resumeButton != null)
                 resumeButton.onClick.RemoveListener(OnResumePressed);
-
-            if (quitButton != null)
-                quitButton.onClick.RemoveListener(OnQuitPressed);
 
             EventBus.Unsubscribe<PausedEvent>(OnPaused);
             EventBus.Unsubscribe<ResumedEvent>(OnResumed);
@@ -75,28 +69,6 @@ namespace Tyotyo.UI
 
             if (PauseManager.I != null)
                 PauseManager.I.ResumeGame();
-        }
-
-        /// <summary>タイトルに戻るボタンが押された</summary>
-        private void OnQuitPressed()
-        {
-            if (AudioManager.I != null)
-                AudioManager.I.PlaySE(SEType.ButtonClick);
-
-            // GameMode に応じて遷移先を決定
-            SceneName titleScene = GetTitleSelectScene();
-            SceneController.I.LoadScene(titleScene);
-        }
-
-        /// <summary>GameMode に応じて適切なタイトル選択シーンを返す</summary>
-        private SceneName GetTitleSelectScene()
-        {
-            if (GameModeConfig.Current == null)
-                return SceneName.TitleSelect;
-
-            return GameModeConfig.Current.Mode == GameModeConfig.GameMode.Steam
-                ? SceneName.TitleSelect_Steam
-                : SceneName.TitleSelect_Exhibition;
         }
     }
 }
