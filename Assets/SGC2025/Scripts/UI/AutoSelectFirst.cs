@@ -38,27 +38,54 @@ namespace Tyotyo.UI
                 return;
             }
 
-            // 常にフォーカスを付与（デバイスに関わらず、ボタンが選択状態になる）
-            UIFocusHelper.SetFocus(target);
-
-            // 次にデバイスに応じてカーソル表示を制御
+            // デバイスに応じてフォーカスとカーソル表示を制御
+            // マウス操作時にフォーカスを残すと、クリックが「選択解除」に消費され
+            // ボタンが反応しにくくなるため、コントローラー時のみフォーカスを付与する
             ApplyUIStateForDevice(target);
         }
 
         private void Start()
         {
-            // UIInputManager のデバイス切り替えイベントを購読
+            // UIInputManager のデバイス切り替え／決定イベントを購読
             // 登録したインスタンスをキャッシュして、登録解除時に同じインスタンスから削除するため
             cachedUIInputManager = UIInputManager.I;
             if (cachedUIInputManager != null)
+            {
                 cachedUIInputManager.OnDeviceSwitched += OnDeviceSwitched;
+                cachedUIInputManager.OnSubmitPressed += OnSubmitPressed;
+            }
         }
 
         private void OnDestroy()
         {
             // 登録したときと同じインスタンスから確実に登録解除
             if (cachedUIInputManager != null)
+            {
                 cachedUIInputManager.OnDeviceSwitched -= OnDeviceSwitched;
+                cachedUIInputManager.OnSubmitPressed -= OnSubmitPressed;
+            }
+        }
+
+        /// <summary>
+        /// 決定（〇 / Shot）ボタンが押されたときの処理。
+        /// どのボタンも選択されていない状態（マウス操作後など）でコントローラーの決定を押したら、
+        /// アタッチされたボタンへフォーカスを復帰させる。
+        /// すでに選択済みなら通常の決定に任せるため何もしない。
+        /// </summary>
+        private void OnSubmitPressed()
+        {
+            // このパネルがアクティブでないときは何もしない
+            if (!gameObject.activeInHierarchy || !isActiveAndEnabled) return;
+
+            // コントローラー操作時のみ対象
+            if (Gamepad.current == null || !Gamepad.current.enabled) return;
+
+            // すでにどこかのボタンが選択されているなら通常の決定に任せる
+            if (UIFocusHelper.GetCurrentFocus() != null) return;
+
+            GameObject target = firstSelected != null ? firstSelected : FindFirstSelectable();
+            if (target != null)
+                UIFocusHelper.SetFocus(target);
         }
 
         private void OnDisable()
@@ -85,8 +112,9 @@ namespace Tyotyo.UI
         }
 
         /// <summary>
-        /// デバイスの種類に応じてカーソル表示を制御
-        /// フォーカス状態は常に保持して、Navigation が機能するようにする
+        /// デバイスの種類に応じてフォーカスとカーソル表示を制御
+        /// コントローラー：target を選択状態にし、カーソル非表示（Navigation 操作に対応）
+        /// マウス/キーボード：フォーカスをクリアし、カーソル表示（クリックが選択解除に消費されるのを防ぐ）
         /// </summary>
         private void ApplyUIStateForDevice(GameObject target)
         {
@@ -94,12 +122,19 @@ namespace Tyotyo.UI
 
             if (UIInputManager.I == null) return; // UIInputManager が未初期化の場合はスキップ
 
-            // ゲームパッド接続時はカーソル非表示、未接続時は表示
+            // ゲームパッド接続時：フォーカス付与＋カーソル非表示
             if (Gamepad.current != null && Gamepad.current.enabled)
+            {
+                UIFocusHelper.SetFocus(target);
                 Cursor.visible = false;
+            }
+            // マウス/キーボード時：フォーカスをクリア＋カーソル表示
+            // フォーカスを残すとクリックが選択解除に消費され、ボタンが反応しにくくなる
             else
+            {
+                UIFocusHelper.ClearFocus();
                 Cursor.visible = true;
-            // フォーカスは常に target で保持（Navigation が機能するため）
+            }
         }
 
         /// <summary>

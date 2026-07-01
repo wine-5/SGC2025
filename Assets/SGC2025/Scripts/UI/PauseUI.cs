@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using Tyotyo.Manager;
 using Tyotyo.Audio;
 using Tyotyo.Core;
@@ -52,7 +53,9 @@ namespace Tyotyo.UI
             if (pausePanel != null)
                 pausePanel.SetActive(true);
 
-            UIFocusHelper.SetFocus(firstPauseButton);
+            // コントローラーが接続されている場合のみフォーカスを設定
+            if (Gamepad.current != null && Gamepad.current.enabled)
+                UIFocusHelper.SetFocus(firstPauseButton);
         }
 
         /// <summary>ゲームが再開されたときの UI 表示解除</summary>
