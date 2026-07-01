@@ -906,8 +906,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae585b3a39b948440b525f4169ab49d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.InGameManager
-  startCountDownTime: 4
-  gameTimeLimit: 180
+  startCountDownTime: 0
+  gameTimeLimit: 11
   gameOverDelay: 0
   pauseManager: {fileID: 3295539358614712899}
 --- !u!1 &4395238179010556949
@@ -1618,7 +1618,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Item.ItemManager
   spawnSelector:
     itemDataSO: {fileID: 11400000, guid: 46809566707b3ef43a9cb5f3c7d3d4c0, type: 2}
-  spawnInterval: 3
+  spawnInterval: 5
   spawnHeightOffset: 0.5
   autoSpawn: 1
   itemFactory: {fileID: 6676039536516340211}
@@ -2298,7 +2298,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   moveSpeed: 8
-  invincibleDuration: 0
+  invincibleDuration: 2.5
 --- !u!212 &5684880878517744152
 SpriteRenderer:
   serializedVersion: 2
@@ -3255,9 +3255,17 @@ PrefabInstance:
       value: 260
       objectReference: {fileID: 0}
     - target: {fileID: 3681388623445566, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
+      propertyPath: gameTimeView.minScale
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3681388623445566, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: gameTimeView.timeText
       value: 
       objectReference: {fileID: 6965191702935817326}
+    - target: {fileID: 3681388623445566, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
+      propertyPath: gameTimeView.pulseCycle
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3681388623445566, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: territoryPercentageText
       value: 
@@ -3314,6 +3322,10 @@ PrefabInstance:
       propertyPath: m_Type
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 666775224764973973, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c58273e01bc328e43a1751befa809e12, type: 3}
     - target: {fileID: 666775224764973973, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: m_FillOrigin
       value: 2
@@ -3708,31 +3720,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6480178019484926854, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 4843.2
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 6480178019484926854, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 1587
+      value: 1114.3
       objectReference: {fileID: 0}
     - target: {fileID: 6480178019484926854, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 6.44
       objectReference: {fileID: 0}
     - target: {fileID: 6480178019484926854, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 3.4
       objectReference: {fileID: 0}
     - target: {fileID: 6480178019484926854, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6480178019484926854, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6480178019484926854, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6480178019484926854, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6480178019484926854, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1281.2
+      value: 1264
       objectReference: {fileID: 0}
     - target: {fileID: 6480178019484926854, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1362
+      value: -141
       objectReference: {fileID: 0}
     - target: {fileID: 6700714357746857422, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       propertyPath: m_LocalScale.x
@@ -4224,7 +4248,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Player.HPBarController
   entity: {fileID: 7598834064868492910}
+  hpBarFill: {fileID: 5156128790458791271}
   isPlayer: 1
+--- !u!4 &5156128790458791271 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 840932322259403516, guid: 1d15ad9dbf700f94992df9388cdc9c28, type: 3}
+  m_PrefabInstance: {fileID: 5486977181317822363}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5715502639305774466 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 248863403978760729, guid: 1d15ad9dbf700f94992df9388cdc9c28, type: 3}

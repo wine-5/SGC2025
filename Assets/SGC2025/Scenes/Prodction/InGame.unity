@@ -119,11 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!4 &643783175 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5156128790458791271, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-  m_PrefabInstance: {fileID: 1189758861}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1189758861
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -132,69 +127,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 260943621656836768, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: gameTimeView.minScale
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 260943621656836768, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: gameTimeView.pulseCycle
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 379217420938806452, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: invincibleDuration
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 779903851427366667, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: c58273e01bc328e43a1751befa809e12, type: 3}
-    - target: {fileID: 2347185575079331102, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: spawnInterval
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4239606765464690123, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: hpBarFill
-      value: 
-      objectReference: {fileID: 643783175}
     - target: {fileID: 5485042787687540399, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_Name
       value: InGame
-      objectReference: {fileID: 0}
-    - target: {fileID: 6520136320438617880, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 6520136320438617880, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 1114.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6520136320438617880, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 6.44
-      objectReference: {fileID: 0}
-    - target: {fileID: 6520136320438617880, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 3.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6520136320438617880, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6520136320438617880, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6520136320438617880, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6520136320438617880, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 1264
-      objectReference: {fileID: 0}
-    - target: {fileID: 6520136320438617880, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -141
       objectReference: {fileID: 0}
     - target: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_LocalPosition.x
@@ -234,14 +169,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6900073775319507052, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8900758465941632728, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: gameTimeLimit
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 8900758465941632728, guid: 1a0eeac7d8c281b43851c0fd6f64f456, type: 3}
-      propertyPath: startCountDownTime
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
