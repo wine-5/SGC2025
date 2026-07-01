@@ -23,7 +23,8 @@ namespace Tyotyo.UI
         {
             base.Start(); // UIBase のリスナー登録処理を実行（backToTitleButton）
 
-            resumeButton?.onClick.AddListener(OnResumePressed);
+            if (resumeButton != null)
+                resumeButton.onClick.AddListener(OnResumePressed);
 
             // PausedEvent に購読して、UI パネルを表示
             EventBus.Subscribe<PausedEvent>(OnPaused);
@@ -57,7 +58,8 @@ namespace Tyotyo.UI
         /// <summary>ゲームが再開されたときの UI 表示解除</summary>
         private void OnResumed(ResumedEvent @event)
         {
-            if (pausePanel != null)
+            // pausePanel が既に破棄されている可能性があるので確認
+            if (pausePanel != null && gameObject.activeInHierarchy)
                 pausePanel.SetActive(false);
         }
 

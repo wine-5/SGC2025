@@ -835,7 +835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e2a7c464e6c79f4d9383d725e0f9477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.UI.SceneChangeButtonHandler
-  targetScene: 1
+  targetScene: 3
 --- !u!114 &3981656326102031368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6728,6 +6728,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2774f724ca29e4841b929f05ecf80b41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.UI.RankingUI
+  backToTitleButton: {fileID: 0}
+  restartButton: {fileID: 0}
   rowPrefab: {fileID: -4260495826238242793, guid: ff0a31b0cd855ac4fa2a7331f8508cb6, type: 3}
   contentParent: {fileID: 6157954214111745588}
   greeningButton: {fileID: 9123760943499474209}

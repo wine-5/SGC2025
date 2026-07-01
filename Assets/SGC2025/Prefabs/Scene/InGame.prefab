@@ -155,8 +155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b5478fdd4dfbc04f861126e38bb0867, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.Manager.PauseManager
-  pausePanel: {fileID: 8969409065181878419}
-  firstPauseButton: {fileID: 7226515940706267320}
 --- !u!114 &2600085939445507916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -540,6 +538,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4850663684919318246}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2209744103889050685
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6382895664859894626}
+  m_Layer: 0
+  m_Name: PauseRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6382895664859894626
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2209744103889050685}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -960, y: -540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2528560888479792971}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3252048388793049343
 GameObject:
@@ -4066,6 +4095,9 @@ PrefabInstance:
     - {fileID: 8248200562515745040, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
     - {fileID: 5452433521948126795, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2343378516607040469, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
+      insertIndex: 7
+      addedObject: {fileID: 6382895664859894626}
     - targetCorrespondingSourceObject: {fileID: 284509765517275742, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7186455132830758748}
@@ -4079,6 +4111,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9217642372798209037, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2999713498916944739}
+    - targetCorrespondingSourceObject: {fileID: 9217642372798209037, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5516394702983263641}
     - targetCorrespondingSourceObject: {fileID: 4688962764188917685, guid: d56364242545ddb4aaabf1a1b24c967f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6116422124467890770}
@@ -4245,6 +4280,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SGC2025.UI.AutoSelectFirst
   firstSelected: {fileID: 7226515940706267320}
   restoreFocusOnDisable: 1
+--- !u!114 &5516394702983263641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8969409065181878419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72c7927ef18a1944f8a82bdc55c6a1e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tyotyo.UI.PauseUI
+  backToTitleButton: {fileID: 0}
+  restartButton: {fileID: 0}
+  pausePanel: {fileID: 8969409065181878419}
+  firstPauseButton: {fileID: 7226515940706267320}
+  resumeButton: {fileID: 0}
 --- !u!1001 &5486977181317822363
 PrefabInstance:
   m_ObjectHideFlags: 0
