@@ -1,31 +1,20 @@
 using Tyotyo.Core;
-using Tyotyo.Core.Log;
 using Tyotyo.UI;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Tyotyo.Manager
 {
     /// <summary>
     /// ポーズ機能の管理を行うクラス
-    /// PauseGame/ResumeGame が呼ばれたら View の切り替えと TimeScale の操作を行う
+    /// 状態管理（TimeScale、UI 表示切り替え）を担当
+    /// ボタンイベントは PauseUI が担当
     /// InGameManager 経由で参照する
     /// </summary>
-    public class PauseManager : MonoBehaviour
+    public class PauseManager : Singleton<PauseManager>
     {
-        [Header("ポーズ設定")]
-        [SerializeField] private GameObject pausePanel;
-        [SerializeField] private GameObject firstPauseButton;
-
         private bool isPaused;
 
         public bool IsPaused => isPaused;
-
-        private void Start()
-        {
-            if (pausePanel != null)
-                pausePanel.SetActive(false);
-        }
 
         /// <summary>ゲームをポーズする</summary>
         public void PauseGame()
@@ -33,13 +22,7 @@ namespace Tyotyo.Manager
             if (isPaused) return;
             isPaused = true;
 
-            if (pausePanel != null)
-                pausePanel.SetActive(true);
-            else
-                CusLog.Warning("PauseManager", "Cannot pause - PausePanel not assigned");
-
             Time.timeScale = 0f;
-            UIFocusHelper.SetFocus(firstPauseButton);
             EventBus.Publish(new PausedEvent());
         }
 
@@ -48,11 +31,6 @@ namespace Tyotyo.Manager
         {
             if (!isPaused) return;
             isPaused = false;
-
-            if (pausePanel != null)
-                pausePanel.SetActive(false);
-            else
-                CusLog.Warning("PauseManager", "Cannot resume - PausePanel not assigned");
 
             Time.timeScale = 1f;
             UIFocusHelper.ClearFocus();

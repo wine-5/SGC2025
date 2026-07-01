@@ -62,8 +62,10 @@ namespace Tyotyo.UI
 
         ResultPhase currentPhase = ResultPhase.Init;
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start(); // UIBase のリスナー登録処理を実行
+
             if (nameInputUI != null)
             {
                 nameInputUI.Submitted -= HandleNameSubmitted;
@@ -76,8 +78,10 @@ namespace Tyotyo.UI
                 mapReplay.Initialize();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy(); // UIBase のリスナー登録解除処理を実行
+
             if (nameInputUI != null)
                 nameInputUI.Submitted -= HandleNameSubmitted;
 
