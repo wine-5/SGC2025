@@ -62,8 +62,10 @@ namespace Tyotyo.UI
 
         ResultPhase currentPhase = ResultPhase.Init;
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start(); // UIBase のリスナー登録処理を実行
+
             if (nameInputUI != null)
             {
                 nameInputUI.Submitted -= HandleNameSubmitted;
@@ -76,8 +78,10 @@ namespace Tyotyo.UI
                 mapReplay.Initialize();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy(); // UIBase のリスナー登録解除処理を実行
+
             if (nameInputUI != null)
                 nameInputUI.Submitted -= HandleNameSubmitted;
 
@@ -234,7 +238,6 @@ namespace Tyotyo.UI
             // ここで順位を確定する。ランクインした種別は登録処理（イベント）で「N位」へ上書きされ、
             // ランクインしなかった種別（死亡・低スコア含む）は「圏外」として表示される。
             ranksFinalized = true;
-            RefreshRankText();
 
             float greeningRate = GameManager.I.FinalGreeningRate * PERCENT_MULTIPLIER;
             int totalScore = GameManager.I.FinalTotalScore;
@@ -242,6 +245,7 @@ namespace Tyotyo.UI
             if (GameModeConfig.UseSteam)
             {
                 // Steam: 両ランキングへ自動登録（順位は送信完了イベントで表示される）
+                RefreshRankText();
                 RankingManager.I.AddResult(GetPlayerName(), greeningRate, totalScore);
 
                 if (rankingUI != null)
@@ -251,8 +255,17 @@ namespace Tyotyo.UI
                 return;
             }
 
-            // 展示用: いずれかのランキングにランクインしていれば名前入力を表示
+            // 展示用: 名前入力（＝AddResult）は後段で行われるため、登録前の想定順位を先に表示する。
+            // これをしないと、名前入力中は順位が未確定のまま「圏外」と誤表示されてしまう。
             RankingManager rankingManager = RankingManager.I;
+            if (rankingManager != null)
+            {
+                greeningRank = rankingManager.GetProspectiveRank(LeaderboardType.GreeningRate, greeningRate);
+                totalRank = rankingManager.GetProspectiveRank(LeaderboardType.TotalScore, totalScore);
+            }
+            RefreshRankText();
+
+            // 展示用: いずれかのランキングにランクインしていれば名前入力を表示
             bool isNewRecord = rankingManager != null &&
                 (rankingManager.IsNewRecord(LeaderboardType.GreeningRate, greeningRate) ||
                  rankingManager.IsNewRecord(LeaderboardType.TotalScore, totalScore));

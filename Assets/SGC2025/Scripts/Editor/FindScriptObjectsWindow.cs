@@ -44,6 +44,9 @@ namespace Tyotyo.Editor
 
                 foreach (GameObject obj in foundObjects)
                 {
+                    // 破棄されたオブジェクトをスキップ
+                    if (obj == null) continue;
+
                     if (GUILayout.Button(obj.name))
                     {
                         Selection.activeGameObject = obj; // オブジェクトを選択
@@ -64,18 +67,30 @@ namespace Tyotyo.Editor
                 return;
             }
 
-            // シーン内の全てのGameObjectを検索
-            GameObject[] allObjects = FindObjectsByType<GameObject>();
+            // シーン内の全てのGameObjectを検索（非アクティブなオブジェクトも含める）
+            GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsInactive.Include);
+
+            int activeCount = 0;
+            int inactiveCount = 0;
 
             foreach (GameObject obj in allObjects)
             {
                 if (obj.GetComponent(scriptType) != null)
                 {
                     foundObjects.Add(obj);
+                    if (obj.activeInHierarchy)
+                    {
+                        activeCount++;
+                    }
+                    else
+                    {
+                        inactiveCount++;
+                        CusLog.Log("FindScriptObjectsWindow", $"[INACTIVE] {obj.name}");
+                    }
                 }
             }
 
-            CusLog.Log("FindScriptObjectsWindow", $"Found {foundObjects.Count} objects with the script {targetScript.name}.");
+            CusLog.Log("FindScriptObjectsWindow", $"Found {foundObjects.Count} objects with the script {targetScript.name}. (Active: {activeCount}, Inactive: {inactiveCount})");
         }
     }
 }

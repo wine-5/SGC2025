@@ -50,9 +50,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   maxHealth: 100
   currentHealth: 0
-  attackPower: 10
   moveSpeed: 8
-  invincibleDuration: 1.5
+  invincibleDuration: 2.5
 --- !u!54 &1333771880581410669
 Rigidbody:
   m_ObjectHideFlags: 0

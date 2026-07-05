@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using TMPro;
 using Tyotyo.Manager;
 using Tyotyo.Ranking;
@@ -22,6 +23,25 @@ namespace Tyotyo.UI
         [SerializeField] private GameObject duplicateWarning; // 同名使用済みの警告表示（任意）
 
         public event Action Submitted;
+
+        /// <summary>
+        /// 名前入力中は文字入力にマウスが必須なので、ゲームパッド接続の有無に関わらずカーソルを表示する。
+        /// （通常はAutoSelectFirstがゲームパッド接続時にカーソルを隠すため、ここで上書きする）
+        /// </summary>
+        private void OnEnable()
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+        /// <summary>
+        /// 入力完了などで閉じたら、デバイスに応じた通常のカーソル表示へ戻す。
+        /// </summary>
+        private void OnDisable()
+        {
+            bool gamepadActive = Gamepad.current != null && Gamepad.current.enabled;
+            Cursor.visible = !gamepadActive;
+        }
 
         private void Start()
         {

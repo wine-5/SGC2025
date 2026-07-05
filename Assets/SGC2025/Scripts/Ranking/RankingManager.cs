@@ -22,8 +22,25 @@ namespace Tyotyo.Ranking
         override protected void Awake()
         {
             base.Awake();
-            filePath = Path.Combine(Application.persistentDataPath, "ranking.json");
+            filePath = GetRankingFilePath();
             LoadRanking();
+        }
+
+        /// <summary>
+        /// ランキングJSONの保存先パスを返す。
+        /// ビルド時は実行ファイル（.exe）と同じフォルダに置き、展示PCで直接確認・編集できるようにする。
+        /// エディタ実行時は Assets を汚さないよう従来どおり persistentDataPath を使う。
+        /// </summary>
+        private string GetRankingFilePath()
+        {
+            const string fileName = "ranking.json";
+#if UNITY_EDITOR
+            return Path.Combine(Application.persistentDataPath, fileName);
+#else
+            // Application.dataPath は <ビルドフォルダ>/<製品名>_Data を指すため、その親（exeのある場所）に置く
+            string buildRoot = Directory.GetParent(Application.dataPath).FullName;
+            return Path.Combine(buildRoot, fileName);
+#endif
         }
 
         /// <summary>
@@ -155,6 +172,13 @@ namespace Tyotyo.Ranking
 
             return false;
         }
+
+        /// <summary>
+        /// スコアを登録した場合の順位を、リストを変更せずに計算する（同点は同順位・1位始まり）。
+        /// 展示用リザルトで、名前入力前に想定順位を表示するために使う。
+        /// </summary>
+        public int GetProspectiveRank(LeaderboardType type, float score)
+            => CalcLocalRank(GetList(type), score);
 
         /// <summary>
         /// 新しいスコアがランキングに入るか判定する

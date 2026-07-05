@@ -6,19 +6,19 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/SGC2025/Scenes/TitleSelect.unity
+    path: Assets/SGC2025/Scenes/Prodction/TitleSelect_Steam.unity
     guid: b14daa215ac94ea469ffb5c5fa8e6571
+  - enabled: 0
+    path: Assets/SGC2025/Scenes/Prodction/TitleSelect_Exhibition.unity
+    guid: ec5e28479b0d8cb4fbd1a2775c388f0b
   - enabled: 1
-    path: Assets/SGC2025/Scenes/InGame.unity
+    path: Assets/SGC2025/Scenes/Prodction/InGame.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/SGC2025/Scenes/Gameover.unity
-    guid: 914a7ac736ce1894c90622e77312994c
-  - enabled: 1
-    path: Assets/SGC2025/Scenes/Result.unity
+    path: Assets/SGC2025/Scenes/Prodction/Result.unity
     guid: 3ce683d8fc507ee408e35c96f5aa043c
   - enabled: 1
-    path: Assets/SGC2025/Scenes/Manager.unity
+    path: Assets/SGC2025/Scenes/Prodction/Manager.unity
     guid: 4fe39ba2a0573a541a8c134a61032866
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}

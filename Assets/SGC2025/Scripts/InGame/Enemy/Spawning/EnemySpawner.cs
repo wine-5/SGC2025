@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using Tyotyo.Core;
 using Tyotyo.Manager;
 
@@ -7,6 +8,7 @@ namespace Tyotyo.InGame.Enemy
     /// <summary>
     /// 敵の生成を管理するコンポーネント
     /// 指定した間隔で敵をFactoryから生成し、自動管理コンポーネントを追加する
+    /// Waveごとにボス数の制限を管理する
     /// </summary>
     public class EnemySpawner : MonoBehaviour
     {
@@ -24,6 +26,7 @@ namespace Tyotyo.InGame.Enemy
 
         private bool isSpawning = false;
         private float nextSpawnTime = 0f;
+        private List<GameObject> activeBosses = new List<GameObject>();
 
         private void Start()
         {
@@ -36,16 +39,25 @@ namespace Tyotyo.InGame.Enemy
         private void OnEnable()
         {
             EventBus.Subscribe<WaveChangedEvent>(OnWaveChanged);
+            EventBus.Subscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
         }
 
         private void OnDisable()
         {
             EventBus.Unsubscribe<WaveChangedEvent>(OnWaveChanged);
+            EventBus.Unsubscribe<EnemyDestroyedEvent>(OnEnemyDestroyed);
         }
 
         private void OnWaveChanged(WaveChangedEvent e)
         {
             SetWaveLevel(e.WaveLevel);
+        }
+
+        private void OnEnemyDestroyed(EnemyDestroyedEvent e)
+        {
+            // ボスが倒されたときにリストをクリーンアップ
+            if (e.IsBoss)
+                CleanupDeadBosses();
         }
 
         /// <summary>敵の生成を開始</summary>
@@ -91,7 +103,7 @@ namespace Tyotyo.InGame.Enemy
         }
 
         /// <summary>
-        /// 敵を1体生成
+        /// 敵を1体生成（ボス数上限をチェック）
         /// </summary>
         private void SpawnEnemy()
         {
@@ -104,12 +116,48 @@ namespace Tyotyo.InGame.Enemy
             var controller = enemy.GetComponent<EnemyController>();
             if (controller == null || controller.EnemyData == null) return;
 
+            // ボス上限チェック
+            if (controller.EnemyData.IsBoss && !CanSpawnBoss())
+            {
+                EnemyFactory.I.ReturnEnemy(enemy);
+                return;
+            }
+
+            // ボスの場合はリストに追加（ReturnToPool時にEventBusで自動削除）
+            if (controller.EnemyData.IsBoss)
+                activeBosses.Add(enemy);
+
             // 移動タイプに応じて戦略を設定
             var strategy = MovementStrategyFactory.CreateStrategy(controller.EnemyData.MovementType);
             if (strategy != null)
                 controller.SetMovementStrategy(strategy);
             else
                 controller.SetTargetPosition(positionManager.GetOppositeEdgePosition(spawnPosition));
+        }
+
+        /// <summary>
+        /// ボスを生成できるかチェック（Wave設定の上限を確認）
+        /// </summary>
+        private bool CanSpawnBoss()
+        {
+            CleanupDeadBosses();
+
+            if (WaveManager.I == null)
+                return true;
+
+            var currentWave = WaveManager.I.CurrentWave;
+            if (currentWave == null)
+                return true;
+
+            return activeBosses.Count < currentWave.maxBossCount;
+        }
+
+        /// <summary>
+        /// 破棄されたボスをリストから除去
+        /// </summary>
+        private void CleanupDeadBosses()
+        {
+            activeBosses.RemoveAll(boss => boss == null || !boss.activeInHierarchy);
         }
     }
 }

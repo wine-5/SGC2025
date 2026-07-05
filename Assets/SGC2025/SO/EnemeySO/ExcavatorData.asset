@@ -15,7 +15,8 @@ MonoBehaviour:
   enemyType: 3
   movementType: 1
   health: 30
-  moveSpeed: 2
+  moveSpeed: 1
+  attackPower: 10
   lifeTime: 120
   isBoss: 1
   greeningSize: 3

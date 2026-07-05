@@ -26,6 +26,10 @@ namespace Tyotyo.InGame.Enemy
             [Tooltip("敵のスポーン間隔（秒）")]
             public float spawnInterval = 2f;
 
+            [Header("ボス制限設定")]
+            [Tooltip("このWaveで同時に存在できるボスの最大数")]
+            public int maxBossCount = 1;
+
             [Header("使用する敵生成設定")]
             [Tooltip("このWaveで使用するEnemySpawnConfigSO")]
             public List<EnemySpawnConfigSO> enemyConfigs = new List<EnemySpawnConfigSO>();

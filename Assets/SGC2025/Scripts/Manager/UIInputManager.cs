@@ -1,8 +1,19 @@
 using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
 using Tyotyo.Core;
 
 namespace Tyotyo.Manager
 {
+    /// <summary>
+    /// UI操作のデバイスタイプ
+    /// </summary>
+    public enum InputDeviceType
+    {
+        Keyboard,  // キーボード・マウス
+        Gamepad    // ゲームパッド・コントローラー
+    }
+
     /// <summary>
     /// UI関連の入力を一元管理するマネージャー
     /// InputSystemを使用してキャンセル操作などを管理
@@ -11,6 +22,7 @@ namespace Tyotyo.Manager
     public class UIInputManager : Singleton<UIInputManager>
     {
         private PlayerInputSet inputActions;
+        private InputDeviceType currentDeviceType = InputDeviceType.Gamepad;
 
         /// <summary>
         /// キャンセル操作が実行された時のイベント
@@ -23,6 +35,12 @@ namespace Tyotyo.Manager
         /// タイトル画面など各UIがこれを購読
         /// </summary>
         public event Action OnSubmitPressed;
+
+        /// <summary>
+        /// 入力デバイスが切り替わった時のイベント
+        /// AutoSelectFirst、Cursor表示制御などがこれを購読
+        /// </summary>
+        public event Action<InputDeviceType> OnDeviceSwitched;
 
         protected override bool UseDontDestroyOnLoad => false;
 
@@ -40,15 +58,48 @@ namespace Tyotyo.Manager
             inputActions.Player.Cancel.performed += _ => OnCancelPressed?.Invoke();
 
             // Shotアクション（決定操作）のイベント登録
+            // UI ボタンへの Submit 送信は EventSystem の InputSystemUIInputModule が
+            // 担うため、ここでは行わない（二重に発火してクリック音が重複するのを防ぐ）
             inputActions.Player.Shot.performed += _ => OnSubmitPressed?.Invoke();
+        }
+
+        private void Update()
+        {
+            DetectDeviceChange();
+        }
+
+        /// <summary>
+        /// 現在のアクティブデバイスを判定し、デバイスが切り替わっていればイベントを発火
+        /// </summary>
+        private void DetectDeviceChange()
+        {
+            InputDeviceType newDeviceType = GetCurrentDeviceType();
+
+            if (newDeviceType != currentDeviceType)
+            {
+                currentDeviceType = newDeviceType;
+                OnDeviceSwitched?.Invoke(currentDeviceType);
+            }
+        }
+
+        /// <summary>
+        /// 現在のアクティブデバイスタイプを判定
+        /// ゲームパッドが接続されていれば Gamepad、そうでなければ Keyboard
+        /// </summary>
+        private InputDeviceType GetCurrentDeviceType()
+        {
+            // ゲームパッドが接続されていれば Gamepad（入力の有無に関わらず）
+            if (Gamepad.current != null && Gamepad.current.enabled)
+                return InputDeviceType.Gamepad;
+
+            // 接続されていなければ Keyboard（マウス・キーボード）
+            return InputDeviceType.Keyboard;
         }
 
         protected override void OnDestroy()
         {
             if (inputActions != null)
-            {
                 inputActions.Dispose();
-            }
 
             base.OnDestroy();
         }

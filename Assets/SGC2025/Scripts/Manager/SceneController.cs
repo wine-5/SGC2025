@@ -7,6 +7,8 @@ namespace Tyotyo.Manager
     public enum SceneName
     {
         TitleSelect,
+        TitleSelect_Steam,
+        TitleSelect_Exhibition,
         InGame,
         Result,
     }

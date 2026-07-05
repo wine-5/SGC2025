@@ -42,7 +42,7 @@ namespace Tyotyo.InGame.Item
         {
             itemData = data;
             factory = itemFactory;
-            lifeTime = data != null ? data.Duration : 0f;
+            lifeTime = data != null ? data.LifeTime : 0f;
             spawnTime = Time.time;
         }
         
